@@ -1,0 +1,3 @@
+source 'https://api.berkshelf.com'
+
+cookbook 'mon_notification', git: 'https://github.com/hpcloud-mon/cookbooks-mon_notification'

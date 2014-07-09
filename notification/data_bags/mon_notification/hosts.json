@@ -1,0 +1,24 @@
+{
+  "id" : "hosts",
+  "kafka": {
+    "url": "kafka",
+    "alarm_topic": "alarm-state-transitions",
+    "notification_topic": "alarm-notifications"
+  },
+  "mysql": {
+    "url": "mysql",
+    "user": "notification",
+    "password": "password",
+    "database": "mon"
+  },
+  "smtp": {
+    "url": "localhost",
+    "user": "",
+    "password": "",
+    "timeout": 60,
+    "from_addr": "hpcs.mon@hp.com"
+  },
+  "zookeeper": {
+    "url": "zookeeper"
+  }
+}

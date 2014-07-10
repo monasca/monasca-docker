@@ -8,6 +8,10 @@ To run install fig, `pip install fig` then just run it `fig up`.
 # Development/Test Workflows
 `TODO`
 
+## Tooling
+  - [nsenter](https://github.com/jpetazzo/nsenter) allows you to attach to running containers. Docker is working on this functionality natively but isn't there yet.
+    - Run like `docker-enter my_container /bin/bash1`
+
 # Building Docker Images
 The majority of the installation work is done via chef-solo leveraging the same cookbooks used for vagrant and test baremetal setups.
 The actual building of images is done with standard docker commands leveraging the various Dockerfiles.
@@ -20,6 +24,7 @@ The actual building of images is done with standard docker commands leveraging t
 - Currently using a community devstack container and creating the mini-mon keystone user on the agent startup.
 
 # Todo
+- Setup a devstack docker image which is all ready to go, the community one just takes to long to get going.
 - Setup the ui
 - Many containers should be changed to log to console rather than a log file
   - notification

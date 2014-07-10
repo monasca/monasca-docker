@@ -1,0 +1,58 @@
+devstack:
+  image: bodenr/devstack
+  ports: 
+    - "35357:35357"
+influxdb:
+  image: monasca/influxdb
+  ports: 
+    - "8083:8083"
+    - "8084:8084"
+    - "8086:8086"
+zookeeper:
+  image: jplock/zookeeper
+kafka:
+  image: monasca/kafka
+  links:
+    - zookeeper
+mysql:
+  image: monasca/mysql
+notification:
+  image: monasca/notification
+  links:
+    - kafka
+    - mysql
+    - zookeeper
+persister:
+  image: monasca/persister
+  links:
+    - influxdb
+    - kafka
+    - mysql
+    - zookeeper
+thresh:
+  image: monasca/thresh
+  links:
+    - kafka
+    - mysql
+    - zookeeper
+api:
+  image: monasca/api
+  ports: "8080:8080"
+  links: 
+    - devstack
+    - influxdb
+    - kafka
+    - mysql
+    - zookeeper
+
+#ui:
+#  image: monasca/ui
+#  ports: "80:80"
+#  links: 
+#    - devstack
+#    - api
+#agent:
+#  image: monasca/agent
+#  links: 
+#    - devstack
+#    - api

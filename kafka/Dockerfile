@@ -12,4 +12,4 @@ RUN chef-solo -c /chef/solo.rb -j /chef/node.json
 EXPOSE 9092
 
 # Requires Zookeeper to run
-CMD ["/chef/create_topics.sh"]
+CMD ["/bin/bash", "/chef/create_topics.sh"]

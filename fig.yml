@@ -1,7 +1,7 @@
-devstack:
-  image: bodenr/devstack
-  ports: 
-    - "35357:35357"
+#devstack:
+#  image: bodenr/devstack
+#  ports: 
+#    - "35357:35357"
 influxdb:
   image: monasca/influxdb
   ports: 
@@ -39,7 +39,7 @@ api:
   image: monasca/api
   ports: "8080:8080"
   links: 
-    - devstack
+#    - devstack
     - influxdb
     - kafka
     - mysql

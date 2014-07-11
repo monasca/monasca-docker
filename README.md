@@ -1,9 +1,10 @@
-Dockerfiles for building Monasca Images as well as [fig](http://orchardup.github.io/fig/index.html) config for running the cluster.
+Dockerfiles for building Monasca Images as well as [ansible](http://www.ansible.com) config for running the cluster.
 These images are intended for development.
 
-Fig is used to simplify the start up of the entire cluster with proper links between different vms, it is not used in building the images.
+Ansibleis used to simplify the start up of the entire cluster with proper links between different vms, it is not used in building the images.
 
-To run install fig, `pip install fig` then just run it `fig up`.
+To run install ansible, `pip install ansible` also add the python docker client library `pip install docker-py`
+Run the playbook to start things up `ansible-playbook mini-mon.yml`.
 
 # Development/Test Workflows
 `TODO`

@@ -5,7 +5,7 @@
     # I didn't want to set the default everywhere so I set a variable with a variable. Common options are stopped, absent
     state: "{{ action | default('present') }}"
   tasks:
-  - name: Start influxdb
+  - name: influxdb
     docker:
         docker_url: tcp://127.0.0.1:2375
         image: monasca/influxdb 
@@ -15,7 +15,7 @@
           - "8083:8083"
           - "8084:8084"
           - "8086:8086"
-  - name: Start mysql (percona xtraDB cluster)
+  - name: mysql (percona xtraDB cluster)
     docker:
         docker_url: tcp://127.0.0.1:2375
         image: monasca/mysql
@@ -23,21 +23,22 @@
         state: "{{ state }}"
         ports:
           - "3306:3306"
-  - name: start zookeeper
+  - name: zookeeper
     docker:
         docker_url: tcp://127.0.0.1:2375
         image: jplock/zookeeper
         name: zookeeper
         state: "{{ state }}"
-  - name: start kafka
+  - name: kafka
     docker:
         docker_url: tcp://127.0.0.1:2375
         image: monasca/kafka
         name: kafka
+        hostname: kafka  # This is important so that kafka registers itself properly in zookeeper
         state: "{{ state }}"
         links:
           - zookeeper:zookeeper
-  - name: start persister
+  - name: persister
     docker:
         docker_url: tcp://127.0.0.1:2375
         image: monasca/persister
@@ -47,7 +48,7 @@
           - kafka:kafka
           - influxdb:influxdb
           - zookeeper:zookeeper
-  - name: start notification enging
+  - name: notification engine
     docker:
         docker_url: tcp://127.0.0.1:2375
         image: monasca/notification

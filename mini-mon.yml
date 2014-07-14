@@ -1,7 +1,7 @@
 - hosts: localhost
   connection: local
   tasks:
-  - name: Start mini-mon
+  - name: Start influxdb
     docker:
         docker_url: tcp://127.0.0.1:2375
         image: monasca/influxdb 
@@ -10,6 +10,13 @@
           - "8083:8083"
           - "8084:8084"
           - "8086:8086"
+  - name: Start mysql (percona xtraDB cluster)
+    docker:
+        docker_url: tcp://127.0.0.1:2375
+        image: monasca/mysql
+        name: mysql
+        ports:
+          - "3306:3306"
   - name: start zookeeper
     docker:
         docker_url: tcp://127.0.0.1:2375
@@ -22,23 +29,26 @@
         name: kafka
         links:
           - zookeeper:zookeeper
+  - name: start persister
+    docker:
+        docker_url: tcp://127.0.0.1:2375
+        image: monasca/persister
+        name: persister
+        links:
+          - kafka:kafka
+          - influxdb:influxdb
+          - zookeeper:zookeeper
+  - name: start notification enging
+    docker:
+        docker_url: tcp://127.0.0.1:2375
+        image: monasca/notification
+        name: notification
+        links:
+          - kafka:kafka
+          - mysql:mysql
+          - zookeeper:zookeeper
 
 # Old fig style boxes yet to be converted for ansible
-#mysql:
-#  image: monasca/mysql
-#notification:
-#  image: monasca/notification
-#  links:
-#    - kafka
-#    - mysql
-#    - zookeeper
-#persister:
-#  image: monasca/persister
-#  links:
-#    - influxdb
-#    - kafka
-#    - mysql
-#    - zookeeper
 #thresh:
 #  image: monasca/thresh
 #  links:
@@ -55,6 +65,8 @@
 #    - mysql
 #    - zookeeper
 
+
+#devstack? Done by itself or with the ui on it?
 #ui:
 #  image: monasca/ui
 #  ports: "80:80"

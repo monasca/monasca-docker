@@ -1,11 +1,16 @@
 - hosts: localhost
   connection: local
+  gather_facts: no
+  vars:
+    # I didn't want to set the default everywhere so I set a variable with a variable. Common options are stopped, absent
+    state: "{{ action | default(present) }}"
   tasks:
   - name: Start influxdb
     docker:
         docker_url: tcp://127.0.0.1:2375
         image: monasca/influxdb 
         name: influxdb
+        state: "{{ state }}"
         ports:
           - "8083:8083"
           - "8084:8084"
@@ -15,6 +20,7 @@
         docker_url: tcp://127.0.0.1:2375
         image: monasca/mysql
         name: mysql
+        state: "{{ state }}"
         ports:
           - "3306:3306"
   - name: start zookeeper
@@ -22,11 +28,13 @@
         docker_url: tcp://127.0.0.1:2375
         image: jplock/zookeeper
         name: zookeeper
+        state: "{{ state }}"
   - name: start kafka
     docker:
         docker_url: tcp://127.0.0.1:2375
         image: monasca/kafka
         name: kafka
+        state: "{{ state }}"
         links:
           - zookeeper:zookeeper
   - name: start persister
@@ -34,6 +42,7 @@
         docker_url: tcp://127.0.0.1:2375
         image: monasca/persister
         name: persister
+        state: "{{ state }}"
         links:
           - kafka:kafka
           - influxdb:influxdb
@@ -43,6 +52,7 @@
         docker_url: tcp://127.0.0.1:2375
         image: monasca/notification
         name: notification
+        state: "{{ state }}"
         links:
           - kafka:kafka
           - mysql:mysql

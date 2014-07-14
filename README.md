@@ -5,6 +5,7 @@ Ansibleis used to simplify the start up of the entire cluster with proper links 
 
 To run install ansible, `pip install ansible` also add the python docker client library `pip install docker-py`
 Run the playbook to start things up `ansible-playbook mini-mon.yml`.
+Stop and/or delete with the stopped and absent actions `ansible-playbook mini-mon.yml --extra-vars "action=stopped"`
 
 # Development/Test Workflows
 `TODO`

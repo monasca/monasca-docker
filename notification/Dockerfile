@@ -7,4 +7,4 @@ ADD . /chef
 RUN cd /chef && /opt/chef/embedded/bin/berks vendor /chef/cookbooks
 RUN chef-solo -c /chef/solo.rb -j /chef/node.json
 
-CMD /etc/init.d/postfix start && /usr/local/bin/mon-notification
+CMD /bin/bash /chef/start-mon-notification.sh

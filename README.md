@@ -33,3 +33,6 @@ The actual building of images is done with standard docker commands leveraging t
   - persister
 - Automated builds for the containers could be a big advantage and in that case each image should have its own git repo.
 - Setup clustered versions of the various containers. This will mean a custom zookeeper.
+
+# Known Issues
+- If DOCKER_HOST is not set the docker_url does not properly fall back to the default.

@@ -4,10 +4,11 @@
   vars:
     # I didn't want to set the default everywhere so I set a variable with a variable. Common options are stopped, absent
     state: "{{ action | default('present') }}"
+    docker_url: "{{ lookup('env','DOCKER_HOST') | default('unix://var/run/docker.sock') }}"
   tasks:
   - name: influxdb
     docker:
-        docker_url: tcp://127.0.0.1:2375
+        docker_url: "{{ docker_url }}"
         image: monasca/influxdb 
         name: influxdb
         state: "{{ state }}"
@@ -17,7 +18,7 @@
           - "8086:8086"
   - name: mysql (percona xtraDB cluster)
     docker:
-        docker_url: tcp://127.0.0.1:2375
+        docker_url: "{{ docker_url }}"
         image: monasca/mysql
         name: mysql
         state: "{{ state }}"
@@ -25,13 +26,13 @@
           - "3306:3306"
   - name: zookeeper
     docker:
-        docker_url: tcp://127.0.0.1:2375
+        docker_url: "{{ docker_url }}"
         image: jplock/zookeeper
         name: zookeeper
         state: "{{ state }}"
   - name: kafka
     docker:
-        docker_url: tcp://127.0.0.1:2375
+        docker_url: "{{ docker_url }}"
         image: monasca/kafka
         name: kafka
         hostname: kafka  # This is important so that kafka registers itself properly in zookeeper
@@ -40,7 +41,7 @@
           - zookeeper:zookeeper
   - name: persister
     docker:
-        docker_url: tcp://127.0.0.1:2375
+        docker_url: "{{ docker_url }}"
         image: monasca/persister
         name: persister
         state: "{{ state }}"
@@ -48,9 +49,19 @@
           - kafka:kafka
           - influxdb:influxdb
           - zookeeper:zookeeper
+#  - name: threshold engine
+#    docker:
+#        docker_url: "{{ docker_url }}"
+#        image: monasca/thresh
+#        name: thresh
+#        state: "{{ state }}"
+#        links:
+#          - kafka:kafka
+#          - mysql:mysql
+#          - zookeeper:zookeeper
   - name: notification engine
     docker:
-        docker_url: tcp://127.0.0.1:2375
+        docker_url: "{{ docker_url }}"
         image: monasca/notification
         name: notification
         state: "{{ state }}"
@@ -60,12 +71,6 @@
           - zookeeper:zookeeper
 
 # Old fig style boxes yet to be converted for ansible
-#thresh:
-#  image: monasca/thresh
-#  links:
-#    - kafka
-#    - mysql
-##    - zookeeper
 #api:
 #  image: monasca/api
 #  ports: "8080:8080"

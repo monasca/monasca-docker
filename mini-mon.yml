@@ -39,6 +39,12 @@
         state: "{{ state }}"
         links:
           - zookeeper:zookeeper
+#  - name: keystone
+#    docker:
+#        docker_url: "{{ docker_url }}"
+#        image: monasca/keystone
+#        name: keystone
+#        state: "{{ state }}"
   - name: persister
     docker:
         docker_url: "{{ docker_url }}"
@@ -49,16 +55,17 @@
           - kafka:kafka
           - influxdb:influxdb
           - zookeeper:zookeeper
-#  - name: threshold engine
-#    docker:
-#        docker_url: "{{ docker_url }}"
-#        image: monasca/thresh
-#        name: thresh
-#        state: "{{ state }}"
-#        links:
-#          - kafka:kafka
-#          - mysql:mysql
-#          - zookeeper:zookeeper
+  - name: threshold engine
+    docker:
+        docker_url: "{{ docker_url }}"
+        image: monasca/thresh
+        name: thresh
+        hostname: thresh
+        state: "{{ state }}"
+        links:
+          - kafka:kafka
+          - mysql:mysql
+          - zookeeper:zookeeper
   - name: notification engine
     docker:
         docker_url: "{{ docker_url }}"
@@ -69,28 +76,35 @@
           - kafka:kafka
           - mysql:mysql
           - zookeeper:zookeeper
-
-# Old fig style boxes yet to be converted for ansible
-#api:
-#  image: monasca/api
-#  ports: "8080:8080"
-#  links: 
-#    - devstack
-#    - influxdb
-#    - kafka
-#    - mysql
-#    - zookeeper
-
-
-#devstack? Done by itself or with the ui on it?
-#ui:
-#  image: monasca/ui
-#  ports: "80:80"
-#  links: 
-#    - devstack
-#    - api
-#agent:
-#  image: monasca/agent
-#  links: 
-#    - devstack
-#    - api
+#  - name: api
+#    docker:
+#        docker_url: "{{ docker_url }}"
+#        image: monasca/api
+#        name: api
+#        state: "{{ state }}"
+#        ports:
+#          - "8080:80"
+#        links:
+#          - keystone:keystone
+#          - kafka:kafka
+#          - influxdb:influxdb
+#          - mysql:mysql
+#          - zookeeper:zookeeper
+#  - name: agent
+#    docker:
+#        docker_url: "{{ docker_url }}"
+#        image: monasca/agent
+#        name: agent
+#        state: "{{ state }}"
+#        links:
+#          - api:api
+#          - keystone:keystone
+#  - name: ui
+#    docker:
+#        docker_url: "{{ docker_url }}"
+#        image: monasca/ui
+#        name: ui
+#        state: "{{ state }}"
+#        links:
+#          - api:api
+#          - keystone:keystone

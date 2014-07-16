@@ -25,6 +25,13 @@ The actual building of images is done with standard docker commands leveraging t
 - Many containers should be changed to log to console rather than a log file
   - notification
   - persister
+  - Probably others
+- A number of containers start up mulitple processes and have sleeps in the startup scripts so dependencies are up in time. It would be much nicer
+  to be smart about these waits.
+  - kafka
+  - notification
+  - thresh
+- I need to open up the various admin ports for the services.
 - Automated builds for the containers could be a big advantage and in that case each image should have its own git repo.
 - Setup clustered versions of the various containers. This will mean a custom zookeeper.
 

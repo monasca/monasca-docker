@@ -1,0 +1,4 @@
+source 'https://api.berkshelf.com'
+
+cookbook 'mon_thresh', git: 'https://github.com/hpcloud-mon/cookbooks-mon_thresh'
+cookbook 'storm', git: 'https://github.com/tkuhlman/storm'

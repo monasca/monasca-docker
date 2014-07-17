@@ -39,12 +39,12 @@
         state: "{{ state }}"
         links:
           - zookeeper:zookeeper
-#  - name: keystone
-#    docker:
-#        docker_url: "{{ docker_url }}"
-#        image: monasca/keystone
-#        name: keystone
-#        state: "{{ state }}"
+  - name: keystone
+    docker:
+        docker_url: "{{ docker_url }}"
+        image: monasca/keystone
+        name: keystone
+        state: "{{ state }}"
   - name: persister
     docker:
         docker_url: "{{ docker_url }}"

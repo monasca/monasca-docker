@@ -7,4 +7,4 @@ ADD . /chef
 RUN cd /chef && /opt/chef/embedded/bin/berks vendor /chef/cookbooks
 RUN chef-solo -c /chef/solo.rb -j /chef/node.json
 
-CMD /bin/bash /chef/start-mon-notification.sh
+CMD /bin/bash /chef/monasca-notification.sh

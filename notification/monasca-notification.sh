@@ -3,9 +3,9 @@
 
 # If kafka just started often the notification engine starts before it is ready, in which case retry
 start=`date "+%s"`
-/usr/local/bin/mon-notification
+/usr/local/bin/monasca-notification
 duration=$[ `date "+%s"` - $start ]
 if [ $duration -lt 60 ]; then
   sleep 60
-  /usr/local/bin/mon-notification
+  /usr/local/bin/monasca-notification
 fi

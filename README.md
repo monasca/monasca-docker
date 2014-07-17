@@ -9,6 +9,8 @@ Run the playbook to start Monasca up `ansible-playbook mini-mon.yml`.
 Stop and/or delete with the stopped and absent actions `ansible-playbook mini-mon.yml --extra-vars "action=absent"`
 If the DOCKER_HOST environment variable is not defined you will need to.
 
+The agent container can be attached to, `docker attach agent`, this will drop you to a shell from which you can run the smoke test `python /tests/smoke.py`.
+
 ## Tooling
   - [nsenter](https://github.com/jpetazzo/nsenter) allows you to attach to running containers. Docker is working on this functionality natively but isn't there yet.
     - Run like `docker-enter my_container /bin/bash1`

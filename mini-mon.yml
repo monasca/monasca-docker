@@ -90,15 +90,17 @@
           - influxdb:influxdb
           - mysql:mysql
           - zookeeper:zookeeper
-#  - name: agent
-#    docker:
-#        docker_url: "{{ docker_url }}"
-#        image: monasca/agent
-#        name: agent
-#        state: "{{ state }}"
-#        links:
-#          - api:api
-#          - keystone:keystone
+  - name: agent
+    docker:
+        docker_url: "{{ docker_url }}"
+        image: monasca/agent
+        name: agent
+        state: "{{ state }}"
+        tty: True
+        stdin_open: True
+        links:
+          - api:api
+          - keystone:keystone
 #  - name: ui
 #    docker:
 #        docker_url: "{{ docker_url }}"

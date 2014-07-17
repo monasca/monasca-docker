@@ -76,20 +76,20 @@
           - kafka:kafka
           - mysql:mysql
           - zookeeper:zookeeper
-#  - name: api
-#    docker:
-#        docker_url: "{{ docker_url }}"
-#        image: monasca/api
-#        name: api
-#        state: "{{ state }}"
-#        ports:
-#          - "8080:80"
-#        links:
-#          - keystone:keystone
-#          - kafka:kafka
-#          - influxdb:influxdb
-#          - mysql:mysql
-#          - zookeeper:zookeeper
+  - name: api
+    docker:
+        docker_url: "{{ docker_url }}"
+        image: monasca/api
+        name: api
+        state: "{{ state }}"
+        ports:
+          - "8080:8080"
+        links:
+          - keystone:keystone
+          - kafka:kafka
+          - influxdb:influxdb
+          - mysql:mysql
+          - zookeeper:zookeeper
 #  - name: agent
 #    docker:
 #        docker_url: "{{ docker_url }}"

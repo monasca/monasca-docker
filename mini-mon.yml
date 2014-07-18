@@ -3,7 +3,7 @@
   gather_facts: no
   vars:
     # I didn't want to set the default everywhere so I set a variable with a variable. Common options are stopped, absent
-    state: "{{ action | default('present') }}"
+    state: "{{ action | default('running') }}"
     docker_url: "{{ lookup('env','DOCKER_HOST') | default('unix://var/run/docker.sock') }}"
   tasks:
   - name: influxdb

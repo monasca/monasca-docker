@@ -1,10 +1,15 @@
 # OpenStack Keystone with the mini-mon user
-FROM jameslabocki/keystone
+FROM monasca/base:14.04
 MAINTAINER Tim Kuhlman <tim.kuhlman@hp.com>
 
-RUN /usr/bin/keystone-manage db_sync
+RUN apt-get update
+RUN apt-get install -y keystone sqlite
 
 ADD ./mini-mon-create.py /root/mini-mon-create.py
-RUN /usr/bin/keystone-all & sleep 5 && python /root/mini-mon-create.py
+ADD ./start.sh /start.sh
+RUN chmod 755 /start.sh
+RUN /start.sh & sleep 5 && python /root/mini-mon-create.py
 
-CMD /usr/bin/keystone-all
+EXPOSE 5000 35357
+
+CMD /start.sh

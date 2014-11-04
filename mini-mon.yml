@@ -1,87 +1,68 @@
-- hosts: localhost
-  connection: local
+- hosts: mini-mon
   gather_facts: no
   vars:
     # I didn't want to set the default everywhere so I set a variable with a variable. Common options are stopped, absent
     state: "{{ action | default('running') }}"
-    docker_url: "{{ lookup('env','DOCKER_HOST') | default('unix://var/run/docker.sock') }}"
+    docker_url: "unix://var/run/docker.sock"
   tasks:
   - name: influxdb
     docker:
-        docker_url: "{{ docker_url }}"
         image: monasca/influxdb 
         name: influxdb
-        state: "{{ state }}"
         ports:
           - "8083:8083"
           - "8084:8084"
           - "8086:8086"
   - name: mysql (percona xtraDB cluster)
     docker:
-        docker_url: "{{ docker_url }}"
         image: monasca/mysql
         name: mysql
-        state: "{{ state }}"
         ports:
           - "3306:3306"
   - name: zookeeper
     docker:
-        docker_url: "{{ docker_url }}"
         image: jplock/zookeeper
         name: zookeeper
-        state: "{{ state }}"
   - name: kafka
     docker:
-        docker_url: "{{ docker_url }}"
         image: monasca/kafka
         name: kafka
         hostname: kafka  # This is important so that kafka registers itself properly in zookeeper
-        state: "{{ state }}"
         links:
           - zookeeper:zookeeper
   - name: keystone
     docker:
-        docker_url: "{{ docker_url }}"
         image: monasca/keystone
         name: keystone
-        state: "{{ state }}"
   - name: persister
     docker:
-        docker_url: "{{ docker_url }}"
         image: monasca/persister
         name: persister
-        state: "{{ state }}"
         links:
           - kafka:kafka
           - influxdb:influxdb
           - zookeeper:zookeeper
   - name: threshold engine
     docker:
-        docker_url: "{{ docker_url }}"
         image: monasca/thresh
         name: thresh
         hostname: thresh
-        state: "{{ state }}"
         links:
           - kafka:kafka
           - mysql:mysql
           - zookeeper:zookeeper
   - name: notification engine
     docker:
-        docker_url: "{{ docker_url }}"
         image: monasca/notification
         name: notification
-        state: "{{ state }}"
         links:
           - kafka:kafka
           - mysql:mysql
           - zookeeper:zookeeper
   - name: api
     docker:
-        docker_url: "{{ docker_url }}"
         image: monasca/api
         name: api
-        state: "{{ state }}"
         ports:
           - "8080:8080"
         links:
@@ -92,10 +73,8 @@
           - zookeeper:zookeeper
   - name: agent
     docker:
-        docker_url: "{{ docker_url }}"
         image: monasca/agent
         name: agent
-        state: "{{ state }}"
         tty: True
         stdin_open: True
         links:
@@ -103,10 +82,8 @@
           - keystone:keystone
 #  - name: ui
 #    docker:
-#        docker_url: "{{ docker_url }}"
 #        image: monasca/ui
 #        name: ui
-#        state: "{{ state }}"
 #        links:
 #          - api:api
 #          - keystone:keystone

@@ -1,13 +1,14 @@
 # InfluxDB setup for Monasca
-FROM monasca/base:14.04
+FROM monasca/base
 MAINTAINER Tim Kuhlman <tim.kuhlman@hp.com>
 
-ADD . /chef
-RUN cd /chef && /opt/chef/embedded/bin/berks vendor /chef/cookbooks
-RUN chef-solo -c /chef/solo.rb -j /chef/node.json
+COPY . /setup
+WORKDIR /setup
 
-# Create DB and users
-RUN /bin/bash /chef/db_setup.sh
+# Pull down the roles and run Ansible
+RUN ansible-galaxy install -r ansible_roles -p ./roles
+# It is important to limit the tags here as monasca-schema could run mysql/kafka schema if not limited by tags.
+RUN ansible-playbook -i hosts site.yml -c local --tags influxdb,influxdb_schema
 
 EXPOSE 8083
 EXPOSE 8086

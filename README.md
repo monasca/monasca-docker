@@ -10,7 +10,6 @@ To install Ansible, `pip install ansible` also add the python docker client libr
 
 Run the playbook to start Monasca up `ansible-playbook -i hosts mini-mon.yml`.
 Stop and/or delete with the stopped and absent actions `ansible-playbook -i hosts mini-mon.yml --extra-vars "action=absent"`
-If the DOCKER_HOST environment variable is not defined you will need to define it as the default is not currently working.
 
 The agent container can be attached to, `docker attach agent`, this will drop you to a shell from which you can run the smoke test `python /tests/smoke.py`.
 

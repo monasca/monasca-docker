@@ -8,7 +8,6 @@ WORKDIR /setup
 RUN ansible-galaxy install -r ansible_roles -p ./roles
 RUN ansible-playbook -i hosts site.yml -c local
 
-EXPOSE 9092
+EXPOSE 2181
 
-# Requires Zookeeper to run
-CMD ["/bin/bash", "/setup/create_topics.sh"]
+CMD ["/setup/zk_start.sh"]

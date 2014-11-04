@@ -1,0 +1,15 @@
+- name: Sets up kafka topics
+  hosts: localhost
+  sudo: yes
+  vars:
+    kafka_topics:
+        metrics: { replicas: 1, partitions: 4 }
+        events: { replicas: 1, partitions: 4 }
+        raw-events: { replicas: 1, partitions: 4 }
+        transformed-events: { replicas: 1, partitions: 4 }
+        alarm-state-transitions: { replicas: 1, partitions: 4 }
+        alarm-notifications: { replicas: 1, partitions: 4 }
+  roles:
+    # the kafka portition is tagged kafka_topics and is all that should be run in this container
+    - {role: tkuhlman.monasca-schema, tags: [schema]}
+

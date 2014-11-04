@@ -1,0 +1,10 @@
+- name: Install Monasca persister
+  hosts: localhost
+  sudo: yes
+  vars:
+    kafka_uri: kafka
+    influxdb_host: influxdb
+    influxdb_user: mon_persister
+    influxdb_password: password
+  roles:
+    - {role: tkuhlman.monasca-persister, tags: [persister]}

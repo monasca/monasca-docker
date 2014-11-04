@@ -1,10 +1,11 @@
 FROM monasca/base:14.04
 MAINTAINER Tim Kuhlman <tim.kuhlman@hp.com>
 
-RUN apt-get install -y postfix
+COPY . /setup
+WORKDIR /setup
 
-ADD . /chef
-RUN cd /chef && /opt/chef/embedded/bin/berks vendor /chef/cookbooks
-RUN chef-solo -c /chef/solo.rb -j /chef/node.json
+# Pull down the roles and run Ansible
+RUN ansible-galaxy install -r ansible_roles -p ./roles
+RUN ansible-playbook -i hosts site.yml -c local
 
-CMD /bin/bash /chef/monasca-notification.sh
+CMD ["/setup/monasca-notification.sh"]

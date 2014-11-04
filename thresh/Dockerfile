@@ -1,20 +1,15 @@
 # Setup storm and the threshold engine
-# Currently chef gets stuck waiting on runit which is not running.
-# I can manually get it going but use nsenter to run `/usr/sbin/runsvdir-start`
-
-FROM monasca/base:14.04
+FROM monasca/base
 MAINTAINER Tim Kuhlman <tim.kuhlman@hp.com>
 
-ADD . /chef
+COPY . /setup
+WORKDIR /setup
 
-# The plan is to move off our own apt repo to hosting via StackForge, until then I have temporarily copied the deb locally for installation
-RUN dpkg -i /chef/mon-thresh_1.0.0~SNAPSHOT-1403726350622-e77566_all.deb; apt-get -y -f install
+# This playbook requires https for apt
+RUN apt-get install -y apt-transport-https
 
-RUN cd /chef && /opt/chef/embedded/bin/berks vendor /chef/cookbooks
-RUN chef-solo -c /chef/solo.rb -j /chef/node.json
+# Pull down the roles and run Ansible
+RUN ansible-galaxy install -r ansible_roles -p ./roles
+RUN ansible-playbook -i hosts site.yml -c local
 
-# The storm cookbook is setting nimbus host to the container id, this fixes that up
-RUN cp /opt/storm/current/conf/storm.yaml /opt/storm/current/conf/storm.yaml-chef
-RUN sed s/nimbus.host:.*/nimbus.host:\ thresh/ /opt/storm/current/conf/storm.yaml-chef > /opt/storm/current/conf/storm.yaml
-
-CMD ["/bin/bash", "/chef/start.sh"]
+CMD ["/setup/start_thresh.sh"]

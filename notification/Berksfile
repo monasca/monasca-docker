@@ -1,3 +1,0 @@
-source 'https://api.berkshelf.com'
-
-cookbook 'monasca_notification', git: 'https://github.com/stackforge/cookbook-monasca-notification'

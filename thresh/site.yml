@@ -1,0 +1,15 @@
+- name: Install Storm and Monasca Thresh
+  hosts: localhost
+  sudo: yes
+  vars:
+    kafka_hosts: kafka:9092
+    mysql_host: mysql
+    mysql_user: thresh
+    mysql_password: password
+    nimbus_host: localhost
+    storm_nimbus_enabled: true
+    storm_supervisor_enabled: true
+    zookeeper_hosts: zookeeper:2181
+  roles:
+    - {role: tkuhlman.storm, tags: [storm]}
+    - {role: tkuhlman.monasca-thresh, tags: [thresh]}

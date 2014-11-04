@@ -1,6 +1,4 @@
-# First postfix needs to be running, the image is set to use local postfix
-/etc/init.d/postfix start
-
+#!/bin/bash
 # If kafka just started often the notification engine starts before it is ready, in which case retry
 start=`date "+%s"`
 /usr/local/bin/monasca-notification

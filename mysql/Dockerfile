@@ -1,14 +1,14 @@
 # MySQL running Percona XtraDB cluster setup for Monasca
-# Note Percona does not yet publish packages for 14.04
-FROM monasca/base:12.04
+FROM monasca/base
 MAINTAINER Tim Kuhlman <tim.kuhlman@hp.com>
 
-ADD . /chef
-RUN cd /chef && /opt/chef/embedded/bin/berks vendor /chef/cookbooks
-RUN chef-solo -c /chef/solo.rb -j /chef/node.json
+COPY . /setup
+WORKDIR /setup
 
-# Create DB and schema
-RUN /bin/bash /chef/db_setup.sh
+# Pull down the roles and run Ansible
+RUN ansible-galaxy install -r ansible_roles -p ./roles
+# It is important to limit the tags here as monasca-schema could run influxd/kafka schema if not limited by tags.
+RUN ansible-playbook -i hosts site.yml -c local --tags mysql,mysql_schema
 
 EXPOSE 3306
 

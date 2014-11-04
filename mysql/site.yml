@@ -1,0 +1,14 @@
+- name: Installs mysql
+  hosts: localhost
+  sudo: yes
+  roles:
+    - {role: tkuhlman.percona, mysql_root_password: password, percona_package: percona-xtradb-cluster-56, tags: [mysql, percona]}
+
+- name: Set up mysql schema
+  hosts: localhost
+  sudo: yes
+  vars:
+    mysql_admin: root
+    mysql_admin_password: password
+  roles:
+    - {role: tkuhlman.monasca-schema, tags: [schema]}

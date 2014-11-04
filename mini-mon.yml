@@ -21,7 +21,7 @@
           - "3306:3306"
   - name: zookeeper
     docker:
-        image: jplock/zookeeper
+        image: monasca/zookeeper
         name: zookeeper
   - name: kafka
     docker:

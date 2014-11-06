@@ -1,2 +1,4 @@
 hosts
+*/host_vars/localhost
 *.pyc
+api/truststore.jks

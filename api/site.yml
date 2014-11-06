@@ -15,5 +15,9 @@
     mysql_user: monapi
     mysql_password: password
     zookeeper_hosts: zookeeper:2181
+  tasks:
+    - name: Create truststore file
+      copy: src=/setup/truststore.jks dest={{monasca_api_truststore}}
+      when: monasca_api_truststore
   roles:
     - {role: tkuhlman.monasca-api, tags: [api]}

@@ -1,6 +1,11 @@
 # Monasca Docker
-This repo contains Dockerfiles for building Monasca Images as well as [Ansible](http://www.ansible.com) config for running all the services.
-At this time each service is setup standalone and there is no HA. These images are currently intended for development and experimentation.
+This repo contains Dockerfiles for building Monasca Images. The images are used for demos or development and experimentation. The monasca/demo
+image runs all of the various daemons for Monasca and is a great place to start as well as use for demos.
+
+To run the demo simply setup Docker then run, `docker run monasca/demo`. The ui will be accessible on the docker host at port 80 the api at port 8080.
+
+The rest of the images here are the individual daemons for Monasca split into their own containers. This is really intended for testing and
+development at this point. The repo also contains an [Ansible](http://www.ansible.com) playbook to help run all the individual containers as one whole.
 
 Ansible is used to simplify the start up of the entire service because its Docker plugin allows for easy setup with proper links between different containers.
 To install Ansible, `pip install ansible` also add the python docker client library `pip install docker-py`

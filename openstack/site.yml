@@ -1,0 +1,27 @@
+- name: Install OpenStack components for use by Monasca
+  hosts: localhost
+  sudo: yes
+  vars:
+    dashboard_path: /usr/share/openstack-dashboard/openstack_dashboard/
+    grafana_base_dir: /opt
+    grafana_dest: /usr/share/openstack-dashboard/static/grafana
+    panel_dest_path: /usr/share/openstack-dashboard/monitoring
+    monasca_api_url: http://api:8080/v2.0
+    keystone_admin_token: ADMIN
+    keystone_users:
+      mini-mon:
+        project: mini-mon
+        password: password
+        role: monasca-user
+      monasca-agent:
+        password: password
+        project: mini-mon
+        role: monasca-agent
+  pre_tasks:
+    - name: Startup services
+      shell: /setup/start.sh &
+  roles:
+    - {role: monasca-keystone, tags: [keystone]}
+    - {role: openstack-horizon, keystone_hostname: "127.0.0.1", tags: [horizon, ui]}
+    - {role: monasca-ui, tags: [ui]}
+

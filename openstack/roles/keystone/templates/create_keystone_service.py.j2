@@ -1,0 +1,31 @@
+import keystoneclient
+from keystoneclient.v2_0 import client
+
+def add_service_endpoint(key, name, description, type, url):
+  """Add the Monasca service to the catalog with the specified endpoint, if it doesn't yet exist."""
+  service_names = { service.name: service.id for service in key.services.list() }
+  if name in service_names.keys():
+    service_id = service_names[name] 
+  else:
+    service=key.services.create(name=name, service_type=type, description=description)
+    service_id = service.id
+ 
+  for endpoint in key.endpoints.list():
+    if endpoint.service_id == service_id:
+      return
+
+  key.endpoints.create(region="RegionOne", service_id=service_id, publicurl=url, adminurl=url, internalurl=url)
+
+key = client.Client(token='{{ keystone_admin_token }}', endpoint='http://127.0.0.1:35357/v2.0/')
+
+add_service_endpoint(key, 'keystone', 'Keystone Identity Service', 'identity', 'http://127.0.0.1:5000/v2.0')
+
+# The following services are added for compatibility with horizon but are not likely to be truly valid
+add_service_endpoint(key, 'cinder', 'Cinder', 'volume', 'http://{{ inventory_hostname }}:8776/v1/$(tenant_id)s')
+add_service_endpoint(key, 'cinderv2', 'Cinderv2', 'volumev2', 'http://{{ inventory_hostname }}:8776/v2/$(tenant_id)s')
+add_service_endpoint(key, 'glance', 'Glance', 'image', 'http://{{ inventory_hostname }}:9292')
+add_service_endpoint(key, 'heat', 'Heat orchestration', 'orchestration', 'http://{{ inventory_hostname }}:8004/v1/$(tenant_id)s')
+add_service_endpoint(key, 'heat-cfn', 'Heat cloudformation', 'cloudformation', 'http://{{ inventory_hostname }}:8000/v1')
+add_service_endpoint(key, 'nova', 'Nova', 'compute', 'http://{{ inventory_hostname }}:8774/v2/$(tenant_id)s')
+add_service_endpoint(key, 'novav21', 'Nova v2.1', 'computev21', 'http://{{ inventory_hostname }}:8774/v2.1/$(tenant_id)s')
+#add_service_endpoint(key, 'swift', 'Swift', 'object-store', 'http://{{ inventory_hostname }}')

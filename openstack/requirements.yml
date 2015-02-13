@@ -2,5 +2,3 @@
   name: monasca-keystone
 - src: tkuhlman.monasca-ui
   name: monasca-ui
-- src: tkuhlman.openstack-horizon
-  name: openstack-horizon

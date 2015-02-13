@@ -8,6 +8,7 @@
     panel_dest_path: /usr/share/openstack-dashboard/monitoring
     monasca_api_url: http://api:8080/v2.0
     keystone_admin_token: ADMIN
+    keystone_url: http://localhost:35357/v3
     keystone_users:
       mini-mon:
         project: mini-mon
@@ -17,11 +18,9 @@
         password: password
         project: mini-mon
         role: monasca-agent
-  pre_tasks:
-    - name: Startup services
-      shell: /setup/start.sh &
   roles:
+    - {role: keystone, tags: [keystone]}
     - {role: monasca-keystone, tags: [keystone]}
-    - {role: openstack-horizon, keystone_hostname: "127.0.0.1", tags: [horizon, ui]}
+    - {role: horizon, tags: [horizon]}
     - {role: monasca-ui, tags: [ui]}
 

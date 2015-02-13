@@ -1,0 +1,22 @@
+---
+- name: Install keystone
+  apt: name=keystone state=present
+  register: install
+
+- name: Run keystone-manage for initial db setup
+  command: keystone-manage --config-file=/etc/keystone/keystone.conf db_sync
+  when: install | changed
+
+- name: Set Admin token
+  lineinfile: dest=/etc/keystone/keystone.conf regexp=^admin_token line="admin_token = {{keystone_admin_token}}"
+
+- meta: flush_handlers
+
+- name: Enable keystone
+  shell: keystone-all --config-file /etc/keystone/keystone.conf &
+
+- name: Keystone Identity Service - Create the keystone service python script
+  template: src=create_keystone_service.py.j2 dest=/var/lib/keystone/create_keystone_service.py mode=0700
+
+- name: Keystone Identity Service - Execute the script
+  command: python /var/lib/keystone/create_keystone_service.py

@@ -1,0 +1,36 @@
+---
+# Some of this comes from https://github.com/dguerri/openstack-horizon
+- name: Install horizon application and dependencies
+  apt: name="{{ item }}" state=present
+  with_items:
+    - apache2
+    - memcached
+    - libapache2-mod-wsgi
+    - openstack-dashboard
+
+- name: Remove Ubuntu theme
+  apt: name="{{ item }}" state=absent purge=yes
+  with_items:
+    - openstack-dashboard-ubuntu-theme
+
+- name: Configure keystone in horizon
+  lineinfile: dest=/etc/openstack-dashboard/local_settings.py
+              regexp=^OPENSTACK_HOST
+              line="OPENSTACK_HOST = '127.0.0.1'"
+
+- name: Configure static secret_key
+  lineinfile: dest=/etc/openstack-dashboard/local_settings.py
+              regexp=^SECRET_KEY
+              line="SECRET_KEY = '{{horizon_secret_key}}'"
+
+- name: Disable default apache config
+  file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
+
+- name: Disable the default config in Ubuntu
+  file: path=/etc/apache2/conf-enabled/openstack-dashboard.conf state=absent
+
+- name: Write default openstack horizon apache config
+  copy: dest=/etc/apache2/sites-available/openstack-dashboard.conf src=openstack-dashboard.conf mode=644 owner=root group=root
+
+- name: Enable openstack horizon apache config
+  file: path=/etc/apache2/sites-enabled/openstack-dashboard.conf state=link src=/etc/apache2/sites-available/openstack-dashboard.conf

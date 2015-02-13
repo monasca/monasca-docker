@@ -45,6 +45,9 @@ updating images must be done by hand either using a custom registry or via a doc
 - The base image used Ubuntu 14.04.
 
 # Todo
+- For the monasca/openstack image
+  - Add in the agent to this box.
+  - Add in other services beside just horizon and keystone
 - Fix the variable loading order so you don't have to modify site.yml to set vars
 - I need to open up the various admin ports for the services.
 - In Ansible 1.8 it will begin to support a custom registry, add support to my playbook.
@@ -59,3 +62,4 @@ updating images must be done by hand either using a custom registry or via a doc
   - persister
   - Probably others
 - There is a standalone keystone image in this repo but no good way to set it up at this point. Add a playbook for this.
+- The stateful containers could have an option to connect to external storage.

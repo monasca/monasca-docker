@@ -12,4 +12,5 @@
     - {role: keystone, tags: [keystone]}
     - {role: horizon, tags: [horizon]}
     - {role: monasca-ui, tags: [ui]}
+    - {role: nova, tags: [nova]}
 

@@ -26,11 +26,10 @@
 - name: Disable default apache config
   file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
 
-- name: Disable the default config in Ubuntu
-  file: path=/etc/apache2/conf-enabled/openstack-dashboard.conf state=absent
+- name: Setup root to be horizon
+  lineinfile: dest=/etc/apache2/conf-enabled/openstack-dashboard.conf
+              regexp=^WSGIScriptAlias
+              line="WSGIScriptAlias / /usr/share/openstack-dashboard/openstack_dashboard/wsgi/django.wsgi"
 
-- name: Write default openstack horizon apache config
-  copy: dest=/etc/apache2/sites-available/openstack-dashboard.conf src=openstack-dashboard.conf mode=644 owner=root group=root
-
-- name: Enable openstack horizon apache config
-  file: path=/etc/apache2/sites-enabled/openstack-dashboard.conf state=link src=/etc/apache2/sites-available/openstack-dashboard.conf
+- name: Run python manage.py compress for the dashboard
+  command: python /usr/share/openstack-dashboard/manage.py compress

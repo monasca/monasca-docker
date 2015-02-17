@@ -13,6 +13,8 @@ RUN chmod 755 /setup/start.sh
 RUN ansible-galaxy install -r requirements.yml -p ./roles
 RUN ansible-playbook -i hosts site.yml -c local
 
+RUN apt-get clean
+
 EXPOSE 80 5000 35357
 
 CMD ["/setup/start.sh"]

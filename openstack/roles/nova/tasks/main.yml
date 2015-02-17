@@ -1,0 +1,11 @@
+---
+- name: Install nova
+  apt: name="{{ item }}" state=present
+  with_items:
+    - nova-api
+    - nova-compute
+
+- name: Disable nova metadata as it tries to use iptables
+  lineinfile: dest=/etc/nova/nova.conf
+              regexp=^enabled_apis=
+              line="enabled_apis=ec2,osapi_compute"

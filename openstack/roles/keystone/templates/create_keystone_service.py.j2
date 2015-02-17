@@ -28,4 +28,5 @@ add_service_endpoint(key, 'heat', 'Heat orchestration', 'orchestration', 'http:/
 add_service_endpoint(key, 'heat-cfn', 'Heat cloudformation', 'cloudformation', 'http://{{ inventory_hostname }}:8000/v1')
 add_service_endpoint(key, 'nova', 'Nova', 'compute', 'http://{{ inventory_hostname }}:8774/v2/$(tenant_id)s')
 add_service_endpoint(key, 'novav21', 'Nova v2.1', 'computev21', 'http://{{ inventory_hostname }}:8774/v2.1/$(tenant_id)s')
+#add_service_endpoint(key, 'novav3', 'Nova v3', 'computev3', 'http://{{ inventory_hostname }}:8777/')
 #add_service_endpoint(key, 'swift', 'Swift', 'object-store', 'http://{{ inventory_hostname }}')

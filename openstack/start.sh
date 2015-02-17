@@ -1,5 +1,4 @@
 #!/bin/bash
 /etc/init.d/apache2 start
 keystone-all --config-file /etc/keystone/keystone.conf
-echo "The monasca api is configured to be at the hostname api, use container linking or --add-host to set this."
-echo "The keystone default admin token is ADMIN"
+echo "The keystone default admin token is 'ADMIN', the monasca users still need to be setup."

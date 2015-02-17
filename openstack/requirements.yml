@@ -1,4 +1,2 @@
-- src: tkuhlman.monasca-keystone
-  name: monasca-keystone
 - src: tkuhlman.monasca-ui
   name: monasca-ui

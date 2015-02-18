@@ -1,6 +1,12 @@
 import keystoneclient
 from keystoneclient.v2_0 import client
 
+def get_user(key, user_name):
+  for user in key.users.list():
+   if user.name == user_name:
+     return user
+  return None
+
 def add_service_endpoint(key, name, description, type, url):
   """Add the Monasca service to the catalog with the specified endpoint, if it doesn't yet exist."""
   service_names = { service.name: service.id for service in key.services.list() }
@@ -30,3 +36,7 @@ add_service_endpoint(key, 'nova', 'Nova', 'compute', 'http://{{ inventory_hostna
 add_service_endpoint(key, 'novav21', 'Nova v2.1', 'computev21', 'http://{{ inventory_hostname }}:8774/v2.1/$(tenant_id)s')
 #add_service_endpoint(key, 'novav3', 'Nova v3', 'computev3', 'http://{{ inventory_hostname }}:8777/')
 #add_service_endpoint(key, 'swift', 'Swift', 'object-store', 'http://{{ inventory_hostname }}')
+
+# Add users
+if get_user(key, 'nova') is None:
+  key.users.create(name='nova', password='password')

@@ -1,17 +1,12 @@
 ---
 # Some of this comes from https://github.com/dguerri/openstack-horizon
 - name: Install horizon application and dependencies
-  apt: name="{{ item }}" state=present
+  apt: name="{{ item }}" state=present install_recommends=no
   with_items:
     - apache2
     - memcached
     - libapache2-mod-wsgi
     - openstack-dashboard
-
-- name: Remove Ubuntu theme
-  apt: name="{{ item }}" state=absent purge=yes
-  with_items:
-    - openstack-dashboard-ubuntu-theme
 
 - name: Configure keystone in horizon
   lineinfile: dest=/etc/openstack-dashboard/local_settings.py

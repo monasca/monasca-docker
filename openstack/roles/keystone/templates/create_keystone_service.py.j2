@@ -1,6 +1,49 @@
 import keystoneclient
 from keystoneclient.v2_0 import client
 
+
+def add_tenant(key, tenant_name):
+  """Add the given tenant_names if they don't already exist"""
+  if not get_tenant(key, tenant_name):
+    key.tenants.create(tenant_name=tenant_name, enabled=True)
+
+  return True
+
+def add_user(key, user_name, password, tenant_name):
+  if not get_user(key, user_name):
+    tenant = get_tenant(key, tenant_name)
+    user = key.users.create(name=user_name, password=password, tenant_id=tenant.id)
+  return True
+
+def add_user_role(key, user_name, tenant_name, role_name):
+  """Add the role for the user if they don't already have them"""
+  user = get_user(key, user_name)
+  tenant = get_tenant(key, tenant_name)
+  for role in key.roles.roles_for_user(user, tenant):
+    if role.name == role_name:
+      return True
+
+  role = get_role(key, role_name)
+  if not role:
+    role = key.roles.create(role_name)
+
+  key.roles.add_user_role(user, role, tenant)
+  return True
+
+def get_role(key, role_name):
+  for role in key.roles.list():
+   if role.name == role_name:
+     return role
+  return None
+
+def get_tenant(key, tenant_name):
+  """Get the tenant by name"""
+  for tenant in key.tenants.list():
+    if tenant.name == tenant_name:
+      return tenant
+
+  return None
+
 def get_user(key, user_name):
   for user in key.users.list():
    if user.name == user_name:
@@ -22,9 +65,20 @@ def add_service_endpoint(key, name, description, type, url):
 
   key.endpoints.create(region="RegionOne", service_id=service_id, publicurl=url, adminurl=url, internalurl=url)
 
+# Login to keystone and build the basic config
 key = client.Client(token='{{ keystone_admin_token }}', endpoint='http://127.0.0.1:35357/v2.0/')
-
 add_service_endpoint(key, 'keystone', 'Keystone Identity Service', 'identity', 'http://127.0.0.1:5000/v2.0')
+add_tenant(key, 'admin')
+add_tenant(key, 'service')
+add_user(key, 'admin', 'admin', 'admin')
+add_user_role(key, 'admin', 'admin', 'admin')
+
+# Setup Nova
+add_service_endpoint(key, 'nova', 'Nova', 'compute', 'http://{{ inventory_hostname }}:8774/v2/$(tenant_id)s')
+add_service_endpoint(key, 'novav21', 'Nova v2.1', 'computev21', 'http://{{ inventory_hostname }}:8774/v2.1/$(tenant_id)s')
+add_service_endpoint(key, 'novav3', 'Nova v3', 'computev3', 'http://{{ inventory_hostname }}:8777/')
+add_user(key, 'nova', 'password', 'service')
+add_user_role(key, 'nova', 'service', 'admin')
 
 # The following services are added for compatibility with horizon but are not likely to be truly valid
 add_service_endpoint(key, 'cinder', 'Cinder', 'volume', 'http://{{ inventory_hostname }}:8776/v1/$(tenant_id)s')
@@ -32,11 +86,4 @@ add_service_endpoint(key, 'cinderv2', 'Cinderv2', 'volumev2', 'http://{{ invento
 add_service_endpoint(key, 'glance', 'Glance', 'image', 'http://{{ inventory_hostname }}:9292')
 add_service_endpoint(key, 'heat', 'Heat orchestration', 'orchestration', 'http://{{ inventory_hostname }}:8004/v1/$(tenant_id)s')
 add_service_endpoint(key, 'heat-cfn', 'Heat cloudformation', 'cloudformation', 'http://{{ inventory_hostname }}:8000/v1')
-add_service_endpoint(key, 'nova', 'Nova', 'compute', 'http://{{ inventory_hostname }}:8774/v2/$(tenant_id)s')
-add_service_endpoint(key, 'novav21', 'Nova v2.1', 'computev21', 'http://{{ inventory_hostname }}:8774/v2.1/$(tenant_id)s')
-#add_service_endpoint(key, 'novav3', 'Nova v3', 'computev3', 'http://{{ inventory_hostname }}:8777/')
 #add_service_endpoint(key, 'swift', 'Swift', 'object-store', 'http://{{ inventory_hostname }}')
-
-# Add users
-if get_user(key, 'nova') is None:
-  key.users.create(name='nova', password='password')

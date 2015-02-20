@@ -9,14 +9,7 @@
     - openstack-dashboard
 
 - name: Configure keystone in horizon
-  lineinfile: dest=/etc/openstack-dashboard/local_settings.py
-              regexp=^OPENSTACK_HOST
-              line="OPENSTACK_HOST = '127.0.0.1'"
-
-- name: Configure static secret_key
-  lineinfile: dest=/etc/openstack-dashboard/local_settings.py
-              regexp=^SECRET_KEY
-              line="SECRET_KEY = '{{horizon_secret_key}}'"
+  template: dest=/etc/openstack-dashboard/local_settings.py src=local_settings.py.j2 owner=root group=root mode=644
 
 - name: Disable default apache config
   file: path=/etc/apache2/sites-enabled/000-default.conf state=absent

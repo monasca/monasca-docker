@@ -13,4 +13,6 @@
     - {role: horizon, tags: [horizon]}
     - {role: monasca-ui, tags: [ui]}
     - {role: nova, tags: [nova]}
-
+  tasks:
+    - name: Link static dir for Monasca horizon plugin, I am not sure why this install needs this unlike others
+      file: src=/usr/share/openstack-dashboard/monitoring/static/monitoring dest=/usr/share/openstack-dashboard/openstack_dashboard/static/monitoring state=link

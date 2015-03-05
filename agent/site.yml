@@ -1,0 +1,13 @@
+- name: Install monasca-agent
+  hosts: localhost
+  sudo: yes
+  vars:
+    keystone_url: http://keystone:35357/v3
+    monasca_api_url: http://api:8080/v2.0
+    monasca_agent:
+      user: monasca-agent
+      password: password
+      project: mini-mon
+      service: monitoring
+  roles:
+    - {role: monasca-agent, tags: [agent]}

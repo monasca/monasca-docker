@@ -1,8 +1,13 @@
 FROM monasca/base
 MAINTAINER Tim Kuhlman <tim.kuhlman@hp.com>
 
-RUN pip install monasca-agent
-RUN monasca-setup -u mini-mon -p password --project_name mini-mon -s mini-mon --keystone_url http://keystone:35357/v3 --monasca_url http://api:8080/v2.0 --headless
+# Setup start script and Ansible code
+COPY . /setup
+WORKDIR /setup
+
+# Pull down the roles, startup keystone and run Ansible
+RUN ansible-galaxy install -r requirements.yml -p ./roles
+RUN ansible-playbook -i hosts site.yml -c local
 
 # Turn off syslog
 RUN echo "log_to_syslog: no" >> /etc/monasca/agent/agent.conf

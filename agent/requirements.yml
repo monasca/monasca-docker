@@ -1,0 +1,2 @@
+- src: tkuhlman.monasca-agent
+  name: monasca-agent

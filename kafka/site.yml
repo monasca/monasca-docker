@@ -4,4 +4,4 @@
   vars:
     zookeeper_hosts: zookeeper:2181
   roles:
-    - {role: tkuhlman.kafka, tags: [kafka]}
+    - {role: kafka, tags: [kafka]}

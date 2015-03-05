@@ -9,7 +9,10 @@
         transformed-events: { replicas: 1, partitions: 4 }
         alarm-state-transitions: { replicas: 1, partitions: 4 }
         alarm-notifications: { replicas: 1, partitions: 4 }
+    kafka_topics_enabled: true
+    influxdb_schema_enabled: false
+    mysql_schema_enabled: false
+    winchester_schema_enabled: false
   roles:
-    # the kafka portition is tagged kafka_topics and is all that should be run in this container
-    - {role: tkuhlman.monasca-schema, tags: [schema]}
+    - {role: monasca-schema, tags: [schema]}
 

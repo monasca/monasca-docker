@@ -3,20 +3,17 @@
   sudo: yes
   vars:
     influxdb:
-      version: 0.8.1
+      version: 0.8.8
       raft_port: 9090
       seed_servers: []
       replication_factor: 1
-  roles:
-    - {role: stympy.influxdb, tags: [influxdb]}
-
-- name: Sets up influxdb schema
-  hosts: localhost
-  sudo: yes
-  vars:
     influxdb_users:
       mon_api: password
       mon_persister: password
+    influxdb_url: http://localhost:8086
+    kafka_topics_enabled: false
+    mysql_schema_enabled: false
+    winchester_schema_enabled: false
   roles:
-    # the influxdb portition is tagged influxdb_schema and is all that should be run
-    - {role: tkuhlman.monasca-schema, tags: [schema]}
+    - {role: influxdb, tags: [influxdb]}
+    - {role: monasca-schema, tags: [schema]}

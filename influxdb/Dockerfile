@@ -5,10 +5,13 @@ MAINTAINER Tim Kuhlman <tim.kuhlman@hp.com>
 COPY . /setup
 WORKDIR /setup
 
+# This role needs git
+RUN apt-get update
+RUN apt-get install -y git
+
 # Pull down the roles and run Ansible
-RUN ansible-galaxy install -r ansible_roles -p ./roles
-# It is important to limit the tags here as monasca-schema could run mysql/kafka schema if not limited by tags.
-RUN ansible-playbook -i hosts site.yml -c local --tags influxdb,influxdb_schema
+RUN ansible-galaxy install -r requirements.yml -p ./roles
+RUN ansible-playbook -i hosts site.yml -c local
 
 EXPOSE 8083
 EXPOSE 8086

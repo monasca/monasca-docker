@@ -3,21 +3,18 @@
   sudo: yes
   vars:
     api_region: mini-mon
-    influxdb_host: influxdb
+    influxdb_url: http://influxdb:8086
     influxdb_user: mon_api
     influxdb_password: password
     kafka_hosts: kafka:9092
     keystone_host: keystone
+    keystone_auth_method: token
     keystone_admin: admin
-    keystone_admin_password: password
     keystone_admin_token: ADMIN
     mysql_host: mysql
     mysql_user: monapi
     mysql_password: password
     zookeeper_hosts: zookeeper:2181
-  tasks:
-    - name: Create truststore file
-      copy: src=/setup/truststore.jks dest={{monasca_api_truststore}}
-      when: monasca_api_truststore
+    verify: False
   roles:
-    - {role: tkuhlman.monasca-api, tags: [api]}
+    - {role: monasca-api, tags: [api]}

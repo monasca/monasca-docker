@@ -5,7 +5,7 @@ COPY . /setup
 WORKDIR /setup
 
 # Pull down the roles and run Ansible
-RUN ansible-galaxy install -r ansible_roles -p ./roles
+RUN ansible-galaxy install -r requirements.yml -p ./roles
 RUN ansible-playbook -i hosts site.yml -c local
 
 CMD ["/usr/local/bin/monasca-persister", "--config-file", "/etc/monasca/persister.conf"]

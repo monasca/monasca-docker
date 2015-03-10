@@ -2,9 +2,11 @@
   hosts: localhost
   sudo: yes
   vars:
-    kafka_uri: kafka
+    kafka_hosts: kafka:9092
     influxdb_host: influxdb
+    influxdb_url: http://influxdb:8086
     influxdb_user: mon_persister
     influxdb_password: password
+    zookeeper_hosts: kafka:2181
   roles:
-    - {role: tkuhlman.monasca-persister, tags: [persister]}
+    - {role: monasca-persister, tags: [persister]}

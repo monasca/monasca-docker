@@ -2,4 +2,4 @@
   hosts: localhost
   sudo: yes
   roles:
-    - {role: tkuhlman.zookeeper, tags: [zookeeper]}
+    - {role: zookeeper, tags: [zookeeper]}

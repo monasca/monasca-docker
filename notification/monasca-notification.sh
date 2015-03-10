@@ -1,4 +1,5 @@
 #!/bin/bash
+/etc/init.d/postfix start
 # If kafka just started often the notification engine starts before it is ready, in which case retry
 start=`date "+%s"`
 /usr/local/bin/monasca-notification

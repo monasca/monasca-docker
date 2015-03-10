@@ -6,7 +6,10 @@
     mysql_host: mysql
     mysql_user: notification
     mysql_password: password
-    smtp_host: smtp
+    smtp_host: localhost
     zookeeper_hosts: zookeeper:2181
   roles:
-    - {role: tkuhlman.monasca-notification, tags: [notification]}
+    - {role: monasca-notification, tags: [notification]}
+  tasks:
+    - name: Install postfix, needed by notification engine
+      apt: name=postfix state=present

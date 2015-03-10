@@ -10,6 +10,7 @@
     storm_nimbus_enabled: true
     storm_supervisor_enabled: true
     zookeeper_hosts: zookeeper:2181
+    verify: False
   roles:
-    - {role: tkuhlman.storm, tags: [storm]}
-    - {role: tkuhlman.monasca-thresh, tags: [thresh]}
+    - {role: storm, tags: [storm]}
+    - {role: monasca-thresh, tags: [thresh]}

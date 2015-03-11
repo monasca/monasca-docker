@@ -11,6 +11,7 @@
     keystone_auth_method: token
     keystone_admin: admin
     keystone_admin_token: ADMIN
+    keystone_admin_password: admin
     mysql_host: mysql
     mysql_user: monapi
     mysql_password: password

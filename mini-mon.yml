@@ -50,6 +50,9 @@
     docker:
         image: monasca/openstack:{{ openstack_tag | default('latest') }}
         name: openstack
+        ports:
+          - "80:80"
+        state: "{{state}}"
         docker_url: "{{docker_host}}"
     tags:
       - openstack

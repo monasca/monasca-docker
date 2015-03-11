@@ -46,6 +46,13 @@
         docker_url: "{{docker_host}}"
     tags:
       - kafka
+  - name: Openstack
+    docker:
+        image: monasca/openstack:{{ openstack_tag | default('latest') }}
+        name: openstack
+        docker_url: "{{docker_host}}"
+    tags:
+      - openstack
   - name: persister
     docker:
         image: monasca/persister:{{ persister_tag | default('latest') }}
@@ -83,15 +90,6 @@
         docker_url: "{{docker_host}}"
     tags:
       - notification
-  - name: Openstack
-    docker:
-        image: monasca/openstack:{{ openstack_tag | default('latest') }}
-        name: openstack
-        links:
-          - api:api
-        docker_url: "{{docker_host}}"
-    tags:
-      - openstack
   - name: api
     docker:
         image: monasca/api:{{ api_tag | default('latest') }}

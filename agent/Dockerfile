@@ -12,4 +12,5 @@ RUN ansible-playbook -i hosts site.yml -c local
 # Turn off syslog
 RUN echo "log_to_syslog: no" >> /etc/monasca/agent/agent.conf
 
-CMD /etc/init.d/monasca-agent start && tail -f /var/log/monasca/agent/collector.log
+# This container will set up some simple default keystone users before running
+CMD ansible-playbook -i /setup/hosts /setup/monasca-keystone.yml -c local && /etc/init.d/monasca-agent start && tail -f /var/log/monasca/agent/collector.log

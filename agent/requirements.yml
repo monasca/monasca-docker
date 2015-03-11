@@ -1,2 +1,4 @@
 - src: tkuhlman.monasca-agent
   name: monasca-agent
+- src: tkuhlman.monasca-keystone
+  name: monasca-keystone

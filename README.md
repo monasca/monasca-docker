@@ -23,6 +23,9 @@ The actual building of images is done with standard docker commands leveraging t
     docker build -t monasca/influxdb .
 
 # Todo
+- Grafana uses the registered endpoint in keystone for a connection to the monasca api. This registered endpoint is the ip of the api box which works
+  for all the docker images that can reach that ip but not for any web browser which can't. I can manually change the endpoint to a reachable ip to
+  fix grafana but this tends to break the horizon portions.
 - For the monasca/openstack image
   - Add in the agent to this box.
   - Add in other services beside just horizon and keystone

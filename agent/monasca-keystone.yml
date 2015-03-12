@@ -4,6 +4,8 @@
   vars:
     keystone_url: http://keystone:35357/v3
     keystone_admin_token: ADMIN
+    keystone_user: mini-mon
+    keystone_password: password
     keystone_users:
       mini-mon:
         project: mini-mon
@@ -18,3 +20,4 @@
       register: api_ip
   roles:
     - {role: monasca-keystone, monasca_api_url: "http://{{api_ip.stdout.split()[0]}}:8080/v2.0", tags: [keystone]}
+    - {role: monasca-default-alarms, tags: [alarms]}

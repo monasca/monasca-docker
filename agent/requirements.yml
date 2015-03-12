@@ -1,3 +1,5 @@
+- src: https://github.com/hpcloud-mon/ansible-monasca-default-alarms
+  name: monasca-default-alarms
 - src: tkuhlman.monasca-agent
   name: monasca-agent
 - src: tkuhlman.monasca-keystone

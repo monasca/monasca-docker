@@ -32,6 +32,8 @@
         image: monasca/zookeeper:{{ zookeeper_tag | default('latest') }}
         name: zookeeper
         state: "{{state}}"
+        ports:
+          - "2181:2181"
         docker_url: "{{docker_host}}"
     tags:
       - zookeeper
@@ -41,6 +43,8 @@
         name: kafka
         hostname: kafka  # This is important so that kafka registers itself properly in zookeeper
         state: "{{state}}"
+        ports:
+          - "9092:9092"
         links:
           - zookeeper:zookeeper
         docker_url: "{{docker_host}}"
@@ -52,6 +56,8 @@
         name: openstack
         ports:
           - "80:80"
+          - "5000:5000"
+          - "35357:35357"
         state: "{{state}}"
         docker_url: "{{docker_host}}"
     tags:

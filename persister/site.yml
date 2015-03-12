@@ -7,6 +7,6 @@
     influxdb_url: http://influxdb:8086
     influxdb_user: mon_persister
     influxdb_password: password
-    zookeeper_hosts: kafka:2181
+    zookeeper_hosts: zookeeper:2181
   roles:
     - {role: monasca-persister, tags: [persister]}

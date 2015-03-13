@@ -1,0 +1,195 @@
+- name: Installs zookeeper, startup zookeeper for use later
+  hosts: localhost
+  sudo: yes
+  roles:
+    - {role: zookeeper, tags: [zookeeper]}
+  tasks:
+    - shell: 'keystone-all --config-file /etc/keystone/keystone.conf &'
+
+- name: Installs mysql
+  hosts: localhost
+  sudo: yes
+  vars:
+    mysql_root_password: password
+    percona_package: percona-xtradb-cluster-server-5.5
+    setup_percona_repo: False
+  roles:
+    - {role: percona, tags: [mysql, percona]}
+
+- name: Set up mysql schema
+  hosts: localhost
+  sudo: yes
+  vars:
+    mysql_admin: root
+    mysql_admin_password: password
+    kafka_topics_enabled: false
+    influxdb_schema_enabled: false
+    mysql_schema_enabled: true
+    winchester_schema_enabled: false
+    mysql_users:
+      notification: password
+      monapi: password
+      thresh: password
+  roles:
+    - {role: monasca-schema, tags: [schema]}
+
+- name: Installs kafka
+  hosts: localhost
+  sudo: yes
+  vars:
+    zookeeper_hosts: localhost:2181
+  roles:
+    - {role: kafka, tags: [kafka]}
+
+- name: Sets up kafka topics
+  hosts: localhost
+  sudo: yes
+  vars:
+    kafka_topics:
+        metrics: { replicas: 1, partitions: 4 }
+        events: { replicas: 1, partitions: 4 }
+        raw-events: { replicas: 1, partitions: 4 }
+        transformed-events: { replicas: 1, partitions: 4 }
+        alarm-state-transitions: { replicas: 1, partitions: 4 }
+        alarm-notifications: { replicas: 1, partitions: 4 }
+        retry-notifications: { replicas: 1, partitions: 4 }
+    kafka_topics_enabled: true
+    influxdb_schema_enabled: false
+    mysql_schema_enabled: false
+    winchester_schema_enabled: false
+    zookeeper_hosts: localhost:2181
+  roles:
+    - {role: monasca-schema, tags: [schema]}
+
+- name: Installs influxdb
+  hosts: localhost
+  sudo: yes
+  vars:
+    influxdb:
+      version: 0.8.8
+      raft_port: 9090
+      seed_servers: []
+      replication_factor: 1
+    influxdb_users:
+      mon_api: password
+      mon_persister: password
+    influxdb_url: http://localhost:8086
+    kafka_topics_enabled: false
+    mysql_schema_enabled: false
+    winchester_schema_enabled: false
+  roles:
+    - {role: influxdb, tags: [influxdb]}
+    - {role: monasca-schema, tags: [schema]}
+
+- include: keystone.yml monasca_api_url="http://localhost:8080/v2.0"
+
+- name: Install Monasca persister
+  hosts: localhost
+  sudo: yes
+  vars:
+    kafka_hosts: localhost:9092
+    influxdb_host: localhost
+    influxdb_url: http://localhost:8086
+    influxdb_user: mon_persister
+    influxdb_password: password
+    zookeeper_hosts: localhost:2181
+  roles:
+    - {role: monasca-persister, tags: [persister]}
+
+- name: Install Monasca api
+  hosts: localhost
+  sudo: yes
+  vars:
+    api_region: mini-mon
+    influxdb_url: http://localhost:8086
+    influxdb_user: mon_api
+    influxdb_password: password
+    kafka_hosts: localhost:9092
+    keystone_host: localhost
+    keystone_auth_method: token
+    keystone_admin: admin
+    keystone_admin_token: ADMIN
+    keystone_admin_password: admin
+    mysql_host: mysql
+    mysql_user: monapi
+    mysql_password: password
+    zookeeper_hosts: localhost:2181
+    verify: False
+  roles:
+    - {role: monasca-api, tags: [api]}
+
+- name: Install Monasca notification
+  hosts: localhost
+  sudo: yes
+  vars:
+    kafka_hosts: localhost:9092
+    mysql_host: mysql
+    mysql_user: notification
+    mysql_password: password
+    smtp_host: localhost
+    zookeeper_hosts: localhost:2181
+  roles:
+    - {role: monasca-notification, tags: [notification]}
+  tasks:
+    - name: Install postfix, needed by notification engine
+      apt: name=postfix state=present
+
+- name: Install monasca-agent
+  hosts: localhost
+  sudo: yes
+  vars:
+    keystone_url: http://localhost:35357/v3
+    monasca_api_url: http://localhost:8080/v2.0
+    monasca_agent:
+      user: monasca-agent
+      password: password
+      project: mini-mon
+      service: monitoring
+  roles:
+    - {role: monasca-agent, tags: [agent]}
+  post_tasks:
+    - shell: 'echo "log_to_syslog: no" >> /etc/monasca/agent/agent.conf'
+
+- name: Install Storm
+  hosts: localhost
+  sudo: yes
+  vars:
+    kafka_hosts: localhost:9092
+    mysql_host: localhost
+    mysql_user: thresh
+    mysql_password: password
+    nimbus_host: localhost
+    storm_nimbus_enabled: true
+    storm_supervisor_enabled: true
+    zookeeper_hosts: localhost:2181
+    verify: False
+  roles:
+    - {role: storm, tags: [storm]}
+
+- name: Install Monasca Thresh
+  hosts: localhost
+  sudo: yes
+  vars:
+    kafka_hosts: localhost:9092
+    mysql_host: localhost
+    mysql_user: thresh
+    mysql_password: password
+    nimbus_host: localhost
+    zookeeper_hosts: localhost:2181
+    verify: False
+  pre_tasks:
+    - shell: /opt/storm/current/bin/storm nimbus &
+    - shell: /opt/storm/current/bin/storm supervisor &
+    - command: sleep 60
+  roles:
+    - {role: monasca-thresh, tags: [thresh]}
+
+- name: Setup default alarms
+  hosts: localhost
+  sudo: yes
+  vars:
+    keystone_url: http://localhost:35357/v3
+    keystone_user: mini-mon
+    keystone_password: password
+  roles:
+    - {role: monasca-default-alarms, tags: [alarms]}

@@ -1,0 +1,18 @@
+- name: Setup keystone
+  hosts: localhost
+  sudo: yes
+  vars:
+    keystone_admin_token: ADMIN
+    keystone_url: http://localhost:35357/v3
+    keystone_users:
+      mini-mon:
+        project: mini-mon
+        password: password
+        role: monasca-user
+      monasca-agent:
+        password: password
+        project: mini-mon
+        role: monasca-agent
+    monasca_api_url: "http://{{ansible_default_ipv4.address}}:8080/v2.0"
+  roles:
+    - {role: monasca-keystone, tags: [keystone]}

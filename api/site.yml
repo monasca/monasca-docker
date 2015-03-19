@@ -6,6 +6,7 @@
     influxdb_url: http://influxdb:8086
     influxdb_user: mon_api
     influxdb_password: password
+    influxdb_version: 0.8.8
     kafka_hosts: kafka:9092
     keystone_host: keystone
     keystone_auth_method: token

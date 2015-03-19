@@ -7,6 +7,7 @@
     influxdb_url: http://influxdb:8086
     influxdb_user: mon_persister
     influxdb_password: password
+    influxdb_version: 0.8.8
     zookeeper_hosts: zookeeper:2181
   roles:
     - {role: monasca-persister, tags: [persister]}

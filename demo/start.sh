@@ -10,6 +10,7 @@ keystone-all --config-file /etc/keystone/keystone.conf &
 nova-api &
 
 # Set the service endpoint to the currently running ip
+ansible-playbook -i /setup/hosts /setup/keystone.yml -c local
 
 # influxdb
 /usr/bin/influxdb -config=/opt/influxdb/shared/config.toml &
@@ -51,5 +52,6 @@ sleep 60  # Takes a moment for storm to be up
 ansible-playbook -i /setup/hosts /setup/alarms.yml -c local
 
 # Finally tail the api log as we need to have something running in the foreground
-tail -f /var/log/monasca/api
+echo -e "\n\n\n\n\nMonasca is up and running\n\tTailing the API log.\n"
+tail -f /var/log/monasca/monasca-api.log
 

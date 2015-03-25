@@ -11,10 +11,14 @@
   sudo: yes
   vars:
     mysql_root_password: password
-    percona_package: percona-xtradb-cluster-server-5.5
-    setup_percona_repo: False
+  pre_tasks:
+    - set_fact:
+        ansible_distribution_release: utopic
   roles:
     - {role: percona, tags: [mysql, percona]}
+  post_tasks:
+    - set_fact:
+        ansible_distribution_release: vivid
 
 - name: Set up mysql schema
   hosts: localhost

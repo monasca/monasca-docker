@@ -2,7 +2,7 @@
 This repo contains Dockerfiles for building Monasca Images. The images are used for demos or development and experimentation. The monasca/demo
 image runs all of the various daemons for Monasca and is a great place to start as well as use for demos.
 
-To run the demo simply setup Docker then run, `docker run monasca/demo`. The ui will be accessible on the docker host at port 80 the api at port 8080.
+To run the demo simply setup Docker then run, `docker run -p 80:80 -p 8080:8080 -p 5000:5000  --name monasca monasca/demo`. The ui will be accessible on the docker host at port 80 the api at port 8080. Note this container needs 4GB of memory to run properly.
 
 The rest of the images here are the individual daemons for Monasca split into their own containers. This is really intended for testing and
 development at this point. The repo also contains an [Ansible](http://www.ansible.com) playbook to help run all the individual containers as one whole.

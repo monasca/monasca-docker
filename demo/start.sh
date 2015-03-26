@@ -30,10 +30,10 @@ java -cp $CLASSPATH $JAVA_OPTS -Dzookeeper.log.dir=${ZOO_LOG_DIR} -Dzookeeper.ro
 ansible-playbook -i /setup/hosts /setup/topics.yml -c local
 
 # Start the persister
-/usr/bin/java -Dfile.encoding=UTF-8 -Xmx8g -cp /opt/monasca/monasca-persister.jar:/opt/monasca/vertica/vertica_jdbc.jar monasca.persister.PersisterApplication server /etc/monasca/persister-config.yml &
+/usr/bin/java -Dfile.encoding=UTF-8 -Xmx1g -cp /opt/monasca/monasca-persister.jar:/opt/monasca/vertica/vertica_jdbc.jar monasca.persister.PersisterApplication server /etc/monasca/persister-config.yml &
 
 # start the api
-/usr/bin/java -Xmx8g -cp /opt/monasca/monasca-api.jar monasca.api.MonApiApplication server /etc/monasca/api-config.yml &
+/usr/bin/java -Xmx1g -cp /opt/monasca/monasca-api.jar monasca.api.MonApiApplication server /etc/monasca/api-config.yml &
 
 # start the agent
 /etc/init.d/monasca-agent start
@@ -41,7 +41,7 @@ ansible-playbook -i /setup/hosts /setup/topics.yml -c local
 # Start the threshold engine
 /opt/storm/current/bin/storm nimbus &
 /opt/storm/current/bin/storm supervisor &
-sleep 60  # Takes a moment for storm to be up
+sleep 30  # Takes a moment for storm to be up
 /opt/storm/current/bin/storm jar /opt/monasca/monasca-thresh.jar monasca.thresh.ThresholdingEngine /etc/monasca/thresh-config.yml thresh-cluster
 
 # notification engine

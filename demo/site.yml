@@ -1,3 +1,10 @@
+- name: Minimize keystone footprint
+  hosts: localhost
+  sudo: yes
+  tasks:
+    - lineinfile: dest=/etc/keystone/keystone.conf regexp="^#public_workers" line="public_workers = 2"
+    - lineinfile: dest=/etc/keystone/keystone.conf regexp="^#admin_workers" line="admin_workers = 2"
+
 - name: Installs zookeeper, startup zookeeper for use later
   hosts: localhost
   sudo: yes
@@ -146,7 +153,14 @@
     mysql_password: password
     nimbus_host: localhost
     storm_nimbus_enabled: true
+    storm_nimbus_extra_config:
+        nimbus.childopts: "-Xmx512m"
     storm_supervisor_enabled: true
+    storm_supervisor_extra_config:
+        supervisor.childopts: "-Xmx512m"
+    storm_worker_extra_config:
+        worker.childopts: "-Xmx512m -XX:+UseConcMarkSweepGC -Dcom.sun.management.jmxremote"
+    storm_worker_ports: [6701]
     zookeeper_hosts: localhost:2181
     verify: False
   roles:

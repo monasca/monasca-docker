@@ -133,6 +133,7 @@
   vars:
     keystone_url: http://localhost:35357/v3
     monasca_api_url: http://localhost:8080/v2.0
+    monasca_agent_check_frequency: 15
     monasca_agent:
       user: monasca-agent
       password: password

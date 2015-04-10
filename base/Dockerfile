@@ -15,4 +15,4 @@ RUN mv /usr/bin/pip /usr/bin/pip.orig
 RUN echo '#!/bin/bash\nif [ $1 == "install" ]; then\n\tshift\n\t/usr/bin/pip.orig install --system $@\nelse\n\t/usr/bin/pip.orig $@\nfi' > /usr/bin/pip
 RUN chmod +x /usr/bin/pip
 
-RUN pip install ansible
+RUN pip install ansible==1.8.2

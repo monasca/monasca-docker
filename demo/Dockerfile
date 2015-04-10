@@ -7,7 +7,7 @@ RUN chmod 755 /setup/start.sh
 
 # Some of the galaxy roles need git to download things.
 RUN apt-get update
-RUN apt-get install -y git sudo
+RUN apt-get install -y git
 
 # Pull down the roles and run Ansible
 RUN ansible-galaxy install -r requirements.yml -p ./roles

@@ -3,6 +3,7 @@ FROM monasca/base:15.04
 MAINTAINER Tim Kuhlman <tim.kuhlman@hp.com>
 
 RUN apt-get update
+RUN apt-get install -y sudo
 
 # Setup start script and Ansible code
 COPY . /setup

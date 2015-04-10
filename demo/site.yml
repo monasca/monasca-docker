@@ -57,14 +57,14 @@
   sudo: yes
   vars:
     influxdb:
-      version: 0.8.8
-      raft_port: 9090
+      raft_port: 8086
       seed_servers: []
       replication_factor: 1
     influxdb_users:
       mon_api: password
       mon_persister: password
     influxdb_url: http://localhost:8086
+    influxdb_version: 0.9.0-rc22
     kafka_topics_enabled: false
     mysql_schema_enabled: false
     winchester_schema_enabled: false
@@ -133,7 +133,7 @@
   vars:
     keystone_url: http://localhost:35357/v3
     monasca_api_url: http://localhost:8080/v2.0
-    monasca_agent_check_frequency: 15
+    monasca_agent_check_frequency: 5
     monasca_agent:
       user: monasca-agent
       password: password

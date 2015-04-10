@@ -2,14 +2,9 @@
   hosts: localhost
   sudo: yes
   vars:
-    kafka_topics:
-        metrics: { replicas: 1, partitions: 4 }
-        events: { replicas: 1, partitions: 4 }
-        raw-events: { replicas: 1, partitions: 4 }
-        transformed-events: { replicas: 1, partitions: 4 }
-        alarm-state-transitions: { replicas: 1, partitions: 4 }
-        alarm-notifications: { replicas: 1, partitions: 4 }
-        retry-notifications: { replicas: 1, partitions: 4 }
+    kafka_events_partitions: 4
+    kafka_metrics_partitions: 4
+    kafka_replicas: 1
     kafka_topics_enabled: true
     influxdb_schema_enabled: false
     mysql_schema_enabled: false

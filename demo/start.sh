@@ -13,7 +13,7 @@ nova-api &
 ansible-playbook -i /setup/hosts /setup/keystone.yml -c local
 
 # influxdb
-/usr/bin/influxdb -config=/opt/influxdb/shared/config.toml &
+/etc/init.d/influxdb start
 
 # zookeeper
 . /etc/zookeeper/conf/environment

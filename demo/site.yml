@@ -61,6 +61,7 @@
       raft_port: 8086
       seed_servers: []
       replication_factor: 1
+    influxdb_hostname: localhost
     influxdb_users:
       mon_api: password
       mon_persister: password

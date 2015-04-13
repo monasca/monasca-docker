@@ -84,7 +84,7 @@
     influxdb_url: http://localhost:8086
     influxdb_user: mon_persister
     influxdb_password: password
-    influxdb_version: 0.8.8
+    influxdb_version: 0.9.0-rc22
     zookeeper_hosts: localhost:2181
   roles:
     - {role: monasca-persister, tags: [persister]}
@@ -97,7 +97,7 @@
     influxdb_url: http://localhost:8086
     influxdb_user: mon_api
     influxdb_password: password
-    influxdb_version: 0.8.8
+    influxdb_version: 0.9.0-rc22
     kafka_hosts: localhost:9092
     keystone_host: localhost
     keystone_auth_method: token

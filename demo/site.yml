@@ -49,6 +49,7 @@
   sudo: yes
   vars:
     zookeeper_hosts: localhost:2181
+    verify: False
   roles:
     - {role: kafka, tags: [kafka]}
 

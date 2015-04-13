@@ -1,0 +1,5 @@
+---
+- name: Install glance
+  apt: name="{{ item }}" state=present
+  with_items:
+    - glance-api

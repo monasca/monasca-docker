@@ -6,11 +6,14 @@ set -m
 
 # openstack base services
 keystone-all --config-file /etc/keystone/keystone.conf &
-/etc/init.d/apache2 start
 nova-api &
+glance-api &
+cinder-api &
 
 # Set the service endpoint to the currently running ip
 ansible-playbook -i /setup/hosts /setup/keystone.yml -c local
+
+/etc/init.d/apache2 start
 
 # influxdb
 /etc/init.d/influxdb start

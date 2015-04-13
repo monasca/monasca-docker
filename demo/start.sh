@@ -53,5 +53,4 @@ ansible-playbook -i /setup/hosts /setup/alarms.yml -c local
 
 # Finally tail the api log as we need to have something running in the foreground
 echo -e "\n\n\n\n\nMonasca is up and running\n\tTailing the API log.\n"
-tail -f /var/log/monasca/monasca-api.log
-
+tail -f /var/log/monasca/api/monasca-api.log

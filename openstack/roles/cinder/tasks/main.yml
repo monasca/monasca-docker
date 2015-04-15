@@ -4,5 +4,5 @@
   with_items:
     - cinder-api
 
-- name: Minimize cinder footprint
-  lineinfile: dest=/etc/cinder/cinder.conf regexp="^osapi_volume_workers" line="osapi_volume_workers = 1"
+- name: Write the cinder.conf
+  copy: dest=/etc/cinder/cinder.conf src=cinder.conf mode=644 owner=cinder group=cinder

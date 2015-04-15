@@ -1,19 +1,14 @@
 #!/bin/bash
 set -m
 
+# Start everything inherited from the openstack image
+/setup/start.sh &
+
 # mysql
 /usr/sbin/mysqld &
 
-# openstack base services
-keystone-all --config-file /etc/keystone/keystone.conf &
-nova-api &
-glance-api &
-cinder-api &
-
 # Set the service endpoint to the currently running ip
 ansible-playbook -i /setup/hosts /setup/keystone.yml -c local
-
-/etc/init.d/apache2 start
 
 # influxdb
 /etc/init.d/influxdb start
@@ -38,9 +33,6 @@ ansible-playbook -i /setup/hosts /setup/topics.yml -c local
 # start the api
 /usr/bin/java -Xmx1g -cp /opt/monasca/monasca-api.jar monasca.api.MonApiApplication server /etc/monasca/api-config.yml &
 
-# start the agent
-/etc/init.d/monasca-agent start
-
 # Start the threshold engine
 /opt/storm/current/bin/storm nimbus &
 /opt/storm/current/bin/storm supervisor &
@@ -50,6 +42,9 @@ sleep 30  # Takes a moment for storm to be up
 # notification engine
 /etc/init.d/postfix start
 /usr/local/bin/monasca-notification &
+
+# Rerun monasca-setup so it can find all the various services running
+/usr/local/bin/monasca-reconfigure
 
 # Setup alarms
 ansible-playbook -i /setup/hosts /setup/alarms.yml -c local

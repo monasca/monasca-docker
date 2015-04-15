@@ -3,7 +3,7 @@ MAINTAINER Tim Kuhlman <tim.kuhlman@hp.com>
 
 COPY . /setup
 WORKDIR /setup
-RUN chmod 755 /setup/start.sh
+RUN chmod 755 /setup/demo-start.sh
 
 # Some of the galaxy roles need git to download things.
 RUN apt-get update
@@ -18,4 +18,4 @@ RUN ansible-playbook -i hosts site.yml -c local
 
 EXPOSE 80 5000 8080
 
-CMD ["/setup/start.sh"]
+CMD ["/setup/demo-start.sh"]

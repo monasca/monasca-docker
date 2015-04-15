@@ -13,6 +13,10 @@
         password: password
         project: mini-mon
         role: monasca-agent
+      - username: admin
+        project: mini-mon
+        password: admin
+        role: monasca-user
     monasca_api_url: "http://{{ansible_default_ipv4.address}}:8080/v2.0"
   roles:
     - {role: monasca-keystone, tags: [keystone]}

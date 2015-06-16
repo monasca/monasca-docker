@@ -53,8 +53,10 @@ Notes:
     [Jenkins Job Builder](http://docs.openstack.org/infra/jenkins-job-builder/index.html)
   - The Monasca/CI container is built on the Jenkins offical docker repo with Jenkins, plugins, jjb, vagrant and build Monasca dependencies.
     It should only need updates when one of those components is upgraded.
-  - Ideally the build artifacts coming from Jenkins should be Docker containers which we start and link for testing. However we don't yet deploy docker
+  - Ideally the build artifacts coming from Jenkins should be Docker containers which we start and link for testing. However we don't yet deploy Docker
     in production, so I build the artifacts we do deploy then install and configure each time with the Monasca Ansible roles.
+    - There are two images we can use to do this, monasca/ci-base has systemd and ssh running in it but is a bit of a hack as the docker host must
+      also be running systemd. The other image is the official ubuntu-upstart:14.04 image.
 
 ## Todo
 - Document recommended minimum requirements.

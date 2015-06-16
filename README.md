@@ -10,6 +10,8 @@ To run the demo simply setup Docker then run, `docker run -d -p 80:80 -p 8080:80
 The monasca/ci image is a continuous integration environment used by Monasca that is based on Docker's official Jenkins image.
 See the [README.md](blob/master/ci/README.md) for more details.
 
+The monasca/ci-base image is used in some CI test where systemd integration must be tested.
+
 ## Monasca split into individual Containers
 The rest of the images here are the individual daemons for Monasca split into their own containers. This is really intended for testing and
 development at this point. The repo also contains an [Ansible](http://www.ansible.com) playbook to help run all the individual containers as one whole.

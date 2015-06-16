@@ -35,12 +35,15 @@ There are few things to note that aren't goals:
 
 ## Running/Design
 Simply run this Docker container and you will have Jenkins server loaded with some CI jobs for Monasca.
-You can run the container and have it listen on port 8080 with `docker run -d -p 8080:8080 --name jenkins monasca/ci`
+You can run the container and have it listen on port 8080 with `docker run -d -p 8080:8080 --name jenkins -v /var/run/docker.sock:/var/run/docker.sock monasca/ci`
 For a long running Jenkins you may want to setup a persister volume, `-v /your/home:/var/jenkins_home`
 
 After starting the container will load up the standard Jenkins jobs for Monasca CI. These jobs watch all of the Monasca git repos,
 if one has a change it will build it then trigger the Monasca job.
-  - The main job will build a clustered Monasca setup using vms and hit it with tests.
+  - The main job will build a clustered Monasca setup using other Docker containers and hit it with tests.
+    - For this to work the container needs access to the Docker API. For most installations the arguments '-v /var/run/docker.sock:/var/run/docker.sock'
+      accomplish this and this is the assumed setup. For some installations it may be necessary to install a key/cert for Docker and set the DOCKER_HOST
+      environmental variable. In such cases the jenkins jobs will need to be modified appropriately.
     - A non-clustered version is possible also.
 
 Notes:
@@ -54,7 +57,6 @@ Notes:
     in production, so I build the artifacts we do deploy then install and configure each time with the Monasca Ansible roles.
 
 ## Todo
-- The jenkins jobs themselves are added to Jenkins manually at this point. Add a mechanism to make a default or configurable set automatically come up.
 - Document recommended minimum requirements.
 - Explore better reporting tools for Jenkns.
 - Can I watch gerrit patchsets and trigger builds based on them like I could for branches?

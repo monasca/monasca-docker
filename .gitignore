@@ -1,3 +1,5 @@
 */host_vars/localhost
 *.pyc
 api/truststore.jks
+jenkins_jobs.ini
+ci/jobs/jjb

@@ -60,6 +60,6 @@ Notes:
 
 ## Todo
 - Document recommended minimum requirements.
-- Explore better reporting tools for Jenkns.
+- Explore better reporting tools for Jenkins.
 - Can I watch gerrit patchsets and trigger builds based on them like I could for branches?
 - There is an official docker repo for sonarqube, consider adding that to the mix.

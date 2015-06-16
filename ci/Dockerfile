@@ -15,17 +15,13 @@ RUN apt-get install -y docker.io maven python-pip python-dev
 RUN pip install ansible
 RUN apt-get clean
 
-# Install Vagrant
-RUN wget https://dl.bintray.com/mitchellh/vagrant/vagrant_1.7.2_x86_64.deb
-RUN dpkg -i ./vagrant_1.7.2_x86_64.deb
-RUN rm ./vagrant_1.7.2_x86_64.deb
-
 # Install JJB
 RUN git clone https://git.openstack.org/openstack-infra/jenkins-job-builder ./jenkins-job-builder
 RUN pip install -r ./jenkins-job-builder/requirements.txt
 COPY jenkins_jobs.ini /etc/jenkins_jobs/jenkins_jobs.ini
 WORKDIR /setup/jenkins-job-builder
 RUN python ./setup.py install
+WORKDIR /setup
 
 ## From the parent image
 #ENTRYPOINT ["/usr/local/bin/jenkins.sh"]

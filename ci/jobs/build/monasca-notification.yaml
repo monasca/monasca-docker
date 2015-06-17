@@ -12,7 +12,7 @@
                 before: true
             wipe-workspace: true
     builders:
-        - shell: apt-get install python-mysqldb
+        - shell: apt-get install -y python-mysqldb
         - shell: pip install -r requirements.txt
         - shell: pip install -r test-requirements.txt
         - shell: "nosetests --with-xunit --with-xcoverage --cover-package=monasca_notification --cover-inclusive"

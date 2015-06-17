@@ -1,0 +1,105 @@
+- job-template:
+    name: '{name}-lint'
+    scm:
+        - git:
+            url: '{repo}'
+            name: origin
+            skip-tag: true
+            prune: true
+            clean:
+                before: true
+            wipe-workspace: true
+    builders:
+        - shell: pip install ansible-lint
+        - shell: ansible-lint tasks/*.yml
+
+- project:
+    name: ansible-influxdb
+    repo: https://github.com/hpcloud-mon/ansible-influxdb.git
+    jobs:
+        - '{name}-lint'
+
+- project:
+    name: ansible-monasca-agent
+    repo: https://github.com/hpcloud-mon/ansible-monasca-agent.git
+    jobs:
+        - '{name}-lint'
+
+- project:
+    name: ansible-monasca-api
+    repo: https://github.com/hpcloud-mon/ansible-monasca-api.git
+    jobs:
+        - '{name}-lint'
+
+- project:
+    name: ansible-kafka
+    repo: https://github.com/hpcloud-mon/ansible-kafka.git
+    jobs:
+        - '{name}-lint'
+
+- project:
+    name: ansible-monasca-notification
+    repo: https://github.com/hpcloud-mon/ansible-monasca-notification.git
+    jobs:
+        - '{name}-lint'
+
+- project:
+    name: ansible-monasca-persister
+    repo: https://github.com/hpcloud-mon/ansible-monasca-persister.git
+    jobs:
+        - '{name}-lint'
+
+- project:
+    name: ansible-monasca-schema
+    repo: https://github.com/hpcloud-mon/ansible-monasca-schema.git
+    jobs:
+        - '{name}-lint'
+
+- project:
+    name: ansible-monasca-thresh
+    repo: https://github.com/hpcloud-mon/ansible-monasca-thresh.git
+    jobs:
+        - '{name}-lint'
+
+- project:
+    name: ansible-zookeeper
+    repo: https://github.com/hpcloud-mon/ansible-zookeeper.git
+    jobs:
+        - '{name}-lint'
+
+- project:
+    name: ansible-storm
+    repo: https://github.com/hpcloud-mon/ansible-storm.git
+    jobs:
+        - '{name}-lint'
+
+- project:
+    name: ansible-vertica
+    repo: https://github.com/hpcloud-mon/ansible-vertica.git
+    jobs:
+        - '{name}-lint'
+
+- project:
+    name: ansible-monasca-default-alarms
+    repo: https://github.com/hpcloud-mon/ansible-monasca-default-alarms.git
+    jobs:
+        - '{name}-lint'
+
+- project:
+    name: ansible-monasca-keystone
+    repo: https://github.com/hpcloud-mon/ansible-monasca-keystone.git
+    jobs:
+        - '{name}-lint'
+
+- project:
+    name: ansible-percona
+    repo: https://github.com/hpcloud-mon/ansible-percona.git
+    jobs:
+        - '{name}-lint'
+
+- project:
+    name: ansible-monasca-ui
+    repo: https://github.com/hpcloud-mon/ansible-monasca-ui.git
+    jobs:
+        - '{name}-lint'
+

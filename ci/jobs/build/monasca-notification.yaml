@@ -3,7 +3,7 @@
     project-type: freestyle
     description: Build the Monasca Notification engine
     scm:
-        - git:                                                                                                                                  
+        - git:
             url: https://github.com/stackforge/monasca-notification
             name: origin
             skip-tag: true

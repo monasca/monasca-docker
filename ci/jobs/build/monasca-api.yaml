@@ -1,0 +1,19 @@
+- job:
+    name: monasca-api
+    project-type: freestyle
+    description: Build Monasca Api
+    scm:
+      - git:
+         url: https://github.com/stackforge/monasca-api
+         name: origin
+         skip-tag: true
+         prune: true
+         clean:
+             before: true
+         wipe-workspace: true
+    builders:
+      - maven-target:
+          goals: "clean package"
+    publishers:
+      - archive:
+          artifacts: 'target/*-shaded.jar'

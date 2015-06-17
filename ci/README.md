@@ -35,7 +35,7 @@ There are few things to note that aren't goals:
 
 ## Running/Design
 Simply run this Docker container and you will have Jenkins server loaded with some CI jobs for Monasca.
-You can run the container and have it listen on port 8080 with `docker run -d -p 8080:8080 --name jenkins -v /var/run/docker.sock:/var/run/docker.sock monasca/ci`
+You can run the container, listening on port 8080 with `docker run -d -p 8080:8080 --name jenkins -v /var/run/docker.sock:/var/run/docker.sock monasca/ci`
 For a long running Jenkins you may want to setup a persister volume, `-v /your/home:/var/jenkins_home`
 
 After starting the container will load up the standard Jenkins jobs for Monasca CI. These jobs watch all of the Monasca git repos,

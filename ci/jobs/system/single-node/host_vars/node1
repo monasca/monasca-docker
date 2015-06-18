@@ -12,7 +12,6 @@ kafka_replicas: 1
 kafka_hosts: "{{mini_mon}}:9092"
 kafka_listen_address: "{{mini_mon}}"
 kafka_heap_opts: "-Xmx256m"
-keystone_host: "{{openstack}}"
 mysql_host: "{{mini_mon}}"
 nimbus_host: "{{mini_mon}}"
 percona_package: percona-xtradb-cluster-56
@@ -30,20 +29,6 @@ mon_influxdb_users:
     password: password
   - username: mon_persister
     password: password
-vertica_dbadmin_password: password
-vertica_users:
-  - username: monitor
-    password: password
-    role: monitor
-  - username: mon_api
-    password: password
-    role: monasca_api
-  - username: mon_persister
-    password: password
-    role: monasca_persister
-keystone_admin: admin
-keystone_admin_password: ""
-keystone_auth_method: token
 keystone_user: mini-mon
 keystone_password: password
 mysql_admin_password: password

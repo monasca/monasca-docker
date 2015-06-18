@@ -25,15 +25,6 @@
   sudo: yes
   vars:
     keystone_url: "{{ keystone_admin_url }}"
-    keystone_users:
-      - username: mini-mon
-        project: "{{ keystone_project }}"
-        password: "{{ keystone_project_admin_password }}"
-        role: monasca-user
-      - username: monasca-agent
-        password: "{{ monasca_agent.password }}"
-        project: "{{ keystone_project }}"
-        role: monasca-agent
   roles:
     - {role: monasca-keystone, tags: [keystone]}
 
@@ -62,10 +53,6 @@
             host_name: 192.168.10.5
             alive_test: ssh
   tasks:
-    - name: Setup the monasca cli credentials in the default environment
-      copy: src=tests/env.sh dest=/etc/profile.d/monasca_cli.sh owner=root group=root mode=0644
-      tags:
-        - cli
     - name: Update cli
       pip: name=python-monascaclient state=latest virtualenv="{{monasca_virtualenv_dir}}"
       tags:

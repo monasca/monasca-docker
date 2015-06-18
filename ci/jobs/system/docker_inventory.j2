@@ -3,6 +3,7 @@ node1 ansible_ssh_user=root ansible_ssh_pass=docker.io ansible_ssh_host={{node1_
 
 [monasca:vars]
 keystone_host={{openstack_ip}}
+node1_ip={{node1_ip}}
 keystone_port=31{{build_number}}
 keystone_admin_port=51{{build_number}}
 monasca_api_port=81{{build_number}}

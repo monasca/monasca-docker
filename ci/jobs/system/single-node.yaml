@@ -15,8 +15,8 @@
         - shell: |
             #!/bin/bash
             cd ci/jobs/system
-            ansible-galaxy install -r requirements.yml -p ./roles -f
             ansible-playbook -i hosts -c local -e job_name=${JOB_NAME} -e build_number=${BUILD_NUMBER} docker_start.yml
+            ansible-galaxy install -r requirements.yml -p ./single-node/roles -f
             cd single-node
             ansible-playbook -i hosts site.yml
     publishers:

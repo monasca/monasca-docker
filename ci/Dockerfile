@@ -11,7 +11,8 @@ RUN /usr/local/bin/plugins.sh ./plugins.txt
 # Install dependencies
 RUN echo "deb http://http.debian.net/debian jessie-backports main" >> /etc/apt/sources.list
 RUN apt-get update
-RUN apt-get install -y docker.io maven python-pip python-dev
+RUN apt-get install -y docker.io maven python-dev python-pip
+RUN pip install -U pip
 RUN pip install ansible docker-py==1.1.0
 RUN apt-get clean
 

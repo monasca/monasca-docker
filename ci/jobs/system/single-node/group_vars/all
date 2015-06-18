@@ -25,11 +25,11 @@ monasca_agent_password: password
 monasca_agent_project: mini-mon
 
 keystone_users:
-  - username: {{keystone_project_admin}}
-    project: {{keystone_project}}
-    password: {{keystone_project_admin_password}}
+  - username: "{{keystone_project_admin}}"
+    project: "{{keystone_project}}"
+    password: "{{keystone_project_admin_password}}"
     role: monasca-user
-  - username: {{monasca_agent_user}}
-    password: {{monasca_agent_password}}
-    project: {{keystone_project}}
+  - username: "{{monasca_agent_user}}"
+    password: "{{monasca_agent_password}}"
+    project: "{{keystone_project}}"
     role: monasca-agent

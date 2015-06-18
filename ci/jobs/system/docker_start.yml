@@ -7,7 +7,7 @@
   - name: Openstack
     docker:
         image: monasca/openstack:{{ openstack_tag | default('latest') }}
-        name: "openstack_name"
+        name: "{{openstack_name}}"
         ports:
 #          - "80:80"  # Skipping UI for now
           - "5000:51{{build_number}}"
@@ -17,7 +17,7 @@
     tags:
       - openstack
   - name: Determin IP of the Openstack container
-    command: docker inspect '{{ {{ }}.NetworkSettings.IPAddress {{ }} }}' {{openstack_name}}
+    command: docker inspect -f "{{ '{{' }} .NetworkSettings.IPAddress {{ '}}' }}" {{openstack_name}}
     register: openstack_inspect
   - set_fact:
         openstack_ip: "{{openstack_inspect.stdout}}"
@@ -35,7 +35,7 @@
     tags:
       - node1
   - name: Determin IP of the Node1 container
-    command: docker inspect '{{ {{ }}.NetworkSettings.IPAddress {{ }} }}' {{node1_name}}
+    command: docker inspect -f "{{ '{{' }} .NetworkSettings.IPAddress {{ '}}' }}" {{node1_name}}
     register: node1_inspect
   - set_fact:
         openstack_ip: "{{node1_inspect.stdout}}"

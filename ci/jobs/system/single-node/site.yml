@@ -1,3 +1,25 @@
+- name: Install dependencies
+  hosts: monasca
+  sudo: yes
+  pre_tasks:
+    - name: apt-get update
+      apt: update_cache=yes
+    - name: Install virtualenv
+      apt: name=python-virtualenv
+  tasks:
+    - name: Install postfix, needed by notification engine
+      apt: name=postfix state=present
+    - name: Install pip from apt
+      apt: name=python-pip state=present
+    - name: pip upgrade pip
+      pip: name=pip state=latest
+    - name: Install packages to allow pip to compile extensions as needed
+      apt: name={{item}} state=present
+      with_items:
+        - python-dev
+        - libssl-dev
+        - libcrypto++-dev
+
 - name: Setup Keystone users/endpoints, requires keystone admin url be exposed
   hosts: monasca
   sudo: yes
@@ -16,22 +38,8 @@
     - {role: monasca-keystone, tags: [keystone]}
 
 - name: Installs DBs, kafka and other core dependencies.
-  hosts: mini-mon
+  hosts: monasca
   sudo: yes
-  pre_tasks:
-    - name: apt-get update
-      apt: update_cache=yes
-    - name: Install virtualenv
-      apt: name=python-virtualenv
-  tasks:
-    - name: Install postfix, needed by notification engine
-      apt: name=postfix state=present
-    - name: Install pip from apt
-      apt: name=python-pip state=present
-    - name: pip upgrade pip
-      pip: name=pip state=latest
-    - name: Install python-dev
-      apt: name=python-dev state=present
   roles:
     - {role: zookeeper, tags: [zookeeper]}
     - {role: kafka, tags: [kafka]}
@@ -39,7 +47,7 @@
     - {role: percona, tags: [mysql, percona]}
 
 - name: Sets up schema and install Monasca apps
-  hosts: mini-mon
+  hosts: monasca
   sudo: yes
   vars:
     monasca_agent_service: monitoring
@@ -86,7 +94,7 @@
     - {role: monasca-agent, tags: [agent]}
 
 - name: Define default alarms
-  hosts: mini-mon
+  hosts: monasca
   gather_facts: no
   roles:
     - {role: monasca-default-alarms, tags: [alarms]}

@@ -10,7 +10,7 @@
         name: "{{openstack_name}}"
         ports:
 #          - "80:80"  # Skipping UI for now
-          - "5000:51{{build_number}}"
+          - "5000:51{{build_number}}"  # External port mapping isn't needed for container -> container communication
           - "35357:31{{build_number}}"
         pull: always
         state: started

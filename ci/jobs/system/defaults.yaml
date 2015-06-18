@@ -11,7 +11,3 @@
       numToKeep: 90
       artifactDaysToKeep: -1
       artifactNumToKeep: -1
-    wrappers:
-      - timeout:
-          timeout: 60
-          fail: true

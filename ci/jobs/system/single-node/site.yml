@@ -1,0 +1,92 @@
+- name: Setup Keystone users/endpoints, requires keystone admin url be exposed
+  hosts: monasca
+  sudo: yes
+  vars:
+    keystone_url: "{{ keystone_admin_url }}"
+    keystone_users:
+      - username: mini-mon
+        project: "{{ keystone_project }}"
+        password: "{{ keystone_project_admin_password }}"
+        role: monasca-user
+      - username: monasca-agent
+        password: "{{ monasca_agent.password }}"
+        project: "{{ keystone_project }}"
+        role: monasca-agent
+  roles:
+    - {role: monasca-keystone, tags: [keystone]}
+
+- name: Installs DBs, kafka and other core dependencies.
+  hosts: mini-mon
+  sudo: yes
+  pre_tasks:
+    - name: apt-get update
+      apt: update_cache=yes
+    - name: Install virtualenv
+      apt: name=python-virtualenv
+  tasks:
+    - name: Install postfix, needed by notification engine
+      apt: name=postfix state=present
+    - name: Install pip from apt
+      apt: name=python-pip state=present
+    - name: pip upgrade pip
+      pip: name=pip state=latest
+    - name: Install python-dev
+      apt: name=python-dev state=present
+  roles:
+    - {role: zookeeper, tags: [zookeeper]}
+    - {role: kafka, tags: [kafka]}
+    - {role: influxdb, tags: [influxdb]}
+    - {role: percona, tags: [mysql, percona]}
+
+- name: Sets up schema and install Monasca apps
+  hosts: mini-mon
+  sudo: yes
+  vars:
+    monasca_agent_service: monitoring
+    monasca_checks:
+      host_alive:
+        init_config:
+          ssh_port: 22
+          ssh_timeout: 0.5
+          ping_timeout: 1
+        instances:
+          - name: devstack
+            host_name: 192.168.10.5
+            alive_test: ssh
+  tasks:
+    - name: Setup the monasca cli credentials in the default environment
+      copy: src=tests/env.sh dest=/etc/profile.d/monasca_cli.sh owner=root group=root mode=0644
+      tags:
+        - cli
+    - name: Update cli
+      pip: name=python-monascaclient state=latest virtualenv="{{monasca_virtualenv_dir}}"
+      tags:
+        - cli
+  roles:
+    - {role: monasca-schema, tags: [schema]}
+    - {role: monasca-api,
+       influxdb_user: mon_api,
+       influxdb_password: password,
+       mysql_user: monapi,
+       mysql_password: password,
+       tags: [api]}
+    - {role: monasca-persister,
+       influxdb_user: mon_persister,
+       influxdb_password: password,
+       tags: [persister]}
+    - {role: monasca-notification,
+       mysql_user: notification,
+       mysql_password: password,
+       tags: [notification]}
+    - {role: storm, storm_nimbus_enabled: true, storm_supervisor_enabled: true, tags: [storm]}
+    - {role: monasca-thresh,
+       mysql_user: thresh,
+       mysql_password: password,
+       tags: [thresh]}
+    - {role: monasca-agent, tags: [agent]}
+
+- name: Define default alarms
+  hosts: mini-mon
+  gather_facts: no
+  roles:
+    - {role: monasca-default-alarms, tags: [alarms]}

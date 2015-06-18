@@ -1,0 +1,5 @@
+- publisher:
+    name: send-email-notification
+    publishers:
+      - email:
+         recipients: ci@localhost

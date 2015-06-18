@@ -1,0 +1,44 @@
+- name: Starts a localhost docker container and empty container then builds Monasca in the empty container
+  hosts: localhost
+  vars:
+    openstack_name: "{{job_name}}_openstack_{{build_number}}"
+    node1_name: "{{job_name}}_node1_{{build_number}}"
+  tasks:
+  - name: Openstack
+    docker:
+        image: monasca/openstack:{{ openstack_tag | default('latest') }}
+        name: "openstack_name"
+        ports:
+          - "80:80"
+          - "5000:5000"
+          - "35357:35357"
+        pull: always
+        state: started
+    tags:
+      - openstack
+  - name: Determin IP of the Openstack container
+    command: docker inspect '{{ {{ }}.NetworkSettings.IPAddress {{ }} }}' {{openstack_name}}
+    register: openstack_inspect
+  - set_fact:
+        openstack_ip: "{{openstack_inspect.stdout}}"
+  - name: Node1
+    docker:
+        image: ubuntu-upstart:14.04
+        name: "{{node1_name}}"
+        ports:
+          - "22:1{{build_number}}"  # That is 1 for single node job, then the build number
+          - "8080:8080"
+        pull: always
+        volumes:
+          - "{{ansible_env['PWD']}}/.ssh:/root/.ssh:ro"
+        state: started
+    tags:
+      - node1
+  - name: Determin IP of the Node1 container
+    command: docker inspect '{{ {{ }}.NetworkSettings.IPAddress {{ }} }}' {{node1_name}}
+    register: node1_inspect
+  - set_fact:
+        openstack_ip: "{{node1_inspect.stdout}}"
+  - name: Write out Inventory for the Docker containers
+    template: src=docker_inventory.j2 dest="{{ansible_env['PWD']}}/single-node/hosts" 
+

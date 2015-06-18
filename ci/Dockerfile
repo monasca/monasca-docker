@@ -12,7 +12,7 @@ RUN /usr/local/bin/plugins.sh ./plugins.txt
 RUN echo "deb http://http.debian.net/debian jessie-backports main" >> /etc/apt/sources.list
 RUN apt-get update
 RUN apt-get install -y docker.io maven python-pip python-dev
-RUN pip install ansible
+RUN pip install ansible docker-py==1.1.0
 RUN apt-get clean
 
 # Install JJB

@@ -8,6 +8,7 @@ mailer:1.11
 matrix-project:1.5
 maven-plugin:2.10
 parameterized-trigger:2.26
+postbuildscript:0.17
 promoted-builds:2.21
 python:1.2
 rebuild:1.24

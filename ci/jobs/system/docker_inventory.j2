@@ -1,0 +1,6 @@
+[monasca]
+node1 ansible_ssh_user=root ansible_ssh_port="1{{build_number}}" ansible_ssh_host={{node1_ip}} docker_name={{node1_name}}
+
+[monasca:vars]
+keystone_host={{openstack_ip}}
+openstack_docker_name={{openstack_name}}

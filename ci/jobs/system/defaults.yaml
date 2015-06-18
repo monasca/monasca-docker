@@ -1,0 +1,17 @@
+- defaults:
+    name: global
+    description:  This job is managed by jenkins-job-builder.
+                    Any configuration changes via UI will likely be lost!.
+                    See <a href=https://github.com/hpcloud-mon/monasca-docker/tree/master/ci>Monasca CI</a> for more details.
+    project-type: freestyle
+    concurrent: true
+    disabled: false
+    logrotate:
+      daysToKeep: 180
+      numToKeep: 90
+      artifactDaysToKeep: -1
+      artifactNumToKeep: -1
+    wrappers:
+      - timeout:
+          timeout: 60
+          fail: true

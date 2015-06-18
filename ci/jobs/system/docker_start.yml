@@ -9,9 +9,9 @@
         image: monasca/openstack:{{ openstack_tag | default('latest') }}
         name: "openstack_name"
         ports:
-          - "80:80"
-          - "5000:5000"
-          - "35357:35357"
+#          - "80:80"  # Skipping UI for now
+          - "5000:51{{build_number}}"
+          - "35357:31{{build_number}}"
         pull: always
         state: started
     tags:
@@ -26,8 +26,8 @@
         image: ubuntu-upstart:14.04
         name: "{{node1_name}}"
         ports:
-          - "22:1{{build_number}}"  # That is 1 for single node job, then the build number
-          - "8080:8080"
+          - "22:1{{build_number}}"  # That is 1 for single node job, then the build number, similar below
+          - "8080:81{{build_number}}"
         pull: always
         volumes:
           - "{{ansible_env['PWD']}}/.ssh:/root/.ssh:ro"

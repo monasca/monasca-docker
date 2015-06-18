@@ -4,6 +4,8 @@
     openstack_name: "{{job_name}}_openstack_{{build_number}}"
     node1_name: "{{job_name}}_node1_{{build_number}}"
   tasks:
+  - name: Set permissions for ssh key
+    command: chmod 600 {{ansible_env['PWD']}}/.ssh/id_rsa
   - name: Openstack
     docker:
         image: monasca/openstack:{{ openstack_tag | default('latest') }}

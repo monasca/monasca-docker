@@ -38,7 +38,7 @@
     command: "{{ansible_env['PWD']}}/docker_ip.sh {{node1_name}}"
     register: node1_inspect
   - set_fact:
-        openstack_ip: "{{node1_inspect.stdout}}"
+        node1_ip: "{{node1_inspect.stdout}}"
   - name: Write out Inventory for the Docker containers
     template: src=docker_inventory.j2 dest="{{ansible_env['PWD']}}/single-node/hosts" 
 

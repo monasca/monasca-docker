@@ -23,7 +23,10 @@
         - postbuildscript:
             script-only-if-succeeded: False
             builders:
-                - shell: ansible-playbook -i hosts -c local -e job_name=${JOB_NAME} -e build_number=${BUILD_NUMBER} docker_stop.yml
+                - shell: |
+                    #!/bin/bash
+                    cd ci/jobs/system
+                    ansible-playbook -i hosts -c local -e job_name=${JOB_NAME} -e build_number=${BUILD_NUMBER} docker_stop.yml
 
 # In the future take the inventory written by docker start and save as an artifact then I can use this to trigger more tests and move the stop
 # to after all the test.

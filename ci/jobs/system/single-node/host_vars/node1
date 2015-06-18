@@ -29,8 +29,6 @@ mon_influxdb_users:
     password: password
   - username: mon_persister
     password: password
-keystone_user: mini-mon
-keystone_password: password
 mysql_admin_password: password
 mysql_root_password: password
 mon_mysql_users:

@@ -18,16 +18,18 @@ keystone_admin_token: ADMIN
 keystone_project: test
 keystone_project_admin: mini-mon
 keystone_project_admin_password: password
+keystone_user: mini-mon
+keystone_password: password
 monasca_agent_user: monasca-agent
 monasca_agent_password: password
 monasca_agent_project: mini-mon
 
 keystone_users:
-  - username: mini-mon
-    project: mini-mon
-    password: password
+  - username: {{keystone_project_admin}}
+    project: {{keystone_project}}
+    password: {{keystone_project_admin_password}}
     role: monasca-user
-  - username: monasca-agent
-    password: password
-    project: mini-mon
+  - username: {{monasca_agent_user}}
+    password: {{monasca_agent_password}}
+    project: {{keystone_project}}
     role: monasca-agent

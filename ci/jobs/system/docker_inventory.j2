@@ -1,5 +1,5 @@
 [monasca]
-node1 ansible_ssh_user=root ansible_ssh_host={{node1_ip}} docker_name={{node1_name}}
+node1 ansible_ssh_user=root ansible_ssh_host={{node1_ip}} docker_name={{node1_name}} ansible_ssh_private_key_file={{ansible_env['PWD']}}/.ssh/id_rsa
 
 [monasca:vars]
 keystone_host={{openstack_ip}}

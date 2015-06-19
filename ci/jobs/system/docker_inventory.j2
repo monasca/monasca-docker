@@ -1,7 +1,0 @@
-[monasca]
-node1 ansible_ssh_user=root ansible_ssh_pass=docker.io ansible_ssh_host={{node1_ip}} docker_name={{node1_name}}
-
-[monasca:vars]
-keystone_host={{openstack_ip}}
-node1_ip={{node1_ip}}
-openstack_docker_name={{openstack_name}}

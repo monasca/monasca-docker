@@ -1,3 +1,4 @@
+copyartifact:1.35.1
 credentials:1.22
 git:2.3.5
 git-client:1.17.1

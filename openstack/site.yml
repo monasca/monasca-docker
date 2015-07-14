@@ -17,6 +17,3 @@
   tasks:
     - name: Link static dir for Monasca horizon plugin, I am not sure why this install needs this unlike others
       file: src=/usr/share/openstack-dashboard/monitoring/static/monitoring dest=/usr/share/openstack-dashboard/openstack_dashboard/static/monitoring state=link
-  post_tasks:
-    - name: oslo.config is getting installed via pip and the os and they conflic
-      pip: name=oslo.config state=absent

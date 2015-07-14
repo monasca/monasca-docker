@@ -24,5 +24,8 @@ WORKDIR /setup/jenkins-job-builder
 RUN python ./setup.py install
 WORKDIR /setup
 
+# Add in the Groovy Hooks for Jenkins, https://wiki.jenkins-ci.org/display/JENKINS/Groovy+Hook+Script
+COPY init.groovy.d /var/jenkins_home/init.groovy.d/
+
 ## From the parent image
 #ENTRYPOINT ["/usr/local/bin/jenkins.sh"]

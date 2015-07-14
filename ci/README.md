@@ -9,14 +9,13 @@ For a long running Jenkins you may want to setup a persister volume, `-v /your/h
 
 After starting the container will load up the standard Jenkins jobs for Monasca CI. These jobs watch all of the Monasca git repos,
 if one has a change it will build it then trigger the Monasca job.
-  - The main job will build a clustered Monasca setup using other Docker containers and hit it with tests.
+  - The main job will build a Monasca system using other Docker containers and hit it with tests.
     - For this to work the container needs access to the Docker API. For most installations the arguments '-v /var/run/docker.sock:/var/run/docker.sock'
       accomplish this and this is the assumed setup. For some installations it may be necessary to install a key/cert for Docker and set the DOCKER_HOST
       environmental variable. In such cases the jenkins jobs will need to be modified appropriately.
-    - A non-clustered version is possible also.
 
 Notes:
-  - The integration tests are in a repo that is also built by Jenkins and for which changes triggers new runs.
+  - The integration tests are in the monasca-ci repo that is also built by Jenkins and for which changes triggers new runs.
   - To facilitate the ease of maintenance and setup the system is built entirely with configuration management tools and stored in a git repo.
     All test jobs and code are pulled from various git repos. The Jenkins jobs are built with
     [Jenkins Job Builder](http://docs.openstack.org/infra/jenkins-job-builder/index.html)
@@ -26,7 +25,4 @@ Notes:
     in production, so I build the artifacts we do deploy then install and configure each time with the Monasca Ansible roles.
     - There are two images we can use to do this, monasca/ci-base has systemd and ssh running in it but is a bit of a hack as the docker host must
       also be running systemd. The other image is the official ubuntu-upstart:14.04 image.
-
-## Todo
-- Document recommended minimum requirements.
-- Explore better reporting tools for Jenkins.
+  - [Groovy Hook Scripts](https://wiki.jenkins-ci.org/display/JENKINS/Groovy+Hook+Script) are used to configure Jenkins basics on startup.

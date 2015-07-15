@@ -1,0 +1,29 @@
+- job:
+    name: update_jobs
+    project-type: freestyle
+    description: Updated the various Jenkins jobs by running Jenkins Job Builder
+    concurrent: false
+    disabled: false
+    logrotate:
+        daysToKeep: 90
+        numToKeep: 50
+        artifactDaysToKeep: -1
+        artifactNumToKeep: -1
+    wrappers:
+        - timeout:
+            timeout: 60
+            fail: true
+    scm:
+        - git:
+            url: https://github.com/hpcloud-mon/monasca-ci
+            name: origin
+            skip-tag: true
+            prune: true
+            clean:
+                before: true
+            wipe-workspace: true
+    triggers:
+      - pollscm: "@yearly"
+    builders:
+        - shell: jenkins-jobs --conf /etc/jenkins_jobs/jenkins_jobs.ini update jjb/build
+        - shell: jenkins-jobs --conf /etc/jenkins_jobs/jenkins_jobs.ini update jjb/system

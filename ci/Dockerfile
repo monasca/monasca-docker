@@ -27,5 +27,9 @@ WORKDIR /setup
 # Add in the Groovy Hooks for Jenkins, https://wiki.jenkins-ci.org/display/JENKINS/Groovy+Hook+Script
 COPY init.groovy.d /var/jenkins_home/init.groovy.d/
 
+# Add in the startup script and bootstrap job
+COPY start.sh start.sh
+COPY update_jobs.yaml update_jobs.yaml
+
 ## From the parent image
-#ENTRYPOINT ["/usr/local/bin/jenkins.sh"]
+ENTRYPOINT ["/setup/start.sh"]

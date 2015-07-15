@@ -17,10 +17,11 @@ RUN pip install ansible docker-py==1.1.0 ansible-lint
 RUN apt-get clean
 
 # Install JJB
-RUN git clone https://git.openstack.org/openstack-infra/jenkins-job-builder ./jenkins-job-builder
-RUN pip install -r ./jenkins-job-builder/requirements.txt
 COPY jenkins_jobs.ini /etc/jenkins_jobs/jenkins_jobs.ini
+RUN git clone https://git.openstack.org/openstack-infra/jenkins-job-builder ./jenkins-job-builder
 WORKDIR /setup/jenkins-job-builder
+RUN git checkout 1.2.0
+RUN pip install -r ./requirements.txt
 RUN python ./setup.py install
 WORKDIR /setup
 

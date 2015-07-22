@@ -11,7 +11,7 @@ RUN /usr/local/bin/plugins.sh ./plugins.txt
 # Install dependencies
 RUN echo "deb http://http.debian.net/debian jessie-backports main" >> /etc/apt/sources.list
 RUN apt-get update
-RUN apt-get install -y docker.io maven python-dev python-pip sshpass  # sshpass is only needed for password based ssh access from Ansible.
+RUN apt-get install -y docker.io maven python-dev python-mysqldb python-pip sshpass  # sshpass is only needed for password based ssh access from Ansible.
 RUN pip install -U pip
 RUN pip install ansible docker-py==1.1.0 ansible-lint
 RUN apt-get clean

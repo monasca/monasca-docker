@@ -5,9 +5,9 @@ COPY . /setup
 WORKDIR /setup
 RUN chmod 755 /setup/demo-start.sh
 
-# Some of the galaxy roles need git to download things.
+# Some of the galaxy roles need git to download things, virtualenv is needed for our install
 RUN apt-get update
-RUN apt-get install -y git
+RUN apt-get install -y git python-virtualenv
 
 # Remove systemd as Ansible tries to use it if it exists
 RUN apt-get remove -y systemd

@@ -18,14 +18,8 @@
   sudo: yes
   vars:
     mysql_root_password: password
-  pre_tasks:
-    - set_fact:
-        ansible_distribution_release: utopic
   roles:
     - {role: percona, tags: [mysql, percona]}
-  post_tasks:
-    - set_fact:
-        ansible_distribution_release: vivid
 
 - name: Set up mysql schema
   hosts: localhost
@@ -37,10 +31,13 @@
     influxdb_schema_enabled: false
     mysql_schema_enabled: true
     winchester_schema_enabled: false
-    mysql_users:
-      notification: password
-      monapi: password
-      thresh: password
+    mon_mysql_users:
+    - username: notification
+      password: password
+    - username: monapi
+      password: password
+    - username: thresh
+      password: password
   roles:
     - {role: monasca-schema, tags: [schema]}
 
@@ -48,6 +45,7 @@
   hosts: localhost
   sudo: yes
   vars:
+    kafka_heap_opts: "-Xmx256m"
     zookeeper_hosts: localhost:2181
     verify: False
   roles:
@@ -57,17 +55,16 @@
   hosts: localhost
   sudo: yes
   vars:
-    influxdb:
-      raft_port: 8086
-      seed_servers: []
-      replication_factor: 1
-    influxdb_hostname: localhost
-    influxdb_users:
-      mon_api: password
-      mon_persister: password
+    mon_influxdb_users:
+    - username: mon_api
+      password: password
+    - username: mon_persister
+      password: password
     influxdb_url: http://localhost:8086
-    influxdb_version: 0.9.0-rc22
     kafka_topics_enabled: false
+    kafka_events_partitions: 4
+    kafka_metrics_partitions: 4
+    kafka_replicas: 1
     mysql_schema_enabled: false
     winchester_schema_enabled: false
   roles:

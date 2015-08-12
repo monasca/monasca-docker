@@ -41,7 +41,7 @@ sleep 30  # Takes a moment for storm to be up
 
 # notification engine
 /etc/init.d/postfix start
-/usr/local/bin/monasca-notification &
+/opt/monasca/bin/monasca-notification &
 
 # Rerun monasca-setup so it can find all the various services running
 /usr/local/bin/monasca-reconfigure

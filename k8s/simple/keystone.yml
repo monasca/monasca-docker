@@ -10,14 +10,25 @@ spec:
       labels:
         app: keystone
     spec:
+      volumes:
+        - name: preload-config
+          configMap:
+            name: keystone-preload
+            items:
+              - key: preload.yml
+                path: preload.yml
       containers:
         - name: keystone
-          image: timothyb89/keystone:0.0.1
+          image: timothyb89/keystone:0.0.2
           ports:
             - name: http
               containerPort: 5000
             - name: admin
               containerPort: 35357
+          volumeMounts:
+            - name: preload-config
+              mountPath: /preload.yml
+              subPath: preload.yml
 ---
 apiVersion: v1
 kind: Service

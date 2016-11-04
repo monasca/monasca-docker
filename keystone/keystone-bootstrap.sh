@@ -24,4 +24,6 @@ keystone-manage bootstrap \
     --bootstrap-public-url $public_url \
     --bootstrap-internal-url $internal_url
 
+python /preload.py
+
 exit 0

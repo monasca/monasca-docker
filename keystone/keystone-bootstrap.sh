@@ -9,9 +9,15 @@ admin_role=${KEYSTONE_ROLE:-"admin"}
 admin_service=${KEYSTONE_SERVICE:-"keystone"}
 admin_region=${KEYSTONE_REGION:-"RegionOne"}
 
-admin_url=${KEYSTONE_ADMIN_URL:-"http://localhost:35357"}
-public_url=${KEYSTONE_PUBLIC_URL:-"http://localhost:5000"}
-internal_url=${KEYSTONE_INTERNAL_URL:-"http://localhost:5000"}
+if [[ -z "$KEYSTONE_HOST" ]]; then
+    admin_url="http://${KEYSTONE_HOST}:35357"
+    public_url="http://${KEYSTONE_HOST}:5000"
+    internal_url="http://${KEYSTONE_HOST}:5000"
+else
+    admin_url=${KEYSTONE_ADMIN_URL:-"http://localhost:35357"}
+    public_url=${KEYSTONE_PUBLIC_URL:-"http://localhost:5000"}
+    internal_url=${KEYSTONE_INTERNAL_URL:-"http://localhost:5000"}
+fi
 
 keystone-manage bootstrap \
     --bootstrap-password $admin_password \

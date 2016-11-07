@@ -19,7 +19,14 @@ spec:
                 path: preload.yml
       containers:
         - name: keystone
-          image: timothyb89/keystone:0.0.2
+          image: timothyb89/keystone:0.0.3
+          env:
+            - name: KEYSTONE_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: KEYSTONE_PASSWORD
+              value: secretadmin
           ports:
             - name: http
               containerPort: 5000
@@ -38,7 +45,6 @@ metadata:
   labels:
     app: keystone
 spec:
-  type: NodePort
   ports:
     - name: http
       port: 5000

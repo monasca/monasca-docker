@@ -7,7 +7,7 @@
 # performance.
 
 FROM netflixoss/java:8
-MAINTAINER Cindy ONeill 
+MAINTAINER Cindy ONeill
 
 ENV KAFKA_VERSION=0.8.1.1 KAFKA_SCALA_VERSION=2.9.2 JMX_PORT=7203
 ENV KAFKA_RELEASE_ARCHIVE kafka_${KAFKA_SCALA_VERSION}-${KAFKA_VERSION}.tgz
@@ -37,11 +37,6 @@ ADD http://repo1.maven.org/maven2/org/slf4j/slf4j-log4j12/1.7.6/slf4j-log4j12-1.
 ADD config /kafka/config
 ADD start.sh /start.sh
 
-# Set up a user to run Kafka
-RUN groupadd kafka && \
-  useradd -d /kafka -g kafka -s /bin/false kafka && \
-  chown -R kafka:kafka /kafka /data /logs
-USER kafka
 ENV PATH /kafka/bin:$PATH
 WORKDIR /kafka
 
@@ -50,4 +45,3 @@ EXPOSE 9092 ${JMX_PORT}
 VOLUME [ "/data", "/logs" ]
 
 CMD ["/start.sh"]
-

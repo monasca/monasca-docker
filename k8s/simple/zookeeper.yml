@@ -12,7 +12,6 @@ spec:
     spec:
       containers:
         - name: zookeeper
-          #image: jplock/zookeeper:3.4.6
           image: zookeeper:3.3
           ports:
             - name: client
@@ -21,25 +20,22 @@ spec:
               containerPort: 2888
             - name: leader-election
               containerPort: 3888
-          #volumeMounts:
-          #  - name: zookeeper
-          #    mountPath: /tmp/zookeeper
           volumeMounts:
             - name: data
               mountPath: /data
             - name: datalog
               mountPath: /datalog
       volumes:
-        #- name: zookeeper
-          #glusterfs:
-          #  endpoints: glusterfs-cluster
-          #  path: monitoring-zookeeper
-          #  readOnly: false
-        #  emptyDir: {}
         - name: data
-          emptyDir: {}
+          glusterfs:
+            endpoints: glusterfs-cluster
+            path: monitoring-zookeeper
+            readOnly: false
         - name: datalog
-          emptyDir: {}
+          glusterfs:
+            endpoints: glusterfs-cluster
+            path: monitoring-zookeeper-log
+            readOnly: false
 ---
 apiVersion: v1
 kind: Service

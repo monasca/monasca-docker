@@ -4,7 +4,7 @@ metadata:
   name: kafka
   namespace: monitoring
 spec:
-  replicas: 3
+  replicas: 1
   template:
     metadata:
       labels:
@@ -12,13 +12,13 @@ spec:
     spec:
       containers:
         - name: kafka
-          image: timothyb89/kafka:0.0.5
+          image: timothyb89/kafka:0.0.7
           ports:
             - name: kafka
               containerPort: 9092
-          #volumeMounts:
-          #  - name: kafka
-          #    mountPath: /data
+          volumeMounts:
+            - name: kafka
+              mountPath: /data
           env:
             - name: ZOOKEEPER_CONNECTION_STRING
               value: zookeeper:2181
@@ -28,12 +28,12 @@ spec:
                   fieldPath: status.podIP
             - name: KAFKA_DELETE_TOPIC_ENABLE
               value: "true"
-      #volumes:
-      #  - name: kafka
-      #    glusterfs:
-      #      endpoints: glusterfs-cluster
-      #      path: monitoring-kafka
-      #      readOnly: false
+      volumes:
+        - name: kafka
+          glusterfs:
+            endpoints: glusterfs-cluster
+            path: monitoring-kafka
+            readOnly: false
 ---
 apiVersion: v1
 kind: Service

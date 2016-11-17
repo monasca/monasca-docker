@@ -1,0 +1,73 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: zookeeper
+  namespace: monitoring
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: zookeeper
+    spec:
+      containers:
+        - name: zookeeper
+          image: zookeeper:3.3
+          ports:
+            - name: client
+              containerPort: 2181
+            - name: peer
+              containerPort: 2888
+            - name: leader-election
+              containerPort: 3888
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: datalog
+              mountPath: /datalog
+      volumes:
+        - name: data
+          glusterfs:
+            endpoints: glusterfs-cluster
+            path: monitoring-zookeeper
+            readOnly: false
+        - name: datalog
+          glusterfs:
+            endpoints: glusterfs-cluster
+            path: monitoring-zookeeper-log
+            readOnly: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper
+  namespace: monitoring
+  labels:
+    app: zookeeper
+spec:
+  ports:
+    - name: client
+      port: 2181
+    - name: peer
+      port: 2888
+    - name: leader-election
+      port: 3888
+  clusterIP: None
+  selector:
+    app: zookeeper
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper-client
+  namespace: monitoring
+  labels:
+    app: zookeeper
+spec:
+  type: NodePort
+  ports:
+    - name: client
+      port: 2181
+      targetPort: client
+  selector:
+    app: zookeeper

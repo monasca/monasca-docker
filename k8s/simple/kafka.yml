@@ -1,0 +1,52 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kafka
+  namespace: monitoring
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+        - name: kafka
+          image: timothyb89/kafka:0.0.7
+          ports:
+            - name: kafka
+              containerPort: 9092
+          volumeMounts:
+            - name: kafka
+              mountPath: /data
+          env:
+            - name: ZOOKEEPER_CONNECTION_STRING
+              value: zookeeper:2181
+            - name: KAFKA_ADVERTISED_HOST_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: KAFKA_DELETE_TOPIC_ENABLE
+              value: "true"
+      volumes:
+        - name: kafka
+          glusterfs:
+            endpoints: glusterfs-cluster
+            path: monitoring-kafka
+            readOnly: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+  namespace: monitoring
+  labels:
+    app: kafka
+spec:
+  type: NodePort
+  ports:
+    - name: kafka
+      port: 9092
+      targetPort: kafka
+  selector:
+    app: kafka

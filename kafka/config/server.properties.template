@@ -56,8 +56,8 @@ socket.request.max.bytes=104857600
 ############################# Log Basics #############################
 
 # The directory under which to store log files
-log.dir=/data
-log.dirs=/data
+log.dir=/data/log
+log.dirs=/data/log
 
 # The number of logical partitions per topic per server. More partitions allow greater parallelism
 # for consumption, but also mean more files.
@@ -97,4 +97,3 @@ controlled.shutdown.enable=true
 group.max.session.timeout.ms={{GROUP_MAX_SESSION_TIMEOUT_MS}}
 
 # vim:set filetype=jproperties
-

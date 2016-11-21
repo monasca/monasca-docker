@@ -1,14 +1,15 @@
 FROM python:2.7
 
-RUN pip install gunicorn
-RUN pip install monasca-api
-RUN pip install influxdb
+ENV MONASCA_API_REPO=https://github.com/openstack/monasca-api.git
+ENV MONASCA_API_BRANCH=master
 
-RUN mkdir /etc/monasca
-COPY api-config.conf /etc/monasca/
-COPY api-logging.conf /etc/monasca
-COPY api-config.ini /config/
+RUN mkdir /source
+WORKDIR /source
+RUN git clone $MONASCA_API_REPO -b $MONASCA_API_BRANCH
 
-VOLUME ["/config"]
+WORKDIR monasca-api
+RUN pip install gunicorn influxdb; pip install -r requirements.txt; python setup.py install
 
-ENTRYPOINT ["gunicorn", "--capture-output", "-n", "monasca-api", "-k", "eventlet", "--worker-connections=2000", "--backlog=1000", "--paste", "/config/api-config.ini", "-w", "9"]
+COPY api-* /etc/monasca/
+
+ENTRYPOINT ["gunicorn", "--capture-output", "-n", "monasca-api", "-k", "eventlet", "--worker-connections=2000", "--backlog=1000", "--paste", "/etc/monasca/api-config.ini", "-w", "9"]

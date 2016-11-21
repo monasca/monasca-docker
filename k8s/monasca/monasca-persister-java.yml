@@ -25,5 +25,4 @@ spec:
       volumes:
       - name: config-volume
         configMap:
-          name: monasca-persister.config.java
-
+          name: monasca-persister-java-config

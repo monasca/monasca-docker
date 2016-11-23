@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: monasca-perf
+  namespace: monitoring
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: monasca-perf
+    spec:
+      containers:
+        - name: monasca-perf
+          image: timothyb89/monasca-perf:0.0.3
+          env:
+            - name: KEYSTONE_USERNAME
+              value: monasca-agent
+            - name: KEYSTONE_PASSWORD
+              value: password
+            - name: KEYSTONE_PROJECT
+              value: mini-mon
+            - name: KEYSTONE_URL
+              value: http://keystone:35357/v3/
+            - name: MONASCA_URL
+              value: http://monasca:8070/v2.0
+            - name: NUM_METRICS
+              value: "2000"
+            - name: NUM_AGENTS
+              value: "30"
+            - name: NUM_CONTAINERS
+              value: "100"

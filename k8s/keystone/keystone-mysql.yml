@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: keystone-mysql
+  namespace: monitoring
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: keystone-mysql
+    spec:
+      containers:
+        - name: keystone-mysql
+          image: mysql:5.7
+          ports:
+            - name: mysql
+              containerPort: 3306
+          env:
+            - name: MYSQL_DATABASE
+              value: keystone
+            - name: MYSQL_USER
+              value: keystone
+            - name: MYSQL_PASSWORD
+              value: keystone
+            - name: MYSQL_RANDOM_ROOT_PASSWORD
+              value: "true"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keystone-mysql
+  namespace: monitoring
+  labels:
+    app: keystone-mysql
+spec:
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: mysql
+  selector:
+    app: keystone-mysql

@@ -19,7 +19,7 @@ spec:
                 path: preload.yml
       containers:
         - name: keystone
-          image: timothyb89/keystone:0.0.3
+          image: timothyb89/keystone:0.0.4
           env:
             - name: KEYSTONE_HOST
               valueFrom:
@@ -27,6 +27,16 @@ spec:
                   fieldPath: status.podIP
             - name: KEYSTONE_PASSWORD
               value: secretadmin
+            - name: KEYSTONE_DATABASE_BACKEND
+              value: mysql
+            - name: KEYSTONE_MYSQL_HOST
+              value: keystone-mysql
+            - name: KEYSTONE_MYSQL_USER
+              value: keystone
+            - name: KEYSTONE_MYSQL_PASSWORD
+              value: keystone
+            - name: KEYSTONE_MYSQL_DATABASE
+              value: keystone
           ports:
             - name: http
               containerPort: 5000

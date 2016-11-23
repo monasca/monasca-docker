@@ -1,7 +1,9 @@
 from ubuntu:16.04
 
 run apt-get update && \
-    apt-get install -y curl python-openstackclient keystone supervisor uwsgi uwsgi-plugin-python
+    apt-get install -y \
+        curl python-openstackclient keystone supervisor \
+        uwsgi uwsgi-plugin-python mysql-client-5.7
 
 expose 5000 35357
 

@@ -1,0 +1,27 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: monasca-api
+  namespace: monitoring
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: monasca-api
+    spec:
+      containers:
+      - name: monasca-api
+        image: rbrndt/monasca-api-python:latest
+        ports:
+        - containerPort: 8070
+          name: client
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/monasca-api/
+      volumes:
+      - name: config-volume
+        configMap:
+          name: monasca-api.config.python
+

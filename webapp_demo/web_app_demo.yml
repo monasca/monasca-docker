@@ -1,0 +1,21 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: web_app_demo
+  namespace: monitoring
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: web_app_demo
+    spec:
+      containers:
+      - name: web_app_demo
+        image: kaiyansheng/django_docker:latest
+        ports:
+        - name: django
+          containerPort: 8000
+        - name: prometheus_client
+          containerPort: 8005

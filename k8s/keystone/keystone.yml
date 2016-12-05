@@ -19,7 +19,7 @@ spec:
                 path: preload.yml
       containers:
         - name: keystone
-          image: timothyb89/keystone:0.0.4
+          image: monasca/keystone:1.0.0
           env:
             - name: KEYSTONE_HOST
               valueFrom:

@@ -7,11 +7,12 @@ run apt-get update && \
 
 expose 5000 35357
 
-copy supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+copy supervisord.conf /etc/supervisor/supervisord.conf
 copy keystone-bootstrap.sh /keystone-bootstrap.sh
 copy preload.py /preload.py
+copy start.sh /start.sh
 
-cmd /usr/bin/supervisord
+cmd /start.sh
 
 healthcheck --interval=10s --timeout=5s \
   CMD curl -f http://localhost:5000/v3 2> /dev/null || exit 1; \

@@ -38,5 +38,6 @@ spec:
     - name: mysql
       port: 3306
       targetPort: mysql
+  clusterIP: None
   selector:
     app: keystone-mysql

@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 
 if [[ "$KEYSTONE_DATABASE_BACKEND" =  "mysql" ]]; then
     mysql_host=${KEYSTONE_MYSQL_HOST:-"keystone-mysql"}

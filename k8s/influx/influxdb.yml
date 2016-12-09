@@ -21,7 +21,7 @@ spec:
             readOnly: false
       containers:
         - name: influxdb
-          image: rbrndt/influxdb:0.11
+          image: monasca/influxdb:0.11.1
           ports:
             - containerPort: 8086
               name: http

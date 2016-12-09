@@ -1,13 +1,11 @@
 FROM python:2.7
 
-ENV MONASCA_API_REPO=https://github.com/openstack/monasca-api.git
-ENV MONASCA_API_BRANCH=master
+ARG API_REPO=https://github.com/openstack/monasca-api.git
+ARG API_BRANCH=master
 
-RUN mkdir /source
-WORKDIR /source
-RUN git clone $MONASCA_API_REPO -b $MONASCA_API_BRANCH
+RUN git clone $API_REPO -b $API_BRANCH --depth 1
 
-WORKDIR monasca-api
+WORKDIR /monasca-api
 RUN pip install gunicorn influxdb; pip install -r requirements.txt; python setup.py install
 
 COPY api-* /etc/monasca/

@@ -1,16 +1,13 @@
 FROM python:2.7
 
-ENV MONASCA_PERSISTER_REPO=https://github.com/openstack/monasca-persister.git
-ENV MONASCA_PERSISTER_BRANCH=master
+ARG PERSISTER_REPO=https://github.com/openstack/monasca-persister.git
+ARG PERSISTER_BRANCH=master
 
-RUN mkdir /source
-WORKDIR /source
-RUN git clone $MONASCA_PERSISTER_REPO -b $MONASCA_PERSISTER_BRANCH
+RUN git clone $PERSISTER_REPO -b $PERSISTER_BRANCH
 
-WORKDIR monasca-persister
-RUN pip install influxdb; pip install -r requirements.txt
-RUN python setup.py install
+WORKDIR /monasca-persister
+RUN pip install influxdb; pip install -r requirements.txt; python setup.py install
 
-COPY persister.conf /config/
+COPY persister.conf /etc/monasca-persister/
 
-CMD ["python", "/usr/local/lib/python2.7/site-packages/monasca_persister/persister.py", "--config-file", "/config/persister.conf"]
+CMD ["python", "/usr/local/lib/python2.7/site-packages/monasca_persister/persister.py", "--config-file", "/etc/monasca-persister/persister.conf"]

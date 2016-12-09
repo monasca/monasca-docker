@@ -13,24 +13,22 @@ ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
 
 COPY settings-docker.xml /usr/share/maven/ref/
 
-ENV MONASCA_COMMON_REPO=https://github.com/openstack/monasca-common.git
-ENV MONASCA_COMMON_BRANCH=master
+ARG MONASCA_COMMON_REPO=https://github.com/openstack/monasca-common.git
+ARG MONASCA_COMMON_BRANCH=master
 
-ENV MONASCA_PERSISTER_REPO=https://github.com/openstack/monasca-persister.git
-ENV MONASCA_PERSISTER_BRANCH=master
+ARG MONASCA_PERSISTER_REPO=https://github.com/openstack/monasca-persister.git
+ARG MONASCA_PERSISTER_BRANCH=master
 
-RUN mkdir /source
-WORKDIR /source
 RUN git clone $MONASCA_COMMON_REPO -b $MONASCA_COMMON_BRANCH
-WORKDIR /source/monasca-common
+WORKDIR /monasca-common
 RUN mvn clean install
 
-WORKDIR /source
+WORKDIR /
 RUN git clone $MONASCA_PERSISTER_REPO -b $MONASCA_PERSISTER_BRANCH
-WORKDIR /source/monasca-persister
+WORKDIR /monasca-persister
 RUN mvn clean package
 
-RUN cp /source/monasca-persister/target/monasca-persister-*-SNAPSHOT-shaded.jar /monasca-persister.jar
+RUN cp /monasca-persister/target/monasca-persister-*-SNAPSHOT-shaded.jar /monasca-persister.jar
 
 WORKDIR /
 

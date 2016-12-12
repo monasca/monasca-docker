@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # wait for keystone API to come up
 sleep 1

@@ -11,6 +11,7 @@ copy supervisord.conf /etc/supervisor/supervisord.conf
 copy keystone-bootstrap.sh /keystone-bootstrap.sh
 copy preload.py /preload.py
 copy start.sh /start.sh
+copy exit-event-listener.py /usr/local/bin/exit-event-listener
 
 cmd /start.sh
 

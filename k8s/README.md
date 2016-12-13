@@ -1,11 +1,10 @@
-Monasca Kubernetes Configuration
-================================
+# Monasca Kubernetes Configuration #
 
-This demonstrates a simple Monasca deployment on Kubernetes. Persistent storage
-is handled by GlusterFS.
+This demonstrates a simple Monasca deployment on Kubernetes.
 
-Creating GlusterFS Volumes
---------------------------
+If desired it can be deployed using persistent storage via GlusterFS.
+
+## Creating GlusterFS Volumes ##
 
 Several services are configured to use GlusterFS to store persistent data. These
 config files assume that all needed volumes exist already, and if they don't
@@ -49,32 +48,47 @@ If no persistent storage is desired, the volume definitions for each of the
 above can be replaced with `emptyDir: {}`, though any data stored will be lost
 if the pods restart for any reason.
 
-Deploying
----------
+## Deploying with GlusterFS ##
 
-First, create the namespace and GlusterFS endpoints:
+Run the bash script `monasca-start-glusterfs.sh`.
 
-    kubectl create -f namespace.yml
-    kubectl create -f glusterfs.yml
+## Deploying without Persistent Storage ##
 
-Next, deploy the base services. These can be started in any order and don't
-depend on any other services to exist:
+Run the bash script `monasca-start.sh`.
 
-    kubectl create -f influx/
-    kubectl create -f keystone/
-    kubectl create -f mysql/
-    kubectl create -f zookeeper/
+## Know Issues and Workarounds (if applicable)
 
-Once all of the above have started successfully, the next batch can be brought
-up:
+#### Invalid Java Implementations
+ 
+The Java implementation for the API and Persister do not work with the version of influxdb. Use only the python implementations at this time.
 
-    kubectl create -f kafka/
-    kubectl create -f storm/
+#### Mon influxdb database has to be manually created
 
-Next, monasca can be started:
+The Influxdb deployment does not create the mon database.
 
-    kubectl create -f monasca/
+After running the deployment steps you must exec into the influxdb pod and create the database:
 
-Lastly, if desired, grafana can be added:
+```bash
+kubectl exec -it {{ influx_pod_name }} -n monitoring bash
+influx -execute "create database mon"
+```
 
-    kubectl create -f grafana/
+## Running Monasca within Kubernetes on a Macbook ##
+
+Kubernetes can be set up easily on a macbook via [Kube-cluster](https://github.com/TheNewNormal/kube-cluster-osx)
+
+Once you follow the steps to get a Kubernetes cluster up you can follow the steps from the section above - Deploying without Persisten Storage.
+
+#### Keystone issue and workaround
+
+In the kube-cluster environment the keystone pod has issues connecting to itself to set up the keystone users and groups.
+
+The workaround is to exec into the pod and manually run the configuration script until it succeeds without throwing a ConnectFailure Exception.
+
+```bash
+kubectl exec -it {{ keystone_pod_name }} -n monitoring bash
+./keystone-bootstrap.sh
+```
+
+## Future Work
+* Replace configuration files and bash scripts for deploying with [Helm](https://github.com/kubernetes/helm)

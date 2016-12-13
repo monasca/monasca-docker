@@ -23,5 +23,4 @@ spec:
       volumes:
       - name: config-volume
         configMap:
-          name: monasca-thresh.config
-
+          name: monasca-thresh-config

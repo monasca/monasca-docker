@@ -23,5 +23,5 @@ spec:
       volumes:
       - name: config-volume
         configMap:
-          name: monasca-persister.config.python
+          name: monasca-persister-python-config
 

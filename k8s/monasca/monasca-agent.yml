@@ -1,0 +1,44 @@
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: monasca-agent
+  namespace: monitoring
+spec:
+  template:
+    metadata:
+      labels:
+        target: node
+        app: monasca-agent
+    spec:
+      containers:
+        - name: monasca-agent
+          image: hoppalm/monasca-agent
+          env:
+            - name: AGENT_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: AGENT_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: KUBERNETES
+              value: "yes"
+            - name: OS_AUTH_URL
+              value: "http://keystone:35357/v3/"
+            - name: OS_USERNAME
+              value: "monasca-agent"
+            - name: MONASCA_URL
+              value: "http://monasca:8070/v2.0"
+            - name: PROMETHEUS_CLIENT
+              value: "yes"
+          volumeMounts:
+            - name: procmount
+              mountPath: /host/proc
+              readOnly: true
+      volumes:
+        - hostPath:
+            path: /proc
+          name: procmount
+

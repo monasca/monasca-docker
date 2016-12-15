@@ -1,35 +1,5 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_MONASCA",
-      "label": "monasca",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "monasca-grafana-datasource",
-      "pluginName": "Monasca"
-    }
-  ],
-  "__requires": [
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph",
-      "version": ""
-    },
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "4.0.0-pre1"
-    },
-    {
-      "type": "datasource",
-      "id": "monasca-grafana-datasource",
-      "name": "Monasca",
-      "version": "1.0.0"
-    }
-  ],
-  "id": null,
+  "id": 3,
   "title": "Deployment Data",
   "tags": [],
   "style": "dark",
@@ -72,9 +42,9 @@
   "annotations": {
     "list": []
   },
-  "refresh": "5s",
+  "refresh": "10s",
   "schemaVersion": 13,
-  "version": 2,
+  "version": 6,
   "links": [],
   "gnetId": null,
   "rows": [
@@ -86,7 +56,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_MONASCA}",
+          "datasource": "monasca-data",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -138,7 +108,7 @@
           "title": "Deployment CPU",
           "tooltip": {
             "msResolution": false,
-            "shared": true,
+            "shared": false,
             "sort": 0,
             "value_type": "individual"
           },
@@ -184,7 +154,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_MONASCA}",
+          "datasource": "monasca-data",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -236,7 +206,7 @@
           "title": "Network in",
           "tooltip": {
             "msResolution": false,
-            "shared": true,
+            "shared": false,
             "sort": 0,
             "value_type": "individual"
           },
@@ -269,7 +239,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_MONASCA}",
+          "datasource": "monasca-data",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -300,7 +270,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "aggregator": "sum",
+              "aggregator": "avg",
               "alias": "@deployment",
               "dimensions": [
                 {
@@ -321,7 +291,7 @@
           "title": "Network Out",
           "tooltip": {
             "msResolution": false,
-            "shared": true,
+            "shared": false,
             "sort": 0,
             "value_type": "individual"
           },
@@ -367,7 +337,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_MONASCA}",
+          "datasource": "monasca-data",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -418,7 +388,7 @@
           "title": "Memory rss bytes",
           "tooltip": {
             "msResolution": false,
-            "shared": true,
+            "shared": false,
             "sort": 0,
             "value_type": "individual"
           },
@@ -433,6 +403,104 @@
             {
               "format": "decbytes",
               "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Dashboard Row",
+      "titleSize": "h6"
+    },
+    {
+      "collapse": false,
+      "height": 250,
+      "isNew": false,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "id": 6,
+          "isNew": true,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "aggregator": "none",
+              "alias": "@deployment",
+              "dimensions": [
+                {
+                  "key": "deployment",
+                  "value": "$all"
+                }
+              ],
+              "error": "",
+              "metric": "kubernetes.deployment.unavailable_replicas",
+              "period": "300",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Unavailable Deployment Replicas",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": false,
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "none",
+              "label": "",
               "logBase": 1,
               "max": null,
               "min": null,

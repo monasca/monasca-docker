@@ -1,0 +1,27 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: monasca-agent-kubernetes-api
+  namespace: monitoring
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        target: kubernetes-api
+        app: monasca-agent
+    spec:
+      containers:
+        - name: monasca-agent
+          image: hoppalm/monasca-agent
+          env:
+            - name: KUBERNETES_API
+              value: "yes"
+            - name: OS_AUTH_URL
+              value: "http://keystone:35357/v3/"
+            - name: OS_USERNAME
+              value: "monasca-agent"
+            - name: MONASCA_URL
+              value: "http://monasca:8070/v2.0"
+

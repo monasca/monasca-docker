@@ -1,0 +1,33 @@
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: mysql-controller
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:5.5
+        ports:
+        - containerPort: 3306
+          name: client
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "secretmysql"
+        - name: MYSQL_DATABASE
+          value: "mon"
+        volumeMounts:
+        - name: sql-volume
+          mountPath: /docker-entrypoint-initdb.d
+      volumes:
+      - name: sql-volume
+        configMap:
+          name: mon.mysql

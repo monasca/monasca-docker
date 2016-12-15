@@ -79,16 +79,5 @@ Kubernetes can be set up easily on a macbook via [Kube-cluster](https://github.c
 
 Once you follow the steps to get a Kubernetes cluster up you can follow the steps from the section above - Deploying without Persisten Storage.
 
-#### Keystone issue and workaround
-
-In the kube-cluster environment the keystone pod has issues connecting to itself to set up the keystone users and groups.
-
-The workaround is to exec into the pod and manually run the configuration script until it succeeds without throwing a ConnectFailure Exception.
-
-```bash
-kubectl exec -it {{ keystone_pod_name }} -n monitoring bash
-./keystone-bootstrap.sh
-```
-
 ## Future Work
 * Replace configuration files and bash scripts for deploying with [Helm](https://github.com/kubernetes/helm)

@@ -1,8 +1,7 @@
 #!/bin/bash
 set -e
 
-# wait for keystone API to come up
-sleep 1
+sleep 5
 
 admin_username=${KEYSTONE_USERNAME:-"admin"}
 admin_password=${KEYSTONE_PASSWORD:-"s3cr3t"}
@@ -22,9 +21,6 @@ else
 fi
 
 if [[ -e /db-init ]]; then
-    echo "Database is empty, will perform initialization..."
-    keystone-manage db_sync
-
     echo "Creating bootstrap credentials..."
     keystone-manage bootstrap \
         --bootstrap-password $admin_password \
@@ -36,6 +32,26 @@ if [[ -e /db-init ]]; then
         --bootstrap-admin-url $admin_url \
         --bootstrap-public-url $public_url \
         --bootstrap-internal-url $internal_url
+
+    sleep 5
+
+    echo "Waiting for keystone to become available at $admin_url..."
+    success=false
+    for i in {1..10}; do
+        curl -sSf "$admin_url" > /dev/null
+        if [[ $? -eq 0 ]]; then
+            echo "Keystone API is up, continuing..."
+            success=true
+            break
+        else
+            echo "Connection to keystone failed, attempt #$i of 10"
+            sleep 1
+        fi
+    done
+
+    if [[ "$success" = false ]]; then
+        echo "Connection failed after max retries, preload may fail!"
+    fi
 
     echo "Preloading..."
     python /preload.py

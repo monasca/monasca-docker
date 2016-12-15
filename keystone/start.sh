@@ -32,12 +32,12 @@ if [[ "$KEYSTONE_DATABASE_BACKEND" =  "mysql" ]]; then
     else
         echo "Syncing keystone database to MySQL..."
         keystone-manage db_sync
+        touch /db-init
     fi
-
-    touch /db-init
 else
     echo "Syncing keystone database to sqlite..."
     keystone-manage db_sync
+    touch /db-init
 fi
 
 supervisord --nodaemon -c /etc/supervisor/supervisord.conf

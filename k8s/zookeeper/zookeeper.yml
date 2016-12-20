@@ -27,47 +27,8 @@ spec:
               mountPath: /datalog
       volumes:
         - name: data
-          glusterfs:
-            endpoints: glusterfs-cluster
-            path: monitoring-zookeeper
-            readOnly: false
+          persistentVolumeClaim:
+            claimName: monitoring-zookeeper
         - name: datalog
-          glusterfs:
-            endpoints: glusterfs-cluster
-            path: monitoring-zookeeper-log
-            readOnly: false
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: zookeeper
-  namespace: monitoring
-  labels:
-    app: zookeeper
-spec:
-  ports:
-    - name: client
-      port: 2181
-    - name: peer
-      port: 2888
-    - name: leader-election
-      port: 3888
-  clusterIP: None
-  selector:
-    app: zookeeper
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: zookeeper-client
-  namespace: monitoring
-  labels:
-    app: zookeeper
-spec:
-  type: NodePort
-  ports:
-    - name: client
-      port: 2181
-      targetPort: client
-  selector:
-    app: zookeeper
+          persistentVolumeClaim:
+            claimName: monitoring-zookeeper-log

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: monitoring-mysql
+  namespace: monitoring
+  annotations:
+    volume.beta.kubernetes.io/storage-class: gluster-heketi
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi

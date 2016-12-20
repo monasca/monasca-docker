@@ -15,10 +15,8 @@ spec:
     spec:
       volumes:
         - name: data
-          glusterfs:
-            endpoints: glusterfs-cluster
-            path: monitoring-influx
-            readOnly: false
+          persistentVolumeClaim:
+            claimName: monitoring-influx
         - name: config
           configMap:
             name: influxdb-1.0.0.conf
@@ -35,4 +33,3 @@ spec:
               mountPath: /var/lib/influxdb
             - name: config
               mountPath: /etc/influxdb
-

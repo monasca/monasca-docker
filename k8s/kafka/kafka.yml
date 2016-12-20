@@ -38,26 +38,8 @@ spec:
               mountPath: /prometheus-config
       volumes:
         - name: kafka
-          glusterfs:
-            endpoints: glusterfs-cluster
-            path: monitoring-kafka
-            readOnly: false
+          persistentVolumeClaim:
+            claimName: monitoring-kafka
         - name: kafka-exporter
           configMap:
             name: kafka.prometheus
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: kafka
-  namespace: monitoring
-  labels:
-    app: kafka
-spec:
-  type: NodePort
-  ports:
-    - name: kafka
-      port: 9092
-      targetPort: kafka
-  selector:
-    app: kafka

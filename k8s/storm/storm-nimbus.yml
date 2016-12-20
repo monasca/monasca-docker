@@ -31,4 +31,4 @@ spec:
       volumes:
       - name: config-volume
         configMap:
-          name: monasca-thresh-config
+          name: storm-config

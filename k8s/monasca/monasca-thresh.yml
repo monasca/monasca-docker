@@ -1,0 +1,31 @@
+---
+# TODO should this be a replication controller? it should only be run once...
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: monasca-thresh
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    app: monasca-thresh
+  template:
+    metadata:
+      labels:
+        app: monasca-thresh
+    spec:
+      containers:
+        - name: monasca-thresh
+          image: rbrndt/monasca-thresh:latest
+          volumeMounts:
+            - name: thresh-config-volume
+              mountPath: /config
+            - name: storm-config-volume
+              mountPath: /conf
+      volumes:
+        - name: thresh-config-volume
+          configMap:
+            name: monasca-thresh-config
+        - name: storm-config-volume
+          configMap:
+            name: storm-config

@@ -34,8 +34,5 @@ spec:
         configMap:
           name: mon.mysql
       - name: data
-        glusterfs:
-          endpoints: glusterfs-cluster
-          path: monitoring-mysql
-          readOnly: false
-
+        persistentVolumeClaim:
+          claimName: monitoring-mysql

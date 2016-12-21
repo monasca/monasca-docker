@@ -1,0 +1,43 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wordpress-mysql
+  namespace: website
+  labels:
+    app: wordpress
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: wordpress
+        tier: mysql
+    spec:
+      containers:
+      - image: mysql:5.6
+        name: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "password"
+        - name: MYSQL_DATABASE
+          value: "mon"
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: sql-volume
+          mountPath: /docker-entrypoint-initdb.d
+      - image: prom/mysqld-exporter
+        name: mysql-exporter
+        env:
+        - name: DATA_SOURCE_NAME
+          value: "root:password@(127.0.0.1:3306)/wordpress"
+        ports:
+        - containerPort: 9104
+          name: scrape
+      volumes:
+      - name: sql-volume
+        configMap:
+          name: exporter.sql

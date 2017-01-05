@@ -23,7 +23,7 @@ data:
     #
     ### base
     java.library.path: "/usr/local/lib:/opt/local/lib:/usr/lib"
-    storm.local.dir: "/var/storm"
+    storm.local.dir: "/data"
     storm.local.hostname: "{{STORM_LOCAL_HOSTNAME}}"
 
     ### zookeeper.*

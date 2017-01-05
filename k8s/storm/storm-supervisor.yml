@@ -14,13 +14,18 @@ spec:
         app: storm-supervisor
     spec:
       containers:
-      - name: monasca-thresh
-        image: timothyb89/storm:1.0.2.4
-        args: ["storm", "supervisor"]
-        volumeMounts:
-        - name: config-volume
-          mountPath: /config
+        - name: monasca-thresh
+          image: timothyb89/storm:1.0.2.4
+          args: ["storm", "supervisor"]
+          volumeMounts:
+            - name: thresh-config-volume
+              mountPath: /config
+            - name: storm-config-volume
+              mountPath: /conf
       volumes:
-      - name: config-volume
-        configMap:
-          name: storm-config
+        - name: thresh-config-volume
+          configMap:
+            name: monasca-thresh-config
+        - name: storm-config-volume
+          configMap:
+            name: storm-config

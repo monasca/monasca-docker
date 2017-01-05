@@ -22,6 +22,9 @@ spec:
               mountPath: /config
             - name: storm-config-volume
               mountPath: /conf
+          env:
+            - name: STORM_LOCAL_HOSTNAME
+              value: storm-nimbus
       volumes:
         - name: thresh-config-volume
           configMap:

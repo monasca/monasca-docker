@@ -21,15 +21,19 @@ spec:
             - containerPort: 6627
               name: nimbus
           env:
-          - name: STORM_LOCAL_HOSTNAME
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
+            - name: STORM_TEMPLATE_DIR
+              value: /tmpl
+            - name: STORM_CONF_DIR
+              value: /conf
+            - name: STORM_LOCAL_HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
           volumeMounts:
             - name: thresh-config-volume
               mountPath: /config
             - name: storm-config-volume
-              mountPath: /conf
+              mountPath: /tmpl
             - name: data
               mountPath: /data
       volumes:

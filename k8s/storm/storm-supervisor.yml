@@ -21,7 +21,12 @@ spec:
             - name: thresh-config-volume
               mountPath: /config
             - name: storm-config-volume
-              mountPath: /conf
+              mountPath: /tmpl
+          env:
+            - name: STORM_TEMPLATE_DIR
+              value: /tmpl
+            - name: STORM_CONF_DIR
+              value: /conf
       volumes:
         - name: thresh-config-volume
           configMap:

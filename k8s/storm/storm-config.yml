@@ -4,7 +4,7 @@ metadata:
   namespace: monitoring
 apiVersion: v1
 data:
-  storm.yaml: |
+  storm.yaml.template: |
     #
     # (C) Copyright 2015 Hewlett Packard Enterprise Development Company LP
     #
@@ -45,7 +45,7 @@ data:
     worker.childopts: -Xmx1280m -XX:+UseConcMarkSweepGC -Dcom.sun.management.jmxremote
 
     ### nimbus.* configs are for the master
-    nimbus.seeds: ["storm-nimbus"]
+    nimbus.seeds: ["nimbus"]
     nimbus.thrift.port: 6627
     nimbus.childopts: -Xmx256m
 

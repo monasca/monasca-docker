@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: storm-nimbus
+  name: nimbus
   namespace: monitoring
   labels:
     app: storm-nimbus

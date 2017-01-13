@@ -1,23 +1,28 @@
 ---
-apiVersion: v1
-kind: ReplicationController
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
-  name: influx-controller
+  name: influx
   namespace: monitoring
 spec:
   replicas: 1
-  selector:
-    app: influxdb
   template:
     metadata:
       labels:
         app: influxdb
     spec:
+      volumes:
+        - name: config
+          configMap:
+            name: influxdb-1.0.0.conf
       containers:
         - name: influxdb
-          image: monasca/influxdb:0.11.1
+          image: influxdb:1.1
           ports:
             - containerPort: 8086
               name: http
             - containerPort: 8083
               name: admin
+          volumeMounts:
+            - name: config
+              mountPath: /etc/influxdb

@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: influx-init-job
+  namespace: monitoring
+spec:
+  template:
+    metadata:
+      labels:
+        app: influx-init-job
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: influx-init-job
+          image: appropriate/curl:latest
+          command:
+            - "curl"
+            - "-X"
+            - "GET"
+            - "-G"
+            - "http://influxdb:8086/query"
+            - "--data-urlencode"
+            - "q=CREATE DATABASE \"mon\""

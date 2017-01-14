@@ -1,21 +1,17 @@
----
-# TODO should this be a plain pod? it should only be run once...
-apiVersion: v1
-kind: ReplicationController
+apiVersion: batch/v1
+kind: Job
 metadata:
-  name: monasca-thresh
+  name: monasca-thresh-submit
   namespace: monitoring
 spec:
-  replicas: 1
-  selector:
-    app: monasca-thresh
   template:
     metadata:
       labels:
-        app: monasca-thresh
+        app: monasca-thresh-submit
     spec:
+      restartPolicy: OnFailure
       containers:
-        - name: monasca-thresh
+        - name: monasca-thresh-submit
           image: rbrndt/monasca-thresh:latest
           volumeMounts:
             - name: thresh-config-volume

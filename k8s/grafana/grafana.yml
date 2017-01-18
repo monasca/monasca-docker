@@ -16,7 +16,7 @@ spec:
             name: grafana-config
       containers:
         - name: grafana
-          image: timothyb89/grafana:0.0.1
+          image: monasca/grafana:4.1.0-pre1-1.0.0
           ports:
             - name: http
               containerPort: 3000

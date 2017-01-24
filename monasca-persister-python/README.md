@@ -55,22 +55,28 @@ docker run -it monasca/persister:latest
 Configuration
 -------------
 
-The default configuration file refers to the following services:
- * `zookeeper` at `zookeeper:2181`
- * `kafka` at `kafka:9092`
- * `influxdb` at `influxdb`, port `8086`
+Several environment variables can be used to configure the Python persister:
+ * `DEBUG`: if `true`, enables `DEBUG`-level logging, default: `false`
+ * `VERBOSE`: if `true` and `DEBUG=false`, use `INFO`-level logging (otherwise
+   `WARN`), default: `true`
+ * `ZOOKEEPER_URI`: the host and port for zookeeper, default: `zookeeper:2181`
+ * `KAFKA_URI`: the host and port for kafka, default: `kafka:9092`
+ * `INFLUX_HOST`: the host for influxdb, default: `influxdb`
+ * `INFLUX_PORT`: the port for influxdb, default: `8086`
+ * `INFLUX_USER`: the influx username, default: `mon_persister`
+ * `INFLUX_PASSWORD`: the influx password, default: `password`
+ * `INFLUX_DB`: the influx database name, default: `mon`
 
-If these default values are not appropriate for your environment, they can be
-overridden by mounting a corrected config file to
-`/etc/monasca-persister/persister.conf`.
+If additional values need to be overridden, the a new jinja2 template can be
+provided by mounting a replacement at
+`/etc/monasca-persister/persister.conf.j2`. If jinja2 formatting is not desired,
+the environment variable `CONFIG_TEMPLATE` can be set to `false`.
 
-Roadmap
--------
+If necessary, the generated config file can be viewed at runtime by running:
 
-Future revisions of this image should support environment configuration for the
-recommended configuration (e.g. standard kafka -> persister -> influx), in
-particular hostnames and ports for the external services as well as logging
-levels.
+```bash
+docker exec -it some_container_id cat /etc/monasca-persister/persister.conf
+```
 
 [1]: https://github.com/hpcloud-mon/monasca-docker/blob/master/monasca-persister-python/Dockerfile
 [2]: https://github.com/hpcloud-mon/monasca-docker/blob/master/monasca-persister-java/Dockerfile
@@ -78,3 +84,5 @@ levels.
 [4]: https://github.com/openstack/monasca-persister/
 [5]: https://github.com/hpcloud-mon/monasca-docker/
 [6]: https://github.com/openstack/monasca-api/
+[7]: https://kubernetes.io/docs/user-guide/downward-api/
+[8]: https://github.com/hpcloud-mon/monasca-docker/blob/master/monasca-persister-python/persister.conf.j2

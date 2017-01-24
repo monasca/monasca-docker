@@ -26,3 +26,6 @@ retag mitaka mitaka-python
 
 build_branch "stable/newton" newton
 retag newton newton-python
+
+retag 1.3.0 latest
+retag 1.3.0 latest-python

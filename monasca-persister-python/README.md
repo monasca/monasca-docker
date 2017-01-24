@@ -72,7 +72,8 @@ provided by mounting a replacement at
 `/etc/monasca-persister/persister.conf.j2`. If jinja2 formatting is not desired,
 the environment variable `CONFIG_TEMPLATE` can be set to `false`.
 
-If necessary, the generated config file can be viewed at runtime by running:
+The config file source is available [in the repository][8]. If necessary, the
+generated config file can be viewed at runtime by running:
 
 ```bash
 docker exec -it some_container_id cat /etc/monasca-persister/persister.conf

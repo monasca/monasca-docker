@@ -2,11 +2,17 @@
 
 # A small collection of functions for automating bulk docker image builds.
 
-function build_branch() {
-  branch=$1
-  tag=$2
+# usage: build tag build_arg...
+# uses global $docker_repo
+function build() {
+  tag=$1
+  shift
 
   args=()
+  for arg in "$@"; do
+    args+=("--build-arg $arg")
+  done
+
   if [[ -n "$HTTP_PROXY" ]]; then
     args+=("--build-arg HTTP_PROXY=$HTTP_PROXY")
   fi
@@ -15,19 +21,20 @@ function build_branch() {
     args+=("--build-arg HTTPS_PROXY=$HTTPS_PROXY")
   fi
 
-  docker build \
+  echo docker build \
     -t ${docker_repo:?}:$tag \
-    --build-arg PERSISTER_BRANCH=$branch \
     "${args[@]}" \
     .
 
-  docker push ${docker_repo:?}/$tag
+  echo docker push ${docker_repo:?}:$tag
 }
 
+# usage: retag [old tag] [new tag]
+# uses global $docker_repo
 function retag() {
   old_tag=$1
   new_tag=$2
 
-  docker tag ${docker_repo:?}:$old_tag $docker_repo:$new_tag
-  docker push ${docker_repo:?}:$new_tag
+  echo docker tag ${docker_repo:?}:$old_tag $docker_repo:$new_tag
+  echo docker push ${docker_repo:?}:$new_tag
 }

@@ -11,20 +11,20 @@ source "$(dirname "$(dirname "$(readlink -f $0)")")/docker_build_util.sh"
 # shellcheck disable=SC2034
 docker_repo=${1:-"monasca/persister"}
 
-build_branch master master
+build master PERSISTER_BRANCH=master
 retag master master-python
 
-build_branch 1.3.0 1.3.0
+build 1.3.0 PERSISTER_BRANCH=1.3.0
 retag 1.3.0 1.3
 retag 1.3.0 1
 retag 1.3.0 1.3.0-python
 retag 1.3.0 1.3-python
 retag 1.3.0 1-python
 
-build_branch "stable/mitaka" mitaka
+build mitaka PERSISTER_BRANCH="stable/mitaka"
 retag mitaka mitaka-python
 
-build_branch "stable/newton" newton
+build newton PERSISTER_BRANCH="stable/newton"
 retag newton newton-python
 
 retag 1.3.0 latest

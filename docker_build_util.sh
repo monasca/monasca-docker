@@ -21,12 +21,13 @@ function build() {
     args+=("--build-arg HTTPS_PROXY=$HTTPS_PROXY")
   fi
 
-  echo docker build \
+  # shellcheck disable=SC2068
+  docker build \
     -t ${docker_repo:?}:$tag \
-    "${args[@]}" \
+    ${args[@]} \
     .
 
-  echo docker push ${docker_repo:?}:$tag
+  docker push ${docker_repo:?}:$tag
 }
 
 # usage: retag [old tag] [new tag]
@@ -35,6 +36,6 @@ function retag() {
   old_tag=$1
   new_tag=$2
 
-  echo docker tag ${docker_repo:?}:$old_tag $docker_repo:$new_tag
-  echo docker push ${docker_repo:?}:$new_tag
+  docker tag ${docker_repo:?}:$old_tag $docker_repo:$new_tag
+  docker push ${docker_repo:?}:$new_tag
 }

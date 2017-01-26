@@ -18,13 +18,13 @@ ENV CONFIG_TEMPLATE=true \
   INFLUX_PASSWORD=password \
   INFLUX_DB=mon
 
-RUN apk add --no-cache python py2-pip && \
+RUN apk add --no-cache python py2-pip py2-jinja2 && \
   apk add --no-cache --virtual build-dep \
      python-dev git make g++ linux-headers && \
   git clone \
     --single-branch --depth=1 -b $PERSISTER_BRANCH \
     $PERSISTER_REPO /monasca-persister && \
-  pip install influxdb jinja2 && \
+  pip install influxdb && \
   cd /monasca-persister && \
   pip install -r requirements.txt && \
   python setup.py install && \

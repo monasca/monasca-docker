@@ -1,0 +1,38 @@
+users:
+  - username: mini-mon
+    password: password
+    project: mini-mon
+    role: monasca-user
+
+  - username: monasca-agent
+    password: password
+    project: mini-mon
+    role: monasca-agent
+
+  - username: mini-mon
+    password: password
+    project: mini-mon
+    role: admin
+
+  - username: admin
+    password: secretadmin
+    project: admin
+    role: monasca-user
+
+  - username: demo
+    password: secretadmin
+    project: demo
+    role: monasca-user
+
+  - username: monasca-read-only-user
+    password: password
+    project: mini-mon
+    role: monasca-read-only-user
+
+endpoints:
+  - name: monasca
+    description: Monasca monitoring service
+    type: monitoring
+    region: RegionOne
+    url: http://monasca:8070/v2.0
+    interfaces: ['public', 'internal', 'admin']

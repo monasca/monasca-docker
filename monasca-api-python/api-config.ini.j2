@@ -2,8 +2,7 @@
 name = monasca_api
 
 [pipeline:main]
-# Add validator in the pipeline so the metrics messages can be validated.
-pipeline = auth keystonecontext api
+pipeline = request_id auth api
 
 [app:api]
 paste.app_factory = monasca_api.api.server:launch
@@ -11,12 +10,12 @@ paste.app_factory = monasca_api.api.server:launch
 [filter:auth]
 paste.filter_factory = keystonemiddleware.auth_token:filter_factory
 
-[filter:keystonecontext]
-paste.filter_factory = monasca_api.middleware.keystone_context_filter:filter_factory
+[filter:request_id]
+paste.filter_factory = oslo_middleware.request_id:RequestId.factory
 
 [server:main]
 use = egg:gunicorn#main
-host = 0.0.0.0
-port = 8070
+host = 127.0.0.1
+port = {{ API_PORT }}
 workers = 1
 proc_name = monasca_api

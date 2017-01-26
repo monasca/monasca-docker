@@ -5,11 +5,10 @@ keys = root, sqlalchemy, kafka
 keys = console
 
 [formatters]
-keys = generic
+keys = context
 
 [logger_root]
-level = DEBUG
-formatter = default
+level = {{ LOG_LEVEL_ROOT }}
 handlers = console
 
 [logger_sqlalchemy]
@@ -17,23 +16,21 @@ qualname = sqlalchemy.engine
 # "level = INFO" logs SQL queries.
 # "level = DEBUG" logs SQL queries and results.
 # "level = WARN" logs neither.  (Recommended for production systems.)
-level = DEBUG
-formatter = default
+level = ERROR
 handlers = console
 propagate=0
 
 [logger_kafka]
 qualname = kafka
-level = DEBUG
-formatter = default
+level = WARN
 handlers = console
 propagate = 0
 
 [handler_console]
 class = logging.StreamHandler
 args = (sys.stderr,)
-level = DEBUG
-formatter = generic
+level = {{ LOG_LEVEL_CONSOLE }}
+formatter = context
 
-[formatter_generic]
-format = %(asctime)s %(levelname)s [%(name)s][%(threadName)s] %(message)s
+[formatter_context]
+class = oslo_log.formatters.ContextFormatter

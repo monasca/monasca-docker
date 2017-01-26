@@ -43,7 +43,6 @@ driver = monasca_api.common.messaging.kafka_publisher:KafkaPublisher
 # The driver to use for the metrics repository
 # Switches depending on backend database in use. Influxdb or Cassandra.
 metrics_driver = monasca_api.common.repositories.influxdb.metrics_repository:MetricsRepository
-#metrics_driver = monasca_api.common.repositories.cassandra.metrics_repository:MetricsRepository
 
 # The driver to use for the alarm definitions repository
 alarm_definitions_driver = monasca_api.common.repositories.sqla.alarm_definitions_repository:AlarmDefinitionsRepository
@@ -57,13 +56,12 @@ notifications_driver = monasca_api.common.repositories.sqla.notifications_reposi
 # The driver to use for the notification  method type repository
 notification_method_type_driver = monasca_api.common.repositories.sqla.notification_method_type_repository:NotificationMethodTypeRepository
 
-
 [dispatcher]
 driver = v2_reference
 
 [kafka]
 # The endpoint to the kafka server
-uri = kafka:9092
+uri = {{ KAFKA_URI }}
 
 # The topic that metrics will be published too
 metrics_topic = metrics
@@ -95,41 +93,29 @@ partitions = 0
 [influxdb]
 # Only needed if Influxdb database is used for backend.
 # The IP address of the InfluxDB service.
-ip_address = influxdb
+ip_address = {{ INFLUX_HOST }}
 
 # The port number that the InfluxDB service is listening on.
-port = 8086
+port = {{ INFLUX_PORT }}
 
 # The username to authenticate with.
-user = mon_api
+user = {{ INFLUX_USER }}
 
 # The password to authenticate with.
-password = password
+password = {{ INFLUX_PASSWORD }}
 
 # The name of the InfluxDB database to use.
-database_name = mon
-
-[cassandra]
-# Only needed if Cassandra database is used for backend.
-# Comma separated list of Cassandra node IP addresses. No spaces.
-cluster_ip_addresses: 127.0.0.1
-keyspace: monasca
+database_name = {{ INFLUX_DB }}
 
 [database]
-url = "mysql+pymysql://monapi:password@mysql/mon"
-
-# [mysql]
-# database_name = mon
-# hostname = 127.0.0.1
-# username = monapi
-# password = password
+url = "mysql+pymysql://{{ MYSQL_USER }}:{{ MYSQL_PASSWORD }}@{{ MYSQL_HOST }}/{{ MYSQL_DB }}"
 
 [keystone_authtoken]
-identity_uri = http://keystone:35357
-auth_uri = http://keystone:5000
-admin_password = secretadmin
-admin_user = admin
-admin_tenant_name = admin
+identity_uri = {{ KEYSTONE_IDENTITY_URI }}
+auth_uri = {{ KEYSTONE_AUTH_URI }}
+admin_password = {{ KEYSTONE_ADMIN_PASSWORD }}
+admin_user = {{ KEYSTONE_ADMIN_USER }}
+admin_tenant_name = {{ KEYSTONE_ADMIN_TENANT }}
 cafile =
 certfile =
 keyfile =

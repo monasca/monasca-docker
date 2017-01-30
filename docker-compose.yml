@@ -1,0 +1,103 @@
+version: '2'
+services:
+  influxdb:
+    image: influxdb:latest
+  influx-init:
+    image: appropriate/curl:latest
+    command: |
+      curl -X POST -G http://influxdb:8086/query --data-urlencode q="CREATE DATABASE \"mon\""
+    depends_on:
+      - influxdb
+
+  zookeeper:
+    image: zookeeper:3.3
+  kafka:
+    image: monasca/kafka:0.8.1.1-2.9.2
+    environment:
+      ZOOKEEPER_CONNECTION_STRING: "zookeeper:2181"
+      KAFKA_ADVERTISED_HOSTNAME: "kafka"
+      KAFKA_DELETE_TOPIC_ENABLE: "true"
+    depends_on:
+      - zookeeper
+  kafka-init:
+    image: monasca/kafka:0.8.1.1-2.9.2
+    depends_on:
+      - kafka
+    command: >
+      sh -c "kafka-topics.sh --zookeeper zookeeper:2181
+      --create --topic metrics --partitions 1
+      --replication-factor 1 &&
+      kafka-topics.sh --zookeeper zookeeper:2181
+      --create --topic alarm-state-transitions --partitions 1
+      --replication-factor 1"
+
+  mysql:
+    image: mysql:5.5
+    environment:
+      MYSQL_ROOT_PASSWORD: secretmysql
+      MYSQL_USER: monapi
+      MYSQL_DATABASE: mon
+    volumes:
+      - ./k8s/mysql/mon_mysql.sql:/docker-entrypoint-initdb.d/mon_mysql.sql
+
+  keystone-mysql:
+    image: mysql:5.5
+    environment:
+      MYSQL_DATABASE: keystone
+      MYSQL_USER: keystone
+      MYSQL_PASSWORD: keystone
+      MYSQL_RANDOM_ROOT_PASSWORD: "True"
+
+  keystone:
+    image: monasca/keystone:1.0.6
+    environment:
+      KEYSTONE_HOST: keystone
+      KEYSTONE_PASSWORD: secretadmin
+      KEYSTONE_DATABASE_BACKEND: mysql
+      KEYSTONE_MYSQL_HOST: keystone-mysql
+      KEYSTONE_MYSQL_USER: keystone
+      KEYSTONE_MYSQL_PASSWORD: keystone
+      KEYSTONE_MYSQL_DATABASE: keystone
+    volumes:
+      - ./keystone/preload.yml:/preload.yml
+    depends_on:
+      - keystone-mysql
+    ports:
+      - "5000:5000"
+      - "35357:35357"
+
+  monasca:
+    image: monasca/api:master
+    depends_on:
+      - influxdb
+      - keystone
+      - mysql
+      - zookeeper
+      - kafka
+    ports:
+      - "8070:8070"
+
+  monasca-persister:
+    image: monasca/persister:master
+    command: sh -c "sleep 15 && /start.sh"
+    depends_on:
+      - monasca
+      - influxdb
+      - zookeeper
+      - kafka
+
+  grafana:
+    image: monasca/grafana:4.1.0-pre1-1.0.0
+    environment:
+      GF_AUTH_BASIC_ENABLED: "false"
+      GF_USERS_ALLOW_SIGN_UP: "true"
+      GF_USERS_ALLOW_ORG_CREATE: "true"
+      GF_AUTH_KEYSTONE_ENABLED: "true"
+      GF_AUTH_KEYSTONE_AUTH_URL: http://keystone:5000
+      GF_AUTH_KEYSTONE_VERIFY_SSL_CERT: "false"
+      GF_AUTH_KEYSTONE_DEFAULT_DOMAIN: "Default"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - keystone
+      - monasca

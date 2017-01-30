@@ -40,4 +40,6 @@ RUN apk add --no-cache python py2-pip py2-jinja2 && \
 COPY api-* /etc/monasca/
 COPY template.py start.sh /
 
+EXPOSE 8070
+
 CMD ["/start.sh"]

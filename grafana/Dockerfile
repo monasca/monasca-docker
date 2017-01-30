@@ -36,5 +36,6 @@ run mkdir -p /var/lib/grafana && \
   rm -rf /go/pkg
 
 copy grafana.ini /etc/grafana/grafana.ini
+expose 3000
 
 cmd ["/go/bin/grafana-server", "-config", "/etc/grafana/grafana.ini", "-homepath", "/var/lib/grafana"]

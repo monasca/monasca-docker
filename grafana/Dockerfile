@@ -1,11 +1,11 @@
 from alpine:3.5
 
-env GRAFANA_REPO="https://github.com/twc-openstack/grafana.git" \
-  GRAFANA_BRANCH="master-keystone" \
-  MONASCA_DATASOURCE_REPO=https://git.openstack.org/openstack/monasca-grafana-datasource \
-  MONASCA_DATASOURCE_BRANCH=master \
-  GOPATH=/go \
-  GOBIN=/go/bin
+arg GRAFANA_REPO=https://github.com/twc-openstack/grafana.git
+arg GRAFANA_BRANCH=master-keystone
+arg MONASCA_DATASOURCE_REPO=https://git.openstack.org/openstack/monasca-grafana-datasource
+arg MONASCA_DATASOURCE_BRANCH=master
+
+env GOPATH=/go GOBIN=/go/bin
 
 run mkdir -p /var/lib/grafana && \
   mkdir -p $GOPATH/src/github.com/grafana && \

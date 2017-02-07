@@ -1,0 +1,11 @@
+# (C) Copyright 2017 Hewlett Packard Enterprise Development LP
+
+init_config:
+  connection_timeout: {{ CADVISOR_TIMEOUT | default(3) }}
+
+instances:
+  {% if CADVISOR_HOST %}
+  - cadvisor_url: "{{ CADVISOR_HOST }}"
+  {% elif KUBERNETES or KUBERNETES_API %}
+  - kubernetes_detect_cadvisor: True
+  {% endif %}

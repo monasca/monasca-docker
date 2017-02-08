@@ -30,6 +30,10 @@ if [ "$HOSTNAME_FROM_KUBERNETES" = "true" ]; then
   export AGENT_HOSTNAME
 fi
 
+if [ "$DOCKER" = "true" ]; then
+  template $PLUGIN_TEMPLATES/docker.yaml.j2 $AGENT_PLUGINS/docker.yaml
+fi
+
 # cadvisor: optional in docker, required in k8s
 # - docker: CADVISOR_HOST must be defined
 # - k8s: either KUBERNETES or KUBERNETES_HOST must be nonempty

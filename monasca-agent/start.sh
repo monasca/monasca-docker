@@ -51,6 +51,11 @@ if [ "$KUBERNETES_API" = "true" ]; then
   template $PLUGIN_TEMPLATES/kubernetes_api.yaml.j2 $AGENT_PLUGINS/kubernetes_api.yaml
 fi
 
+# prometheus scraping
+if [ "$PROMETHEUS" = "true" ]; then
+  template $PLUGIN_TEMPLATES/prometheus.yaml.j2 $AGENT_PLUGINS/prometheus.yaml
+fi
+
 # apply user templates
 for f in $USER_PLUGINS/*.yaml.j2; do
   template "$f" "$AGENT_PLUGINS/$(basename "$f" .j2)"

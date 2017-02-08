@@ -13,15 +13,8 @@ spec:
     spec:
       containers:
       - name: monasca-persister
-        image: rbrndt/monasca-persister-python:latest
+        image: monasca/persister:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8090
           name: admin
-        volumeMounts:
-        - name: config-volume
-          mountPath: /etc/monasca-persister
-      volumes:
-      - name: config-volume
-        configMap:
-          name: monasca-persister-python-config
-

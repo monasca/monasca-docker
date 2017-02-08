@@ -149,8 +149,9 @@ Additionally, each entry can specify a set of dimensions like so:
 
 Note that setting `PROMETHEUS_ENDPOINTS` disables autodetection.
 
-This plugin is intended to be run from a single host, ideally alongside the
-Kubernetes API plugin.
+When autodetection is enabled, this plugin will automatically scrape all
+annotated Prometheus endpoints on the node the agent is running on. Ideally, it
+should be run alongside the Kubernetes plugin as a DaemonSet on each node.
 
 ### cAdvisor Plugin
 

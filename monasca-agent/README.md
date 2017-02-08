@@ -1,0 +1,211 @@
+monasca-agent Dockerfile
+========================
+
+This image contains a containerized version of the Monasca agent. For more
+information on the Monasca project, see [the wiki][1].
+
+Sources: [monasca-agent][2] &middot; [monasca-docker][3] &middot; [Dockerfile][4]
+
+Tags
+----
+
+Images in this repository are tagged as follows:
+
+ * `latest`: refers to the latest stable point release, e.g. `1.6.0`
+ * `1.6.0`, `1.6`, `1`: standard semver tags, based on git tags in the
+   [official repository][2].
+ * `mitaka`, `newton`, etc: named versions following OpenStack release names
+   built from the tip of `stable/RELEASENAME` branches in the repository
+ * `master`, `master-DATESTAMP`: unstable testing builds from the master branch,
+   these may have features or enhancements not available in stable releases, but
+   are not production-ready.
+
+Note that features in this Dockerfile, particularly relating to Docker and
+Kubernetes monitoring, require plugins that have not yet been officially
+released or merged. Until this changes, only `master` images may be available.
+
+Usage
+-----
+
+The agent requires at least a reachable [Monasca API][5] server. Access to
+additional services, like the Kubernetes API, is also necessary if they are to
+be monitored.
+
+In environments resembling the official [docker-compose][3] or [Kubernetes][6]
+environments, the image does not require additional configuration parameters and
+can be minimally run like so:
+
+    docker run -it monasca/agent:latest
+
+However, without any plugins enabled (the default config), the agent will not
+collect any metrics. This agent container supports a number of "monitoring
+scenarios" that can be enabled via environment variables passed at container
+startup:
+
+ * Docker container monitoring: On a plain Docker host, collects standard
+   system-level metrics about each running container (e.g. cpu, memory, etc).
+   Requires `DOCKER=true`.
+ * Kubernetes container monitoring: Collects container metrics for a particular
+   node from cAdvisor. Intended to be run on each node as a `DaemonSet`.
+   Requires `KUBERNETES=true`.
+ * Kubernetes API monitoring: Collects metrics about a Kubernetes cluster,
+   including health status, node disk/memory pressure, capacities, etc.
+   Requires `KUBERNETES_API=true`.
+ * cAdvisor monitoring: collects host metrics from a cAdvisor instance, such as
+   the instance embedded in the Kubernetes API server. Requires `CADVISOR=true`.
+ * Prometheus monitoring: Scrapes metrics from applications exposing Prometheus
+   endpoints. In Kubernetes environments, these can be detected automatically
+   when run alongside the Kubernetes plugin. Requires `PROMETHEUS=true`.
+
+Note that when running in a Kubernetes environment, additional variables must be
+set via the [Downward API][7]:
+
+ * `AGENT_POD_NAME`: set `fieldRef` to `fieldPath: metadata.name`
+ * `AGENT_POD_NAMESPACE`: set `fieldRef` to `fieldPath: metadata.namespace`
+
+When monitoring parts of a Kubernetes environment externally, additional
+variables must be set instead, see below for details.
+
+Configuration
+-------------
+
+ | Variable                 | Default          | Description                         |
+ |--------------------------|------------------|-------------------------------------|
+ | `LOG_LEVEL`              | `WARN`           | Python logging level                |
+ | `OS_AUTH_URL`            | `http://keystone:35357/v3/` | Versioned Keystone URL   |
+ | `OS_USERNAME`            | `monasca-agent`  | Agent Keystone username             |
+ | `OS_PASSWORD`            | `password`       | Agent Keystone password             |
+ | `OS_USER_DOMAIN_NAME`    | `Default`        | Agent Keystone user domain          |
+ | `OS_PROJECT_NAME`        | `mini-mon`       | Agent Keystone project name         |
+ | `OS_PROJECT_DOMAIN_NAME` | `Default`        | Agent Keystone project domain       |
+ | `MONASCA_URL`            | `http://monasca:8070/v2.0` | Versioned Monasca API URL |
+ | `HOSTNAME_FROM_KUBERNETES` | `false` | If true, determine node hostname from Kubernetes  |
+
+Note that additional variables can be specified as well, see the
+[config template][8] for a definitive list.
+
+### Docker Plugin
+
+This plugin is enabled when `DOCKER=true`. It has the following options:
+
+ * `DOCKER_ROOT`: The mounted host rootfs volume. Default: `/host`
+ * `DOCKER_SOCKET`: The mounted Docker socket. Default: `/var/run/docker.sock`
+
+This plugin monitors Docker containers directly. It should only be used in a
+bare Docker environment (i.e. not Kubernetes), and requires two mounted volumes
+from the host:
+
+ * Host `/` mounted to `/host` (path configurable with `DOCKER_ROOT`)
+ * Host `/var/run/docker.sock` mounted to `/var/run/docker.sock` (path
+   configurable with `DOCKER_SOCKET`)
+
+### Kubernetes Plugin
+
+This plugin is enabled when `KUBERNETES=true`. It has the following options:
+
+ * `KUBERNETES_TIMEOUT`: The K8s API connection timeout. Default: `3`
+
+The Kubernetes plugin is intended to be run as a DaemonSet on each Kubernetes
+node. In order for API endpoints to be detected correctly, `AGENT_POD_NAME` and
+`AGENT_POD_NAMESPACE` must be set using the [Downward API][7] as described
+above.
+
+### Kubernetes API Plugin
+
+This plugin is enabled when `KUBERNETES_API=true`. It has the following options:
+
+ * `KUBERNETES_API_HOST`: If set, manually sets the location of the Kubernetes
+   API host. Default: unset
+ * `KUBERNETES_API_PORT`: If set, manually sets the port for of the Kubernetes
+   API host. Only used if `KUBERNETES_API_HOST` is also set. Default: 8080
+ * `KUBERNETES_API_CUSTOM_LABELS`: If set, provides a list of Kubernetes label
+   keys to include as dimensions from gathered metrics. Labels should be comma
+   separated strings, such as `label1,label2,label3`. The `app` label is always
+   included regardless of this value. Default: unset
+
+The Kubernetes API plugin is intended to be run as a standalone deployment and
+will collect cluster-level metrics.
+
+### Prometheus Plugin
+
+This plugin is enabled when `PROMETHEUS=true`. It has the following options:
+
+ * `PROMETHEUS_TIMEOUT`: The connection timeout. Default: `3`
+ * `PROMETHEUS_ENDPOINTS`: A list of endpoints to scrape. If unset,
+   they will be determined automatically via the Kubernetes API. See below for
+   syntax. Default: unset
+ * `PROMETHEUS_DETECT_METHOD`: When endpoints are determined automatically,
+   this specifies the resource type to scan, one of: `pod`, `service`.
+   Default: `pod`
+ * `PROMETHEUS_KUBERNETES_LABELS`: When endpoints are determined automatically,
+   this comma-separated list of labels will be included as dimensions (by name).
+   Default: `app`
+
+If desired, a static list of Prometheus endpoints can be provided by setting
+`PROMETHEUS_ENDPOINTS`. Entries in this list should be comma-separated.
+Additionally, each entry can specify a set of dimensions like so:
+
+    http://host-a/metrics,http://host-b/metrics|prop=value&prop2=value2,http://host-c
+
+Note that setting `PROMETHEUS_ENDPOINTS` disables autodetection.
+
+This plugin is intended to be run from a single host, ideally alongside the
+Kubernetes API plugin.
+
+### cAdvisor Plugin
+
+This plugin is enabled when `CADVISOR=true`. It has the following options:
+
+ * `CADVISOR_TIMEOUT`: The connection timeout for the cAdvisor API. Default: `3`
+ * `CADVISOR_URL`: If set, sets the URL at which to access cAdvisor. If unset,
+   (default) the cAdvisor host will be determined automatically via the
+   Kubernetes API.
+
+This plugin collects host-level metrics from a running cAdvisor instance.
+cAdvisor is included in `kubelet` when in Kubernetes environments and is
+necessary to retrieve host-level metrics. As with the Kubernetes plugin,
+`AGENT_POD_NAME` and `AGENT_POD_NAMESPACE` must be set to determine the URL
+automatically.
+
+cAdvisor can be easily run in [standard Docker environments][9] or directly on
+host systems. In these cases, the URL must be manually provided via
+`CADVISOR_URL`.
+
+### Custom Plugins
+
+Custom plugin configuration files can be provided to the container by mounting
+them to `/plugins.d/*.yaml`. If they have a `.j2` extension, they will be
+processed as Jinja2 templates with access to all environment variables.
+
+Building
+--------
+
+To build the container from scratch, run:
+
+    docker build -t youruser/monasca-agent:latest .
+
+A few build argument can be set:
+
+ * `AGENT_REPO`: a git repository (`http://`, `https://`, or `git://`) with
+   agent code to install
+ * `AGENT_BRANCH`: a git refspec (not necessarily branch) to pull from. This can
+   be a tagged point release (e.g. `1.6.0`), an OpenStack release branch (e.g.
+   `stable/newton`), a Gerrit patch ref (e.g. `refs/changes/71/427271/10`),
+   or any other valid Git ref for the target repository.
+ * `REBULID`: a simple method to invalidate the Docker image cache. Set to
+   `--build-arg REBUILD="$(date)"` to force a full image rebuild.
+ * `HTTP_PROXY` and `HTTPS_PROXY` should be set as needed for your environment
+
+If you'd like to build this image against an uncommitted working tree, consider
+using [git-sync][10] to mirror your local tree to a temporary git repository.
+
+[1]: https://wiki.openstack.org/wiki/Monasca
+[2]: https://github.com/openstack/monasca-agent
+[3]: https://github.com/hpcloud-mon/monasca-docker/
+[4]: https://github.com/hpcloud-mon/monasca-docker/blob/master/monasca-agent/Dockerfile
+[5]: https://hub.docker.com/r/monasca/api/
+[6]: https://github.com/hpcloud-mon/monasca-docker/blob/master/k8s/
+[7]: https://kubernetes.io/docs/user-guide/downward-api/
+[8]: https://github.com/hpcloud-mon/monasca-docker/blob/master/monasca-agent/agent.yaml.j2
+[9]: https://github.com/google/cadvisor#quick-start-running-cadvisor-in-a-docker-container
+[10]: https://github.com/timothyb89/git-sync

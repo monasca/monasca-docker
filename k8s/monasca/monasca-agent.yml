@@ -13,7 +13,8 @@ spec:
     spec:
       containers:
         - name: monasca-agent
-          image: hoppalm/monasca-agent
+          image: monasca/agent:latest
+          imagePullPolicy: Always
           env:
             - name: AGENT_POD_NAME
               valueFrom:
@@ -24,15 +25,13 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: KUBERNETES
-              value: "yes"
-            - name: OS_AUTH_URL
-              value: "http://keystone:35357/v3/"
-            - name: OS_USERNAME
-              value: "monasca-agent"
-            - name: MONASCA_URL
-              value: "http://monasca:8070/v2.0"
-            - name: PROMETHEUS_CLIENT
-              value: "yes"
+              value: "true"
+            - name: PROMETHEUS
+              value: "true"
+            - name: PROMETHEUS_DETECT_METHOD
+              value: pod
+            - name: CADVISOR
+              value: "true"
           volumeMounts:
             - name: procmount
               mountPath: /host/proc
@@ -41,4 +40,3 @@ spec:
         - hostPath:
             path: /proc
           name: procmount
-

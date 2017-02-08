@@ -56,12 +56,16 @@ fi
 
 # apply user templates
 for f in $USER_PLUGINS/*.yaml.j2; do
-  template "$f" "$AGENT_PLUGINS/$(basename "$f" .j2)"
+  if [ -e "$f" ]; then
+    template "$f" "$AGENT_PLUGINS/$(basename "$f" .j2)"
+  fi
 done
 
 # copy plain user plugins
 for f in $USER_PLUGINS/*.yaml; do
-  cp "$f" "$AGENT_PLUGINS/$(basename "$f")"
+  if [ -e "$f" ]; then
+    cp "$f" "$AGENT_PLUGINS/$(basename "$f")"
+  fi
 done
 
 template $AGENT_CONF/agent.yaml.j2 $AGENT_CONF/agent.yaml

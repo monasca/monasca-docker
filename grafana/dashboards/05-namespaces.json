@@ -1,35 +1,5 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_MONASCA",
-      "label": "monasca",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "monasca-grafana-datasource",
-      "pluginName": "Monasca"
-    }
-  ],
-  "__requires": [
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph",
-      "version": ""
-    },
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "4.0.0-pre1"
-    },
-    {
-      "type": "datasource",
-      "id": "monasca-grafana-datasource",
-      "name": "Monasca",
-      "version": "1.0.0"
-    }
-  ],
-  "id": null,
+  "id": 4,
   "title": "Namespace Data",
   "tags": [],
   "style": "dark",
@@ -86,7 +56,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_MONASCA}",
+          "datasource": null,
           "editable": true,
           "error": false,
           "fill": 1,
@@ -184,7 +154,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_MONASCA}",
+          "datasource": null,
           "editable": true,
           "error": false,
           "fill": 1,
@@ -269,7 +239,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_MONASCA}",
+          "datasource": null,
           "editable": true,
           "error": false,
           "fill": 1,
@@ -367,7 +337,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "${DS_MONASCA}",
+          "datasource": null,
           "editable": true,
           "error": false,
           "fill": 1,

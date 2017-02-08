@@ -4,8 +4,8 @@ init_config:
   connection_timeout: {{ CADVISOR_TIMEOUT | default(3) }}
 
 instances:
-  {% if CADVISOR_HOST %}
-  - cadvisor_url: "{{ CADVISOR_HOST }}"
-  {% elif KUBERNETES or KUBERNETES_API %}
+  {% if CADVISOR_URL %}
+  - cadvisor_url: "{{ CADVISOR_URL }}"
+  {% else %}
   - kubernetes_detect_cadvisor: True
   {% endif %}

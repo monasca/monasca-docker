@@ -34,10 +34,8 @@ if [ "$DOCKER" = "true" ]; then
   template $PLUGIN_TEMPLATES/docker.yaml.j2 $AGENT_PLUGINS/docker.yaml
 fi
 
-# cadvisor: optional in docker, required in k8s
-# - docker: CADVISOR_HOST must be defined
-# - k8s: either KUBERNETES or KUBERNETES_HOST must be nonempty
-if [ -n "$CADVISOR_HOST" -o -n "$KUBERNETES" -o -n "$KUBERNETES_API" ]; then
+# cadvisor
+if [ "$CADVISOR_HOST" = "true" ]; then
   template $PLUGIN_TEMPLATES/cadvisor.yaml.j2 $AGENT_PLUGINS/cadvisor.yaml
 fi
 

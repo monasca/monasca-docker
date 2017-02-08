@@ -3,6 +3,10 @@ FROM alpine:3.5
 ARG PERSISTER_REPO=https://github.com/openstack/monasca-persister.git
 ARG PERSISTER_BRANCH="master"
 
+# To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
+# `docker build`
+ARG REBUILD=1
+
 ENV CONFIG_TEMPLATE=true \
   DEBUG=false \
   VERBOSE=true \

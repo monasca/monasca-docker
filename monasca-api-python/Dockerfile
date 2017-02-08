@@ -3,6 +3,10 @@ FROM alpine:3.5
 ARG API_REPO=https://github.com/openstack/monasca-api.git
 ARG API_BRANCH=master
 
+# To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
+# `docker build`
+ARG REBUILD=1
+
 ENV CONFIG_TEMPLATE=true \
   LOG_LEVEL_ROOT=WARN \
   LOG_LEVEL_CONSOLE=INFO \

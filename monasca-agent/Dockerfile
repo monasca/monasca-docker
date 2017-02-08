@@ -3,6 +3,10 @@ FROM alpine:3.5
 ARG AGENT_REPO=https://git.openstack.org/openstack/monasca-agent
 ARG AGENT_BRANCH="master"
 
+# To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running 
+# `docker build`
+ARG REBUILD=1
+
 ENV CONFIG_TEMPLATE=true \
   OS_AUTH_URL=http://keystone:35357/v3/ \
   OS_USERNAME=monasca-agent \

@@ -5,6 +5,10 @@ arg GRAFANA_BRANCH=master-keystone
 arg MONASCA_DATASOURCE_REPO=https://git.openstack.org/openstack/monasca-grafana-datasource
 arg MONASCA_DATASOURCE_BRANCH=master
 
+# To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
+# `docker build`
+arg REBUILD=1
+
 env GOPATH=/go GOBIN=/go/bin
 
 run mkdir -p /var/lib/grafana && \

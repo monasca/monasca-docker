@@ -35,7 +35,7 @@ if [ "$DOCKER" = "true" ]; then
 fi
 
 # cadvisor
-if [ "$CADVISOR_HOST" = "true" ]; then
+if [ "$CADVISOR" = "true" ]; then
   template $PLUGIN_TEMPLATES/cadvisor.yaml.j2 $AGENT_PLUGINS/cadvisor.yaml
 fi
 

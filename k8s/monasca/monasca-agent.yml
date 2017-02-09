@@ -30,6 +30,8 @@ spec:
               value: "true"
             - name: PROMETHEUS_DETECT_METHOD
               value: pod
+            - name: HOSTNAME_FROM_KUBERNETES
+              value: "true"
             - name: CADVISOR
               value: "true"
           volumeMounts:

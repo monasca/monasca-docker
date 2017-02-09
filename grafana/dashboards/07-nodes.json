@@ -52,29 +52,29 @@
         "name": "hostname",
         "options": [
           {
+            "selected": true,
             "text": "All",
-            "value": "$__all",
-            "selected": true
+            "value": "$__all"
           },
           {
+            "selected": false,
             "text": "mn1-kub1",
-            "value": "mn1-kub1",
-            "selected": false
+            "value": "mn1-kub1"
           },
           {
+            "selected": false,
             "text": "mn1-kub2",
-            "value": "mn1-kub2",
-            "selected": false
+            "value": "mn1-kub2"
           },
           {
+            "selected": false,
             "text": "mn1-kub3",
-            "value": "mn1-kub3",
-            "selected": false
+            "value": "mn1-kub3"
           },
           {
+            "selected": false,
             "text": "mn1-kub4",
-            "value": "mn1-kub4",
-            "selected": false
+            "value": "mn1-kub4"
           }
         ],
         "query": "hostname",
@@ -131,7 +131,7 @@
   },
   "refresh": "10s",
   "schemaVersion": 13,
-  "version": 15,
+  "version": 1,
   "links": [],
   "gnetId": null,
   "rows": [
@@ -143,7 +143,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "monasca-data",
+          "datasource": null,
           "editable": true,
           "error": false,
           "fill": 1,
@@ -422,9 +422,9 @@
           "valueName": "avg",
           "scopedVars": {
             "hostname": {
+              "selected": false,
               "text": "mn1-kub1",
-              "value": "mn1-kub1",
-              "selected": false
+              "value": "mn1-kub1"
             }
           }
         },
@@ -516,12 +516,12 @@
           "valueName": "avg",
           "scopedVars": {
             "hostname": {
+              "selected": false,
               "text": "mn1-kub2",
-              "value": "mn1-kub2",
-              "selected": false
+              "value": "mn1-kub2"
             }
           },
-          "repeatIteration": 1481666457191,
+          "repeatIteration": 1483721073949,
           "repeatPanelId": 9
         },
         {
@@ -612,12 +612,12 @@
           "valueName": "avg",
           "scopedVars": {
             "hostname": {
+              "selected": false,
               "text": "mn1-kub3",
-              "value": "mn1-kub3",
-              "selected": false
+              "value": "mn1-kub3"
             }
           },
-          "repeatIteration": 1481666457191,
+          "repeatIteration": 1483721073949,
           "repeatPanelId": 9
         },
         {
@@ -708,12 +708,12 @@
           "valueName": "avg",
           "scopedVars": {
             "hostname": {
+              "selected": false,
               "text": "mn1-kub4",
-              "value": "mn1-kub4",
-              "selected": false
+              "value": "mn1-kub4"
             }
           },
-          "repeatIteration": 1481666457191,
+          "repeatIteration": 1483721073949,
           "repeatPanelId": 9
         }
       ],
@@ -1108,9 +1108,9 @@
               "value": "kubernetes.node.out_of_disk"
             },
             "hostname": {
+              "selected": false,
               "text": "mn1-kub1",
-              "value": "mn1-kub1",
-              "selected": false
+              "value": "mn1-kub1"
             }
           }
         },
@@ -1211,12 +1211,12 @@
               "value": "kubernetes.node.out_of_disk"
             },
             "hostname": {
+              "selected": false,
               "text": "mn1-kub2",
-              "value": "mn1-kub2",
-              "selected": false
+              "value": "mn1-kub2"
             }
           },
-          "repeatIteration": 1481666457191,
+          "repeatIteration": 1483721073949,
           "repeatPanelId": 28
         },
         {
@@ -1316,12 +1316,12 @@
               "value": "kubernetes.node.out_of_disk"
             },
             "hostname": {
+              "selected": false,
               "text": "mn1-kub3",
-              "value": "mn1-kub3",
-              "selected": false
+              "value": "mn1-kub3"
             }
           },
-          "repeatIteration": 1481666457191,
+          "repeatIteration": 1483721073949,
           "repeatPanelId": 28
         },
         {
@@ -1421,12 +1421,12 @@
               "value": "kubernetes.node.out_of_disk"
             },
             "hostname": {
+              "selected": false,
               "text": "mn1-kub4",
-              "value": "mn1-kub4",
-              "selected": false
+              "value": "mn1-kub4"
             }
           },
-          "repeatIteration": 1481666457191,
+          "repeatIteration": 1483721073949,
           "repeatPanelId": 28
         }
       ],
@@ -1539,9 +1539,9 @@
               "value": "kubernetes.node.disk_pressure"
             },
             "hostname": {
+              "selected": false,
               "text": "mn1-kub1",
-              "value": "mn1-kub1",
-              "selected": false
+              "value": "mn1-kub1"
             }
           }
         },
@@ -1642,12 +1642,12 @@
               "value": "kubernetes.node.disk_pressure"
             },
             "hostname": {
+              "selected": false,
               "text": "mn1-kub2",
-              "value": "mn1-kub2",
-              "selected": false
+              "value": "mn1-kub2"
             }
           },
-          "repeatIteration": 1481666457191,
+          "repeatIteration": 1483721073949,
           "repeatPanelId": 46
         },
         {
@@ -1747,12 +1747,12 @@
               "value": "kubernetes.node.disk_pressure"
             },
             "hostname": {
+              "selected": false,
               "text": "mn1-kub3",
-              "value": "mn1-kub3",
-              "selected": false
+              "value": "mn1-kub3"
             }
           },
-          "repeatIteration": 1481666457191,
+          "repeatIteration": 1483721073949,
           "repeatPanelId": 46
         },
         {
@@ -1852,17 +1852,17 @@
               "value": "kubernetes.node.disk_pressure"
             },
             "hostname": {
+              "selected": false,
               "text": "mn1-kub4",
-              "value": "mn1-kub4",
-              "selected": false
+              "value": "mn1-kub4"
             }
           },
-          "repeatIteration": 1481666457191,
+          "repeatIteration": 1483721073949,
           "repeatPanelId": 46
         }
       ],
       "repeat": null,
-      "repeatIteration": 1481666457191,
+      "repeatIteration": 1483721073949,
       "repeatRowId": 6,
       "showTitle": true,
       "title": "$kube_flag",
@@ -1970,9 +1970,9 @@
               "value": "kubernetes.node.memory_pressure"
             },
             "hostname": {
+              "selected": false,
               "text": "mn1-kub1",
-              "value": "mn1-kub1",
-              "selected": false
+              "value": "mn1-kub1"
             }
           }
         },
@@ -2073,12 +2073,12 @@
               "value": "kubernetes.node.memory_pressure"
             },
             "hostname": {
+              "selected": false,
               "text": "mn1-kub2",
-              "value": "mn1-kub2",
-              "selected": false
+              "value": "mn1-kub2"
             }
           },
-          "repeatIteration": 1481666457191,
+          "repeatIteration": 1483721073949,
           "repeatPanelId": 50
         },
         {
@@ -2178,12 +2178,12 @@
               "value": "kubernetes.node.memory_pressure"
             },
             "hostname": {
+              "selected": false,
               "text": "mn1-kub3",
-              "value": "mn1-kub3",
-              "selected": false
+              "value": "mn1-kub3"
             }
           },
-          "repeatIteration": 1481666457191,
+          "repeatIteration": 1483721073949,
           "repeatPanelId": 50
         },
         {
@@ -2283,17 +2283,17 @@
               "value": "kubernetes.node.memory_pressure"
             },
             "hostname": {
+              "selected": false,
               "text": "mn1-kub4",
-              "value": "mn1-kub4",
-              "selected": false
+              "value": "mn1-kub4"
             }
           },
-          "repeatIteration": 1481666457191,
+          "repeatIteration": 1483721073949,
           "repeatPanelId": 50
         }
       ],
       "repeat": null,
-      "repeatIteration": 1481666457191,
+      "repeatIteration": 1483721073949,
       "repeatRowId": 6,
       "showTitle": true,
       "title": "$kube_flag",

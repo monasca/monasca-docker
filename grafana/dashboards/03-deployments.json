@@ -44,7 +44,7 @@
   },
   "refresh": "10s",
   "schemaVersion": 13,
-  "version": 6,
+  "version": 1,
   "links": [],
   "gnetId": null,
   "rows": [
@@ -56,7 +56,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "monasca-data",
+          "datasource": null,
           "editable": true,
           "error": false,
           "fill": 1,
@@ -154,7 +154,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "monasca-data",
+          "datasource": null,
           "editable": true,
           "error": false,
           "fill": 1,
@@ -239,7 +239,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "monasca-data",
+          "datasource": null,
           "editable": true,
           "error": false,
           "fill": 1,
@@ -337,7 +337,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "monasca-data",
+          "datasource": null,
           "editable": true,
           "error": false,
           "fill": 1,

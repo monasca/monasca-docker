@@ -1,5 +1,5 @@
 {
-  "id": 2,
+  "id": 5,
   "title": "Pod Data",
   "tags": [],
   "style": "dark",
@@ -41,6 +41,7 @@
       {
         "allValue": null,
         "current": {
+          "text": "client-2176998044-30t6r + fluentd-04js4 + fluentd-0g48d + fluentd-5nqxb + fluentd-q0f36 + grafana-1548781338-gjlps + influx-cdqd1 + kafka-4126406481-c28ug + kafka-client-1686611126-nut2g + keystone-2574516988-g7ukr + keystone-mysql-3894035189-406jf + monasca-notification-1640639098-ldm71 + monasca-persister-2842861372-tffx7 + storm-nimbus-2509548823-gvvbj + storm-supervisor-2427613262-hewqw + zookeeper-753038548-9qspv",
           "value": [
             "client-2176998044-30t6r",
             "fluentd-04js4",
@@ -58,8 +59,7 @@
             "storm-nimbus-2509548823-gvvbj",
             "storm-supervisor-2427613262-hewqw",
             "zookeeper-753038548-9qspv"
-          ],
-          "text": "client-2176998044-30t6r + fluentd-04js4 + fluentd-0g48d + fluentd-5nqxb + fluentd-q0f36 + grafana-1548781338-gjlps + influx-cdqd1 + kafka-4126406481-c28ug + kafka-client-1686611126-nut2g + keystone-2574516988-g7ukr + keystone-mysql-3894035189-406jf + monasca-notification-1640639098-ldm71 + monasca-persister-2842861372-tffx7 + storm-nimbus-2509548823-gvvbj + storm-supervisor-2427613262-hewqw + zookeeper-753038548-9qspv"
+          ]
         },
         "datasource": "monasca-data",
         "hide": 0,
@@ -69,449 +69,449 @@
         "name": "pod_name",
         "options": [
           {
+            "selected": false,
             "text": "All",
-            "value": "$__all",
-            "selected": false
+            "value": "$__all"
           },
           {
+            "selected": false,
             "text": "busybox",
-            "value": "busybox",
-            "selected": false
+            "value": "busybox"
           },
           {
+            "selected": true,
             "text": "client-2176998044-30t6r",
-            "value": "client-2176998044-30t6r",
-            "selected": true
+            "value": "client-2176998044-30t6r"
           },
           {
+            "selected": false,
             "text": "dummy-2088944543-r1cqg",
-            "value": "dummy-2088944543-r1cqg",
-            "selected": false
+            "value": "dummy-2088944543-r1cqg"
           },
           {
+            "selected": false,
             "text": "elasticsearch-2467620918-4tl2y",
-            "value": "elasticsearch-2467620918-4tl2y",
-            "selected": false
+            "value": "elasticsearch-2467620918-4tl2y"
           },
           {
+            "selected": true,
             "text": "fluentd-04js4",
-            "value": "fluentd-04js4",
-            "selected": true
+            "value": "fluentd-04js4"
           },
           {
+            "selected": true,
             "text": "fluentd-0g48d",
-            "value": "fluentd-0g48d",
-            "selected": true
+            "value": "fluentd-0g48d"
           },
           {
+            "selected": true,
             "text": "fluentd-5nqxb",
-            "value": "fluentd-5nqxb",
-            "selected": true
+            "value": "fluentd-5nqxb"
           },
           {
+            "selected": true,
             "text": "fluentd-q0f36",
-            "value": "fluentd-q0f36",
-            "selected": true
+            "value": "fluentd-q0f36"
           },
           {
+            "selected": true,
             "text": "grafana-1548781338-gjlps",
-            "value": "grafana-1548781338-gjlps",
-            "selected": true
+            "value": "grafana-1548781338-gjlps"
           },
           {
+            "selected": false,
             "text": "heapster-2193675300-evypm",
-            "value": "heapster-2193675300-evypm",
-            "selected": false
+            "value": "heapster-2193675300-evypm"
           },
           {
+            "selected": true,
             "text": "influx-cdqd1",
-            "value": "influx-cdqd1",
-            "selected": true
+            "value": "influx-cdqd1"
           },
           {
+            "selected": false,
             "text": "influx-controller-jptad",
-            "value": "influx-controller-jptad",
-            "selected": false
+            "value": "influx-controller-jptad"
           },
           {
+            "selected": false,
             "text": "influx-lt01k",
-            "value": "influx-lt01k",
-            "selected": false
+            "value": "influx-lt01k"
           },
           {
+            "selected": false,
             "text": "influx-rhl38",
-            "value": "influx-rhl38",
-            "selected": false
+            "value": "influx-rhl38"
           },
           {
+            "selected": false,
             "text": "kafka-1103265780-uvttz",
-            "value": "kafka-1103265780-uvttz",
-            "selected": false
+            "value": "kafka-1103265780-uvttz"
           },
           {
+            "selected": true,
             "text": "kafka-4126406481-c28ug",
-            "value": "kafka-4126406481-c28ug",
-            "selected": true
+            "value": "kafka-4126406481-c28ug"
           },
           {
+            "selected": false,
             "text": "kafka-604647518-4pk0f",
-            "value": "kafka-604647518-4pk0f",
-            "selected": false
+            "value": "kafka-604647518-4pk0f"
           },
           {
+            "selected": false,
             "text": "kafka-604647518-ejwtk",
-            "value": "kafka-604647518-ejwtk",
-            "selected": false
+            "value": "kafka-604647518-ejwtk"
           },
           {
+            "selected": false,
             "text": "kafka-604647518-pmxm7",
-            "value": "kafka-604647518-pmxm7",
-            "selected": false
+            "value": "kafka-604647518-pmxm7"
           },
           {
+            "selected": false,
             "text": "kafka-604647518-s3i0b",
-            "value": "kafka-604647518-s3i0b",
-            "selected": false
+            "value": "kafka-604647518-s3i0b"
           },
           {
+            "selected": false,
             "text": "kafka-604647518-u6qcj",
-            "value": "kafka-604647518-u6qcj",
-            "selected": false
+            "value": "kafka-604647518-u6qcj"
           },
           {
+            "selected": false,
             "text": "kafka-604647518-vkc0y",
-            "value": "kafka-604647518-vkc0y",
-            "selected": false
+            "value": "kafka-604647518-vkc0y"
           },
           {
+            "selected": false,
             "text": "kafka-604647518-w76t2",
-            "value": "kafka-604647518-w76t2",
-            "selected": false
+            "value": "kafka-604647518-w76t2"
           },
           {
+            "selected": false,
             "text": "kafka-604647518-yr0ol",
-            "value": "kafka-604647518-yr0ol",
-            "selected": false
+            "value": "kafka-604647518-yr0ol"
           },
           {
+            "selected": false,
             "text": "kafka-604647518-zr27s",
-            "value": "kafka-604647518-zr27s",
-            "selected": false
+            "value": "kafka-604647518-zr27s"
           },
           {
+            "selected": true,
             "text": "kafka-client-1686611126-nut2g",
-            "value": "kafka-client-1686611126-nut2g",
-            "selected": true
+            "value": "kafka-client-1686611126-nut2g"
           },
           {
+            "selected": true,
             "text": "keystone-2574516988-g7ukr",
-            "value": "keystone-2574516988-g7ukr",
-            "selected": true
+            "value": "keystone-2574516988-g7ukr"
           },
           {
+            "selected": true,
             "text": "keystone-mysql-3894035189-406jf",
-            "value": "keystone-mysql-3894035189-406jf",
-            "selected": true
+            "value": "keystone-mysql-3894035189-406jf"
           },
           {
+            "selected": false,
             "text": "kibana-1537428577-edmam",
-            "value": "kibana-1537428577-edmam",
-            "selected": false
+            "value": "kibana-1537428577-edmam"
           },
           {
+            "selected": false,
             "text": "kube-discovery-1150918428-zzl6u",
-            "value": "kube-discovery-1150918428-zzl6u",
-            "selected": false
+            "value": "kube-discovery-1150918428-zzl6u"
           },
           {
+            "selected": false,
             "text": "kube-dns-654381707-mih7r",
-            "value": "kube-dns-654381707-mih7r",
-            "selected": false
+            "value": "kube-dns-654381707-mih7r"
           },
           {
+            "selected": false,
             "text": "kube-dns-654381707-qh49w",
-            "value": "kube-dns-654381707-qh49w",
-            "selected": false
+            "value": "kube-dns-654381707-qh49w"
           },
           {
+            "selected": false,
             "text": "kube-proxy-atz3s",
-            "value": "kube-proxy-atz3s",
-            "selected": false
+            "value": "kube-proxy-atz3s"
           },
           {
+            "selected": false,
             "text": "kube-proxy-jyb1b",
-            "value": "kube-proxy-jyb1b",
-            "selected": false
+            "value": "kube-proxy-jyb1b"
           },
           {
+            "selected": false,
             "text": "kube-proxy-kodho",
-            "value": "kube-proxy-kodho",
-            "selected": false
+            "value": "kube-proxy-kodho"
           },
           {
+            "selected": false,
             "text": "kube-proxy-vlj31",
-            "value": "kube-proxy-vlj31",
-            "selected": false
+            "value": "kube-proxy-vlj31"
           },
           {
+            "selected": false,
             "text": "kubernetes-dashboard-3203700628-w2jt3",
-            "value": "kubernetes-dashboard-3203700628-w2jt3",
-            "selected": false
+            "value": "kubernetes-dashboard-3203700628-w2jt3"
           },
           {
+            "selected": false,
             "text": "monasca-agent-01w1e",
-            "value": "monasca-agent-01w1e",
-            "selected": false
+            "value": "monasca-agent-01w1e"
           },
           {
+            "selected": false,
             "text": "monasca-agent-2z5q4",
-            "value": "monasca-agent-2z5q4",
-            "selected": false
+            "value": "monasca-agent-2z5q4"
           },
           {
+            "selected": false,
             "text": "monasca-agent-4803a",
-            "value": "monasca-agent-4803a",
-            "selected": false
+            "value": "monasca-agent-4803a"
           },
           {
+            "selected": false,
             "text": "monasca-agent-59464",
-            "value": "monasca-agent-59464",
-            "selected": false
+            "value": "monasca-agent-59464"
           },
           {
+            "selected": false,
             "text": "monasca-agent-8z0pa",
-            "value": "monasca-agent-8z0pa",
-            "selected": false
+            "value": "monasca-agent-8z0pa"
           },
           {
+            "selected": false,
             "text": "monasca-agent-9ogtn",
-            "value": "monasca-agent-9ogtn",
-            "selected": false
+            "value": "monasca-agent-9ogtn"
           },
           {
+            "selected": false,
             "text": "monasca-agent-c9paj",
-            "value": "monasca-agent-c9paj",
-            "selected": false
+            "value": "monasca-agent-c9paj"
           },
           {
+            "selected": false,
             "text": "monasca-agent-d4l16",
-            "value": "monasca-agent-d4l16",
-            "selected": false
+            "value": "monasca-agent-d4l16"
           },
           {
+            "selected": false,
             "text": "monasca-agent-hmhn2",
-            "value": "monasca-agent-hmhn2",
-            "selected": false
+            "value": "monasca-agent-hmhn2"
           },
           {
+            "selected": false,
             "text": "monasca-agent-i6j6o",
-            "value": "monasca-agent-i6j6o",
-            "selected": false
+            "value": "monasca-agent-i6j6o"
           },
           {
+            "selected": false,
             "text": "monasca-agent-jy0l9",
-            "value": "monasca-agent-jy0l9",
-            "selected": false
+            "value": "monasca-agent-jy0l9"
           },
           {
+            "selected": false,
             "text": "monasca-agent-k9b8z",
-            "value": "monasca-agent-k9b8z",
-            "selected": false
+            "value": "monasca-agent-k9b8z"
           },
           {
+            "selected": false,
             "text": "monasca-agent-kubernetes-api-3728551208-bjb9q",
-            "value": "monasca-agent-kubernetes-api-3728551208-bjb9q",
-            "selected": false
+            "value": "monasca-agent-kubernetes-api-3728551208-bjb9q"
           },
           {
+            "selected": false,
             "text": "monasca-agent-kubernetes-api-3728551208-jney1",
-            "value": "monasca-agent-kubernetes-api-3728551208-jney1",
-            "selected": false
+            "value": "monasca-agent-kubernetes-api-3728551208-jney1"
           },
           {
+            "selected": false,
             "text": "monasca-agent-kwh2r",
-            "value": "monasca-agent-kwh2r",
-            "selected": false
+            "value": "monasca-agent-kwh2r"
           },
           {
+            "selected": false,
             "text": "monasca-agent-mn5tk",
-            "value": "monasca-agent-mn5tk",
-            "selected": false
+            "value": "monasca-agent-mn5tk"
           },
           {
+            "selected": false,
             "text": "monasca-agent-oolwx",
-            "value": "monasca-agent-oolwx",
-            "selected": false
+            "value": "monasca-agent-oolwx"
           },
           {
+            "selected": false,
             "text": "monasca-agent-prometheus-client-4077595854-avw9b",
-            "value": "monasca-agent-prometheus-client-4077595854-avw9b",
-            "selected": false
+            "value": "monasca-agent-prometheus-client-4077595854-avw9b"
           },
           {
+            "selected": false,
             "text": "monasca-agent-prometheus-client-4077595854-g1y7w",
-            "value": "monasca-agent-prometheus-client-4077595854-g1y7w",
-            "selected": false
+            "value": "monasca-agent-prometheus-client-4077595854-g1y7w"
           },
           {
+            "selected": false,
             "text": "monasca-agent-prometheus-client-aj6q7",
-            "value": "monasca-agent-prometheus-client-aj6q7",
-            "selected": false
+            "value": "monasca-agent-prometheus-client-aj6q7"
           },
           {
+            "selected": false,
             "text": "monasca-agent-prometheus-client-ntgm4",
-            "value": "monasca-agent-prometheus-client-ntgm4",
-            "selected": false
+            "value": "monasca-agent-prometheus-client-ntgm4"
           },
           {
+            "selected": false,
             "text": "monasca-agent-prometheus-client-sh75l",
-            "value": "monasca-agent-prometheus-client-sh75l",
-            "selected": false
+            "value": "monasca-agent-prometheus-client-sh75l"
           },
           {
+            "selected": false,
             "text": "monasca-agent-prometheus-client-znb5z",
-            "value": "monasca-agent-prometheus-client-znb5z",
-            "selected": false
+            "value": "monasca-agent-prometheus-client-znb5z"
           },
           {
+            "selected": false,
             "text": "monasca-agent-tynsj",
-            "value": "monasca-agent-tynsj",
-            "selected": false
+            "value": "monasca-agent-tynsj"
           },
           {
+            "selected": false,
             "text": "monasca-agent-uz6ev",
-            "value": "monasca-agent-uz6ev",
-            "selected": false
+            "value": "monasca-agent-uz6ev"
           },
           {
+            "selected": false,
             "text": "monasca-agent-w8l9l",
-            "value": "monasca-agent-w8l9l",
-            "selected": false
+            "value": "monasca-agent-w8l9l"
           },
           {
+            "selected": false,
             "text": "monasca-agent-xj2so",
-            "value": "monasca-agent-xj2so",
-            "selected": false
+            "value": "monasca-agent-xj2so"
           },
           {
+            "selected": false,
             "text": "monasca-agent-yzijt",
-            "value": "monasca-agent-yzijt",
-            "selected": false
+            "value": "monasca-agent-yzijt"
           },
           {
+            "selected": false,
             "text": "monasca-api-1909953180-mjwy8",
-            "value": "monasca-api-1909953180-mjwy8",
-            "selected": false
+            "value": "monasca-api-1909953180-mjwy8"
           },
           {
+            "selected": false,
             "text": "monasca-api-1909953180-tzc0u",
-            "value": "monasca-api-1909953180-tzc0u",
-            "selected": false
+            "value": "monasca-api-1909953180-tzc0u"
           },
           {
+            "selected": false,
             "text": "monasca-notification-1640639098-cs009",
-            "value": "monasca-notification-1640639098-cs009",
-            "selected": false
+            "value": "monasca-notification-1640639098-cs009"
           },
           {
+            "selected": true,
             "text": "monasca-notification-1640639098-ldm71",
-            "value": "monasca-notification-1640639098-ldm71",
-            "selected": true
+            "value": "monasca-notification-1640639098-ldm71"
           },
           {
+            "selected": false,
             "text": "monasca-notification-1946968924-spmqc",
-            "value": "monasca-notification-1946968924-spmqc",
-            "selected": false
+            "value": "monasca-notification-1946968924-spmqc"
           },
           {
+            "selected": false,
             "text": "monasca-notification-4250709892-pdo4p",
-            "value": "monasca-notification-4250709892-pdo4p",
-            "selected": false
+            "value": "monasca-notification-4250709892-pdo4p"
           },
           {
+            "selected": false,
             "text": "monasca-persister-2842861372-mzley",
-            "value": "monasca-persister-2842861372-mzley",
-            "selected": false
+            "value": "monasca-persister-2842861372-mzley"
           },
           {
+            "selected": true,
             "text": "monasca-persister-2842861372-tffx7",
-            "value": "monasca-persister-2842861372-tffx7",
-            "selected": true
+            "value": "monasca-persister-2842861372-tffx7"
           },
           {
+            "selected": false,
             "text": "monitoring-grafana-927606581-ip2pz",
-            "value": "monitoring-grafana-927606581-ip2pz",
-            "selected": false
+            "value": "monitoring-grafana-927606581-ip2pz"
           },
           {
+            "selected": false,
             "text": "monitoring-influxdb-3276295126-zcr7r",
-            "value": "monitoring-influxdb-3276295126-zcr7r",
-            "selected": false
+            "value": "monitoring-influxdb-3276295126-zcr7r"
           },
           {
+            "selected": false,
             "text": "mysql-1690333784-8uraa",
-            "value": "mysql-1690333784-8uraa",
-            "selected": false
+            "value": "mysql-1690333784-8uraa"
           },
           {
+            "selected": false,
             "text": "python-3423583199-7yiee",
-            "value": "python-3423583199-7yiee",
-            "selected": false
+            "value": "python-3423583199-7yiee"
           },
           {
+            "selected": false,
             "text": "python-3865485062-gntr7",
-            "value": "python-3865485062-gntr7",
-            "selected": false
+            "value": "python-3865485062-gntr7"
           },
           {
+            "selected": false,
             "text": "python-3865485062-tizku",
-            "value": "python-3865485062-tizku",
-            "selected": false
+            "value": "python-3865485062-tizku"
           },
           {
+            "selected": true,
             "text": "storm-nimbus-2509548823-gvvbj",
-            "value": "storm-nimbus-2509548823-gvvbj",
-            "selected": true
+            "value": "storm-nimbus-2509548823-gvvbj"
           },
           {
+            "selected": true,
             "text": "storm-supervisor-2427613262-hewqw",
-            "value": "storm-supervisor-2427613262-hewqw",
-            "selected": true
+            "value": "storm-supervisor-2427613262-hewqw"
           },
           {
+            "selected": false,
             "text": "tiller-deploy-2379477723-nrjls",
-            "value": "tiller-deploy-2379477723-nrjls",
-            "selected": false
+            "value": "tiller-deploy-2379477723-nrjls"
           },
           {
+            "selected": false,
             "text": "weave-net-1efbk",
-            "value": "weave-net-1efbk",
-            "selected": false
+            "value": "weave-net-1efbk"
           },
           {
+            "selected": false,
             "text": "weave-net-828oo",
-            "value": "weave-net-828oo",
-            "selected": false
+            "value": "weave-net-828oo"
           },
           {
+            "selected": false,
             "text": "weave-net-d5e2v",
-            "value": "weave-net-d5e2v",
-            "selected": false
+            "value": "weave-net-d5e2v"
           },
           {
+            "selected": false,
             "text": "weave-net-g92g3",
-            "value": "weave-net-g92g3",
-            "selected": false
+            "value": "weave-net-g92g3"
           },
           {
+            "selected": false,
             "text": "web-app-demo-2355953197-5jdad",
-            "value": "web-app-demo-2355953197-5jdad",
-            "selected": false
+            "value": "web-app-demo-2355953197-5jdad"
           },
           {
+            "selected": true,
             "text": "zookeeper-753038548-9qspv",
-            "value": "zookeeper-753038548-9qspv",
-            "selected": true
+            "value": "zookeeper-753038548-9qspv"
           }
         ],
         "query": "pod_name",
@@ -529,7 +529,7 @@
   },
   "refresh": "10s",
   "schemaVersion": 13,
-  "version": 15,
+  "version": 1,
   "links": [],
   "gnetId": null,
   "rows": [
@@ -541,7 +541,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "monasca-data",
+          "datasource": null,
           "editable": true,
           "error": false,
           "fill": 1,
@@ -639,7 +639,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "monasca-data",
+          "datasource": null,
           "editable": true,
           "error": false,
           "fill": 1,
@@ -724,7 +724,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "monasca-data",
+          "datasource": null,
           "editable": true,
           "error": false,
           "fill": 1,
@@ -822,7 +822,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "monasca-data",
+          "datasource": null,
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1118,9 +1118,9 @@
           "valueName": "current",
           "scopedVars": {
             "pod_name": {
+              "selected": true,
               "text": "client-2176998044-30t6r",
-              "value": "client-2176998044-30t6r",
-              "selected": true
+              "value": "client-2176998044-30t6r"
             }
           }
         },
@@ -1229,12 +1229,12 @@
           "valueName": "current",
           "scopedVars": {
             "pod_name": {
+              "selected": true,
               "text": "fluentd-04js4",
-              "value": "fluentd-04js4",
-              "selected": true
+              "value": "fluentd-04js4"
             }
           },
-          "repeatIteration": 1481666457192,
+          "repeatIteration": 1483721073950,
           "repeatPanelId": 8
         },
         {
@@ -1342,12 +1342,12 @@
           "valueName": "current",
           "scopedVars": {
             "pod_name": {
+              "selected": true,
               "text": "fluentd-0g48d",
-              "value": "fluentd-0g48d",
-              "selected": true
+              "value": "fluentd-0g48d"
             }
           },
-          "repeatIteration": 1481666457192,
+          "repeatIteration": 1483721073950,
           "repeatPanelId": 8
         },
         {
@@ -1455,12 +1455,12 @@
           "valueName": "current",
           "scopedVars": {
             "pod_name": {
+              "selected": true,
               "text": "fluentd-5nqxb",
-              "value": "fluentd-5nqxb",
-              "selected": true
+              "value": "fluentd-5nqxb"
             }
           },
-          "repeatIteration": 1481666457192,
+          "repeatIteration": 1483721073950,
           "repeatPanelId": 8
         },
         {
@@ -1568,12 +1568,12 @@
           "valueName": "current",
           "scopedVars": {
             "pod_name": {
+              "selected": true,
               "text": "fluentd-q0f36",
-              "value": "fluentd-q0f36",
-              "selected": true
+              "value": "fluentd-q0f36"
             }
           },
-          "repeatIteration": 1481666457192,
+          "repeatIteration": 1483721073950,
           "repeatPanelId": 8
         },
         {
@@ -1681,12 +1681,12 @@
           "valueName": "current",
           "scopedVars": {
             "pod_name": {
+              "selected": true,
               "text": "grafana-1548781338-gjlps",
-              "value": "grafana-1548781338-gjlps",
-              "selected": true
+              "value": "grafana-1548781338-gjlps"
             }
           },
-          "repeatIteration": 1481666457192,
+          "repeatIteration": 1483721073950,
           "repeatPanelId": 8
         },
         {
@@ -1794,12 +1794,12 @@
           "valueName": "current",
           "scopedVars": {
             "pod_name": {
+              "selected": true,
               "text": "influx-cdqd1",
-              "value": "influx-cdqd1",
-              "selected": true
+              "value": "influx-cdqd1"
             }
           },
-          "repeatIteration": 1481666457192,
+          "repeatIteration": 1483721073950,
           "repeatPanelId": 8
         },
         {
@@ -1907,12 +1907,12 @@
           "valueName": "current",
           "scopedVars": {
             "pod_name": {
+              "selected": true,
               "text": "kafka-4126406481-c28ug",
-              "value": "kafka-4126406481-c28ug",
-              "selected": true
+              "value": "kafka-4126406481-c28ug"
             }
           },
-          "repeatIteration": 1481666457192,
+          "repeatIteration": 1483721073950,
           "repeatPanelId": 8
         },
         {
@@ -2020,12 +2020,12 @@
           "valueName": "current",
           "scopedVars": {
             "pod_name": {
+              "selected": true,
               "text": "kafka-client-1686611126-nut2g",
-              "value": "kafka-client-1686611126-nut2g",
-              "selected": true
+              "value": "kafka-client-1686611126-nut2g"
             }
           },
-          "repeatIteration": 1481666457192,
+          "repeatIteration": 1483721073950,
           "repeatPanelId": 8
         },
         {
@@ -2133,12 +2133,12 @@
           "valueName": "current",
           "scopedVars": {
             "pod_name": {
+              "selected": true,
               "text": "keystone-2574516988-g7ukr",
-              "value": "keystone-2574516988-g7ukr",
-              "selected": true
+              "value": "keystone-2574516988-g7ukr"
             }
           },
-          "repeatIteration": 1481666457192,
+          "repeatIteration": 1483721073950,
           "repeatPanelId": 8
         },
         {
@@ -2246,12 +2246,12 @@
           "valueName": "current",
           "scopedVars": {
             "pod_name": {
+              "selected": true,
               "text": "keystone-mysql-3894035189-406jf",
-              "value": "keystone-mysql-3894035189-406jf",
-              "selected": true
+              "value": "keystone-mysql-3894035189-406jf"
             }
           },
-          "repeatIteration": 1481666457192,
+          "repeatIteration": 1483721073950,
           "repeatPanelId": 8
         },
         {
@@ -2359,12 +2359,12 @@
           "valueName": "current",
           "scopedVars": {
             "pod_name": {
+              "selected": true,
               "text": "monasca-notification-1640639098-ldm71",
-              "value": "monasca-notification-1640639098-ldm71",
-              "selected": true
+              "value": "monasca-notification-1640639098-ldm71"
             }
           },
-          "repeatIteration": 1481666457192,
+          "repeatIteration": 1483721073950,
           "repeatPanelId": 8
         },
         {
@@ -2472,12 +2472,12 @@
           "valueName": "current",
           "scopedVars": {
             "pod_name": {
+              "selected": true,
               "text": "monasca-persister-2842861372-tffx7",
-              "value": "monasca-persister-2842861372-tffx7",
-              "selected": true
+              "value": "monasca-persister-2842861372-tffx7"
             }
           },
-          "repeatIteration": 1481666457192,
+          "repeatIteration": 1483721073950,
           "repeatPanelId": 8
         },
         {
@@ -2585,12 +2585,12 @@
           "valueName": "current",
           "scopedVars": {
             "pod_name": {
+              "selected": true,
               "text": "storm-nimbus-2509548823-gvvbj",
-              "value": "storm-nimbus-2509548823-gvvbj",
-              "selected": true
+              "value": "storm-nimbus-2509548823-gvvbj"
             }
           },
-          "repeatIteration": 1481666457192,
+          "repeatIteration": 1483721073950,
           "repeatPanelId": 8
         },
         {
@@ -2698,12 +2698,12 @@
           "valueName": "current",
           "scopedVars": {
             "pod_name": {
+              "selected": true,
               "text": "storm-supervisor-2427613262-hewqw",
-              "value": "storm-supervisor-2427613262-hewqw",
-              "selected": true
+              "value": "storm-supervisor-2427613262-hewqw"
             }
           },
-          "repeatIteration": 1481666457192,
+          "repeatIteration": 1483721073950,
           "repeatPanelId": 8
         },
         {
@@ -2811,12 +2811,12 @@
           "valueName": "current",
           "scopedVars": {
             "pod_name": {
+              "selected": true,
               "text": "zookeeper-753038548-9qspv",
-              "value": "zookeeper-753038548-9qspv",
-              "selected": true
+              "value": "zookeeper-753038548-9qspv"
             }
           },
-          "repeatIteration": 1481666457192,
+          "repeatIteration": 1483721073950,
           "repeatPanelId": 8
         }
       ],

@@ -3,7 +3,7 @@ FROM alpine:3.5
 ARG AGENT_REPO=https://git.openstack.org/openstack/monasca-agent
 ARG AGENT_BRANCH="master"
 
-# To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running 
+# To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
 # `docker build`
 ARG REBUILD=1
 
@@ -27,7 +27,7 @@ RUN apk add --no-cache \
   git remote add origin $AGENT_REPO && \
   git fetch origin $AGENT_BRANCH && \
   git reset --hard FETCH_HEAD && \
-  pip install docker-py && \
+  pip install docker-py prometheus_client && \
   cd /monasca-agent && \
   # temporary workaround, old psutil doesn't build on musl \
   # will remove this once agent's requirements.txt is bumped upstream \

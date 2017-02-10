@@ -46,4 +46,7 @@ COPY template.py start.sh /
 
 EXPOSE 8070
 
+HEALTHCHECK --interval=10s --timeout=5s \
+  CMD wget -q http://localhost:8070 -O - > /dev/null
+
 CMD ["/start.sh"]

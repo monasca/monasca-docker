@@ -10,11 +10,20 @@ spec:
     metadata:
       labels:
         app: monasca-api
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "4888"
     spec:
       containers:
       - name: monasca-api
-        image: monasca/api:latest
+        image: monasca/api:master-prometheus
         imagePullPolicy: Always
         ports:
-        - containerPort: 8070
-          name: client
+          - containerPort: 8070
+            name: client
+      - name: monasca-sidecar
+        image: timothyb89/monasca-sidecar:1.0.0
+        ports:
+          - containerPort: 4888
+            name: scrape

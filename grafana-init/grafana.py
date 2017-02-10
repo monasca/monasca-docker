@@ -20,8 +20,6 @@ import logging
 import os
 import time
 
-import requests
-
 from requests import Session, RequestException
 
 LOG_LEVEL = logging.getLevelName(os.environ.get('LOG_LEVEL', 'INFO'))

@@ -87,7 +87,7 @@ def create_datasource_payload():
 
     payload.update({
         'monasca': {
-            'type': 'monasca-grafana-datasource',
+            'type': 'monasca-datasource',
             'jsonData': {'keystoneAuth': True}
         }
     }.get(DATASOURCE_TYPE, {}))

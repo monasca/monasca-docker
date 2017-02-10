@@ -66,14 +66,20 @@ services:
       - "5000:5000"
       - "35357:35357"
 
+  monasca-sidecar:
+    image: timothyb89/monasca-sidecar:1.0.0
+
   monasca:
-    image: monasca/api:master
+    image: monasca/api:master-prometheus
+    environment:
+      SIDECAR_URL: http://monasca-sidecar:4888/v1/ingest
     depends_on:
       - influxdb
       - keystone
       - mysql
       - zookeeper
       - kafka
+      - monasca-sidecar
     ports:
       - "8070:8070"
 

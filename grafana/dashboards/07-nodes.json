@@ -44,7 +44,7 @@
           "text": "All",
           "value": "$__all"
         },
-        "datasource": "monasca-data",
+        "datasource": "monasca",
         "hide": 0,
         "includeAll": true,
         "label": "Node Name",

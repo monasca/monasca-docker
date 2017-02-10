@@ -61,7 +61,7 @@
             "zookeeper-753038548-9qspv"
           ]
         },
-        "datasource": "monasca-data",
+        "datasource": "monasca",
         "hide": 0,
         "includeAll": true,
         "label": null,

@@ -42,4 +42,7 @@ run mkdir -p /var/lib/grafana && \
 copy grafana.ini /etc/grafana/grafana.ini
 expose 3000
 
+healthcheck --interval=10s --timeout=5s \
+  cmd wget -q http://localhost:3000 -O - > /dev/null
+
 cmd ["/go/bin/grafana-server", "-config", "/etc/grafana/grafana.ini", "-homepath", "/var/lib/grafana"]

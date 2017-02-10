@@ -12,4 +12,4 @@ env LOG_LEVEL=INFO \
 run apk add --no-cache python py2-requests
 copy grafana.py /grafana.py
 copy dashboards.d/ /dashboards.d/
-cmd "python /grafana.py"
+cmd ["python", "/grafana.py"]

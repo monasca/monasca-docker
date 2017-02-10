@@ -22,6 +22,8 @@ import time
 
 import requests
 
+from requests import Session, RequestException
+
 LOG_LEVEL = logging.getLevelName(os.environ.get('LOG_LEVEL', 'INFO'))
 logging.basicConfig(level=LOG_LEVEL)
 
@@ -38,7 +40,7 @@ DATASOURCE_ACCESS_MODE = os.environ.get('DATASOURCE_ACCESS_MODE', 'proxy')
 DASHBOARDS_DIR = os.environ.get('DASHBOARDS_DIR', '/dashboards.d')
 
 
-def retry(retries=5, delay=2.0, exc_types=(requests.HTTPError,)):
+def retry(retries=5, delay=2.0, exc_types=(RequestException,)):
     def decorator(func):
         def f_retry(*args, **kwargs):
             for i in range(retries):
@@ -51,7 +53,7 @@ def retry(retries=5, delay=2.0, exc_types=(requests.HTTPError,)):
                         time.sleep(delay)
                     else:
                         logger.exception('Failed after %d attempts', retries)
-                        if isinstance(exc, requests.RequestException):
+                        if isinstance(exc, RequestException):
                             logger.debug('Response was: %r', exc.response.text)
 
                         raise
@@ -67,7 +69,7 @@ def create_login_payload():
     }
 
 
-@retry()
+@retry(retries=12, delay=5.0)
 def login(session):
     r = session.post('{url}/login'.format(url=GRAFANA_URL),
                      json=create_login_payload(),
@@ -108,7 +110,7 @@ def create_dashboard_payload(json_path):
 
 def main():
     logging.info('Opening a Grafana session...')
-    session = requests.Session()
+    session = Session()
     login(session)
 
     logging.info('Attempting to add configured datasource...')

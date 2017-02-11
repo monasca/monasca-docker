@@ -2,10 +2,8 @@ version: '2'
 services:
   influxdb:
     image: influxdb:latest
-  influx-init:
-    image: appropriate/curl:latest
-    command: |
-      curl -X POST -G http://influxdb:8086/query --data-urlencode q="CREATE DATABASE \"mon\""
+  influxdb-init:
+    image: monasca/influxdb-init:latest
     depends_on:
       - influxdb
 

@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: influx-init-job
+  namespace: monitoring
+spec:
+  template:
+    metadata:
+      labels:
+        app: influx-init-job
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: influxdb-init-job
+          image: monasca/influxdb-init:latest

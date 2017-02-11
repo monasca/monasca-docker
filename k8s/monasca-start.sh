@@ -4,7 +4,7 @@ kubectl create -f namespace.yml
 
 kubectl create configmap --from-file influx/influxdb.conf influxdb-1.0.0.conf -n monitoring
 kubectl create -f non_persistent_storage_k8s/influx/
-kubectl create -f influx/influx-init-job.yml
+kubectl create -f influx/influxdb-init-job.yml
 
 kubectl create -f keystone/
 

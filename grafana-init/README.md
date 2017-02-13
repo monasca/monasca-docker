@@ -36,16 +36,16 @@ already been initialized.
 Configuration
 -------------
 
- | Variable           | Default                | Description                     |
- |--------------------|------------------------|---------------------------------|
- | `LOG_LEVEL`        | `INFO`                 | Logging level, e.g. `DEBUG`     |
- | `GRAFANA_URL`      | `http://grafana:3000`  | Location of Grafana server      |
- | `GRAFANA_USERNAME` | `mini-mon`             | Agent Keystone username         |
- | `GRAFANA_PASSWORD` | `password`             | Agent Keystone password         |
- | `DATASOURCE_TYPE`  | `monasca`              | Agent Keystone user domain      |
- | `DATASOURCE_URL`   | `http://monasca:8070/` | Agent Keystone project name     |
- | `DATASOURCE_ACCESS_MODE` | `proxy`          | Grafana access mode string      |
- | `DASHBOARDS_DIR`   | `/dashboards.d`        | Directory to scan for .json dashboards |
+| Variable           | Default                | Description                     |
+|--------------------|------------------------|---------------------------------|
+| `LOG_LEVEL`        | `INFO`                 | Logging level, e.g. `DEBUG`     |
+| `GRAFANA_URL`      | `http://grafana:3000`  | Location of Grafana server      |
+| `GRAFANA_USERNAME` | `mini-mon`             | Agent Keystone username         |
+| `GRAFANA_PASSWORD` | `password`             | Agent Keystone password         |
+| `DATASOURCE_TYPE`  | `monasca`              | Agent Keystone user domain      |
+| `DATASOURCE_URL`   | `http://monasca:8070/` | Agent Keystone project name     |
+| `DATASOURCE_ACCESS_MODE` | `proxy`          | Grafana access mode string      |
+| `DASHBOARDS_DIR`   | `/dashboards.d`        | Directory to scan for .json dashboards |
 
 Note that the only datasource type supported at the moment is `monasca`. Other
 datasources should be simple to implement as needed by adding logic to

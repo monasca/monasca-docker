@@ -34,14 +34,6 @@ for f in $USER_SCRIPTS/*.sql; do
   fi
 done
 
-if [ "$MYSQL_INIT_DISABLE_REMOTE_ROOT" = "true" ]; then
-  echo "Disabling remote root login..."
-  mysql --host="$MYSQL_INIT_HOST" \
-      --user="$MYSQL_INIT_USERNAME" \
-      --port=$MYSQL_INIT_PORT \
-      --password="$MYSQL_INIT_PASSWORD" < /disable-remote-root.sql
-fi
-
 if [ -n "$MYSQL_INIT_SET_PASSWORD" ]; then
   echo "Updating password for $MYSQL_INIT_USERNAME..."
 
@@ -52,7 +44,6 @@ if [ -n "$MYSQL_INIT_SET_PASSWORD" ]; then
       --user="$MYSQL_INIT_USERNAME" \
       --password="$MYSQL_INIT_PASSWORD" \
       "$MYSQL_INIT_SET_PASSWORD"
-  set -x
 elif [ "$MYSQL_INIT_RANDOM_PASSWORD" = "true" ]; then
   echo "Resetting $MYSQL_INIT_USERNAME password..."
 
@@ -65,7 +56,15 @@ elif [ "$MYSQL_INIT_RANDOM_PASSWORD" = "true" ]; then
       --password="$MYSQL_INIT_PASSWORD" \
       "$pw"
   echo "GENERATED $MYSQL_INIT_USERNAME PASSWORD: $pw"
-  set -x
+  MYSQL_INIT_PASSWORD="$pw"
+fi
+
+if [ "$MYSQL_INIT_DISABLE_REMOTE_ROOT" = "true" ]; then
+  echo "Disabling remote root login..."
+  mysql --host="$MYSQL_INIT_HOST" \
+      --user="$MYSQL_INIT_USERNAME" \
+      --port=$MYSQL_INIT_PORT \
+      --password="$MYSQL_INIT_PASSWORD" < /disable-remote-root.sql
 fi
 
 echo "mysql-init exiting successfully"

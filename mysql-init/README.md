@@ -43,15 +43,15 @@ several methods to account for this:
 Configuration
 -------------
 
- | Variable              | Default          | Description                     |
- |-----------------------|------------------|---------------------------------|
- | `MYSQL_INIT_HOST`     | `mysql`          | MySQL server host               |
- | `MYSQL_INIT_PORT`     | `3306`           | MySQL server port               |
- | `MYSQL_INIT_USERNAME` | `root`           | MySQL user w/ needed privileges |
- | `MYSQL_INIT_PASSWORD` | `secretmysql`    | Password for given user         |
- | `MYSQL_INIT_RANDOM_PASSWORD`     | unset | If `true`, reset the user password    |
- | `MYSQL_INIT_DISABLE_REMOTE_ROOT` | unset | If `true`, disable remote root login  |
- | `MYSQL_INIT_SET_PASSWORD`        | unset | If set, reset password to given value |
+| Variable              | Default          | Description                     |
+|-----------------------|------------------|---------------------------------|
+| `MYSQL_INIT_HOST`     | `mysql`          | MySQL server host               |
+| `MYSQL_INIT_PORT`     | `3306`           | MySQL server port               |
+| `MYSQL_INIT_USERNAME` | `root`           | MySQL user w/ needed privileges |
+| `MYSQL_INIT_PASSWORD` | `secretmysql`    | Password for given user         |
+| `MYSQL_INIT_RANDOM_PASSWORD`     | unset | If `true`, reset the user password    |
+| `MYSQL_INIT_DISABLE_REMOTE_ROOT` | unset | If `true`, disable remote root login  |
+| `MYSQL_INIT_SET_PASSWORD`        | unset | If set, reset password to given value |
 
 While this image requires access (probably `root`-level) to a MySQL instance at
 startup, `MYSQL_INIT_DISABLE_REMOTE_LOGIN`, `MYSQL_INIT_RANDOM_PASSWORD`, and

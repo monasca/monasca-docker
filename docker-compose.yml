@@ -33,18 +33,11 @@ services:
     image: mysql:5.5
     environment:
       MYSQL_ROOT_PASSWORD: secretmysql
-      MYSQL_USER: monapi
-      MYSQL_DATABASE: mon
-    volumes:
-      - ./k8s/mysql/mon_mysql.sql:/docker-entrypoint-initdb.d/mon_mysql.sql
-
-  keystone-mysql:
-    image: mysql:5.5
+  mysql-init:
+    image: monasca/mysql-init:1.0.0
     environment:
-      MYSQL_DATABASE: keystone
-      MYSQL_USER: keystone
-      MYSQL_PASSWORD: keystone
-      MYSQL_RANDOM_ROOT_PASSWORD: "True"
+      MYSQL_INIT_DISABLE_REMOTE_ROOT: "true"
+      MYSQL_INIT_RANDOM_PASSWORD: "true"
 
   keystone:
     image: monasca/keystone:1.0.6
@@ -52,14 +45,14 @@ services:
       KEYSTONE_HOST: keystone
       KEYSTONE_PASSWORD: secretadmin
       KEYSTONE_DATABASE_BACKEND: mysql
-      KEYSTONE_MYSQL_HOST: keystone-mysql
+      KEYSTONE_MYSQL_HOST: mysql
       KEYSTONE_MYSQL_USER: keystone
       KEYSTONE_MYSQL_PASSWORD: keystone
       KEYSTONE_MYSQL_DATABASE: keystone
     volumes:
       - ./keystone/preload.yml:/preload.yml
     depends_on:
-      - keystone-mysql
+      - mysql
     ports:
       - "5000:5000"
       - "35357:35357"

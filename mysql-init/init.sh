@@ -15,6 +15,7 @@ mysqladmin ping \
     --port=$MYSQL_INIT_PORT \
     --user="$MYSQL_INIT_USERNAME" \
     --password="$MYSQL_INIT_PASSWORD" \
+    --connect_timeout=10 \
     --wait=10
 if [ $? -ne 0 ]; then
   echo "Unable to reach MySQL, exiting..."

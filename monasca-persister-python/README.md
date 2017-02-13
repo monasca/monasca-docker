@@ -53,17 +53,17 @@ docker run -it monasca/persister:latest
 Configuration
 -------------
 
- | Variable          | Default          | Description                      |
- |-------------------|------------------|----------------------------------|
- | `DEBUG`           | `false`          | If `true`, enable debug logging  |
- | `VERBOSE`         | `true`           | If `true`, enable info logging   |
- | `ZOOKEEPER_URI`   | `zookeeper:2181` | The host and port for zookeeper  |
- | `KAFKA_URI`       | `kafka:9092`     | The host and port for kafka      |
- | `INFLUX_HOST`     | `influxdb`       | The host for influxdb            |
- | `INFLUX_PORT`     | `8086`           | The port for influxdb            |
- | `INFLUX_USER`     | `mon_persister`  | The influx username              |
- | `INFLUX_PASSWORD` | `password`       | The influx password              |
- | `INFLUX_DB`       | `mon`            | The influx database name         |
+| Variable          | Default          | Description                      |
+|-------------------|------------------|----------------------------------|
+| `DEBUG`           | `false`          | If `true`, enable debug logging  |
+| `VERBOSE`         | `true`           | If `true`, enable info logging   |
+| `ZOOKEEPER_URI`   | `zookeeper:2181` | The host and port for zookeeper  |
+| `KAFKA_URI`       | `kafka:9092`     | The host and port for kafka      |
+| `INFLUX_HOST`     | `influxdb`       | The host for influxdb            |
+| `INFLUX_PORT`     | `8086`           | The port for influxdb            |
+| `INFLUX_USER`     | `mon_persister`  | The influx username              |
+| `INFLUX_PASSWORD` | `password`       | The influx password              |
+| `INFLUX_DB`       | `mon`            | The influx database name         |
 
 If additional values need to be overridden, a new config file or jinja2 template
 can be provided by mounting a replacement at

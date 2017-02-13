@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: mysql-controller
+  name: mysql
   namespace: monitoring
 spec:
   replicas: 1
@@ -13,19 +13,10 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: mysql:5.5
+        image: mysql:5.6
         ports:
         - containerPort: 3306
           name: client
         env:
         - name: MYSQL_ROOT_PASSWORD
           value: "secretmysql"
-        - name: MYSQL_DATABASE
-          value: "mon"
-        volumeMounts:
-        - name: sql-volume
-          mountPath: /docker-entrypoint-initdb.d
-      volumes:
-      - name: sql-volume
-        configMap:
-          name: mon.mysql

@@ -30,7 +30,7 @@ spec:
             - name: KEYSTONE_DATABASE_BACKEND
               value: mysql
             - name: KEYSTONE_MYSQL_HOST
-              value: keystone-mysql
+              value: mysql
             - name: KEYSTONE_MYSQL_USER
               value: keystone
             - name: KEYSTONE_MYSQL_PASSWORD

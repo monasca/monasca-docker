@@ -8,7 +8,6 @@ kubectl create -f influx/
 
 kubectl create -f keystone/
 
-kubectl create configmap --from-file mysql/mon_mysql.sql mon.mysql -n monitoring
 kubectl create -f mysql/
 
 kubectl create -f zookeeper/

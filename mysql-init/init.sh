@@ -22,6 +22,8 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+set -e
+
 for f in $USER_SCRIPTS/*.sql; do
   if [ -e "$f" ]; then
     echo "Running script: $f"
@@ -31,3 +33,39 @@ for f in $USER_SCRIPTS/*.sql; do
         --password="$MYSQL_INIT_PASSWORD" < "$f"
   fi
 done
+
+if [ "$MYSQL_INIT_DISABLE_REMOTE_ROOT" = "true" ]; then
+  echo "Disabling remote root login..."
+  mysql --host="$MYSQL_INIT_HOST" \
+      --user="$MYSQL_INIT_USERNAME" \
+      --port=$MYSQL_INIT_PORT \
+      --password="$MYSQL_INIT_PASSWORD" < /disable-remote-root.sql
+fi
+
+if [ -n "$MYSQL_INIT_SET_PASSWORD" ]; then
+  echo "Updating password for $MYSQL_INIT_USERNAME..."
+
+  set +x
+  mysqladmin password \
+      --host="$MYSQL_INIT_HOST" \
+      --port=$MYSQL_INIT_PORT \
+      --user="$MYSQL_INIT_USERNAME" \
+      --password="$MYSQL_INIT_PASSWORD" \
+      "$MYSQL_INIT_SET_PASSWORD"
+  set -x
+elif [ "$MYSQL_INIT_RANDOM_PASSWORD" = "true" ]; then
+  echo "Resetting $MYSQL_INIT_USERNAME password..."
+
+  set +x
+  pw=$(pwgen -1 32)
+  mysqladmin password \
+      --host="$MYSQL_INIT_HOST" \
+      --port=$MYSQL_INIT_PORT \
+      --user="$MYSQL_INIT_USERNAME" \
+      --password="$MYSQL_INIT_PASSWORD" \
+      "$pw"
+  echo "GENERATED $MYSQL_INIT_USERNAME PASSWORD: $pw"
+  set -x
+fi
+
+echo "mysql-init exiting successfully"

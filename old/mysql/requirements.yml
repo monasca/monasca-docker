@@ -1,4 +1,0 @@
-- src: tkuhlman.monasca-schema
-  name: monasca-schema
-- src: tkuhlman.percona
-  name: percona

@@ -1,8 +1,0 @@
-- name: Setup default alarms
-  hosts: localhost
-  vars:
-    keystone_url: http://localhost:35357/v3
-    keystone_user: mini-mon
-    keystone_password: password
-  roles:
-    - {role: monasca-default-alarms, tags: [alarms]}

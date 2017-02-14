@@ -1,4 +1,0 @@
-- src: tkuhlman.kafka
-  name: kafka
-- src: tkuhlman.monasca-schema
-  name: monasca-schema

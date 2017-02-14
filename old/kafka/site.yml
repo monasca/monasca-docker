@@ -1,7 +1,0 @@
-- name: Installs kafka
-  hosts: localhost
-  sudo: yes
-  vars:
-    zookeeper_hosts: zookeeper:2181
-  roles:
-    - {role: kafka, tags: [kafka]}

@@ -1,9 +1,0 @@
----
-- name: Install nova
-  apt: name="{{ item }}" state=present
-  with_items:
-    - nova-api
-    - nova-compute
-
-- name: Write the nova.conf
-  copy: dest=/etc/nova/nova.conf src=nova.conf mode=644 owner=nova group=nova

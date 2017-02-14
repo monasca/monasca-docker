@@ -1,8 +1,0 @@
----
-- name: Install glance
-  apt: name="{{ item }}" state=present
-  with_items:
-    - glance-api
-
-- name: Minimize glance footprint
-  lineinfile: dest=/etc/glance/glance-api.conf regexp="^#workers" line="workers = 1"

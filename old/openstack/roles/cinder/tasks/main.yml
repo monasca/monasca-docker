@@ -1,8 +1,0 @@
----
-- name: Install cinder
-  apt: name="{{ item }}" state=present
-  with_items:
-    - cinder-api
-
-- name: Write the cinder.conf
-  copy: dest=/etc/cinder/cinder.conf src=cinder.conf mode=644 owner=cinder group=cinder

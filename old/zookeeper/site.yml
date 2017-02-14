@@ -1,5 +1,0 @@
-- name: Installs zookeeper
-  hosts: localhost
-  sudo: yes
-  roles:
-    - {role: zookeeper, tags: [zookeeper]}

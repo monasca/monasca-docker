@@ -1,83 +1,71 @@
-# Monasca Kubernetes Configuration #
+Monasca Kubernetes Configuration
+================================
 
-This demonstrates a simple Monasca deployment on Kubernetes.
+This demonstrates a simple Monasca deployment on Kubernetes. The default
+deployment configuration does not use persistent storage and would be suitable
+for development use in e.g. [minikube][1] or [kube-clister][2].
 
-If desired it can be deployed using persistent storage via GlusterFS.
+The deployment scripts in this repository will make use of a configured
+`kubectl` and will start all Monasca components in the `monitoring` namespace.
+The deployment includes the following:
+ * A full Monasca pipeline: API, persister, threshold and notification engines
+ * All required backend services: zookeeper, kafka, influx, storm, mysql
+ * Agents on each node monitoring all k8s resources, annotated Prometheus
+   endpoints, and host nodes
+ * Keystone with demo accounts
+ * Grafana with pre-configured with Keystone login, a Monasca datasource, and
+   some general-purpose dashboards
 
-## Creating GlusterFS Volumes ##
+Deployment
+----------
 
-Several services are configured to use GlusterFS to store persistent data. These
-config files assume that all needed volumes exist already, and if they don't
-exist or aren't otherwise accessible, pods will get stuck in the
-`ContainerCreating` state.
+### Without persistent storage
 
-The following script can be used to run all of the necessary GlusterFS volumes
-easily (note, only appropriate for testing configurations):
+To use, run:
 
-```bash
-#!/bin/bash
-VOLUME=$1
-for node in 10.243.82.132 10.243.82.133 10.243.82.134 10.243.82.135; do
-    ssh -t ubuntu@${node} sudo mkdir /gluster/brick1/$VOLUME -p;
-done
+    ./monasca-start.sh
 
-ssh -t ubuntu@10.243.82.132 sudo gluster volume create $VOLUME replica 2 \
-        10.243.82.132:/gluster/brick1/$VOLUME \
-        10.243.82.133:/gluster/brick1/$VOLUME \
-        10.243.82.134:/gluster/brick1/$VOLUME \
-        10.243.82.135:/gluster/brick1/$VOLUME
+### With persistent storage (GlusterFS)
 
-ssh -t ubuntu@10.243.82.132 sudo gluster volume start $VOLUME
-```
+To make use of persistent storage, your target cluster must support persistent
+volume claims. With GlusterFS, this means [heketi][3] should be available as per
+the instructions in [gluster-kubernetes][4]. Other backends should be supported
+but may require modifications to the `storage-class` annotations in
+the `**/*-pvc.yml` claim templates.
 
-Adjust the addresses of nodes as needed, our GlusterFS cluster has four nodes
-configured identically. Ideally, you should have passwordless SSH key
-authentication and sudo access.
+To use, run:
 
-In any case, volumes with the following names should be available before
-continuing further:
+    ./monasca-start-glusterfs.sh
 
- * `monitoring-mysql`
- * `monitoring-influx`
- * `monitoring-kafka`
- * `monitoring-zookeeper`
- * `monitoring-zookeeper-log`
- * `monitoring-storm`
+Know Issues and Workarounds
+---------------------------
 
-If no persistent storage is desired, the volume definitions for each of the
-above can be replaced with `emptyDir: {}`, though any data stored will be lost
-if the pods restart for any reason.
+### Invalid Java Implementations
 
-## Deploying with GlusterFS ##
+The Java implementation for the API and persister do not work with the version
+of InfluxDB. Use only the Python implementations at this time.
 
-Run the bash script `monasca-start-glusterfs.sh`.
+### Persister crashes when first deployed
 
-## Deploying without Persistent Storage ##
+The persister may crash several times when first deployed. This is likely due to
+the Kafka topic having no elected leader. The leader election process takes
+roughly 60 seconds
 
-Run the bash script `monasca-start.sh`.
+## Running Monasca within Kubernetes on a MacBook
 
-## Know Issues and Workarounds (if applicable)
+Kubernetes can be set up easily on a MacBook via [kube-cluster][2]
 
-#### Invalid Java Implementations
- 
-The Java implementation for the API and Persister do not work with the version of influxdb. Use only the python implementations at this time.
-
-#### Mon influxdb database has to be manually created
-
-The Influxdb deployment does not create the mon database.
-
-After running the deployment steps you must exec into the influxdb pod and create the database:
-
-```bash
-kubectl exec -it {{ influx_pod_name }} -n monitoring bash
-influx -execute "create database mon"
-```
-
-## Running Monasca within Kubernetes on a Macbook ##
-
-Kubernetes can be set up easily on a macbook via [Kube-cluster](https://github.com/TheNewNormal/kube-cluster-osx)
-
-Once you follow the steps to get a Kubernetes cluster up you can follow the steps from the section above - Deploying without Persisten Storage.
+Once you follow the steps to get a Kubernetes cluster up you can follow the
+steps from the section above - Deploying without Persistent Storage.
 
 ## Future Work
-* Replace configuration files and bash scripts for deploying with [Helm](https://github.com/kubernetes/helm)
+
+ * Replace configuration files and bash scripts for deploying with [Helm][5].
+   See progress toward this goal in [monasca-helm][6].
+
+[1]: https://github.com/kubernetes/minikube
+[2]: https://github.com/TheNewNormal/kube-cluster-osx
+[3]: https://github.com/heketi/heketi
+[4]: https://github.com/gluster/gluster-kubernetes
+[5]: https://github.com/kubernetes/helm
+[6]: https://github.com/hpcloud-mon/monasca-helm

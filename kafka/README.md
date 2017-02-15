@@ -62,43 +62,24 @@ Several parameters can be specified using environment variables:
 | `KAFKA_JMX_PORT`              | `7203`  | Port to expose JMX metrics                     |
 | `KAFKA_JMX_OPTS`              | no SSL/auth, etc | Override default opts                 |
 
+### Topic creation
 
-JMX
----
+This image uses the same topic creation logic as [wurstmeister/kafka][7], so
+topics can be created automatically on startup by setting `KAFKA_CREATE_TOPICS`:
 
-Remote JMX access can be a bit of a pain to set up. The start script for this
-container tries to make it as painless as possible, but it's important to
-understand that if you want to connect a client like VisualVM from outside other
-Docker containers (e.g. directly from your host OS in development), then you'll
-need to configure RMI to be addressed *as the Docker host IP or hostname*. If
-you have set `KAFKA_ADVERTISED_HOST_NAME`, that value will be used and is
-probably what you want. If not (you're only using other containers to talk to
-Kafka brokers) or you need to override it for some reason, then you can instead
-set `JAVA_RMI_SERVER_HOSTNAME`.
+    docker run \
+        --name kafka \
+        --link zookeeper \
+        -e KAFKA_CREATE_TOPICS="topic1:64:1,topic2:16:1"
+        monasca/kafka:latest
 
-For example in practice, if your Docker host is VirtualBox run by Docker
-Machine, a `run` command like this should allow you to connect VisualVM from
-your host OS to `$(docker-machine ip docker-vm):7203`:
+The variable should be set to a comma-separated list of topic strings. These
+each look like so:
 
-    $ docker run -d --name kafka -p 7203:7203 \
-        --link zookeeper:zookeeper \
-        --env JAVA_RMI_SERVER_HOSTNAME=$(docker-machine ip docker-vm) \
-        ches/kafka
+    [topic name]:[partition count]:[replication factor]
 
-Note that it is fussy about port as well---it may not work if the same port
-number is not used within the container and on the host (any advice for
-workarounds is welcome).
+See [wurstmeister/kafka][7] for full details on the syntax.
 
-Finally, please note that by default remote JMX has authentication and SSL
-turned off (these settings are taken from Kafka's own default start scripts). If
-you expose the JMX hostname/port from the Docker host in a production
-environment, you should make make certain that access is locked down
-appropriately with firewall rules or similar. A more advisable setup in a Docker
-setting would be to run a metrics collector in another container, and link it to
-the Kafka container(s).
-
-If you need finer-grained configuration, you can totally control the relevant
-Java system properties by setting `KAFKA_JMX_OPTS` yourself---see `start.sh`.
 
 [1]: http://kafka.apache.org/
 [2]: https://github.com/hpcloud-mon/monasca-docker/blob/master/kafka/
@@ -107,7 +88,3 @@ Java system properties by setting `KAFKA_JMX_OPTS` yourself---see `start.sh`.
 [5]: https://hub.docker.com/r/library/zookeeper/
 [6]: https://kafka.apache.org/documentation/#basic_ops_restarting
 [7]: https://github.com/wurstmeister/kafka-docker
-
-[Docker]: http://www.docker.io
-[on the Docker registry]: https://registry.hub.docker.com/u/ches/kafka/
-[relateiq/kafka]: https://github.com/relateiq/docker-kafka

@@ -1,47 +1,35 @@
-# Builds an image for Apache Kafka 0.8.1.1 from binary distribution.
-#
-# The netflixoss/java base image runs Oracle Java 8 installed atop the
-# ubuntu:trusty (14.04) official image. Docker's official java images are
-# OpenJDK-only currently, and the Kafka project, Confluent, and most other
-# major Java projects test and recommend Oracle Java for production for optimal
-# performance.
+FROM alpine:3.5
 
-FROM netflixoss/java:8
-MAINTAINER Cindy ONeill
+ARG KAFKA_VERSION=0.9.0.1
+ARG SCALA_VERSION=2.11
+ARG KAFKA_KEYS=https://kafka.apache.org/KEYS
+ARG ASC_MIRROR=https://dist.apache.org/repos/dist/release/kafka
 
-ENV KAFKA_VERSION=0.8.1.1 KAFKA_SCALA_VERSION=2.9.2 JMX_PORT=7203
-ENV KAFKA_RELEASE_ARCHIVE kafka_${KAFKA_SCALA_VERSION}-${KAFKA_VERSION}.tgz
+COPY kafka_mirror.py /
 
-RUN mkdir /kafka /data /logs
+RUN mkdir /kafka /data /logs && \
+  apk add --no-cache openjdk8-jre-base py2-jinja2 bash && \
+  apk add --no-cache --virtual build-dep gnupg curl py2-requests tar && \
+  url=$(python /kafka_mirror.py $KAFKA_VERSION $SCALA_VERSION) && \
+  echo "Using mirror: $url" && \
+  curl "$url" > /kafka.tar.gz && \
+  curl "$ASC_MIRROR/$KAFKA_VERSION/kafka_$SCALA_VERSION-$KAFKA_VERSION.tgz.asc" > /kafka.asc && \
+  echo "Verifying against keys: $KAFKA_KEYS" && \
+  curl "$KAFKA_KEYS" | gpg --import && \
+  gpg --batch --verify kafka.asc kafka.tar.gz && \
+  echo "Download verified, continuing..." && \
+  tar zxf /kafka.tar.gz -C /kafka --strip-components=1 && \
+  rm /kafka.tar.gz /kafka_mirror.py && \
+  apk del build-dep
 
-RUN apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    ca-certificates
-
-# Download Kafka binary distribution
-ADD http://www.us.apache.org/dist/kafka/${KAFKA_VERSION}/${KAFKA_RELEASE_ARCHIVE} /tmp/
-ADD https://dist.apache.org/repos/dist/release/kafka/${KAFKA_VERSION}/${KAFKA_RELEASE_ARCHIVE}.md5 /tmp/
-
-WORKDIR /tmp
-
-# Check artifact digest integrity
-RUN echo VERIFY CHECKSUM: && \
-  gpg --print-md MD5 ${KAFKA_RELEASE_ARCHIVE} 2>/dev/null && \
-  cat ${KAFKA_RELEASE_ARCHIVE}.md5
-
-# Install Kafka to /kafka
-RUN tar -zx -C /kafka --strip-components=1 -f ${KAFKA_RELEASE_ARCHIVE} && \
-  rm -rf kafka_*
-
-ADD http://repo1.maven.org/maven2/org/slf4j/slf4j-log4j12/1.7.6/slf4j-log4j12-1.7.6.jar /kafka/libs/
-ADD config /kafka/config
-ADD start.sh /start.sh
+COPY template.py start.sh create-topics.sh /
+COPY templates /templates
 
 ENV PATH /kafka/bin:$PATH
-WORKDIR /kafka
 
-# broker, jmx
-EXPOSE 9092 ${JMX_PORT}
-VOLUME [ "/data", "/logs" ]
+#ADD http://repo1.maven.org/maven2/org/slf4j/slf4j-log4j12/1.7.6/slf4j-log4j12-1.7.6.jar /kafka/libs/
+
+EXPOSE 9092
+#VOLUME [ "/data", "/logs" ]
 
 CMD ["/start.sh"]

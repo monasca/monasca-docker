@@ -78,8 +78,11 @@ each look like so:
 
     [topic name]:[partition count]:[replication factor]
 
-See [wurstmeister/kafka][7] for full details on the syntax.
+See [wurstmeister/kafka][7] for full details on the syntax. For use with a
+[Monasca][8] installation, the following `KAFKA_CREATE_TOPICS` string should be
+used:
 
+    metrics:64:1,alarm-state-transitions:16:1,alarm-notifications:16:1,retry-notifications:16:1,events:16:1
 
 [1]: http://kafka.apache.org/
 [2]: https://github.com/hpcloud-mon/monasca-docker/blob/master/kafka/
@@ -88,3 +91,4 @@ See [wurstmeister/kafka][7] for full details on the syntax.
 [5]: https://hub.docker.com/r/library/zookeeper/
 [6]: https://kafka.apache.org/documentation/#basic_ops_restarting
 [7]: https://github.com/wurstmeister/kafka-docker
+[8]: https://hub.docker.com/r/monasca/api/

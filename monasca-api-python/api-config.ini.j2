@@ -2,7 +2,11 @@
 name = monasca_api
 
 [pipeline:main]
+{% if API_AUTH_DISABLED %}
+pipeline = request_id api
+{% else %}
 pipeline = request_id auth api
+{% endif %}
 
 [app:api]
 paste.app_factory = monasca_api.api.server:launch

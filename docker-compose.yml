@@ -16,9 +16,9 @@ services:
       KAFKA_AUTO_CREATE_TOPICS: "false"
       KAFKA_DELETE_TOPIC_ENABLE: "true"
       KAFKA_CREATE_TOPICS: "\
-        metrics:64:1,alarm-state-transitions:16:1,\
-        alarm-notifications:16:1,retry-notifications:16:1,\
-        events:16:1"
+        metrics:64:1,alarm-state-transitions:12:1,\
+        alarm-notifications:12:1,retry-notifications:3:1,\
+        events:12:1,60-seconds-notifications:3:1"
     depends_on:
       - zookeeper
 

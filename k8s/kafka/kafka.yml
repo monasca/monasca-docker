@@ -30,9 +30,9 @@ spec:
               value: "true"
             - name: KAFKA_CREATE_TOPICS
               value: "\
-                metrics:64:1,alarm-state-transitions:16:1,\
-                alarm-notifications:16:1,retry-notifications:16:1,\
-                events:16:1"
+                metrics:64:1,alarm-state-transitions:12:1,\
+                alarm-notifications:12:1,retry-notifications:3:1,\
+                events:12:1,60-seconds-notifications:3:1"
         - name: kafka-exporter
           image: rbrndt/kafka-prometheus:latest
           ports:

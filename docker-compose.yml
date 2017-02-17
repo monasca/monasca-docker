@@ -33,7 +33,7 @@ services:
       MYSQL_INIT_RANDOM_PASSWORD: "true"
 
   keystone:
-    image: monasca/keystone:1.0.6
+    image: monasca/keystone:1.0.7
     environment:
       KEYSTONE_HOST: keystone
       KEYSTONE_PASSWORD: secretadmin

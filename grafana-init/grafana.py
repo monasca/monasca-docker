@@ -67,7 +67,7 @@ def create_login_payload():
     }
 
 
-@retry(retries=12, delay=5.0)
+@retry(retries=24, delay=5.0)
 def login(session):
     r = session.post('{url}/login'.format(url=GRAFANA_URL),
                      json=create_login_payload(),

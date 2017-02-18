@@ -76,6 +76,20 @@ services:
       - zookeeper
       - kafka
 
+  monasca-notification:
+    image: monasca/notification:master
+    environment:
+      KAFKA_WAIT_FOR_TOPICS: "\
+        retry-notifications,\
+        alarm-state-transitions,\
+        alarm-notifications,\
+        60-seconds-notifications"
+    depends_on:
+      - monasca
+      - zookeeper
+      - kafka
+      - mysql
+
   grafana:
     image: monasca/grafana:4.1.0-pre1-1.0.0
     environment:

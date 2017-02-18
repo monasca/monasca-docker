@@ -8,22 +8,44 @@ MYSQL_INIT_PORT=${MYSQL_INIT_PORT:-"3306"}
 MYSQL_INIT_USERNAME=${MYSQL_INIT_USERNAME:-"root"}
 MYSQL_INIT_PASSWORD=${MYSQL_INIT_PASSWORD:-"secretmysql"}
 
+MYSQL_INIT_WAIT_RETRIES=${MYSQL_INIT_WAIT_RETRIES:-"24"}
+MYSQL_INIT_WAIT_DELAY=${MYSQL_INIT_WAIT_DELAY:-"5"}
+
 USER_SCRIPTS="/mysql-init.d"
 
-mysqladmin ping \
-    --host="$MYSQL_INIT_HOST" \
-    --port=$MYSQL_INIT_PORT \
-    --user="$MYSQL_INIT_USERNAME" \
-    --password="$MYSQL_INIT_PASSWORD" \
-    --connect_timeout=10 \
-    --wait=10
-if [ $? -ne 0 ]; then
-  echo "Unable to reach MySQL, exiting..."
-  sleep 1
-  exit 1
+echo "Waiting for MySQL to become available..."
+success="false"
+for i in $(seq $MYSQL_INIT_WAIT_RETRIES); do
+  mysqladmin status \
+      --host="$MYSQL_INIT_HOST" \
+      --port=$MYSQL_INIT_PORT \
+      --user="$MYSQL_INIT_USERNAME" \
+      --password="$MYSQL_INIT_PASSWORD" \
+      --connect_timeout=10
+  if [ $? -eq 0 ]; then
+    echo "MySQL is available, continuing..."
+    success="true"
+    break
+  else
+    echo "Connection attempt $i of $MYSQL_INIT_WAIT_RETRIES failed"
+    sleep "$MYSQL_INIT_WAIT_DELAY"
+  fi
+done
+
+if [ "$success" != "true" ]; then
+    echo "Unable to reach MySQL database! Exiting..."
+    sleep 1
+    exit 1
 fi
 
 set -e
+
+for f in $USER_SCRIPTS/*.sql.j2; do
+  if [ -e "$f" ]; then
+    echo "Applying template: $f"
+    python /template.py "$f" "$USER_SCRIPTS/$(basename "$f" .j2)"
+  fi
+done
 
 for f in $USER_SCRIPTS/*.sql; do
   if [ -e "$f" ]; then

@@ -12,7 +12,7 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: mysql-init-job
-          image: monasca/mysql-init:1.0.0
+          image: monasca/mysql-init:1.1.0
           env:
             - name: MYSQL_INIT_DISABLE_REMOTE_ROOT
               value: "true"

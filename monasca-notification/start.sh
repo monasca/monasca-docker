@@ -11,10 +11,10 @@ echo "Waiting for MySQL to become available..."
 success="false"
 for i in $(seq $MYSQL_WAIT_RETRIES); do
   mysqladmin status \
-      --host="$MYSQL_HOST" \
-      --port="$MYSQL_PORT" \
-      --user="$MYSQL_USERNAME" \
-      --password="$MYSQL_PASSWORD" \
+      --host="$MYSQL_DB_HOST" \
+      --port="$MYSQL_DB_PORT" \
+      --user="$MYSQL_DB_USERNAME" \
+      --password="$MYSQL_DB_PASSWORD" \
       --connect_timeout=10
   if [ $? -eq 0 ]; then
     echo "MySQL is available, continuing..."

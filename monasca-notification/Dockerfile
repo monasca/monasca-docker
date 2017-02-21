@@ -9,11 +9,11 @@ ARG REBUILD=1
 
 ENV CONFIG_TEMPLATE=true \
   KAFKA_URL=kafka:9092 \
-  MYSQL_HOST=mysql \
-  MYSQL_PORT=3306 \
-  MYSQL_USERNAME=notification \
-  MYSQL_PASSWORD=password \
-  MYSQL_DATABASE=mon
+  MYSQL_DB_HOST=mysql \
+  MYSQL_DB_PORT=3306 \
+  MYSQL_DB_USERNAME=notification \
+  MYSQL_DB_PASSWORD=password \
+  MYSQL_DB_DATABASE=mon
 
 RUN apk add --no-cache \
     python py2-pip py2-jinja2 py2-netaddr py2-yaml py2-gevent py2-greenlet mysql-client && \

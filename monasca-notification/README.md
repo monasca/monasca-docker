@@ -44,11 +44,11 @@ Configuration
 
 | Variable             | Default        | Description                              |
 |----------------------|----------------|------------------------------------------|
-| `MYSQL_HOST`         | `mysql`        | MySQL hostname                           |
-| `MYSQL_PORT`         | `3306`         | MySQL port                               |
-| `MYSQL_USERNAME`     | `notification` | MySQL username                           |
-| `MYSQL_PASSWORD`     | `password`     | MySQL password                           |
-| `MYSQL_DATABASE`     | `mon`          | MySQL database name                      |
+| `MYSQL_DB_HOST`      | `mysql`        | MySQL hostname                           |
+| `MYSQL_DB_PORT`      | `3306`         | MySQL port                               |
+| `MYSQL_DB_USERNAME`  | `notification` | MySQL username                           |
+| `MYSQL_DB_PASSWORD`  | `password`     | MySQL password                           |
+| `MYSQL_DB_DATABASE`  | `mon`          | MySQL database name                      |
 | `MYSQL_WAIT_RETRIES` | `24`           | # of tries to verify MySQL availability  |
 | `MYSQL_WAIT_DELAY`   | `5`            | # seconds between retry attempts         |
 | `KAFKA_URL`          | `kafka:9092`   | If `true`, disable remote root login     |

@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: monasca-notification
+  namespace: monitoring
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: monasca-notification
+    spec:
+      containers:
+        - name: monasca-notification
+          image: monasca/notification:master
+          imagePullPolicy: Always
+          env:
+            - name: KAFKA_WAIT_FOR_TOPICS
+              value: "\
+                retry-notifications,\
+                alarm-state-transitions,\
+                alarm-notifications,\
+                60-seconds-notifications"
+            - name: NF_PLUGINS
+              value: pagerduty,webhook

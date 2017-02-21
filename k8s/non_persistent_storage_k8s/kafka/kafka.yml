@@ -19,12 +19,15 @@ spec:
           env:
             - name: ZOOKEEPER_CONNECTION_STRING
               value: zookeeper:2181
-            - name: KAFKA_ADVERTISED_HOST_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
+            - name: KAFKA_AUTO_CREATE_TOPICS
+              value: "false"
             - name: KAFKA_DELETE_TOPIC_ENABLE
               value: "true"
+            - name: KAFKA_CREATE_TOPICS
+              value: "\
+                metrics:64:1,alarm-state-transitions:12:1,\
+                alarm-notifications:12:1,retry-notifications:3:1,\
+                events:12:1,60-seconds-notifications:3:1"
 ---
 apiVersion: v1
 kind: Service

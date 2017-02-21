@@ -10,7 +10,13 @@ RUN set -x && \
 
 
 RUN set -x && \
-    git clone https://github.com/openstack/monasca-transform.git /opt/monasca-transform && \
+    git clone https://github.com/openstack/monasca-transform.git /opt/monasca-transform
+# the following four lines are to get Flint's pod specs into place
+RUN set -x && \
+    cd /opt/monasca-transform && \
+    git fetch https://git.openstack.org/openstack/monasca-transform refs/changes/08/426008/3 && \
+    git checkout FETCH_HEAD
+RUN set -x && \
     /opt/monasca-transform/scripts/create_zip.sh && \
     cp -f /opt/monasca-transform/scripts/monasca-transform.zip /opt/monasca/transform/lib/. && \
     touch /var/log/monasca/transform/monasca-transform.log && \

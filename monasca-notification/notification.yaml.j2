@@ -77,7 +77,7 @@ notification_types:
 {% if 'hipchat' in plugins %}
     hipchat:
         timeout: {{ NF_HIPCHAT_TIMEOUT | default(5) }}
-        ca_certs: "{{ NF_SSL_CERTS | default('/etc/ssl/certs/ca-certificates.crt') }}"
+        ca_certs: "{{ NF_HIPCHAT_SSL_CERTS | default('/etc/ssl/certs/ca-certificates.crt') }}"
         insecure: {{ NF_HIPCHAT_INSECURE | default('false') }}
     {% if NF_HIPCHAT_PROXY %}
         proxy: {{ NF_HIPCHAT_PROXY }}

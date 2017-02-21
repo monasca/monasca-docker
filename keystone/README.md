@@ -42,6 +42,10 @@ A number of environment variables can be provided:
  * `KEYSTONE_MYSQL_USER`: the MySQL username. Default: `keystone`
  * `KEYSTONE_MYSQL_PASSWORD`: the MySQL password. Default: `keystone`
  * `KEYSTONE_MYSQL_DATABASE`: the MySQL dastasbase name. Default: `keystone`
+ * `KEYSTONE_MYSQL_CONNECT_RETRIES`: number of connection attempts to make
+   before proceding with initialization. Default: `24`
+ * `KEYSTONE_MYSQL_CONNECT_RETRY_DELAY`: number of seconds to wait after a
+   failed connection attempt before retrying. Default: `5`
 
 Minimally, for testing purposes where SQLite is acceptable, no environment
 variables are needed. For use in a Kubernetes environment with MySQL storage,

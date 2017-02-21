@@ -142,6 +142,3 @@ Options:
 [5]: https://hub.docker.com/r/monasca/api/
 [6]: https://github.com/hpcloud-mon/monasca-docker/blob/master/k8s/
 [7]: https://v2.developer.pagerduty.com/docs/events-api
-
-[5]: https://kubernetes.io/docs/user-guide/jobs/
-[6]: http://jinja.pocoo.org/

@@ -1,0 +1,23 @@
+# The metrics to forward:
+# These can be of three separate forms:
+#    1. Just a name which causes all metrics with that name to be forwarded
+#    2. Just a set of dimensions which causes all metrics with dimensions that
+#       match that set to be forwarded
+#    3. Name and set of dimensions which causes all metrics with that name and
+#       dimensions that match that set to be forwarded
+#
+#    If just a dimension key is given, then the metric matches if it has any
+#    value for that key. If more than one dimension is given, then the metric
+#    must have all of the dimensions.
+#
+# Examples:
+#  - name: storage_usage_mb
+#  - dimensions:
+#      device: if0
+#      hostname:
+#  - name: network_usage_mb
+#    dimensions:
+#      device: if0
+#
+metrics_to_forward:
+{{ METRICS_TO_FORWARD }}

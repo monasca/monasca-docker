@@ -34,5 +34,9 @@ else
   cp /config/forwarder.conf.j2 /config/forwarder.conf
   cp /config/forwarder_metric_match.yml.j2 /config/forwarder_metric_match.yml
 fi
+echo "/config/forwarder.conf"
+cat  /config/forwarder.conf
+echo "/config/forwarder_metric_match.yml"
+cat /config/forwarder_metric_match.yml
 
 monasca-forwarder --config-file /config/forwarder.conf

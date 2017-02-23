@@ -13,9 +13,9 @@ ENV CONFIG_TEMPLATE=true \
   ZOOKEEPER_URL=zookeeper:2181
 
 RUN apk add --no-cache \
-    python py2-pip py2-jinja2 py2-netaddr py2-yaml py2-gevent py2-greenlet mysql-client && \
+    python py2-pip py2-jinja2 py2-netaddr py2-yaml py2-gevent py2-greenlet && \
   apk add --no-cache --virtual build-dep \
-    git python-dev make g++ && \
+    git python-dev make g++ linux-headers && \
   mkdir /monasca-forwarder && cd /monasca-forwarder && \
   git init && \
   git remote add origin $FORWARDER_REPO && \
@@ -28,6 +28,7 @@ RUN apk add --no-cache \
   rm -rf /root/.cache/pip && \
   apk del build-dep
 
-COPY forwarder.yaml.j2 /config/forwarder.yaml.j2
+COPY forwarder.conf.j2 /config/forwarder.conf.j2
+COPY forwarder_metric_match.yml.j2 /config/forwarder_metric_match.yml.j2
 COPY template.py kafka_wait_for_topics.py start.sh /
 CMD ["/start.sh"]

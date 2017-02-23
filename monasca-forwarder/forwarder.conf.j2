@@ -4,9 +4,9 @@
 
 # Default log level is WARNING
 # Show debugging output in logs (sets DEBUG log level output)
-debug = {{ DEBUG }}
+debug = {{ DEBUG | default('false') }}
 # Show more verbose log output (sets INFO log level output) if debug is False
-verbose = {{ VERBOSE }}
+verbose = {{ VERBOSE | default('false') }}
 
 [repositories]
 # The driver to use for the metrics repository
@@ -54,7 +54,7 @@ project_name = mini-mon
 project_domain_name =
 project_domain_id =
 service_type =
-insecure = {{ USE_INSECURE | default('False') | bool }}
+insecure = {{ USE_INSECURE | default('false') }}
 keystone_timeout = 10
 endpoint_type =
 region_name =

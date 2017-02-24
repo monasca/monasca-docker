@@ -20,7 +20,7 @@ spec:
             - name: REMOTE_API_URL
               value: http://second_api:18070/v2.0
             - name: METRICS_TO_FORWARD
+            - name: METRICS_TO_FORWARD
               value: "
-  - name: kubernetes.node.allocatable.cpu_agg\n
-  - name: cpu.total_time_sec_agg\n
-"
+              - name: kubernetes.node.allocatable.cpu_agg\n
+              - name: cpu.total_time_sec_agg\n"

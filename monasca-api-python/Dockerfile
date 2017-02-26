@@ -27,7 +27,7 @@ ENV CONFIG_TEMPLATE=true \
   KEYSTONE_ADMIN_PASSWORD=secretadmin \
   KEYSTONE_ADMIN_TENANT=admin
 
-RUN apk add --no-cache python py2-pip py2-jinja2 && \
+RUN apk add --no-cache python py2-pip py2-jinja2 curl && \
   apk add --no-cache --virtual build-dep \
     python-dev git make g++ linux-headers && \
   git clone \
@@ -42,11 +42,11 @@ RUN apk add --no-cache python py2-pip py2-jinja2 && \
   apk del build-dep
 
 COPY api-* /etc/monasca/
-COPY template.py start.sh /
+COPY template.py start.sh health-check.sh /
 
 EXPOSE 8070
 
 HEALTHCHECK --interval=10s --timeout=5s \
-  CMD wget -q http://localhost:8070 -O - > /dev/null
+  CMD /health-check.sh $KEYSTONE_AUTH_URI $KEYSTONE_ADMIN_USER $KEYSTONE_ADMIN_PASSWORD $API_PORT
 
 CMD ["/start.sh"]

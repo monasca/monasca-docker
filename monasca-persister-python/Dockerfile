@@ -37,6 +37,6 @@ RUN apk add --no-cache python py2-pip py2-jinja2 && \
   apk del build-dep
 
 COPY persister.conf.j2 /etc/monasca-persister/
-COPY template.py start.sh /
+COPY template.py start.sh kafka_wait_for_topics.py /
 
 CMD ["/start.sh"]

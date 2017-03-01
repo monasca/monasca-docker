@@ -64,26 +64,30 @@ Configuration
 
 A number of environment variables can be passed to the container:
 
-| Variable                  | Default       | Description                      |
-|---------------------------|---------------|----------------------------------|
-| `LOG_LEVEL_ROOT`          | `WARN`        | The level of the root logger     |
-| `LOG_LEVEL_CONSOLE`       | `INFO`        | Minimum level for console output |
-| `API_PORT`                | `8070`        | The API's HTTP port              |
-| `KAFKA_URI`               | `kafka:9092`  | The host and port for kafka      |
-| `INFLUX_HOST`             | `influxdb`    | The host for influxdb            |
-| `INFLUX_PORT`             | `8086`        | The port for influxdb            |
-| `INFLUX_USER`             | `mon_api`     | The influx username              |
-| `INFLUX_PASSWORD`         | `password`    | The influx password              |
-| `INFLUX_DB`               | `mon`         | The influx database name         |
-| `MYSQL_HOST`              | `mysql`       | Alarm DB connection string       |
-| `MYSQL_USER`              | `monapi`      | MySQL DB username                |
-| `MYSQL_PASSWORD`          | `password`    | MySQL DB password                |
-| `MYSQL_DB`                | `mon`         | MySQL database name              |
-| `KEYSTONE_IDENTITY_URI`   | `http://keystone:35357` | Keystone identity address |
-| `KEYSTONE_AUTH_URI`       | `http://keystone:5000`  | Keystone auth address     |
-| `KEYSTONE_ADMIN_USER`     | `admin`       | Keystone admin account user      |
-| `KEYSTONE_ADMIN_PASSWORD` | `secretadmin` | Keystone admin account password  |
-| `KEYSTONE_ADMIN_TENANT`   | `admin`       | Keystone admin account tenant    |
+| Variable                     | Default       | Description                      |
+|------------------------------|---------------|----------------------------------|
+| `LOG_LEVEL_ROOT`             | `WARN`        | The level of the root logger     |
+| `LOG_LEVEL_CONSOLE`          | `INFO`        | Minimum level for console output |
+| `API_PORT`                   | `8070`        | The API's HTTP port              |
+| `KAFKA_URI`                  | `kafka:9092`  | The host and port for kafka      |
+| `INFLUX_HOST`                | `influxdb`    | The host for influxdb            |
+| `INFLUX_PORT`                | `8086`        | The port for influxdb            |
+| `INFLUX_USER`                | `mon_api`     | The influx username              |
+| `INFLUX_PASSWORD`            | `password`    | The influx password              |
+| `INFLUX_DB`                  | `mon`         | The influx database name         |
+| `MYSQL_HOST`                 | `mysql`       | Alarm DB connection string       |
+| `MYSQL_USER`                 | `monapi`      | MySQL DB username                |
+| `MYSQL_PASSWORD`             | `password`    | MySQL DB password                |
+| `MYSQL_DB`                   | `mon`         | MySQL database name              |
+| `KEYSTONE_IDENTITY_URI`      | `http://keystone:35357` | Keystone identity address |
+| `KEYSTONE_AUTH_URI`          | `http://keystone:5000`  | Keystone auth address     |
+| `KEYSTONE_ADMIN_USER`        | `admin`       | Keystone admin account user      |
+| `KEYSTONE_ADMIN_PASSWORD`    | `secretadmin` | Keystone admin account password  |
+| `KEYSTONE_ADMIN_TENANT`      | `admin`       | Keystone admin account tenant    |
+| `AUTHORIZED_ROLES`           | `user, domainuser, domainadmin, monasca-user` | Roles for admin Users |
+| `AGENT_AUTHORIZED_ROLES`     | `monasca-agent` | Roles for metric write only users |
+| `READ_ONLY_AUTHORIZED_ROLES` | `monasca-read-only-user` | Roles for read only users    |
+| `DELEGATE_AUTHORIZED_ROLES`  | `admin`       | Roles allow to read/write cross tenant ID |
 
 If additional values need to be overridden, new config files or jinja2 templates
 can be provided by mounting a replacement on top of the original template:

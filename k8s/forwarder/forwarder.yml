@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: forwarder
+  namespace: monitoring
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: forwarder
+    spec:
+      containers:
+        - name: forwarder
+          image: craigbryant/forwarder:latest
+          imagePullPolicy: Always
+          env:
+            - name: MONASCA_PROJECT_ID
+              value: 3564760a3dd44ae9bd6618d442fd758c
+            - name: REMOTE_API_URL
+              value: http://second_api:18070/v2.0
+            - name: METRICS_TO_FORWARD
+            - name: METRICS_TO_FORWARD
+              value: "
+              - name: kubernetes.node.allocatable.cpu_agg\n
+              - name: cpu.total_time_sec_agg\n"

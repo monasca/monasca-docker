@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# A small script to build the agent against several branches and docker hub
-# tags.
+# A small script to build the notification engine against several branches and
+# docker hub tags.
 
 set -e
 

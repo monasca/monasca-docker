@@ -1,5 +1,5 @@
 {
-  "id": 6,
+  "id": 8,
   "title": "Node Dashboard",
   "tags": [],
   "style": "dark",
@@ -41,8 +41,10 @@
       {
         "allValue": null,
         "current": {
-          "text": "All",
-          "value": "$__all"
+          "value": [
+            "$__all"
+          ],
+          "text": "All"
         },
         "datasource": "monasca",
         "hide": 0,
@@ -50,33 +52,7 @@
         "label": "Node Name",
         "multi": true,
         "name": "hostname",
-        "options": [
-          {
-            "selected": true,
-            "text": "All",
-            "value": "$__all"
-          },
-          {
-            "selected": false,
-            "text": "mn1-kub1",
-            "value": "mn1-kub1"
-          },
-          {
-            "selected": false,
-            "text": "mn1-kub2",
-            "value": "mn1-kub2"
-          },
-          {
-            "selected": false,
-            "text": "mn1-kub3",
-            "value": "mn1-kub3"
-          },
-          {
-            "selected": false,
-            "text": "mn1-kub4",
-            "value": "mn1-kub4"
-          }
-        ],
+        "options": [],
         "query": "hostname",
         "refresh": 1,
         "regex": "/mn1-kub/",
@@ -129,16 +105,14 @@
   "annotations": {
     "list": []
   },
-  "refresh": "10s",
+  "refresh": false,
   "schemaVersion": 13,
-  "version": 1,
+  "version": 0,
   "links": [],
   "gnetId": null,
   "rows": [
     {
-      "collapse": false,
-      "height": 347,
-      "isNew": false,
+      "title": "Dashboard Row",
       "panels": [
         {
           "aliasColors": {},
@@ -148,7 +122,6 @@
           "error": false,
           "fill": 1,
           "id": 1,
-          "isNew": true,
           "legend": {
             "alignAsTable": true,
             "avg": true,
@@ -183,7 +156,7 @@
                 }
               ],
               "error": "",
-              "metric": "cpu.percent",
+              "metric": "cpu.total_time_sec",
               "period": "60",
               "refId": "A"
             }
@@ -207,7 +180,7 @@
           },
           "yaxes": [
             {
-              "format": "percent",
+              "format": "ns",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -225,17 +198,16 @@
           ]
         }
       ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
       "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
+      "titleSize": "h6",
+      "height": 347,
+      "repeat": null,
+      "repeatRowId": null,
+      "repeatIteration": null,
+      "collapse": false
     },
     {
-      "collapse": false,
-      "height": 394,
-      "isNew": false,
+      "title": "Dashboard Row",
       "panels": [
         {
           "aliasColors": {},
@@ -245,7 +217,6 @@
           "error": false,
           "fill": 1,
           "id": 2,
-          "isNew": true,
           "legend": {
             "alignAsTable": true,
             "avg": false,
@@ -280,7 +251,7 @@
                 }
               ],
               "error": "",
-              "metric": "mem.used_mb",
+              "metric": "mem.used_bytes",
               "period": "60",
               "refId": "A"
             }
@@ -304,7 +275,7 @@
           },
           "yaxes": [
             {
-              "format": "decmbytes",
+              "format": "decbytes",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -322,412 +293,16 @@
           ]
         }
       ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
       "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
+      "titleSize": "h6",
+      "height": 394,
+      "repeat": null,
+      "repeatRowId": null,
+      "repeatIteration": null,
+      "collapse": false
     },
     {
-      "collapse": false,
-      "height": 250,
-      "isNew": false,
-      "panels": [
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": false,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "percent",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": true,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "id": 9,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": "hostname",
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "alias": "@hostname",
-              "dimensions": [
-                {
-                  "key": "hostname",
-                  "value": "$hostname"
-                }
-              ],
-              "error": "",
-              "metric": "disk.space_used_perc",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "80,90",
-          "title": "Disk Perc $hostname",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "avg",
-          "scopedVars": {
-            "hostname": {
-              "selected": false,
-              "text": "mn1-kub1",
-              "value": "mn1-kub1"
-            }
-          }
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": false,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "percent",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": true,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "id": 25,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "alias": "@hostname",
-              "dimensions": [
-                {
-                  "key": "hostname",
-                  "value": "$hostname"
-                }
-              ],
-              "error": "",
-              "metric": "disk.space_used_perc",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "80,90",
-          "title": "Disk Perc $hostname",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "avg",
-          "scopedVars": {
-            "hostname": {
-              "selected": false,
-              "text": "mn1-kub2",
-              "value": "mn1-kub2"
-            }
-          },
-          "repeatIteration": 1483721073949,
-          "repeatPanelId": 9
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": false,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "percent",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": true,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "id": 26,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "alias": "@hostname",
-              "dimensions": [
-                {
-                  "key": "hostname",
-                  "value": "$hostname"
-                }
-              ],
-              "error": "",
-              "metric": "disk.space_used_perc",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "80,90",
-          "title": "Disk Perc $hostname",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "avg",
-          "scopedVars": {
-            "hostname": {
-              "selected": false,
-              "text": "mn1-kub3",
-              "value": "mn1-kub3"
-            }
-          },
-          "repeatIteration": 1483721073949,
-          "repeatPanelId": 9
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": false,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "percent",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": true,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "id": 27,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "alias": "@hostname",
-              "dimensions": [
-                {
-                  "key": "hostname",
-                  "value": "$hostname"
-                }
-              ],
-              "error": "",
-              "metric": "disk.space_used_perc",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "80,90",
-          "title": "Disk Perc $hostname",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "avg",
-          "scopedVars": {
-            "hostname": {
-              "selected": false,
-              "text": "mn1-kub4",
-              "value": "mn1-kub4"
-            }
-          },
-          "repeatIteration": 1483721073949,
-          "repeatPanelId": 9
-        }
-      ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
-    },
-    {
-      "collapse": true,
-      "height": 391,
-      "isNew": false,
+      "title": "Disk Graph",
       "panels": [
         {
           "aliasColors": {},
@@ -737,7 +312,6 @@
           "error": false,
           "fill": 1,
           "id": 8,
-          "isNew": true,
           "legend": {
             "alignAsTable": true,
             "avg": false,
@@ -764,25 +338,25 @@
           "targets": [
             {
               "aggregator": "avg",
-              "alias": "@hostname",
+              "alias": "@hostname @device",
               "dimensions": [
                 {
                   "key": "hostname",
                   "value": "$all"
                 },
                 {
-                  "key": "mount_point",
-                  "value": "/"
+                  "key": "device",
+                  "value": "$all"
                 }
               ],
               "error": "",
-              "metric": "disk.space_used_perc",
+              "metric": "fs.usage_bytes",
               "period": "60",
               "refId": "A"
             }
           ],
           "thresholds": [],
-          "timeFrom": "1d",
+          "timeFrom": null,
           "timeShift": null,
           "title": "Disk Space Used",
           "tooltip": {
@@ -800,7 +374,7 @@
           },
           "yaxes": [
             {
-              "format": "percent",
+              "format": "bytes",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -818,17 +392,16 @@
           ]
         }
       ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
       "showTitle": false,
-      "title": "Disk Graph",
-      "titleSize": "h6"
+      "titleSize": "h6",
+      "height": 391,
+      "repeat": null,
+      "repeatRowId": null,
+      "repeatIteration": null,
+      "collapse": false
     },
     {
-      "collapse": false,
-      "height": 393,
-      "isNew": false,
+      "title": "Dashboard Row",
       "panels": [
         {
           "aliasColors": {},
@@ -838,7 +411,6 @@
           "error": false,
           "fill": 1,
           "id": 4,
-          "isNew": true,
           "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -922,7 +494,6 @@
           "error": false,
           "fill": 1,
           "id": 3,
-          "isNew": true,
           "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -999,17 +570,16 @@
           ]
         }
       ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
       "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
+      "titleSize": "h6",
+      "height": 393,
+      "repeat": null,
+      "repeatRowId": null,
+      "repeatIteration": null,
+      "collapse": false
     },
     {
-      "collapse": false,
-      "height": 250,
-      "isNew": false,
+      "title": "$kube_flag",
       "panels": [
         {
           "cacheTimeout": null,
@@ -1033,7 +603,6 @@
           },
           "id": 28,
           "interval": null,
-          "isNew": true,
           "links": [],
           "mappingType": 1,
           "mappingTypes": [
@@ -1062,7 +631,7 @@
             }
           ],
           "repeat": "hostname",
-          "span": 3,
+          "span": 12,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
             "full": false,
@@ -1079,6 +648,7 @@
                 }
               ],
               "error": "",
+              "group": false,
               "metric": "kubernetes.node.out_of_disk",
               "period": "300",
               "refId": "A"
@@ -1106,224 +676,21 @@
               "selected": false,
               "text": "kubernetes.node.out_of_disk",
               "value": "kubernetes.node.out_of_disk"
-            },
-            "hostname": {
-              "selected": false,
-              "text": "mn1-kub1",
-              "value": "mn1-kub1"
             }
           }
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "id": 29,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "dimensions": [
-                {
-                  "key": "hostname",
-                  "value": "$hostname"
-                }
-              ],
-              "error": "",
-              "metric": "kubernetes.node.out_of_disk",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "1,1",
-          "title": "$hostname",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "OK",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "ERROR",
-              "value": "1"
-            }
-          ],
-          "valueName": "avg",
-          "scopedVars": {
-            "kube_flag": {
-              "selected": false,
-              "text": "kubernetes.node.out_of_disk",
-              "value": "kubernetes.node.out_of_disk"
-            },
-            "hostname": {
-              "selected": false,
-              "text": "mn1-kub2",
-              "value": "mn1-kub2"
-            }
-          },
-          "repeatIteration": 1483721073949,
-          "repeatPanelId": 28
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "id": 30,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "dimensions": [
-                {
-                  "key": "hostname",
-                  "value": "$hostname"
-                }
-              ],
-              "error": "",
-              "metric": "kubernetes.node.out_of_disk",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "1,1",
-          "title": "$hostname",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "OK",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "ERROR",
-              "value": "1"
-            }
-          ],
-          "valueName": "avg",
-          "scopedVars": {
-            "kube_flag": {
-              "selected": false,
-              "text": "kubernetes.node.out_of_disk",
-              "value": "kubernetes.node.out_of_disk"
-            },
-            "hostname": {
-              "selected": false,
-              "text": "mn1-kub3",
-              "value": "mn1-kub3"
-            }
-          },
-          "repeatIteration": 1483721073949,
-          "repeatPanelId": 28
-        },
+        }
+      ],
+      "showTitle": true,
+      "titleSize": "h6",
+      "height": 117,
+      "repeat": "kube_flag",
+      "repeatRowId": null,
+      "repeatIteration": null,
+      "collapse": false
+    },
+    {
+      "title": "$kube_flag",
+      "panels": [
         {
           "cacheTimeout": null,
           "colorBackground": false,
@@ -1346,125 +713,6 @@
           },
           "id": 31,
           "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "dimensions": [
-                {
-                  "key": "hostname",
-                  "value": "$hostname"
-                }
-              ],
-              "error": "",
-              "metric": "kubernetes.node.out_of_disk",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "1,1",
-          "title": "$hostname",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "OK",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "ERROR",
-              "value": "1"
-            }
-          ],
-          "valueName": "avg",
-          "scopedVars": {
-            "kube_flag": {
-              "selected": false,
-              "text": "kubernetes.node.out_of_disk",
-              "value": "kubernetes.node.out_of_disk"
-            },
-            "hostname": {
-              "selected": false,
-              "text": "mn1-kub4",
-              "value": "mn1-kub4"
-            }
-          },
-          "repeatIteration": 1483721073949,
-          "repeatPanelId": 28
-        }
-      ],
-      "repeat": "kube_flag",
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": true,
-      "title": "$kube_flag",
-      "titleSize": "h6"
-    },
-    {
-      "collapse": false,
-      "height": 250,
-      "isNew": false,
-      "panels": [
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "id": 46,
-          "interval": null,
-          "isNew": true,
           "links": [],
           "mappingType": 1,
           "mappingTypes": [
@@ -1493,7 +741,7 @@
             }
           ],
           "repeat": "hostname",
-          "span": 3,
+          "span": 12,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
             "full": false,
@@ -1510,6 +758,7 @@
                 }
               ],
               "error": "",
+              "group": false,
               "metric": "kubernetes.node.out_of_disk",
               "period": "300",
               "refId": "A"
@@ -1537,341 +786,20 @@
               "selected": false,
               "text": "kubernetes.node.disk_pressure",
               "value": "kubernetes.node.disk_pressure"
-            },
-            "hostname": {
-              "selected": false,
-              "text": "mn1-kub1",
-              "value": "mn1-kub1"
             }
           }
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "id": 54,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "dimensions": [
-                {
-                  "key": "hostname",
-                  "value": "$hostname"
-                }
-              ],
-              "error": "",
-              "metric": "kubernetes.node.out_of_disk",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "1,1",
-          "title": "$hostname",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "OK",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "ERROR",
-              "value": "1"
-            }
-          ],
-          "valueName": "avg",
-          "scopedVars": {
-            "kube_flag": {
-              "selected": false,
-              "text": "kubernetes.node.disk_pressure",
-              "value": "kubernetes.node.disk_pressure"
-            },
-            "hostname": {
-              "selected": false,
-              "text": "mn1-kub2",
-              "value": "mn1-kub2"
-            }
-          },
-          "repeatIteration": 1483721073949,
-          "repeatPanelId": 46
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "id": 55,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "dimensions": [
-                {
-                  "key": "hostname",
-                  "value": "$hostname"
-                }
-              ],
-              "error": "",
-              "metric": "kubernetes.node.out_of_disk",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "1,1",
-          "title": "$hostname",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "OK",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "ERROR",
-              "value": "1"
-            }
-          ],
-          "valueName": "avg",
-          "scopedVars": {
-            "kube_flag": {
-              "selected": false,
-              "text": "kubernetes.node.disk_pressure",
-              "value": "kubernetes.node.disk_pressure"
-            },
-            "hostname": {
-              "selected": false,
-              "text": "mn1-kub3",
-              "value": "mn1-kub3"
-            }
-          },
-          "repeatIteration": 1483721073949,
-          "repeatPanelId": 46
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "id": 56,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "dimensions": [
-                {
-                  "key": "hostname",
-                  "value": "$hostname"
-                }
-              ],
-              "error": "",
-              "metric": "kubernetes.node.out_of_disk",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "1,1",
-          "title": "$hostname",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "OK",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "ERROR",
-              "value": "1"
-            }
-          ],
-          "valueName": "avg",
-          "scopedVars": {
-            "kube_flag": {
-              "selected": false,
-              "text": "kubernetes.node.disk_pressure",
-              "value": "kubernetes.node.disk_pressure"
-            },
-            "hostname": {
-              "selected": false,
-              "text": "mn1-kub4",
-              "value": "mn1-kub4"
-            }
-          },
-          "repeatIteration": 1483721073949,
-          "repeatPanelId": 46
         }
       ],
-      "repeat": null,
-      "repeatIteration": 1483721073949,
-      "repeatRowId": 6,
       "showTitle": true,
-      "title": "$kube_flag",
-      "titleSize": "h6"
+      "titleSize": "h6",
+      "height": 117,
+      "repeat": null,
+      "repeatRowId": 5,
+      "repeatIteration": 1488477100424,
+      "collapse": false
     },
     {
-      "collapse": false,
-      "height": 250,
-      "isNew": false,
+      "title": "$kube_flag",
       "panels": [
         {
           "cacheTimeout": null,
@@ -1893,9 +821,8 @@
             "thresholdLabels": false,
             "thresholdMarkers": true
           },
-          "id": 50,
+          "id": 32,
           "interval": null,
-          "isNew": true,
           "links": [],
           "mappingType": 1,
           "mappingTypes": [
@@ -1924,7 +851,7 @@
             }
           ],
           "repeat": "hostname",
-          "span": 3,
+          "span": 12,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
             "full": false,
@@ -1941,6 +868,7 @@
                 }
               ],
               "error": "",
+              "group": false,
               "metric": "kubernetes.node.out_of_disk",
               "period": "300",
               "refId": "A"
@@ -1968,336 +896,17 @@
               "selected": false,
               "text": "kubernetes.node.memory_pressure",
               "value": "kubernetes.node.memory_pressure"
-            },
-            "hostname": {
-              "selected": false,
-              "text": "mn1-kub1",
-              "value": "mn1-kub1"
             }
           }
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "id": 57,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "dimensions": [
-                {
-                  "key": "hostname",
-                  "value": "$hostname"
-                }
-              ],
-              "error": "",
-              "metric": "kubernetes.node.out_of_disk",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "1,1",
-          "title": "$hostname",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "OK",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "ERROR",
-              "value": "1"
-            }
-          ],
-          "valueName": "avg",
-          "scopedVars": {
-            "kube_flag": {
-              "selected": false,
-              "text": "kubernetes.node.memory_pressure",
-              "value": "kubernetes.node.memory_pressure"
-            },
-            "hostname": {
-              "selected": false,
-              "text": "mn1-kub2",
-              "value": "mn1-kub2"
-            }
-          },
-          "repeatIteration": 1483721073949,
-          "repeatPanelId": 50
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "id": 58,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "dimensions": [
-                {
-                  "key": "hostname",
-                  "value": "$hostname"
-                }
-              ],
-              "error": "",
-              "metric": "kubernetes.node.out_of_disk",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "1,1",
-          "title": "$hostname",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "OK",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "ERROR",
-              "value": "1"
-            }
-          ],
-          "valueName": "avg",
-          "scopedVars": {
-            "kube_flag": {
-              "selected": false,
-              "text": "kubernetes.node.memory_pressure",
-              "value": "kubernetes.node.memory_pressure"
-            },
-            "hostname": {
-              "selected": false,
-              "text": "mn1-kub3",
-              "value": "mn1-kub3"
-            }
-          },
-          "repeatIteration": 1483721073949,
-          "repeatPanelId": 50
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "id": 59,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "dimensions": [
-                {
-                  "key": "hostname",
-                  "value": "$hostname"
-                }
-              ],
-              "error": "",
-              "metric": "kubernetes.node.out_of_disk",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "1,1",
-          "title": "$hostname",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "OK",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "ERROR",
-              "value": "1"
-            }
-          ],
-          "valueName": "avg",
-          "scopedVars": {
-            "kube_flag": {
-              "selected": false,
-              "text": "kubernetes.node.memory_pressure",
-              "value": "kubernetes.node.memory_pressure"
-            },
-            "hostname": {
-              "selected": false,
-              "text": "mn1-kub4",
-              "value": "mn1-kub4"
-            }
-          },
-          "repeatIteration": 1483721073949,
-          "repeatPanelId": 50
         }
       ],
-      "repeat": null,
-      "repeatIteration": 1483721073949,
-      "repeatRowId": 6,
       "showTitle": true,
-      "title": "$kube_flag",
-      "titleSize": "h6"
+      "titleSize": "h6",
+      "height": 117,
+      "repeat": null,
+      "repeatRowId": 5,
+      "repeatIteration": 1488477100424,
+      "collapse": false
     }
   ]
 }

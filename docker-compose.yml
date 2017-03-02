@@ -69,7 +69,6 @@ services:
 
   monasca-persister:
     image: monasca/persister:master
-    command: sh -c "sleep 15 && /start.sh"
     depends_on:
       - monasca
       - influxdb

@@ -59,6 +59,7 @@ Configuration
 | `VERBOSE`         | `true`           | If `true`, enable info logging   |
 | `ZOOKEEPER_URI`   | `zookeeper:2181` | The host and port for zookeeper  |
 | `KAFKA_URI`       | `kafka:9092`     | The host and port for kafka      |
+| `KAFKA_WAIT_FOR_TOPICS` | `alarm-state-transitions,metrics` | Topics to wait on at startup |
 | `INFLUX_HOST`     | `influxdb`       | The host for influxdb            |
 | `INFLUX_PORT`     | `8086`           | The port for influxdb            |
 | `INFLUX_USER`     | `mon_persister`  | The influx username              |

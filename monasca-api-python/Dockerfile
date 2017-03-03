@@ -28,7 +28,7 @@ ENV CONFIG_TEMPLATE=true \
   KEYSTONE_ADMIN_PASSWORD=secretadmin \
   KEYSTONE_ADMIN_TENANT=admin
 
-RUN apk add --no-cache python py2-pip py2-jinja2 mysql-client && \
+RUN apk add --no-cache python py2-pip py2-jinja2 curl mysql-client && \
   apk add --no-cache --virtual build-dep \
     python-dev git make g++ linux-headers && \
   git clone \
@@ -43,11 +43,11 @@ RUN apk add --no-cache python py2-pip py2-jinja2 mysql-client && \
   apk del build-dep
 
 COPY api-* /etc/monasca/
-COPY template.py start.sh kafka_wait_for_topics.py /
+COPY template.py start.sh health-check.sh kafka_wait_for_topics.py /
 
 EXPOSE 8070
 
 HEALTHCHECK --interval=10s --timeout=5s \
-  CMD wget -q http://localhost:8070 -O - > /dev/null
+  CMD /health-check.sh $KEYSTONE_AUTH_URI $KEYSTONE_ADMIN_USER $KEYSTONE_ADMIN_PASSWORD $API_PORT
 
 CMD ["/start.sh"]

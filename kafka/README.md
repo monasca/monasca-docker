@@ -54,7 +54,6 @@ Several parameters can be specified using environment variables:
 | `KAFKA_BROKER_ID`             | `-1`    | Unique Kafka broker ID, `-1` for auto          |
 | `KAFKA_CREATE_TOPICS`         | unset   | Topics to create on startup, see below         |
 | `KAFKA_TOPIC_CONFIG`          | unset   | Default config args for created topics         |
-| `KAFKA_AUTO_CREATE_TOPICS`    | `true`  | Enable automatic topic creation                |
 | `KAFKA_DELETE_TOPIC_ENABLE`   | `false` | Enable topic deletion                          |
 | `KAFKA_LISTEN_PORT`           | `9092`  | Port for Kafka to listen on                    |
 | `KAFKA_ADVERTISED_PORT`       | `$KAFKA_LISTEN_PORT` | Kafka port advertised to clients  |

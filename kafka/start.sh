@@ -81,7 +81,7 @@ if [ "$KAFKA_JMX" = "true" ]; then
 fi
 
 echo "Creating topics..."
-/create-topics.sh &
+python /create_topics.py &
 
 echo "Starting kafka..."
 exec /kafka/bin/kafka-server-start.sh "$CONFIG_DEST/server.properties"

@@ -43,7 +43,6 @@ RUN apk add --no-cache python py2-pip py2-jinja2 curl mysql-client && \
   apk del build-dep
 
 COPY api-* /etc/monasca/
-COPY template.py start.sh  /
 COPY template.py start.sh health-check.sh kafka_wait_for_topics.py /
 
 EXPOSE 8070

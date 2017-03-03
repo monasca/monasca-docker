@@ -80,12 +80,6 @@ services:
 
   monasca-notification:
     image: monasca/notification:master
-    environment:
-      KAFKA_WAIT_FOR_TOPICS: "\
-        retry-notifications,\
-        alarm-state-transitions,\
-        alarm-notifications,\
-        60-seconds-notifications"
     depends_on:
       - monasca
       - zookeeper

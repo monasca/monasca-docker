@@ -52,7 +52,7 @@ Configuration
 | `MYSQL_WAIT_RETRIES` | `24`           | # of tries to verify MySQL availability  |
 | `MYSQL_WAIT_DELAY`   | `5`            | # seconds between retry attempts         |
 | `KAFKA_URL`          | `kafka:9092`   | If `true`, disable remote root login     |
-| `KAFKA_WAIT_FOR_TOPICS` | unset       | Comma-separated list of topic names to check |
+| `KAFKA_WAIT_FOR_TOPICS` | defaults    | Comma-separated list of topic names to check |
 | `KAFKA_WAIT_RETRIES` | `24`           | # of tries to verify Kafka availability  |
 | `KAFKA_WAIT_DELAY`   | `5`            | # seconds between retry attempts         |
 | `ZOOKEEPER_URL`      | `zookeeper:2181` | Zookeeper URL                          |

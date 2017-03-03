@@ -46,12 +46,12 @@ if [ -n "$KAFKA_WAIT_FOR_TOPICS" ]; then
       sleep "$KAFKA_WAIT_DELAY"
     fi
   done
-fi
 
-if [ "$success" != "true" ]; then
-  echo "Kafka failed to become ready, exiting..."
-  sleep 1
-  exit 1
+  if [ "$success" != "true" ]; then
+    echo "Kafka failed to become ready, exiting..."
+    sleep 1
+    exit 1
+  fi
 fi
 
 echo "Starting notification engine..."

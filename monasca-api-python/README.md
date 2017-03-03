@@ -70,6 +70,9 @@ A number of environment variables can be passed to the container:
 | `LOG_LEVEL_CONSOLE`       | `INFO`        | Minimum level for console output |
 | `API_PORT`                | `8070`        | The API's HTTP port              |
 | `KAFKA_URI`               | `kafka:9092`  | The host and port for kafka      |
+| `KAFKA_WAIT_FOR_TOPICS`   | `alarm-state-transitions,metrics` | Topics to wait on at startup |
+| `KAFKA_WAIT_RETRIES`      | `24`          | # of kafka wait attempts         |
+| `KAFKA_WAIT_DELAY`        | `5`           | seconds to wait between attempts |
 | `INFLUX_HOST`             | `influxdb`    | The host for influxdb            |
 | `INFLUX_PORT`             | `8086`        | The port for influxdb            |
 | `INFLUX_USER`             | `mon_api`     | The influx username              |
@@ -79,11 +82,21 @@ A number of environment variables can be passed to the container:
 | `MYSQL_USER`              | `monapi`      | MySQL DB username                |
 | `MYSQL_PASSWORD`          | `password`    | MySQL DB password                |
 | `MYSQL_DB`                | `mon`         | MySQL database name              |
+| `MYSQL_WAIT_RETRIES`      | `24`          | # of MySQL connection attempts   |
+| `MYSQL_WAIT_DELAY`        | `5`           | seconds to wait between attempts |
 | `KEYSTONE_IDENTITY_URI`   | `http://keystone:35357` | Keystone identity address |
 | `KEYSTONE_AUTH_URI`       | `http://keystone:5000`  | Keystone auth address     |
 | `KEYSTONE_ADMIN_USER`     | `admin`       | Keystone admin account user      |
 | `KEYSTONE_ADMIN_PASSWORD` | `secretadmin` | Keystone admin account password  |
 | `KEYSTONE_ADMIN_TENANT`   | `admin`       | Keystone admin account tenant    |
+| `GUNICORN_WORKERS`        | `9`           | number of API worker processes   |
+| `GUNICORN_WORKER_CLASS`   | `gevent`      | async worker class               |
+| `GUNICORN_WORKER_CONNECTIONS` | `2000`    | no. connections for async worker |
+| `GUNICORN_BACKLOG`        | `1000`        | gunicorn backlog size            |
+| `AUTHORIZED_ROLES`           | `user, domainuser, domainadmin, monasca-user` | Roles for admin Users |
+| `AGENT_AUTHORIZED_ROLES`     | `monasca-agent` | Roles for metric write only users |
+| `READ_ONLY_AUTHORIZED_ROLES` | `monasca-read-only-user` | Roles for read only users    |
+| `DELEGATE_AUTHORIZED_ROLES`  | `admin`       | Roles allow to read/write cross tenant ID |
 
 If additional values need to be overridden, new config files or jinja2 templates
 can be provided by mounting a replacement on top of the original template:

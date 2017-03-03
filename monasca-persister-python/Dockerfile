@@ -16,6 +16,7 @@ ENV CONFIG_TEMPLATE=true \
   KAFKA_ALARM_HISTORY_WAIT_TIME=15 \
   KAFKA_METRICS_BATCH_SIZE=1000 \
   KAFKA_METRICS_WAIT_TIME=15 \
+  KAFKA_WAIT_FOR_TOPICS=alarm-state-transitions,metrics \
   INFLUX_HOST=influxdb \
   INFLUX_PORT=8086 \
   INFLUX_USER=mon_persister \
@@ -37,6 +38,6 @@ RUN apk add --no-cache python py2-pip py2-jinja2 && \
   apk del build-dep
 
 COPY persister.conf.j2 /etc/monasca-persister/
-COPY template.py start.sh /
+COPY template.py start.sh kafka_wait_for_topics.py /
 
 CMD ["/start.sh"]

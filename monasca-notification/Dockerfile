@@ -9,6 +9,7 @@ ARG REBUILD=1
 
 ENV CONFIG_TEMPLATE=true \
   KAFKA_URL=kafka:9092 \
+  KAFKA_WAIT_FOR_TOPICS=retry-notifications,alarm-state-transitions,alarm-notifications,60-seconds-notifications \
   MYSQL_DB_HOST=mysql \
   MYSQL_DB_PORT=3306 \
   MYSQL_DB_USERNAME=notification \

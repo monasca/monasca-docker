@@ -14,8 +14,21 @@ RUN set -x && \
 # the following four lines are to get Flint's pod specs into place
 RUN set -x && \
     cd /opt/monasca-transform && \
-    git fetch https://git.openstack.org/openstack/monasca-transform refs/changes/08/426008/5 && \
+    git fetch https://git.openstack.org/openstack/monasca-transform refs/changes/08/426008/8 && \
     git checkout FETCH_HEAD
+RUN set -x && \
+    git config --global user.name "Marvin" && \
+    git config --global user.email "david.c.kennedy@hpe.com" && \
+    cd /opt/monasca-transform && \
+    git rebase master && \
+    git branch docker_branch
+RUN set -x && \
+    cd /opt/monasca-transform && \
+    git fetch https://git.openstack.org/openstack/monasca-transform refs/changes/93/427193/4 && \
+    git checkout FETCH_HEAD
+RUN set -x && \
+    cd /opt/monasca-transform && \
+    git rebase docker_branch
 RUN set -x && \
     /opt/monasca-transform/scripts/create_zip.sh && \
     cp -f /opt/monasca-transform/scripts/monasca-transform.zip /opt/monasca/transform/lib/. && \

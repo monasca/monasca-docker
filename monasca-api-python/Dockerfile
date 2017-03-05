@@ -26,7 +26,8 @@ ENV CONFIG_TEMPLATE=true \
   KEYSTONE_AUTH_URI=http://keystone:5000 \
   KEYSTONE_ADMIN_USER=admin \
   KEYSTONE_ADMIN_PASSWORD=secretadmin \
-  KEYSTONE_ADMIN_TENANT=admin
+  KEYSTONE_ADMIN_TENANT=admin \
+  KEYSTONE_ADMIN_DOMAIN=default
 
 RUN apk add --no-cache python py2-pip py2-jinja2 curl mysql-client && \
   apk add --no-cache --virtual build-dep \
@@ -48,6 +49,12 @@ COPY template.py start.sh health-check.sh kafka_wait_for_topics.py /
 EXPOSE 8070
 
 HEALTHCHECK --interval=10s --timeout=5s \
-  CMD /health-check.sh $KEYSTONE_AUTH_URI $KEYSTONE_ADMIN_USER $KEYSTONE_ADMIN_PASSWORD $API_PORT
+  CMD /health-check.sh \
+    $KEYSTONE_AUTH_URI \
+    $KEYSTONE_ADMIN_USER \
+    $KEYSTONE_ADMIN_PASSWORD \
+    $KEYSTONE_ADMIN_TENANT \
+    $KEYSTONE_ADMIN_DOMAIN \
+    $API_PORT
 
 CMD ["/start.sh"]

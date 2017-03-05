@@ -119,6 +119,23 @@ docker exec -it some_container_id cat /etc/monasca/api-config.ini
 docker exec -it some_container_id cat /etc/monasca/api-logging.conf
 ```
 
+Troubleshooting
+-------------
+
+Container status can be checked by the following command (example):
+```bash
+docker ps --filter 'name=monasca' --format '{{.Names}}\t{{.Image}}\t{{.Status}}'
+```
+
+Result of health check can be get by the following command:
+```bash
+docker inspect --format '{{json .State.Health}}' monasca | python -m json.tool
+```
+Health check `ExitCode`s:
+ * 1: Keystone authentication error
+ * 2: Monasca API error
+ 
+
 [1]: https://github.com/hpcloud-mon/monasca-docker/blob/master/monasca-api-python/Dockerfile
 [2]: https://github.com/hpcloud-mon/monasca-docker/blob/master/monasca-api-java/Dockerfile
 [3]: https://wiki.openstack.org/wiki/Monasca

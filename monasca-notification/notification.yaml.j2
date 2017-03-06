@@ -13,7 +13,7 @@
 # under the License.
 
 kafka:
-    url: {{ KAFKA_URL | default('kafka:9092') }}
+    url: {{ KAFKA_URI | default('kafka:9092') }}
     group: "monasca-notification"
     alarm_topic: "alarm-state-transitions"
     notification_topic: "alarm-notifications"

@@ -31,7 +31,7 @@ Usage
 
 The forwarder requires configured instances of Kafka,
 Zookeeper, and the remote [monasca-api][5]. In environments resembling the official
-[docker-compose][3] or [Kubernetes][6] environments, this image still requires 
+[docker-compose][3] or [Kubernetes][6] environments, this image still requires
 configuration, see below for required variables.
 
     docker run monasca/forwarder:latest
@@ -43,7 +43,7 @@ Configuration
 |-------------------------|------------------|----------------------------------------------------|
 | `DEBUG`                 | `false`          | If `true`, enable debug logging                    |
 | `VERBOSE`               | `true`           | If `true`, enable info logging                     |
-| `KAFKA_URL`             | `kafka:9092`     | If `true`, disable remote root login               |
+| `KAFKA_URI`             | `kafka:9092`     | If `true`, disable remote root login               |
 | `KAFKA_WAIT_FOR_TOPICS` | `metrics`        | Comma-separated list of topic names to check       |
 | `KAFKA_WAIT_RETRIES`    | `24`             | # of tries to verify Kafka availability            |
 | `KAFKA_WAIT_DELAY`      | `5`              | # seconds between retry attempts                   |

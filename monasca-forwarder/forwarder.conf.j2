@@ -19,7 +19,7 @@ partition_interval_recheck_seconds = 15
 
 [kafka_metrics]
 # Comma separated list of Kafka broker host:port
-uri = {{ KAFKA_URL | default('kafka:9092') }}
+uri = {{ KAFKA_URI | default('kafka:9092') }}
 group_id = 1_metrics_forwarder
 topic = metrics
 consumer_id = 1
@@ -43,9 +43,9 @@ auth_type = headers
 headers = X-Tenant-Id:{{ MONASCA_PROJECT_ID }},X-Roles:{{ MONASCA_ROLE | default('monasca-agent') }}
 monasca_api_URL = {{ REMOTE_API_URL }}
 write_timeout = 5
-keystone_url = 
-username = 
-password = 
+keystone_url =
+username =
+password =
 user_domain_id =
 user_domain_name =
 ca_file =

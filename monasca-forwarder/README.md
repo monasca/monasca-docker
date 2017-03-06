@@ -5,7 +5,7 @@ This image has a containerized version of the Monasca Forwarder Engine which is 
 an official part of the Monasca projects. For more information on the Monasca project,
 see [the wiki][1].
 
-Sources: middot; [monasca-docker][3] &middot; [Dockerfile][4]
+Sources: [monasca-docker][2] &middot; [Dockerfile][3]
 
 Tags
 ----
@@ -14,7 +14,7 @@ Images in this repository are tagged as follows:
 
  * `latest`: refers to the latest stable point release, e.g. `1.7.0`
  * `1.0.0`, `1.0`, `1`: standard semver tags based on git tags in the
-   [official repository][2].
+   upstream repository
  * `newton`, `ocata`, etc: named versions following OpenStack release names
    built from the tip of `stable/RELEASENAME` branches in the repository
  * `master`, `master-DATESTAMP`: unstable testing builds from the master branch,
@@ -30,8 +30,8 @@ Usage
 -----
 
 The forwarder requires configured instances of Kafka,
-Zookeeper, and the remote [monasca-api][5]. In environments resembling the official
-[docker-compose][3] or [Kubernetes][6] environments, this image still requires
+Zookeeper, and the remote [monasca-api][4]. In environments resembling the official
+[docker-compose][2] or [Kubernetes][5] environments, this image still requires
 configuration, see below for required variables.
 
     docker run monasca/forwarder:latest
@@ -57,9 +57,8 @@ Configuration
 
 
 [1]: https://wiki.openstack.org/wiki/Monasca
-[2]: https://github.hpe.com/openstack/monasca-forwarder/
-[3]: https://github.com/hpcloud-mon/monasca-docker/
-[4]: https://github.com/hpcloud-mon/monasca-docker/blob/master/monasca-forwarder/Dockerfile
-[5]: https://hub.docker.com/r/monasca/api/
-[6]: https://github.com/hpcloud-mon/monasca-docker/blob/master/k8s/
-[7]: https://v2.developer.pagerduty.com/docs/events-api
+[2]: https://github.com/hpcloud-mon/monasca-docker/
+[3]: https://github.com/hpcloud-mon/monasca-docker/blob/master/monasca-forwarder/Dockerfile
+[4]: https://hub.docker.com/r/monasca/api/
+[5]: https://github.com/hpcloud-mon/monasca-docker/blob/master/k8s/
+[6]: https://v2.developer.pagerduty.com/docs/events-api

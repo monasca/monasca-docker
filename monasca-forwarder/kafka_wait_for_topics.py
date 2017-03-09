@@ -21,7 +21,7 @@ import sys
 
 from pykafka import KafkaClient
 
-client = KafkaClient(hosts=os.environ.get('KAFKA_URL', 'kafka:9092'))
+client = KafkaClient(hosts=os.environ.get('KAFKA_URI', 'kafka:9092'))
 
 required_topics = os.environ.get('KAFKA_WAIT_FOR_TOPICS', '').split(',')
 print('Checking for available topics:', repr(required_topics))

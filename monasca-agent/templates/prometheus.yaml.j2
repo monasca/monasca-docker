@@ -20,7 +20,7 @@ instances:
     {% if dimensions %}
     default_dimensions:
       {% for dimension in dimensions %}
-        {% set k, v = dimension.split('=', 2) %}
+        {% set k, v = dimension.split('=', 1) %}
       {{k}}: {{v}}
       {% endfor %}
     {% endif %}

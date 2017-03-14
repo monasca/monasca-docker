@@ -37,6 +37,12 @@ KAFKA_WAIT_RETRIES = os.environ.get('KAFKA_WAIT_RETRIES', '24')
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+subprocess_env = os.environ.copy()
+if 'JMX_PORT' in subprocess_env:
+    del subprocess_env['JMX_PORT']
+if 'KAFKA_JMX_OPTS' in subprocess_env:
+    del subprocess_env['KAFKA_JMX_OPTS']
+
 
 class CaptureException(Exception):
     def __init__(self, retcode, stdout, stderr):
@@ -57,7 +63,8 @@ class CaptureException(Exception):
 def is_kafka_running():
     p = subprocess.Popen(['netstat', '-nlt'],
                          stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
+                         stderr=subprocess.PIPE,
+                         env=subprocess_env)
 
     out, err = p.communicate()
     if p.returncode != 0:
@@ -83,7 +90,8 @@ def kafka_topics(verb, args=None):
     logger.debug('running: %s: %r', SCRIPT_PATH, args)
     p = subprocess.Popen(args,
                          stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
+                         stderr=subprocess.PIPE,
+                         env=subprocess_env)
 
     out, err = p.communicate()
     if p.returncode != 0:

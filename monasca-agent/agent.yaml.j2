@@ -22,7 +22,15 @@ Api:
 
 Main:
   hostname: {{ '"%s"' % AGENT_HOSTNAME if AGENT_HOSTNAME else 'null' }}
-  dimensions: {{ '"%s"' % DIMENSIONS if DIMENSIONS else 'null' }}
+{% if DIMENSIONS %}
+  dimensions:
+  {% for dimension in DIMENSIONS.split(',') %}
+    {% set k, v = dimension.split('=', 1) %}
+    {{k.strip()}}: "{{v}}"
+  {% endfor %}
+{% else %}
+  dimensions: {}
+{% endif %}
   check_freq: {{ CHECK_FREQ | default(30) }}
   num_collector_threads: {{ NUM_COLLECTOR_THREADS | default(1) }}
   pool_full_max_retries: {{ POOL_FULL_MAX_TRIES | default(4) }}

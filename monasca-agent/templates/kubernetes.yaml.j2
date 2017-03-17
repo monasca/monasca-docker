@@ -5,3 +5,9 @@ init_config:
 
 instances:
   - derive_host: True
+    {% if KUBERNETES_NAMESPACE_ANNOTATIONS %}
+    namespace_annotations:
+      {% for annotation in KUBERNETES_NAMESPACE_ANNOTATIONS.split(',') %}
+      - "{{ annotation }}"
+      {% endfor %}
+    {% endif %}

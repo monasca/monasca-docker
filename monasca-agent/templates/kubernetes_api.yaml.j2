@@ -16,3 +16,16 @@ instances:
       - "{{ label }}"
       {% endfor %}
     {% endif %}
+    {% if KUBERNETES_NAMESPACE_ANNOTATIONS %}
+    namespace_annotations:
+      {% for annotation in KUBERNETES_NAMESPACE_ANNOTATIONS.split(',') %}
+      - "{{ annotation }}"
+      {% endfor %}
+    {% endif %}
+    {% if STORAGE_PARAMETERS_DIMENSIONS %}
+    storage_parameters_dimensions:
+      {% for parameter in STORAGE_PARAMETERS_DIMENSIONS.split(',') %}
+      - "{{ parameter }}"
+      {% endfor %}
+    {% endif %}
+    report_persistent_storage: {{ REPORT_PERSISTENT_STORAGE | default(true) }}

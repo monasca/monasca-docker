@@ -36,7 +36,7 @@ fi
 
 # cadvisor
 if [ "$CADVISOR" = "true" ]; then
-  template $PLUGIN_TEMPLATES/cadvisor.yaml.j2 $AGENT_PLUGINS/cadvisor.yaml
+  template $PLUGIN_TEMPLATES/cadvisor_host.yaml.j2 $AGENT_PLUGINS/cadvisor_host.yaml
 fi
 
 # kubernetes

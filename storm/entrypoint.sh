@@ -6,6 +6,8 @@ fi
 
 CONFIG_TEMPLATES="/templates"
 CONFIG_DEST="/storm/conf"
+LOG_TEMPLATES="/logging"
+LOG_DEST="/storm/log4j2"
 
 ZOOKEEPER_WAIT=${ZOOKEEPER_WAIT:-"true"}
 ZOOKEEPER_WAIT_TIMEOUT=${ZOOKEEPER_WAIT_TIMEOUT:-"3"}
@@ -87,21 +89,28 @@ if [ -z "$UI_CHILDOPTS" ]; then
   export UI_CHILDOPTS
 fi
 
-# apply all config templates
-for f in $CONFIG_TEMPLATES/*; do
-  if [ ! -e "$f" ]; then
-    continue
-  fi
+template_dir() {
+  src_dir=$1
+  dest_dir=$2
 
-  name=$(basename "$f")
-  dest=$(basename "$f" .j2)
-  if [ "$dest" = "$name" ]; then
-    # file does not end in .j2
-    cp "$f" "$CONFIG_DEST/$dest"
-  else
-    # file ends in .j2, apply template
-    python /template.py "$f" "$CONFIG_DEST/$dest"
-  fi
-done
+  for f in "$src_dir"/*; do
+    if [ ! -e "$f" ]; then
+      continue
+    fi
+
+    name=$(basename "$f")
+    dest=$(basename "$f" .j2)
+    if [ "$dest" = "$name" ]; then
+      # file does not end in .j2
+      cp "$f" "$dest_dir/$dest"
+    else
+      # file ends in .j2, apply template
+      python /template.py "$f" "$dest_dir/$dest"
+    fi
+  done
+}
+
+template_dir "$CONFIG_TEMPLATES" "$CONFIG_DEST"
+template_dir "$LOG_TEMPLATES" "$LOG_DEST"
 
 exec "$@"

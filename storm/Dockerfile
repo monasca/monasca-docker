@@ -42,5 +42,6 @@ ENV PATH /storm/bin:$PATH
 
 COPY template.py heap.py entrypoint.sh /
 COPY templates /templates
+COPY logging /logging
 
 ENTRYPOINT ["/entrypoint.sh"]

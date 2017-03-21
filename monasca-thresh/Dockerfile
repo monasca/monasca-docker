@@ -1,41 +1,55 @@
-FROM storm:1.0.2
-
-RUN apk add --no-cache curl tar bash git
-
-ARG MAVEN_VERSION=3.3.9
-ARG USER_HOME_DIR="/root"
-
-RUN mkdir -p /usr/share/maven /usr/share/maven/ref \
-  && curl -fsSL http://apache.osuosl.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz \
-    | tar -xzC /usr/share/maven --strip-components=1 \
-  && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
+FROM monasca/storm:1.0.3
 
 ENV MAVEN_HOME /usr/share/maven
-ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
 
-COPY settings-docker.xml /usr/share/maven/ref/
+COPY settings.xml.j2 /
 
-ENV MONASCA_COMMON_REPO=https://github.com/openstack/monasca-common.git
-ENV MONASCA_COMMON_BRANCH=master
+ENV COMMON_REPO=https://git.openstack.org/openstack/monasca-common.git \
+  COMMON_BRANCH="master" \
+  THRESH_REPO=https://git.openstack.org/openstack/monasca-thresh.git \
+  THRESH_BRANCH="master" \
+  STORM_WAIT_RETRIES=24 \
+  STORM_WAIT_DELAY=5 \
+  STORM_WAIT_TIMEOUT=10 \
+  KAFKA_URI="kafka:9092" \
+  MYSQL_DB_HOST=mysql \
+  MYSQL_DB_PORT=3306 \
+  MYSQL_DB_USERNAME=thresh \
+  MYSQL_DB_PASSWORD=password \
+  MYSQL_DB_DATABASE=mon
 
-ENV MONASCA_THRESH_REPO=https://github.com/openstack/monasca-THRESH.git
-ENV MONASCA_THRESH_BRANCH=master
+ARG REBUILD_DEPENDENCIES=1
+RUN apk add --no-cache --virtual build-dep maven git openjdk8 && \
+  mkdir /root/.m2 && \
+  python /template.py settings.xml.j2 /root/.m2/settings.xml && \
+  mkdir /repo
 
-RUN mkdir /source
-WORKDIR /source
-RUN git clone $MONASCA_COMMON_REPO -b $MONASCA_COMMON_BRANCH
-WORKDIR /source/monasca-common
-RUN mvn clean install
+ARG REBUILD_COMMON=1
+RUN set -x && mkdir /monasca-common && cd /monasca-common && \
+  git init && \
+  git remote add origin $COMMON_REPO && \
+  git fetch origin $COMMON_BRANCH && \
+  git reset --hard FETCH_HEAD && \
+  mvn -B clean install && \
+  cd / && \
+  rm -rf /monasca-common
 
-WORKDIR /source
-RUN git clone $MONASCA_THRESH_REPO -b $MONASCA_THRESH_BRANCH
-WORKDIR /source/monasca-thresh
-RUN mvn clean package; cp /monasca-thresh/target/monasca-thresh-*-SNAPSHOT-shaded.jar /monasca-thresh.jar
+ARG REBUILD_THRESH=1
+RUN mkdir /monasca-thresh && cd /monasca-thresh && \
+  git init && \
+  git remote add origin $THRESH_REPO && \
+  git fetch origin $THRESH_BRANCH && \
+  git reset --hard FETCH_HEAD && \
+  cd thresh && \
+  mvn -B clean package && \
+  cp /monasca-thresh/thresh/target/*-SNAPSHOT-shaded.jar /monasca-thresh.jar && \
+  cd / && \
+  rm -rf /monasca-thresh
 
-COPY storm.yaml /conf/storm.yaml
-COPY thresh-config.yml /config/thresh-config.yml
-COPY onStart.sh	/
+ARG REBUILD_CLEANUP=1
+RUN rm -rf /repo && \
+  apk del build-dep
 
-RUN chmod -c 755 /config/thresh-config.yml /conf/storm.yaml /onStart.sh
+COPY submit.sh /
 
-ENTRYPOINT ["./onStart.sh"]
+CMD ["/submit.sh"]

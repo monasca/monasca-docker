@@ -31,6 +31,8 @@ def get_changed_files():
     if 'TRAVIS_COMMIT_RANGE' not in os.environ:
         return None
 
+    print('TRAVIS_COMMIT_RANGE=', os.environ['TRAVIS_COMMIT_RANGE'])
+
     p = subprocess.Popen([
         'git', 'diff', '--name-only',
         os.environ['TRAVIS_COMMIT_RANGE']

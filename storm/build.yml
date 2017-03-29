@@ -1,0 +1,7 @@
+repository: monasca/storm
+variants:
+  - tag: 1.0.3
+    aliases:
+      - :latest
+    args:
+      STORM_VERSION: 1.0.3

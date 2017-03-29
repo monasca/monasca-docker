@@ -1,0 +1,10 @@
+sudo: required
+services:
+  - docker
+language: python
+
+before_install:
+  - pip install git+https://github.com/timothyb89/dbuild.git
+
+script:
+  - python ci.py

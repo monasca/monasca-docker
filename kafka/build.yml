@@ -3,5 +3,5 @@ variants:
   - tag: 0.9.0.1-2.11
     aliases: [':latest']
     args:
-      KAFKA_VERSION: 0.9.0.1
-      SCALA_VERSION: 2.11
+      KAFKA_VERSION: "0.9.0.1"
+      SCALA_VERSION: "2.11"

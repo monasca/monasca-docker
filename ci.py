@@ -175,11 +175,9 @@ def handle_push(files, modules):
         dirty = get_dirty_for_module(files, module)
         if 'build.yml' in dirty:
             modules_to_push.append(module)
-            run_build(modules)
-            run_push(modules)
 
         if 'README.md' in dirty:
-            modules_to_readme.update()
+            modules_to_readme.append(module)
 
     if modules_to_push:
         run_push(modules)

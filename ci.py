@@ -31,8 +31,6 @@ def get_changed_files():
     if 'TRAVIS_COMMIT_RANGE' not in os.environ:
         return None
 
-    print('TRAVIS_COMMIT_RANGE=', os.environ['TRAVIS_COMMIT_RANGE'])
-
     p = subprocess.Popen([
         'git', 'diff', '--name-only',
         os.environ['TRAVIS_COMMIT_RANGE']
@@ -78,6 +76,17 @@ def get_dirty_for_module(files, module=None):
 
 
 def main():
+    print('Environment details:')
+    print('TRAVIS_COMMIT_RANGE=', os.environ.get('TRAVIS_COMMIT_RANGE'))
+    print('TRAVIS_PULL_REQUEST=', os.environ.get('TRAVIS_PULL_REQUEST'))
+    print('TRAVIS_PULL_REQUEST_SHA=',
+          os.environ.get('TRAVIS_PULL_REQUEST_SHA'))
+    print('TRAVIS_PULL_REQUEST_SLUG=',
+          os.environ.get('TRAVIS_PULL_REQUEST_SLUG'))
+    print('TRAVIS_SECURE_ENV_VARS=', os.environ.get('TRAVIS_SECURE_ENV_VARS'))
+    print('TRAVIS_EVENT_TYPE=', os.environ.get('TRAVIS_EVENT_TYPE'))
+    print('TRAVIS_TAG=', os.environ.get('TRAVIS_TAG'))
+
     files = get_changed_files()
 
     modules_to_build = []
@@ -123,4 +132,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

@@ -28,12 +28,12 @@ class SubprocessException(Exception):
 
 
 def get_changed_files():
-    if 'TRAVIS_COMMIT_RANGE' not in os.environ:
-        return None
+    commit_range = os.environ.get('TRAVIS_COMMIT_RANGE', None)
+    if not commit_range:
+        return []
 
     p = subprocess.Popen([
-        'git', 'diff', '--name-only',
-        os.environ['TRAVIS_COMMIT_RANGE']
+        'git', 'diff', '--name-only', commit_range
     ], stdout=subprocess.PIPE)
 
     stdout, _ = p.communicate()
@@ -57,7 +57,7 @@ def get_dirty_modules(dirty_files):
 
             dirty.add(mod)
 
-    return dirty
+    return list(dirty)
 
 
 def get_dirty_for_module(files, module=None):
@@ -75,6 +75,130 @@ def get_dirty_for_module(files, module=None):
     return ret
 
 
+def run_build(modules):
+    build_args = ['dbuild', '-sd', 'build', 'all'] + modules
+    print('build command:', build_args)
+
+    p = subprocess.Popen(build_args, stdin=subprocess.PIPE)
+
+    def kill(signal, frame):
+        p.kill()
+        print()
+        print('killed!')
+        sys.exit(1)
+
+    signal.signal(signal.SIGINT, kill)
+    if p.wait() != 0:
+        print('build failed, exiting!')
+        sys.exit(p.returncode)
+
+
+def run_push(modules):
+    if os.environ.get('TRAVIS_SECURE_ENV_VARS', None) != "true":
+        print('No push permissions in this context, skipping!')
+        print('Not pushing: %r' % modules)
+        return
+
+    username = os.environ.get('DOCKER_HUB_USERNAME', None)
+    password = os.environ.get('DOCKER_HUB_PASSWORD', None)
+    if username and password:
+        print('Logging into docker registry...')
+        r = subprocess.call([
+            'docker', 'login',
+            '-u', username,
+            '-p', password
+        ])
+        if r != 0:
+            print('Docker registry login failed, cannot push!')
+            sys.exit(1)
+
+    push_args = ['dbuild', '-sd', 'build', 'push', 'all'] + modules
+    print('push command:', push_args)
+
+    p = subprocess.Popen(push_args, stdin=subprocess.PIPE)
+
+    def kill(signal, frame):
+        p.kill()
+        print()
+        print('killed!')
+        sys.exit(1)
+
+    signal.signal(signal.SIGINT, kill)
+    if p.wait() != 0:
+        print('build failed, exiting!')
+        sys.exit(p.returncode)
+
+
+def run_readme(modules):
+    if os.environ.get('TRAVIS_SECURE_ENV_VARS', None) != "true":
+        print('No Docker Hub permissions in this context, skipping!')
+        print('Not updating READMEs: %r' % modules)
+        return
+
+    readme_args = ['dbuild', '-sd', 'readme'] + modules
+    print('readme command:', readme_args)
+
+    p = subprocess.Popen(readme_args, stdin=subprocess.PIPE)
+
+    def kill(signal, frame):
+        p.kill()
+        print()
+        print('killed!')
+        sys.exit(1)
+
+    signal.signal(signal.SIGINT, kill)
+    if p.wait() != 0:
+        print('build failed, exiting!')
+        sys.exit(p.returncode)
+
+
+def handle_pull_request(files, modules):
+    if os.environ.get('TRAVIS_BRANCH', None) != 'master':
+        print('Not master branch, skipping tests.')
+        return
+
+    if modules:
+        run_build(modules)
+    else:
+        print('No modules to build.')
+
+
+def handle_push(files, modules):
+    if os.environ.get('TRAVIS_BRANCH', None) != 'master':
+        print('Not master branch, skipping tests.')
+        return
+
+    modules_to_push = []
+    modules_to_readme = []
+
+    for module in modules:
+        dirty = get_dirty_for_module(files, module)
+        if 'build.yml' in dirty:
+            modules_to_push.append(module)
+            run_build(modules)
+            run_push(modules)
+
+        if 'README.md' in dirty:
+            modules_to_readme.update()
+
+    if modules_to_push:
+        run_push(modules)
+        print('no-op push:', modules_to_push)
+    else:
+        print('No modules to push.')
+
+    if modules_to_readme:
+        run_readme(modules)
+        print('no-op readme:', modules_to_readme)
+    else:
+        print('No READMEs to update.')
+
+
+def handle_other(files, modules):
+    print('Unsupported event type %s, nothing to do.' % (
+        os.environ.get('TRAVS_EVENT_TYPE')))
+
+
 def main():
     print('Environment details:')
     print('TRAVIS_COMMIT_RANGE=', os.environ.get('TRAVIS_COMMIT_RANGE'))
@@ -85,49 +209,19 @@ def main():
           os.environ.get('TRAVIS_PULL_REQUEST_SLUG'))
     print('TRAVIS_SECURE_ENV_VARS=', os.environ.get('TRAVIS_SECURE_ENV_VARS'))
     print('TRAVIS_EVENT_TYPE=', os.environ.get('TRAVIS_EVENT_TYPE'))
+    print('TRAVIS_BRANCH=', os.environ.get('TRAVIS_BRANCH'))
+    print('TRAVIS_PULL_REQUEST_BRANCH=',
+          os.environ.get('TRAVIS_PULL_REQUEST_BRANCH'))
     print('TRAVIS_TAG=', os.environ.get('TRAVIS_TAG'))
 
     files = get_changed_files()
+    modules = get_dirty_modules(files)
 
-    modules_to_build = []
-    modules_to_push = []
-    for module in get_dirty_modules(files):
-        dirty = get_dirty_for_module(files, module)
-
-        # if build.yml was modified, perform a full release
-        # TODO verify this workflow: need to be sure that...
-        #   - travis gives us access to encrypted variables (docker login ...)
-        #   - releases only apply to trusted merges
-        #   - readmes get updated after builds complete
-
-        modules_to_build.append(module)
-        if 'build.yml' in dirty:
-            modules_to_push.append(module)
-
-    if modules_to_build:
-        build_args = ['dbuild', '-sd', 'build', 'all'] + modules_to_build
-        print('build args:', build_args)
-
-        p = subprocess.Popen(build_args, stdin=subprocess.PIPE)
-
-        def kill(signal, frame):
-            p.kill()
-            print()
-            print('killed!')
-            sys.exit(1)
-
-        signal.signal(signal.SIGINT, kill)
-        if p.wait() != 0:
-            print('build failed, exiting!')
-            sys.exit(p.returncode)
-    else:
-        print('no modules to build')
-
-    if modules_to_push:
-        print('RELEASE NOT IMPLEMENTED, not pushing modules:',
-              modules_to_push)
-    else:
-        print('no modules to push')
+    func = {
+        'pull_request': handle_pull_request,
+        'push': handle_push
+    }.get(os.environ.get('TRAVIS_EVENT_TYPE', None), handle_other)
+    func(files, modules)
 
 
 if __name__ == '__main__':

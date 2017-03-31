@@ -178,13 +178,13 @@ def handle_push(files, modules):
             modules_to_readme.update()
 
     if modules_to_push:
-        #run_push(modules)
+        run_push(modules)
         print('no-op push:', modules_to_push)
     else:
         print('No modules to push.')
 
     if modules_to_readme:
-        #run_readme(modules)
+        run_readme(modules)
         print('no-op readme:', modules_to_readme)
     else:
         print('No READMEs to update.')

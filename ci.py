@@ -57,7 +57,7 @@ def get_dirty_modules(dirty_files):
 
             dirty.add(mod)
 
-    return dirty
+    return list(dirty)
 
 
 def get_dirty_for_module(files, module=None):
@@ -149,10 +149,18 @@ def run_readme(modules):
 
 
 def handle_pull_request(files, modules):
+    if os.environ.get('TRAVIS_BRANCH', None) != 'master':
+        print('Not master branch, skipping tests.')
+        return
+
     run_build(modules)
 
 
 def handle_push(files, modules):
+    if os.environ.get('TRAVIS_BRANCH', None) != 'master':
+        print('Not master branch, skipping tests.')
+        return
+
     modules_to_push = []
     modules_to_readme = []
 

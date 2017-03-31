@@ -7,10 +7,11 @@
 {% set monapi_pw = API_PASSWORD | default('password') %}
 {% set thresh_user = THRESH_USERNAME | default('thresh') %}
 {% set thresh_pw = THRESH_PASSWORD | default('password') %}
+{% set db = MONASCA_DATABASE | default('mon') %}
 
-GRANT ALL ON mon.* TO '{{ notification_user }}'@'%' IDENTIFIED BY '{{ notification_pw }}';
-GRANT ALL ON mon.* TO '{{ notification_user }}'@'localhost' IDENTIFIED BY '{{ notification_pw }}';
-GRANT ALL ON mon.* TO '{{ monapi_user }}'@'%' IDENTIFIED BY '{{ monapi_pw }}';
-GRANT ALL ON mon.* TO '{{ monapi_user }}'@'localhost' IDENTIFIED BY '{{ monapi_pw }}';
-GRANT ALL ON mon.* TO '{{ thresh_user }}'@'%' IDENTIFIED BY '{{ thresh_pw }}';
-GRANT ALL ON mon.* TO '{{ thresh_user }}'@'localhost' IDENTIFIED BY '{{ thresh_pw }}';
+GRANT ALL ON {{ db }}.* TO '{{ notification_user }}'@'%' IDENTIFIED BY '{{ notification_pw }}';
+GRANT ALL ON {{ db }}.* TO '{{ notification_user }}'@'localhost' IDENTIFIED BY '{{ notification_pw }}';
+GRANT ALL ON {{ db }}.* TO '{{ monapi_user }}'@'%' IDENTIFIED BY '{{ monapi_pw }}';
+GRANT ALL ON {{ db }}.* TO '{{ monapi_user }}'@'localhost' IDENTIFIED BY '{{ monapi_pw }}';
+GRANT ALL ON {{ db }}.* TO '{{ thresh_user }}'@'%' IDENTIFIED BY '{{ thresh_pw }}';
+GRANT ALL ON {{ db }}.* TO '{{ thresh_user }}'@'localhost' IDENTIFIED BY '{{ thresh_pw }}';

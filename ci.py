@@ -153,7 +153,10 @@ def handle_pull_request(files, modules):
         print('Not master branch, skipping tests.')
         return
 
-    run_build(modules)
+    if modules:
+        run_build(modules)
+    else:
+        print('No modules to build.')
 
 
 def handle_push(files, modules):

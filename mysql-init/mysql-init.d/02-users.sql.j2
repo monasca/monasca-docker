@@ -1,13 +1,17 @@
 /*
  * To require ssl connections add 'REQUIRE SSL' to the end of all grant statements
  */
+{% set notification_user = NOTIFICATION_USERNAME | default('notification') %}
 {% set notification_pw = NOTIFICATION_PASSWORD | default('password') %}
-{% set monapi_pw = MONAPI_PASSWORD | default('password') %}
+{% set monapi_user = API_USERNAME | default('monapi') %}
+{% set monapi_pw = API_PASSWORD | default('password') %}
+{% set thresh_user = THRESH_USERNAME | default('thresh') %}
 {% set thresh_pw = THRESH_PASSWORD | default('password') %}
+{% set db = MONASCA_DATABASE | default('mon') %}
 
-GRANT ALL ON mon.* TO 'notification'@'%' IDENTIFIED BY '{{ notification_pw }}';
-GRANT ALL ON mon.* TO 'notification'@'localhost' IDENTIFIED BY '{{ notification_pw }}';
-GRANT ALL ON mon.* TO 'monapi'@'%' IDENTIFIED BY '{{ monapi_pw }}';
-GRANT ALL ON mon.* TO 'monapi'@'localhost' IDENTIFIED BY '{{ monapi_pw }}';
-GRANT ALL ON mon.* TO 'thresh'@'%' IDENTIFIED BY '{{ thresh_pw }}';
-GRANT ALL ON mon.* TO 'thresh'@'localhost' IDENTIFIED BY '{{ thresh_pw }}';
+GRANT ALL ON {{ db }}.* TO '{{ notification_user }}'@'%' IDENTIFIED BY '{{ notification_pw }}';
+GRANT ALL ON {{ db }}.* TO '{{ notification_user }}'@'localhost' IDENTIFIED BY '{{ notification_pw }}';
+GRANT ALL ON {{ db }}.* TO '{{ monapi_user }}'@'%' IDENTIFIED BY '{{ monapi_pw }}';
+GRANT ALL ON {{ db }}.* TO '{{ monapi_user }}'@'localhost' IDENTIFIED BY '{{ monapi_pw }}';
+GRANT ALL ON {{ db }}.* TO '{{ thresh_user }}'@'%' IDENTIFIED BY '{{ thresh_pw }}';
+GRANT ALL ON {{ db }}.* TO '{{ thresh_user }}'@'localhost' IDENTIFIED BY '{{ thresh_pw }}';

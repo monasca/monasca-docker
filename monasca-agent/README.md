@@ -104,6 +104,10 @@ from the host:
 This plugin is enabled when `KUBERNETES=true`. It has the following options:
 
  * `KUBERNETES_TIMEOUT`: The K8s API connection timeout. Default: `3`
+ * `KUBERNETES_NAMESPACE_ANNOTATIONS`: If set, will grab annotations from
+   namespaces to include as dimensions for metrics that are under that
+   namespace. Should be passed in as 'annotation1,annotation2,annotation3'.
+   Default: unset
 
 The Kubernetes plugin is intended to be run as a DaemonSet on each Kubernetes
 node. In order for API endpoints to be detected correctly, `AGENT_POD_NAME` and
@@ -122,6 +126,16 @@ This plugin is enabled when `KUBERNETES_API=true`. It has the following options:
    keys to include as dimensions from gathered metrics. Labels should be comma
    separated strings, such as `label1,label2,label3`. The `app` label is always
    included regardless of this value. Default: unset
+ * `KUBERNETES_NAMESPACE_ANNOTATIONS`: If set, will grab annotations from
+   namespaces to include as dimensions for metrics that are under that
+   namespace. Should be passed in as 'annotation1,annotation2,annotation3'.
+   Default: unset
+ * `REPORT_PERSISTENT_STORAGE`: If set, will gather bound pvc per a storage
+   class. Will be reported by namespace and cluster wide. Default: true
+ * `STORAGE_PARAMETERS_DIMENSIONS`: If set and report_persistent_storage is
+   set, will grab storage class parameters as dimensions when reporting
+   persistent storage. Should be passed in as 'parameter1,parameter2". Default:
+   unset
 
 The Kubernetes API plugin is intended to be run as a standalone deployment and
 will collect cluster-level metrics.
@@ -153,7 +167,7 @@ When autodetection is enabled, this plugin will automatically scrape all
 annotated Prometheus endpoints on the node the agent is running on. Ideally, it
 should be run alongside the Kubernetes plugin as a DaemonSet on each node.
 
-### cAdvisor Plugin
+### cAdvisor_host Plugin
 
 This plugin is enabled when `CADVISOR=true`. It has the following options:
 

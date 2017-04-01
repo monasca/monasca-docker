@@ -4,7 +4,7 @@ monasca/kafka Dockerfile
 This image runs an instance of [Apache Kafka][1] optimized for Docker and
 Kubernetes environments.
 
-Sources: [mysql-init][2] &middot; [Dockerfile][3] &middot; [monasca-docker][4]
+Sources: [kafka][2] &middot; [Dockerfile][3] &middot; [monasca-docker][4]
 
 Tags
 ----

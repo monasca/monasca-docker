@@ -78,6 +78,28 @@ services:
       - zookeeper
       - kafka
 
+  storm-nimbus:
+    image: monasca/storm:1.0.3
+    command: storm nimbus
+    depends_on:
+      - zookeeper
+      - kafka
+
+  storm-supervisor:
+    image: monasca/storm:1.0.3
+    command: storm supervisor
+    depends_on:
+      - storm-nimbus
+      - zookeeper
+      - kafka
+
+  thresh-init:
+    image: monasca/thresh:master
+    depends_on:
+      - zookeeper
+      - storm-nimbus
+      - storm-supervisor
+
   monasca-notification:
     image: monasca/notification:master
     depends_on:

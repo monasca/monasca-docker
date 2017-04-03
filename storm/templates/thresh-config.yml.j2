@@ -30,7 +30,7 @@ metricSpoutConfig:
     topic: "metrics"
     numThreads: 1
     groupId: "thresh-metric"
-    zookeeperConnect: "{{ zookeeper }}:{{ ZOOKEEPER_PORT }}"
+    zookeeperConnect: "{{ zookeeper }}:{{ ZOOKEEPER_PORT | default('2181') }}"
     consumerId: 1
     socketTimeoutMs: 30000
     socketReceiveBufferBytes: 65536
@@ -79,7 +79,7 @@ eventSpoutConfig:
 kafkaProducerConfig:
   # See http://kafka.apache.org/documentation.html#api for semantics and defaults.
   topic: "alarm-state-transitions"
-  metadataBrokerList: "{{ KAFKA_URI }}"
+  metadataBrokerList: "{{ KAFKA_URI | default('kafka:9092') }}"
   serializerClass: kafka.serializer.StringEncoder
   partitionerClass:
   requestRequiredAcks: 1
@@ -103,9 +103,9 @@ sporadicMetricNamespaces:
 
 database:
   driverClass: com.mysql.jdbc.Driver
-  url: "jdbc:mysql://{{ MYSQL_DB_HOST }}:{{ MYSQL_DB_PORT }}/{{ MYSQL_DB_DATABASE }}?useSSL=true"
-  user: "{{ MYSQL_DB_USERNAME }}"
-  password: "{{ MYSQL_DB_PASSWORD }}"
+  url: "jdbc:mysql://{{ MYSQL_DB_HOST | default('mysql') }}:{{ MYSQL_DB_PORT | default('3306') }}/{{ MYSQL_DB_DATABASE | default('mon') }}?useSSL=true"
+  user: "{{ MYSQL_DB_USERNAME | default('thresh') }}"
+  password: "{{ MYSQL_DB_PASSWORD | default('password') }}"
   properties:
       ssl: false
   # the maximum amount of time to wait on an empty pool before throwing an exception

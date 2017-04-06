@@ -20,6 +20,24 @@ else
     internal_url=${KEYSTONE_INTERNAL_URL:-"http://localhost:5000"}
 fi
 
+if [[ -n "$KUBERNETES_RESOLVE_PUBLIC_ENDPOINTS" ]]; then
+    keystone_service_name=${KEYSTONE_SERVICE_NAME:-"keystone"}
+    service_url=$(python /k8s_get_service.py "${keystone_service_name}" http)
+    if [[ $? -eq 0 ]]; then
+        public_url="http://${service_url}"
+    else
+        echo "ERROR: Failed to get public URL from Kubernetes API!"
+    fi
+
+    service_admin_url=$(python /k8s_get_service.py "${keystone_service_name}" admin)
+    if [[ $? -eq 0 ]]; then
+      admin_url="http://${service_admin_url}"
+    else
+      # not ERROR since this is somewhat less fatal
+      echo "WARNING: Failed to get admin URL from Kubernetes API!"
+    fi
+fi
+
 if [[ -e /db-init ]]; then
     echo "Creating bootstrap credentials..."
     keystone-manage bootstrap \

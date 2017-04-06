@@ -1,17 +1,21 @@
-# (C) Copyright 2015-2016 Hewlett-Packard Development, L.P.
+# (C) Copyright 2015-2017 Hewlett-Packard Enterprise Development LP
 # Copyright 2015 FUJITSU LIMITED
 
 from __future__ import print_function
+
+import os
+import sys
+import time
+import urlparse
+
+import yaml
+
 from keystoneauth1 import session as ks_session
 from keystoneauth1.exceptions.connection import ConnectFailure
 from keystoneauth1.identity import v3
 from keystoneclient.v3 import client
 
-import time
-import yaml
-
-import os
-import sys
+import k8s_get_service
 
 
 def _get_auth_plugin(auth_url, **kwargs):
@@ -61,7 +65,7 @@ def get_project(ks_client, project_name):
     return None
 
 
-def add_projects(ks_client, project_name, retries=5):
+def add_projects(ks_client, project_name):
     """Add the given project_names if they don't already exist"""
     default_domain = get_default_domain(ks_client)
     for project_name in project_name:
@@ -88,7 +92,7 @@ def get_role(ks_client, role_name=None, role_id=None):
     return None
 
 
-def add_users(ks_client, users, retries=5):
+def add_users(ks_client, users):
     """Add the given users if they don't already exist"""
     for user in users:
         if not get_user(ks_client, user['username']):
@@ -160,7 +164,7 @@ def add_service_endpoint(ks_client, name, description, type, url, region,
                 if endpoint.interface == interface:
                     return True
             else:
-                _retry(lambda: ks_client.endpoints.delete(id=endpoint.id))
+                _retry(lambda: ks_client.endpoints.delete(endpoint))
 
     _retry(lambda: ks_client.endpoints.create(region=region, service=service,
                                               url=url, interface=interface))
@@ -172,6 +176,25 @@ def add_service_endpoint(ks_client, name, description, type, url, region,
 
 def add_monasca_service():
     return True
+
+
+def resolve_k8s_service_by_url(url):
+    parsed = urlparse.urlparse(url)
+    service = parsed.hostname
+
+    internal_port = parsed.port
+    if not internal_port:
+        if parsed.scheme == 'http':
+            internal_port = 80
+        elif parsed.scheme == 'https':
+            internal_port = 443
+
+    ip, port = k8s_get_service.resolve_service(service, internal_port)
+    netloc = '{}:{}'.format(ip, port)
+    modified = list(parsed)
+    modified[1] = netloc
+
+    return urlparse.urlunparse(modified)
 
 
 def main(argv):
@@ -213,6 +236,8 @@ def main(argv):
     add_users(ks_client, users)
     add_user_roles(ks_client, users)
 
+    do_resolve = os.environ.get('KUBERNETES_RESOLVE_PUBLIC_ENDPOINTS', False)
+
     for e in data['endpoints']:
         for interface in e['interfaces']:
             if isinstance(interface, (str, unicode)):
@@ -221,6 +246,11 @@ def main(argv):
             else:
                 interface_name = interface['name']
                 url = interface['url']
+
+                if do_resolve \
+                        and 'resolve' in interface \
+                        and interface['resolve']:
+                    url = resolve_k8s_service_by_url(url)
 
             add_service_endpoint(ks_client, e['name'], e['description'],
                                  e['type'], url, e['region'],

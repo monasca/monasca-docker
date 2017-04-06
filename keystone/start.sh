@@ -60,6 +60,6 @@ if [[ -e /kill-supervisor ]]; then
     echo "Exiting uncleanly due to bootstrap failure!"
     exit 1
 else
-    echo "Existing cleanly..."
+    echo "Exiting cleanly..."
     exit 0
 fi

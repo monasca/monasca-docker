@@ -1,6 +1,6 @@
 FROM alpine:3.5
 
-ARG KAFKA_VERSION=0.9.0.1.bad
+ARG KAFKA_VERSION=0.9.0.1
 ARG SCALA_VERSION=2.11
 ARG KAFKA_KEYS=https://kafka.apache.org/KEYS
 ARG ASC_MIRROR=https://dist.apache.org/repos/dist/release/kafka
@@ -25,7 +25,8 @@ RUN set -x && \
   echo "Download verified, continuing..." && \
   tar zxf /kafka.tar.gz -C /kafka --strip-components=1 && \
   rm /kafka.tar.gz /kafka_mirror.py && \
-  apk del build-dep
+  apk del build-dep && \
+  exit 1
 
 COPY template.py start.sh create_topics.py /
 COPY templates /templates

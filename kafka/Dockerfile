@@ -1,6 +1,6 @@
 FROM alpine:3.5
 
-ARG KAFKA_VERSION=0.9.0.1
+ARG KAFKA_VERSION=0.9.0.1.bad
 ARG SCALA_VERSION=2.11
 ARG KAFKA_KEYS=https://kafka.apache.org/KEYS
 ARG ASC_MIRROR=https://dist.apache.org/repos/dist/release/kafka

@@ -20,7 +20,7 @@ ENV ZOOKEEPER_SERVERS="zookeeper" \
 COPY storm_mirror.py clean_externals.py /
 
 RUN mkdir /storm && \
-  apk add --no-cache openjdk8-jre-base py2-jinja2 bash && \
+  apk add --no-cache openjdk8-jre-base py2-jinja2 bash procps && \
   apk add --no-cache --virtual build-dep gnupg curl py2-requests tar && \
   url=$(python /storm_mirror.py $STORM_VERSION) && \
   echo "Using mirror: $url" && \

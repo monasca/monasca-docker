@@ -1,0 +1,7 @@
+repository: monasca/notification
+variants:
+  - tag: master
+    aliases:
+      - :latest
+    args:
+      NOTIFICATION_BRANCH: master

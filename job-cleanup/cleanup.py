@@ -31,6 +31,8 @@ TIMEOUT = 10
 RETRIES = 24
 RETRY_DELAY = 5.0
 
+USE_KUBE_CONFIG = os.environ.get('USE_KUBE_CONFIG', False)
+
 pod_is_self = True
 
 
@@ -105,7 +107,11 @@ def try_delete_job(api, batch_api, namespace, job, retries):
 
 
 def main():
-    config.load_incluster_config()
+    if USE_KUBE_CONFIG:
+        config.load_kube_config()
+    else:
+        config.load_incluster_config()
+
     v1 = client.CoreV1Api()
     bv1 = client.BatchV1Api()
 

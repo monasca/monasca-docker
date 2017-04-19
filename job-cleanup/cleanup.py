@@ -31,9 +31,14 @@ TIMEOUT = 10
 RETRIES = 24
 RETRY_DELAY = 5.0
 
+pod_is_self = True
+
 
 def get_current_namespace():
+    global pod_is_self
+
     if 'NAMESPACE' in os.environ:
+        pod_is_self = False
         return os.environ['NAMESPACE']
 
     with open(NAMESPACE, 'r') as f:
@@ -41,7 +46,10 @@ def get_current_namespace():
 
 
 def get_current_pod():
+    global pod_is_self
+
     if 'POD_NAME' in os.environ:
+        pod_is_self = False
         return os.environ['POD_NAME']
 
     return socket.gethostname()
@@ -102,10 +110,11 @@ def main():
     bv1 = client.BatchV1Api()
 
     namespace = get_current_namespace()
-    pod = get_current_pod()
+    pod_name = get_current_pod()
 
-    pod = v1.read_namespaced_pod(pod, namespace)
+    pod = v1.read_namespaced_pod(pod_name, namespace)
     app = pod.metadata.labels['app']
+    this_job = pod.metadata.labels.get('job-name', None)
 
     jobs = bv1.list_namespaced_job(namespace,
                                    label_selector='app=%s' % app,
@@ -120,6 +129,10 @@ def main():
         print('Removing %d jobs...' % len(items))
         remaining = []
         for job, retries in items:
+            if pod_is_self and this_job and job.metadata.name == this_job:
+                # don't delete this job yet
+                continue
+
             success, retries = try_delete_job(v1, bv1, namespace, job, retries)
             if not success:
                 if retries is 0:
@@ -142,6 +155,16 @@ def main():
         for job in failed:
             print(' - %s' % job.metadata.name)
         sys.exit(1)
+
+    if pod_is_self:
+        print('All jobs deleted, removing cleanup job...')
+        # ignore the returned status for now, since there isn't much we can do
+        # about it
+        bv1.delete_namespaced_job(pod.metadata.labels['job-name'],
+                                  namespace, V1DeleteOptions())
+        v1.delete_namespaced_pod(pod.metadata.name, namespace, V1DeleteOptions())
+    else:
+        print('All jobs deleted successfully.')
 
 
 if __name__ == '__main__':

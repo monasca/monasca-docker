@@ -28,7 +28,7 @@ from kubernetes.client import V1DeleteOptions
 
 NAMESPACE = '/var/run/secrets/kubernetes.io/serviceaccount/namespace'
 TIMEOUT = 10
-RETRIES = 5
+RETRIES = 24
 RETRY_DELAY = 5.0
 
 
@@ -36,7 +36,7 @@ def get_current_namespace():
     if 'NAMESPACE' in os.environ:
         return os.environ['NAMESPACE']
 
-    with open('/var/run/secrets/kubernetes.io/serviceaccount/namespace', 'r') as f:
+    with open(NAMESPACE, 'r') as f:
         return f.read()
 
 
@@ -52,6 +52,12 @@ def is_condition_complete(condition):
 
 
 def try_delete_job(api, batch_api, namespace, job, retries):
+    if not job.status.conditions:
+        print('Job has no conditions (probably still running), '
+              'will wait for it to finish: %s/%s (%d attempts '
+              'remaining)' % (namespace, job.metadata.name, retries))
+        return False, retries - 1
+
     complete = filter(is_condition_complete, job.status.conditions)
     if not complete:
         print('Job is not complete, will wait for it to finish: %s/%s (%d '
@@ -124,7 +130,12 @@ def main():
         if remaining:
             print('Still waiting on some jobs to be removed...')
             time.sleep(RETRY_DELAY)
-        items = remaining
+
+        items = []
+        for job, retries in remaining:
+            refreshed_job = bv1.read_namespaced_job(job.metadata.name,
+                                                    namespace)
+            items.append((refreshed_job, retries))
 
     if failed:
         print('Some jobs could not be deleted:', file=sys.stderr)

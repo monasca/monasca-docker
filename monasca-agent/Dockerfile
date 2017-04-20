@@ -20,9 +20,9 @@ ENV CONFIG_TEMPLATE=true \
   HOSTNAME_FROM_KUBERNETES=false
 
 RUN apk add --no-cache \
-    supervisor python py2-pip py2-jinja2 py2-lxml py2-psutil && \
+    supervisor python py2-pip py2-jinja2 libxml2 py2-psutil && \
   apk add --no-cache --virtual build-dep \
-     git python-dev make g++ linux-headers && \
+     git python-dev make g++ linux-headers libxml2-dev libxslt-dev && \
   mkdir /monasca-agent && cd /monasca-agent && \
   git init && \
   git remote add origin $AGENT_REPO && \

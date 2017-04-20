@@ -32,11 +32,12 @@ ENV CONFIG_TEMPLATE=true \
 RUN apk add --no-cache python py2-pip py2-jinja2 curl mysql-client && \
   apk add --no-cache --virtual build-dep \
     python-dev git make g++ linux-headers && \
-  git clone \
-    --single-branch --depth=1 -b $API_BRANCH \
-    $API_REPO /monasca-api && \
+  mkdir /monasca-api && cd /monasca-api && \
+  git init && \
+  git remote add origin $API_REPO && \
+  git fetch origin $API_BRANCH && \
+  git reset --hard FETCH_HEAD && \
   pip install gunicorn influxdb && \
-  cd /monasca-api/ && \
   pip install -r requirements.txt && \
   python setup.py install && \
   cd / && \

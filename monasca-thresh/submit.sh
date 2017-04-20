@@ -1,5 +1,7 @@
 #!/bin/sh
 
+TOPOLOGY_NAME="thresh-cluster"
+
 echo "Waiting for storm to become available..."
 success="false"
 for i in $(seq $STORM_WAIT_RETRIES); do
@@ -20,9 +22,23 @@ if [ "$success" != "true" ]; then
   exit 1
 fi
 
-echo "Submitting storm topology..."
+topologies=$(storm list | awk '/-----/,0{if (!/-----/)print $1}')
+found="false"
+for topology in $topologies; do
+  if [ "$topology" = "$TOPOLOGY_NAME" ]; then
+    found="true"
+    echo "Found existing storm topology with name: $topology"
+    break
+  fi
+done
 
-storm jar /monasca-thresh.jar \
-  monasca.thresh.ThresholdingEngine \
-  /storm/conf/thresh-config.yml \
-  thresh-cluster
+if [ "$found" = "true" ]; then
+  echo "Storm topology already exists, will not submit again"
+  # TODO handle upgrades
+else
+  echo "Submitting storm topology..."
+  storm jar /monasca-thresh.jar \
+    monasca.thresh.ThresholdingEngine \
+    /storm/conf/thresh-config.yml \
+    "$TOPOLOGY_NAME"
+fi

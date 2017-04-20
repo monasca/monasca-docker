@@ -1,0 +1,21 @@
+/* (C) Copyright 2017 Hewlett Packard Enterprise Development LP */
+
+{% set db = MYSQL_INIT_SCHEMA_DATABASE | default('mysql_init_schema') %}
+
+create database if not exists `{{ db }}` default character set utf8mb4 collate utf8mb4_unicode_ci;
+use `{{ db }}`;
+
+create table if not exists `schema_version` (
+  `id` int not null auto_increment,
+  `major` int not null,
+  `minor` int not null,
+  `patch` int not null,
+  `updated_at` timestamp not null default current_timestamp,
+  primary key (id)
+);
+
+insert into `schema_version` (major, minor, patch) values (
+  {{ SCHEMA_MAJOR_REV }},
+  {{ SCHEMA_MINOR_REV }},
+  {{ SCHEMA_PATCH_REV }}
+);

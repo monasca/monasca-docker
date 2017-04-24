@@ -1,0 +1,193 @@
+#
+# (c) Copyright 2017 Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+
+#
+# Default Notifications and Alarms
+#
+notifications:
+  - name: root email
+    type: email
+    address: root@localhost
+
+alarm_definitions:
+  - name: "Host Status"
+    description: "Alarms when the specified host is down or not reachable"
+    severity: "HIGH"
+    expression: "host_alive_status > 0"
+    match_by:
+      - "target_host"
+      - "hostname"
+    alarm_actions:
+      - root email
+    ok_actions:
+      - root email
+    undetermined_actions:
+      - root email
+  - name: "HTTP Status"
+    description: >
+      "Alarms when the specified HTTP endpoint is down or not reachable"
+    severity: "HIGH"
+    expression: "http_status > 0"
+    match_by:
+      - "service"
+      - "component"
+      - "hostname"
+      - "url"
+    alarm_actions:
+      - root email
+    ok_actions:
+      - root email
+    undetermined_actions:
+      - root email
+  - name: "CPU Usage"
+    description: "Alarms when CPU usage is high"
+    expression: "avg(cpu.idle_perc) < 10 times 3"
+    match_by:
+      - "hostname"
+    alarm_actions:
+      - root email
+    ok_actions:
+      - root email
+    undetermined_actions:
+      - root email
+  - name: "High CPU IOWait"
+    description: "Alarms when CPU IOWait is high, possible slow disk issue"
+    expression: "avg(cpu.wait_perc) > 40 times 3"
+    match_by:
+      - "hostname"
+    alarm_actions:
+      - root email
+    ok_actions:
+      - root email
+    undetermined_actions:
+      - root email
+  - name: "Disk Inode Usage"
+    description: "Alarms when disk inode usage is high"
+    expression: "disk.inode_used_perc > 90"
+    match_by:
+      - "hostname"
+      - "device"
+    severity: "HIGH"
+    alarm_actions:
+      - root email
+    ok_actions:
+      - root email
+    undetermined_actions:
+      - root email
+  - name: "Disk Usage"
+    description: "Alarms when disk usage is high"
+    expression: "disk.space_used_perc > 90"
+    match_by:
+      - "hostname"
+      - "device"
+    severity: "HIGH"
+    alarm_actions:
+      - root email
+    ok_actions:
+      - root email
+    undetermined_actions:
+      - root email
+  - name: "Memory Usage"
+    description: "Alarms when memory usage is high"
+    severity: "HIGH"
+    expression: "avg(mem.usable_perc) < 10 times 3"
+    alarm_actions:
+      - root email
+    ok_actions:
+      - root email
+    undetermined_actions:
+      - root email
+  - name: "Network Errors"
+    description: >
+      "Alarms when either incoming or outgoing network errors are high"
+    severity: "MEDIUM"
+    expression: "net.in_errors_sec > 5 or net.out_errors_sec > 5"
+    alarm_actions:
+      - root email
+    ok_actions:
+      - root email
+    undetermined_actions:
+      - root email
+  - name: "Process Check"
+    description: "Alarms when the specified process is not running"
+    severity: "HIGH"
+    expression: "process.pid_count < 1"
+    match_by:
+      - "process_name"
+      - "hostname"
+    alarm_actions:
+      - root email
+    ok_actions:
+      - root email
+    undetermined_actions:
+      - root email
+  - name: "Crash Dump Count"
+    description: "Alarms when a crash directory is found"
+    severity: "MEDIUM"
+    expression: "crash.dump_count > 0"
+    match_by:
+      - "hostname"
+    alarm_actions:
+      - root email
+    ok_actions:
+      - root email
+    undetermined_actions:
+      - root email
+  - name: "Monasca Agent Collection Time"
+    description: "Alarms when the elapsed time the Monasca Agent takes to \
+                    collect metrics is high"
+    expression: "avg(monasca.collection_time_sec) > 30 times 3"
+    match_by:
+      - "hostname"
+    alarm_actions:
+      - root email
+    ok_actions:
+      - root email
+    undetermined_actions:
+      - root email
+  - name: "ZooKeeper Latency"
+    description: "Alarms when the ZooKeeper latency is high"
+    expression: "avg(zookeeper.avg_latency_sec) > 1 times 3"
+    match_by:
+      - "hostname"
+    alarm_actions:
+      - root email
+    ok_actions:
+      - root email
+    undetermined_actions:
+      - root email
+  - name: "NTP Time Sync"
+    description: "Alarms when the NTP time offset is high"
+    expression: "ntp.offset > 5 or ntp.offset < -5"
+    match_by:
+      - "hostname"
+    alarm_actions:
+      - root email
+    ok_actions:
+      - root email
+    undetermined_actions:
+      - root email
+  - name: "NTP Connection Status"
+    description: "Alarms when the connection failed to the NTP server"
+    expression: "ntp.connection_status > 0"
+    match_by:
+      - "hostname"
+    alarm_actions:
+      - root email
+    ok_actions:
+      - root email
+    undetermined_actions:
+      - root email

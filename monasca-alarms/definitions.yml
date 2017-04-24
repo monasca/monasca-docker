@@ -33,7 +33,7 @@ alarm_definitions:
     alarm_actions:
       - root email
     ok_actions:
-      -  root email
+      - root email
     undetermined_actions:
       - root email
   - name: "HTTP Status"
@@ -49,7 +49,7 @@ alarm_definitions:
     alarm_actions:
       - root email
     ok_actions:
-      -  root email
+      - root email
     undetermined_actions:
       - root email
   - name: "CPU Usage"
@@ -60,7 +60,7 @@ alarm_definitions:
     alarm_actions:
       - root email
     ok_actions:
-      -  root email
+      - root email
     undetermined_actions:
       - root email
   - name: "High CPU IOWait"
@@ -71,7 +71,7 @@ alarm_definitions:
     alarm_actions:
       - root email
     ok_actions:
-      -  root email
+      - root email
     undetermined_actions:
       - root email
   - name: "Disk Inode Usage"
@@ -84,7 +84,7 @@ alarm_definitions:
     alarm_actions:
       - root email
     ok_actions:
-      -  root email
+      - root email
     undetermined_actions:
       - root email
   - name: "Disk Usage"
@@ -97,7 +97,7 @@ alarm_definitions:
     alarm_actions:
       - root email
     ok_actions:
-      -  root email
+      - root email
     undetermined_actions:
       - root email
   - name: "Memory Usage"
@@ -107,7 +107,7 @@ alarm_definitions:
     alarm_actions:
       - root email
     ok_actions:
-      -  root email
+      - root email
     undetermined_actions:
       - root email
   - name: "Network Errors"
@@ -118,7 +118,7 @@ alarm_definitions:
     alarm_actions:
       - root email
     ok_actions:
-      -  root email
+      - root email
     undetermined_actions:
       - root email
   - name: "Process Check"
@@ -131,7 +131,7 @@ alarm_definitions:
     alarm_actions:
       - root email
     ok_actions:
-      -  root email
+      - root email
     undetermined_actions:
       - root email
   - name: "Crash Dump Count"
@@ -143,7 +143,7 @@ alarm_definitions:
     alarm_actions:
       - root email
     ok_actions:
-      -  root email
+      - root email
     undetermined_actions:
       - root email
   - name: "Monasca Agent Collection Time"
@@ -155,7 +155,7 @@ alarm_definitions:
     alarm_actions:
       - root email
     ok_actions:
-      -  root email
+      - root email
     undetermined_actions:
       - root email
   - name: "ZooKeeper Latency"
@@ -166,7 +166,7 @@ alarm_definitions:
     alarm_actions:
       - root email
     ok_actions:
-      -  root email
+      - root email
     undetermined_actions:
       - root email
   - name: "NTP Time Sync"
@@ -177,7 +177,7 @@ alarm_definitions:
     alarm_actions:
       - root email
     ok_actions:
-      -  root email
+      - root email
     undetermined_actions:
       - root email
   - name: "NTP Connection Status"
@@ -188,6 +188,6 @@ alarm_definitions:
     alarm_actions:
       - root email
     ok_actions:
-      -  root email
+      - root email
     undetermined_actions:
       - root email

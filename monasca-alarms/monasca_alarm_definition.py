@@ -88,7 +88,7 @@ Valid fields for an Alarm Definition:
 Examle yaml file:
 
 notifications:
-  - name: Notify via HipChat
+  - name: Notify via Email
     type: email
     address: "root@localhost"
 
@@ -101,11 +101,11 @@ alarm_definitions:
       - "target_host"
       - "hostname"
     alarm_actions:
-      - Notify via HipChat
+      - Notify via Email
     ok_actions:
-      - Notify via HipChat
+      - Notify via Email
     undetermined_actions:
-      - Notify via HipChat
+      - Notify via Email
 
   - name: "Delete me"
     expression: "http_status > 0"

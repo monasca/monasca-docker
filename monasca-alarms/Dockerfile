@@ -1,8 +1,5 @@
 FROM alpine:3.5
 
-ARG FORWARDER_REPO=https://github.hpe.com/UNCLE/monasca-forwarder
-ARG FORWARDER_BRANCH=master
-
 # To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
 # `docker build`
 ARG REBUILD=1

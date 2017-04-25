@@ -21,9 +21,7 @@ import socket
 import sys
 import time
 
-# NOTE: requires version >= 2.0.0a1
-from kubernetes import client, config
-from kubernetes.client import V1DeleteOptions
+from kubernetes import KubernetesAPIClient
 
 
 NAMESPACE = '/var/run/secrets/kubernetes.io/serviceaccount/namespace'
@@ -61,30 +59,43 @@ def is_condition_complete(condition):
     return condition.type == 'Complete' and str(condition.status) == 'True'
 
 
-def try_delete_job(api, batch_api, namespace, job, retries):
-    if not job.status.conditions:
+def try_delete_job(client, namespace, job, retries, force=False):
+    if 'conditions' not in job.status and not force:
         print('Job has no conditions (probably still running), '
               'will wait for it to finish: %s/%s (%d attempts '
               'remaining)' % (namespace, job.metadata.name, retries))
         return False, retries - 1
 
     complete = filter(is_condition_complete, job.status.conditions)
-    if not complete:
+    if not complete and not force:
         print('Job is not complete, will wait for it to finish: %s/%s (%d '
               'attempts remaining)' % (namespace, job.metadata.name, retries))
         return False, retries - 1
 
-    delete_options = V1DeleteOptions(propagation_policy='Foreground')
+    grace_period = 0 if force else TIMEOUT
+    delete_options = {'propagationPolicy': 'Foreground',
+                      'gracePeriodSeconds': grace_period}
 
-    pods = api.list_namespaced_pod(namespace,
-                                   label_selector='job-name=%s' % job.metadata.name,
-                                   timeout_seconds=TIMEOUT)
-    for pod in pods.items:
-        del_status = api.delete_namespaced_pod(pod.metadata.name, namespace,
-                                               delete_options,
-                                               grace_period_seconds=TIMEOUT)
+    job_name = job.metadata.name
+    pods = client.get('/api/v1/namespaces/{}/pods', namespace,
+                      params={'labelSelector': 'job-name=%s' % job_name})
+    for pod in pods['items']:
+        if pod.metadata.labels.get('defunct') == 'true':
+            # we could exclude this in the labelSelector, but it's probably
+            # better to surface the weird pod state as much as possible
+            print('Pod is marked as defunct and will not be deleted: '
+                  '%s/%s' % (namespace, pod.metadata.name))
+            continue
+
+        del_status = client.delete('/api/v1/namespaces/{}/pods/{}',
+                                   namespace, pod.metadata.name,
+                                   raise_for_status=False,
+                                   json=delete_options)
+
         # pod delete status is insane apparently
-        if del_status.code is None or del_status.code == 200:
+        # it returns the full Pod on success, or a Status if fail
+        # wat
+        if del_status.status_code == 200:
             print('Deleted job pod %s/%s' % (namespace, job.metadata.name))
         else:
             print('Failed to delete job pod %s/%s: %r (job: %s, %d attempts '
@@ -92,10 +103,11 @@ def try_delete_job(api, batch_api, namespace, job, retries):
                                  job.metadata.name, retries), file=sys.stderr)
             return False, retries - 1
 
-    ret = batch_api.delete_namespaced_job(job.metadata.name, namespace,
-                                          delete_options,
-                                          grace_period_seconds=TIMEOUT)
-    if ret.code == 200:
+    ret = client.delete('/apis/batch/v1/namespaces/{}/jobs/{}',
+                        namespace, job.metadata.name,
+                        json=delete_options,
+                        raise_for_status=False)
+    if ret.status_code == 200:
         print('Deleted job %s/%s' % (namespace, job.metadata.name))
         return True, 0
     else:
@@ -106,40 +118,67 @@ def try_delete_job(api, batch_api, namespace, job, retries):
         return False, retries - 1
 
 
-def main():
-    if USE_KUBE_CONFIG:
-        config.load_kube_config()
-    else:
-        config.load_incluster_config()
+def label_defunct(client, namespace, job):
+    job_name = job.metadata.name
+    pods = client.get('/api/v1/namespaces/{}/pods', namespace,
+                      params={'labelSelector': 'job-name=%s' % job_name})
 
-    v1 = client.CoreV1Api()
-    bv1 = client.BatchV1Api()
+    defunct_ops = [{
+        'op': 'add',
+        'path': '/metadata/labels/defunct',
+        'value': 'true'
+    }]
+
+    for pod in pods['items']:
+        r = client.json_patch(defunct_ops,
+                              '/api/v1/namespaces/{}/pods/{}',
+                              namespace, pod.metadata.name,
+                              raise_for_status=False)
+        if r.status_code != 200:
+            # oh well
+            print('Failed to label pod as defunct: '
+                  '%s/%s' % (namespace, pod.metadata.name),
+                  file=sys.stderr)
+
+
+def main():
+    client = KubernetesAPIClient()
+    if USE_KUBE_CONFIG:
+        client.load_kube_config()
+    else:
+        client.load_cluster_config()
 
     namespace = get_current_namespace()
     pod_name = get_current_pod()
 
-    pod = v1.read_namespaced_pod(pod_name, namespace)
+    pod = client.get('/api/v1/namespaces/{}/pods/{}', namespace, pod_name)
+
     app = pod.metadata.labels['app']
+    component = pod.metadata.labels.get('component', None)
     this_job = pod.metadata.labels.get('job-name', None)
 
-    jobs = bv1.list_namespaced_job(namespace,
-                                   label_selector='app=%s' % app,
-                                   timeout_seconds=TIMEOUT)
-    items = [(item, RETRIES) for item in jobs.items]
+    if pod_is_self and this_job:
+        selector = 'app={},component!={}'.format(app, component)
+    else:
+        selector = 'app={}'.format(app)
+
+    jobs = client.get('/apis/batch/v1/namespaces/{}/jobs', namespace,
+                      params={'labelSelector': selector})
+
+    items = [(item, RETRIES) for item in jobs['items']]
     if not items:
         print('No jobs to clean up!')
         sys.exit(0)
+
+    for job, retries in items:
+        job.pprint()
 
     failed = []
     while items:
         print('Removing %d jobs...' % len(items))
         remaining = []
         for job, retries in items:
-            if pod_is_self and this_job and job.metadata.name == this_job:
-                # don't delete this job yet
-                continue
-
-            success, retries = try_delete_job(v1, bv1, namespace, job, retries)
+            success, retries = try_delete_job(client, namespace, job, retries)
             if not success:
                 if retries is 0:
                     failed.append(job)
@@ -152,23 +191,46 @@ def main():
 
         items = []
         for job, retries in remaining:
-            refreshed_job = bv1.read_namespaced_job(job.metadata.name,
-                                                    namespace)
+            refreshed_job = client.get('/apis/batch/v1/namespaces/{}/jobs/{}',
+                                       namespace, job.metadata.name)
             items.append((refreshed_job, retries))
 
     if failed:
-        print('Some jobs could not be deleted:', file=sys.stderr)
+        print('Some jobs did not finish in time, they will be killed!',
+              file=sys.stderr)
+        still_failed = []
         for job in failed:
-            print(' - %s' % job.metadata.name)
-        sys.exit(1)
+            print('Killing job: %s/%s' % (namespace, job.metadata.name))
+            success, _ = try_delete_job(client, namespace, job, 0, force=True)
+            if not success:
+                still_failed.append(job)
+
+        if still_failed:
+            print('Not all jobs could be killed!', file=sys.stderr)
+            print('These jobs will be annotated with `defunct=true` and will '
+                  'be ignored by future cleanup jobs. They will need to be '
+                  'removed manually.', file=sys.stderr)
+            for job in still_failed:
+                print(' - %s/%s' % (namespace, job.metadata.name))
+                label_defunct(client, namespace, job)
+
+            sys.exit(1)
 
     if pod_is_self:
         print('All jobs deleted, removing cleanup job...')
+
         # ignore the returned status for now, since there isn't much we can do
         # about it
-        bv1.delete_namespaced_job(pod.metadata.labels['job-name'],
-                                  namespace, V1DeleteOptions())
-        v1.delete_namespaced_pod(pod.metadata.name, namespace, V1DeleteOptions())
+        client.delete('/apis/batch/v1/namespaces/{}/jobs/{}',
+                      namespace, pod.metadata.labels['job-name'],
+                      raise_for_status=False, json={})
+
+        # we invert the ordering of delete job / delete pod here
+        # if we get killed too quickly, we mainly want the job to be deleted
+        # so no new jobs can spawn
+        client.delete('/api/v1/namespaces/{}/pods/{}',
+                      namespace, pod.metadata.name,
+                      raise_for_status=False, json={})
     else:
         print('All jobs deleted successfully.')
 

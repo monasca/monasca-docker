@@ -66,11 +66,12 @@ def try_delete_job(client, namespace, job, retries, force=False):
               'remaining)' % (namespace, job.metadata.name, retries))
         return False, retries - 1
 
-    complete = filter(is_condition_complete, job.status.conditions)
-    if not complete and not force:
-        print('Job is not complete, will wait for it to finish: %s/%s (%d '
-              'attempts remaining)' % (namespace, job.metadata.name, retries))
-        return False, retries - 1
+    if not force:
+        complete = filter(is_condition_complete, job.status.conditions)
+        if not complete:
+            print('Job is not complete, will wait for it to finish: %s/%s (%d '
+                  'attempts remaining)' % (namespace, job.metadata.name, retries))
+            return False, retries - 1
 
     grace_period = 0 if force else TIMEOUT
     delete_options = {'propagationPolicy': 'Foreground',

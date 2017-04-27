@@ -27,4 +27,6 @@ if [ "$success" != "true" ]; then
 fi
 
 echo "Loading Definitions...."
+
+python /template.py /config/definitions.yml.j2 /config/definitions.yml
 python monasca_alarm_definition.py --verbose --definitions-file /config/definitions.yml 

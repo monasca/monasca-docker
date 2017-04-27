@@ -1,5 +1,5 @@
 repository: monasca/alarms
 variants:
-  - tag: 1.0.0
+  - tag: 1.1.0
     aliases:
       - :latest

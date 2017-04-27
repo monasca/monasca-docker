@@ -18,9 +18,9 @@
 # Default Notifications and Alarms
 #
 notifications:
-  - name: root email
-    type: email
-    address: root@localhost
+  - name: default
+    type: "{{ NOTIFICATION_TYPE | default('email') }}"
+    address: "{{ NOTIFICATION_ADDRESS | default('root@localhost') }}"
 
 alarm_definitions:
   - name: "Host Status"
@@ -31,11 +31,11 @@ alarm_definitions:
       - "target_host"
       - "hostname"
     alarm_actions:
-      - root email
+      - default
     ok_actions:
-      - root email
+      - default
     undetermined_actions:
-      - root email
+      - default
   - name: "HTTP Status"
     description: >
       "Alarms when the specified HTTP endpoint is down or not reachable"
@@ -47,33 +47,33 @@ alarm_definitions:
       - "hostname"
       - "url"
     alarm_actions:
-      - root email
+      - default
     ok_actions:
-      - root email
+      - default
     undetermined_actions:
-      - root email
+      - default
   - name: "CPU Usage"
     description: "Alarms when CPU usage is high"
     expression: "avg(cpu.idle_perc) < 10 times 3"
     match_by:
       - "hostname"
     alarm_actions:
-      - root email
+      - default
     ok_actions:
-      - root email
+      - default
     undetermined_actions:
-      - root email
+      - default
   - name: "High CPU IOWait"
     description: "Alarms when CPU IOWait is high, possible slow disk issue"
     expression: "avg(cpu.wait_perc) > 40 times 3"
     match_by:
       - "hostname"
     alarm_actions:
-      - root email
+      - default
     ok_actions:
-      - root email
+      - default
     undetermined_actions:
-      - root email
+      - default
   - name: "Disk Inode Usage"
     description: "Alarms when disk inode usage is high"
     expression: "disk.inode_used_perc > 90"
@@ -82,11 +82,11 @@ alarm_definitions:
       - "device"
     severity: "HIGH"
     alarm_actions:
-      - root email
+      - default
     ok_actions:
-      - root email
+      - default
     undetermined_actions:
-      - root email
+      - default
   - name: "Disk Usage"
     description: "Alarms when disk usage is high"
     expression: "disk.space_used_perc > 90"
@@ -95,32 +95,32 @@ alarm_definitions:
       - "device"
     severity: "HIGH"
     alarm_actions:
-      - root email
+      - default
     ok_actions:
-      - root email
+      - default
     undetermined_actions:
-      - root email
+      - default
   - name: "Memory Usage"
     description: "Alarms when memory usage is high"
     severity: "HIGH"
     expression: "avg(mem.usable_perc) < 10 times 3"
     alarm_actions:
-      - root email
+      - default
     ok_actions:
-      - root email
+      - default
     undetermined_actions:
-      - root email
+      - default
   - name: "Network Errors"
     description: >
       "Alarms when either incoming or outgoing network errors are high"
     severity: "MEDIUM"
     expression: "net.in_errors_sec > 5 or net.out_errors_sec > 5"
     alarm_actions:
-      - root email
+      - default
     ok_actions:
-      - root email
+      - default
     undetermined_actions:
-      - root email
+      - default
   - name: "Process Check"
     description: "Alarms when the specified process is not running"
     severity: "HIGH"
@@ -129,11 +129,11 @@ alarm_definitions:
       - "process_name"
       - "hostname"
     alarm_actions:
-      - root email
+      - default
     ok_actions:
-      - root email
+      - default
     undetermined_actions:
-      - root email
+      - default
   - name: "Crash Dump Count"
     description: "Alarms when a crash directory is found"
     severity: "MEDIUM"
@@ -141,11 +141,11 @@ alarm_definitions:
     match_by:
       - "hostname"
     alarm_actions:
-      - root email
+      - default
     ok_actions:
-      - root email
+      - default
     undetermined_actions:
-      - root email
+      - default
   - name: "Monasca Agent Collection Time"
     description: "Alarms when the elapsed time the Monasca Agent takes to \
                     collect metrics is high"
@@ -153,41 +153,41 @@ alarm_definitions:
     match_by:
       - "hostname"
     alarm_actions:
-      - root email
+      - default
     ok_actions:
-      - root email
+      - default
     undetermined_actions:
-      - root email
+      - default
   - name: "ZooKeeper Latency"
     description: "Alarms when the ZooKeeper latency is high"
     expression: "avg(zookeeper.avg_latency_sec) > 1 times 3"
     match_by:
       - "hostname"
     alarm_actions:
-      - root email
+      - default
     ok_actions:
-      - root email
+      - default
     undetermined_actions:
-      - root email
+      - default
   - name: "NTP Time Sync"
     description: "Alarms when the NTP time offset is high"
     expression: "ntp.offset > 5 or ntp.offset < -5"
     match_by:
       - "hostname"
     alarm_actions:
-      - root email
+      - default
     ok_actions:
-      - root email
+      - default
     undetermined_actions:
-      - root email
+      - default
   - name: "NTP Connection Status"
     description: "Alarms when the connection failed to the NTP server"
     expression: "ntp.connection_status > 0"
     match_by:
       - "hostname"
     alarm_actions:
-      - root email
+      - default
     ok_actions:
-      - root email
+      - default
     undetermined_actions:
-      - root email
+      - default

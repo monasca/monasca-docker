@@ -55,7 +55,9 @@ services:
         alarm-notifications:12:1,\
         retry-notifications:3:1,\
         events:12:1,\
-        60-seconds-notifications:3:1"
+        60-seconds-notifications:3:1,\
+        log:4:1,\
+        log-transformed:4:1"
     depends_on:
       - zookeeper
 
@@ -68,6 +70,8 @@ services:
     environment:
       MYSQL_INIT_DISABLE_REMOTE_ROOT: "false"
       MYSQL_INIT_RANDOM_PASSWORD: "false"
+    depends_on:
+      - mysql
 
   keystone:
     image: monasca/keystone:1.1.1
@@ -81,6 +85,7 @@ services:
       KEYSTONE_MYSQL_DATABASE: keystone
     depends_on:
       - mysql
+      - mysql-init
     ports:
       - "5000:5000"
       - "35357:35357"

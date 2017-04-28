@@ -1,6 +1,6 @@
 repository: monasca/job-cleanup
 variants:
-  - tag: 1.1.1
+  - tag: 1.1.2
     aliases:
       - :1.1
       - :latest

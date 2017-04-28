@@ -17,7 +17,7 @@ ENV CONFIG_TEMPLATE=true \
   MYSQL_DB_DATABASE=mon
 
 RUN apk add --no-cache \
-    python py2-pip py2-jinja2 py2-netaddr py2-yaml py2-gevent py2-greenlet mysql-client && \
+    python py2-pip py2-jinja2 py2-netaddr py2-yaml py2-gevent py2-greenlet mysql-client ca-certificates && \
   apk add --no-cache --virtual build-dep \
     git python-dev make g++ && \
   mkdir /monasca-notification && cd /monasca-notification && \

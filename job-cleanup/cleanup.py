@@ -25,9 +25,9 @@ from kubernetes import KubernetesAPIClient
 
 
 NAMESPACE = '/var/run/secrets/kubernetes.io/serviceaccount/namespace'
-TIMEOUT = 10
-RETRIES = 24
-RETRY_DELAY = 5.0
+TIMEOUT = float(os.environ.get('WAIT_TIMEOUT', '10'))
+RETRIES = int(os.environ.get('WAIT_RETRIES', '24'))
+RETRY_DELAY = float(os.environ.get('WAIT_DELAY', '5.0'))
 
 USE_KUBE_CONFIG = os.environ.get('USE_KUBE_CONFIG', False)
 

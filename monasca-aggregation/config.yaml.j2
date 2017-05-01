@@ -1,0 +1,11 @@
+windowSize: {{ AGGREGATION_WINDOW_SIZE | default('10') }}
+windowLag: {{ AGGREGATION_WINDOW_LAG | default('2') }}
+consumerTopic: {{ AGGREGATION_CONSUMER_TOPIC | default('metrics') }}
+producerTopic: {{ AGGREGATION_PRODUCER_TOPIC | default('metrics') }}
+
+kafka:
+  bootstrap.servers: {{ KAFKA_URI | default('kafka:9092') }}
+  group.id: {{ KAFKA_GROUP_ID | default('monasca-aggregation') }}
+
+prometheus:
+  endpoint: 0.0.0.0:8080

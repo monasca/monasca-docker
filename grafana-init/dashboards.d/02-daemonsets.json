@@ -1,6 +1,6 @@
 {
-  "id": 2,
-  "title": "DaemonSet Data",
+  "id": 6,
+  "title": "DaemonSets",
   "tags": [],
   "style": "dark",
   "timezone": "utc",
@@ -44,14 +44,12 @@
   },
   "refresh": "5s",
   "schemaVersion": 13,
-  "version": 4,
+  "version": 2,
   "links": [],
   "gnetId": null,
   "rows": [
     {
-      "collapse": false,
-      "height": 386,
-      "isNew": false,
+      "title": "CPU",
       "panels": [
         {
           "aliasColors": {},
@@ -61,7 +59,6 @@
           "error": false,
           "fill": 1,
           "id": 1,
-          "isNew": true,
           "legend": {
             "alignAsTable": true,
             "avg": false,
@@ -87,7 +84,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "aggregator": "avg",
+              "aggregator": "none",
               "alias": "@daemon_set",
               "dimensions": [
                 {
@@ -96,8 +93,8 @@
                 }
               ],
               "error": "",
-              "group": false,
-              "metric": "pod.cpu.total_time_sec",
+              "group": true,
+              "metric": "daemon_set.cpu.total_time_sec_agg",
               "period": "60",
               "refId": "A"
             }
@@ -108,7 +105,7 @@
           "title": "DaemonSet CPU",
           "tooltip": {
             "msResolution": false,
-            "shared": true,
+            "shared": false,
             "sort": 0,
             "value_type": "individual"
           },
@@ -121,7 +118,7 @@
           },
           "yaxes": [
             {
-              "format": "ns",
+              "format": "s",
               "label": "",
               "logBase": 1,
               "max": null,
@@ -139,17 +136,16 @@
           ]
         }
       ],
+      "showTitle": true,
+      "titleSize": "h6",
+      "height": "350",
       "repeat": null,
-      "repeatIteration": null,
       "repeatRowId": null,
-      "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
+      "repeatIteration": null,
+      "collapse": false
     },
     {
-      "collapse": false,
-      "height": 462,
-      "isNew": false,
+      "title": "Memory",
       "panels": [
         {
           "aliasColors": {},
@@ -158,8 +154,7 @@
           "editable": true,
           "error": false,
           "fill": 1,
-          "id": 2,
-          "isNew": true,
+          "id": 14,
           "legend": {
             "alignAsTable": true,
             "avg": false,
@@ -172,7 +167,271 @@
             "values": false
           },
           "lines": true,
-          "linewidth": 2,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 4,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "aggregator": "none",
+              "alias": "@daemon_set",
+              "dimensions": [
+                {
+                  "key": "daemon_set",
+                  "value": "$all"
+                }
+              ],
+              "error": "",
+              "group": true,
+              "metric": "daemon_set.mem.rss_bytes_agg",
+              "period": "300",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Memory RSS",
+          "tooltip": {
+            "msResolution": false,
+            "shared": false,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "decbytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "id": 15,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 4,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "aggregator": "none",
+              "alias": "@daemon_set",
+              "dimensions": [
+                {
+                  "key": "daemon_set",
+                  "value": "$all"
+                }
+              ],
+              "error": "",
+              "group": true,
+              "metric": "daemon_set.mem.cache_bytes_agg",
+              "period": "300",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Memory Cache",
+          "tooltip": {
+            "msResolution": false,
+            "shared": false,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "decbytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "id": 16,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 4,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "aggregator": "none",
+              "alias": "@daemon_set",
+              "dimensions": [
+                {
+                  "key": "daemon_set",
+                  "value": "$all"
+                }
+              ],
+              "error": "",
+              "group": true,
+              "metric": "daemon_set.mem.used_bytes_agg",
+              "period": "300",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Memory Used",
+          "tooltip": {
+            "msResolution": false,
+            "shared": false,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "decbytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "showTitle": true,
+      "titleSize": "h6",
+      "height": "350",
+      "repeat": null,
+      "repeatRowId": null,
+      "repeatIteration": null,
+      "collapse": false
+    },
+    {
+      "title": "Network In",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "id": 6,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
           "percentage": false,
@@ -185,7 +444,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "aggregator": "avg",
+              "aggregator": "none",
               "alias": "@daemon_set",
               "dimensions": [
                 {
@@ -194,19 +453,19 @@
                 }
               ],
               "error": "",
-              "group": false,
-              "metric": "pod.net.in_bytes_sec",
-              "period": "60",
+              "group": true,
+              "metric": "daemon_set.net.in_bytes_sec_agg",
+              "period": "300",
               "refId": "A"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Network in",
+          "title": "Network Bytes In",
           "tooltip": {
             "msResolution": false,
-            "shared": true,
+            "shared": false,
             "sort": 0,
             "value_type": "individual"
           },
@@ -243,8 +502,7 @@
           "editable": true,
           "error": false,
           "fill": 1,
-          "id": 3,
-          "isNew": true,
+          "id": 7,
           "legend": {
             "alignAsTable": true,
             "avg": false,
@@ -253,12 +511,11 @@
             "min": false,
             "rightSide": true,
             "show": true,
-            "sortDesc": true,
             "total": false,
             "values": false
           },
           "lines": true,
-          "linewidth": 2,
+          "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
           "percentage": false,
@@ -271,7 +528,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "aggregator": "sum",
+              "aggregator": "none",
               "alias": "@daemon_set",
               "dimensions": [
                 {
@@ -280,19 +537,283 @@
                 }
               ],
               "error": "",
-              "group": false,
-              "metric": "pod.net.out_bytes_sec",
-              "period": "60",
+              "group": true,
+              "metric": "daemon_set.net.in_packets_sec_agg",
+              "period": "300",
               "refId": "A"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Network Out",
+          "title": "Network Packets In",
           "tooltip": {
             "msResolution": false,
-            "shared": true,
+            "shared": false,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "pps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "id": 20,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "aggregator": "none",
+              "alias": "@daemon_set",
+              "dimensions": [
+                {
+                  "key": "daemon_set",
+                  "value": "$all"
+                }
+              ],
+              "error": "",
+              "group": true,
+              "metric": "daemon_set.net.in_dropped_packets_sec_agg",
+              "period": "300",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Network Dropped Packets In",
+          "tooltip": {
+            "msResolution": false,
+            "shared": false,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "pps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "id": 10,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "aggregator": "none",
+              "alias": "@daemon_set",
+              "dimensions": [
+                {
+                  "key": "daemon_set",
+                  "value": "$all"
+                }
+              ],
+              "error": "",
+              "group": true,
+              "metric": "daemon_set.net.in_errors_sec_agg",
+              "period": "300",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Network In Errors",
+          "tooltip": {
+            "msResolution": false,
+            "shared": false,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "none",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "showTitle": true,
+      "titleSize": "h6",
+      "height": 336,
+      "repeat": null,
+      "repeatRowId": null,
+      "repeatIteration": null,
+      "collapse": false
+    },
+    {
+      "title": "Network Out",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "id": 21,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "aggregator": "none",
+              "alias": "@daemon_set",
+              "dimensions": [
+                {
+                  "key": "daemon_set",
+                  "value": "$all"
+                }
+              ],
+              "error": "",
+              "group": true,
+              "metric": "daemon_set.net.out_bytes_sec_agg",
+              "period": "300",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Network Bytes Out",
+          "tooltip": {
+            "msResolution": false,
+            "shared": false,
             "sort": 0,
             "value_type": "individual"
           },
@@ -321,20 +842,7 @@
               "show": true
             }
           ]
-        }
-      ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
-    },
-    {
-      "collapse": false,
-      "height": 483,
-      "isNew": false,
-      "panels": [
+        },
         {
           "aliasColors": {},
           "bars": false,
@@ -342,8 +850,7 @@
           "editable": true,
           "error": false,
           "fill": 1,
-          "id": 5,
-          "isNew": true,
+          "id": 22,
           "legend": {
             "alignAsTable": true,
             "avg": false,
@@ -356,7 +863,7 @@
             "values": false
           },
           "lines": true,
-          "linewidth": 2,
+          "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
           "percentage": false,
@@ -364,12 +871,12 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
-          "span": 12,
+          "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "aggregator": "avg",
+              "aggregator": "none",
               "alias": "@daemon_set",
               "dimensions": [
                 {
@@ -378,18 +885,19 @@
                 }
               ],
               "error": "",
-              "metric": "pod.mem.rss_bytes",
-              "period": "60",
+              "group": true,
+              "metric": "daemon_set.net.out_packets_sec_agg",
+              "period": "300",
               "refId": "A"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Memory rss bytes",
+          "title": "Network Packets Out",
           "tooltip": {
             "msResolution": false,
-            "shared": true,
+            "shared": false,
             "sort": 0,
             "value_type": "individual"
           },
@@ -402,7 +910,175 @@
           },
           "yaxes": [
             {
-              "format": "decbytes",
+              "format": "pps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "id": 23,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "aggregator": "none",
+              "alias": "@daemon_set",
+              "dimensions": [
+                {
+                  "key": "daemon_set",
+                  "value": "$all"
+                }
+              ],
+              "error": "",
+              "group": true,
+              "metric": "daemon_set.net.out_dropped_packets_sec_agg",
+              "period": "300",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Network Dropped Packets Out",
+          "tooltip": {
+            "msResolution": false,
+            "shared": false,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "pps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "id": 24,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "aggregator": "none",
+              "alias": "@daemon_set",
+              "dimensions": [
+                {
+                  "key": "daemon_set",
+                  "value": "$all"
+                }
+              ],
+              "error": "",
+              "group": true,
+              "metric": "daemon_set.net.out_errors_sec_agg",
+              "period": "300",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Network Out Errors",
+          "tooltip": {
+            "msResolution": false,
+            "shared": false,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -420,12 +1096,13 @@
           ]
         }
       ],
+      "showTitle": true,
+      "titleSize": "h6",
+      "height": 307,
       "repeat": null,
-      "repeatIteration": null,
       "repeatRowId": null,
-      "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
+      "repeatIteration": null,
+      "collapse": false
     }
   ]
 }

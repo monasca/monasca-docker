@@ -2,4 +2,4 @@ repository: monasca/grafana-init
 variants:
   - tag: latest
     aliases:
-      - :1.1.0
+      - :1.2.0

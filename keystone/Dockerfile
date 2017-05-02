@@ -8,9 +8,7 @@ run apt-get update && \
 expose 5000 35357
 
 copy supervisord.conf /etc/supervisor/supervisord.conf
-copy keystone-bootstrap.sh /keystone-bootstrap.sh
-copy preload.py /preload.py
-copy start.sh /start.sh
+copy start.sh preload.py k8s_get_service.py keystone-bootstrap.sh /
 copy exit-event-listener.py /usr/local/bin/exit-event-listener
 
 cmd /start.sh

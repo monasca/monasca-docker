@@ -7,6 +7,9 @@ services:
     depends_on:
       - influxdb
 
+  alarms:
+    image: monasca/alarms:1.1.0
+
   zookeeper:
     image: zookeeper:3.3
   kafka:
@@ -30,10 +33,10 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: secretmysql
   mysql-init:
-    image: monasca/mysql-init:1.1.0
+    image: monasca/mysql-init:1.4.0
     environment:
       MYSQL_INIT_DISABLE_REMOTE_ROOT: "true"
-      MYSQL_INIT_RANDOM_PASSWORD: "true"
+      MYSQL_INIT_RANDOM_PASSWORD: "false"
 
   keystone:
     image: monasca/keystone:1.0.7
@@ -125,6 +128,6 @@ services:
       - monasca
 
   grafana-init:
-    image: monasca/grafana-init:1.0.0
+    image: monasca/grafana-init:1.1.0
     depends_on:
       - grafana

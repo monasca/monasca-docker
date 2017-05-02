@@ -31,7 +31,7 @@ GRAFANA_URL = os.environ.get('GRAFANA_URL', 'http://grafana:3000')
 GRAFANA_USERNAME = os.environ.get('GRAFANA_USERNAME', 'mini-mon')
 GRAFANA_PASSWORD = os.environ.get('GRAFANA_PASSWORD', 'password')
 
-DATASOURCE_TYPE = os.environ.get('DATASOURCE_TYPE', 'monasca')
+DATASOURCE_NAME = os.environ.get('DATASOURCE_NAME', 'monasca')
 DATASOURCE_URL = os.environ.get('DATASOURCE_URL', 'http://monasca:8070/')
 DATASOURCE_ACCESS_MODE = os.environ.get('DATASOURCE_ACCESS_MODE', 'proxy')
 
@@ -75,9 +75,23 @@ def login(session):
     r.raise_for_status()
 
 
+@retry(retries=12, delay=5.0)
+def check_initialized(session):
+    r = session.get('{url}/api/datasources'.format(url=GRAFANA_URL), timeout=5)
+    r.raise_for_status()
+
+    logging.debug('existing datasources = %r', r.json())
+
+    for datasource in r.json():
+        if datasource['name'] == DATASOURCE_NAME:
+            return True
+
+    return False
+
+
 def create_datasource_payload():
     payload = {
-        'name': DATASOURCE_TYPE,
+        'name': DATASOURCE_NAME,
         'url': DATASOURCE_URL,
         'access': DATASOURCE_ACCESS_MODE,
         'isDefault': True,
@@ -88,7 +102,7 @@ def create_datasource_payload():
             'type': 'monasca-datasource',
             'jsonData': {'keystoneAuth': True}
         }
-    }.get(DATASOURCE_TYPE, {}))
+    }.get(DATASOURCE_NAME, {}))
 
     logging.debug('payload = %r', payload)
 
@@ -110,6 +124,10 @@ def main():
     logging.info('Opening a Grafana session...')
     session = Session()
     login(session)
+
+    if check_initialized(session):
+        logging.info('Grafana has already been initialized, skipping!')
+        return
 
     logging.info('Attempting to add configured datasource...')
     r = session.post('{url}/api/datasources'.format(url=GRAFANA_URL),

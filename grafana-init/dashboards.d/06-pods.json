@@ -1,6 +1,6 @@
 {
-  "id": 5,
-  "title": "Pod Data",
+  "id": 9,
+  "title": "Pods",
   "tags": [],
   "style": "dark",
   "timezone": "utc",
@@ -13,16 +13,7 @@
   },
   "timepicker": {
     "refresh_intervals": [
-      "5s",
-      "10s",
-      "30s",
-      "1m",
-      "5m",
-      "15m",
-      "30m",
-      "1h",
-      "2h",
-      "1d"
+      "1m"
     ],
     "time_options": [
       "5m",
@@ -37,506 +28,19 @@
     ]
   },
   "templating": {
-    "list": [
-      {
-        "allValue": null,
-        "current": {
-          "text": "client-2176998044-30t6r + fluentd-04js4 + fluentd-0g48d + fluentd-5nqxb + fluentd-q0f36 + grafana-1548781338-gjlps + influx-cdqd1 + kafka-4126406481-c28ug + kafka-client-1686611126-nut2g + keystone-2574516988-g7ukr + keystone-mysql-3894035189-406jf + monasca-notification-1640639098-ldm71 + monasca-persister-2842861372-tffx7 + storm-nimbus-2509548823-gvvbj + storm-supervisor-2427613262-hewqw + zookeeper-753038548-9qspv",
-          "value": [
-            "client-2176998044-30t6r",
-            "fluentd-04js4",
-            "fluentd-0g48d",
-            "fluentd-5nqxb",
-            "fluentd-q0f36",
-            "grafana-1548781338-gjlps",
-            "influx-cdqd1",
-            "kafka-4126406481-c28ug",
-            "kafka-client-1686611126-nut2g",
-            "keystone-2574516988-g7ukr",
-            "keystone-mysql-3894035189-406jf",
-            "monasca-notification-1640639098-ldm71",
-            "monasca-persister-2842861372-tffx7",
-            "storm-nimbus-2509548823-gvvbj",
-            "storm-supervisor-2427613262-hewqw",
-            "zookeeper-753038548-9qspv"
-          ]
-        },
-        "datasource": "monasca",
-        "hide": 0,
-        "includeAll": true,
-        "label": null,
-        "multi": true,
-        "name": "pod_name",
-        "options": [
-          {
-            "selected": false,
-            "text": "All",
-            "value": "$__all"
-          },
-          {
-            "selected": false,
-            "text": "busybox",
-            "value": "busybox"
-          },
-          {
-            "selected": true,
-            "text": "client-2176998044-30t6r",
-            "value": "client-2176998044-30t6r"
-          },
-          {
-            "selected": false,
-            "text": "dummy-2088944543-r1cqg",
-            "value": "dummy-2088944543-r1cqg"
-          },
-          {
-            "selected": false,
-            "text": "elasticsearch-2467620918-4tl2y",
-            "value": "elasticsearch-2467620918-4tl2y"
-          },
-          {
-            "selected": true,
-            "text": "fluentd-04js4",
-            "value": "fluentd-04js4"
-          },
-          {
-            "selected": true,
-            "text": "fluentd-0g48d",
-            "value": "fluentd-0g48d"
-          },
-          {
-            "selected": true,
-            "text": "fluentd-5nqxb",
-            "value": "fluentd-5nqxb"
-          },
-          {
-            "selected": true,
-            "text": "fluentd-q0f36",
-            "value": "fluentd-q0f36"
-          },
-          {
-            "selected": true,
-            "text": "grafana-1548781338-gjlps",
-            "value": "grafana-1548781338-gjlps"
-          },
-          {
-            "selected": false,
-            "text": "heapster-2193675300-evypm",
-            "value": "heapster-2193675300-evypm"
-          },
-          {
-            "selected": true,
-            "text": "influx-cdqd1",
-            "value": "influx-cdqd1"
-          },
-          {
-            "selected": false,
-            "text": "influx-controller-jptad",
-            "value": "influx-controller-jptad"
-          },
-          {
-            "selected": false,
-            "text": "influx-lt01k",
-            "value": "influx-lt01k"
-          },
-          {
-            "selected": false,
-            "text": "influx-rhl38",
-            "value": "influx-rhl38"
-          },
-          {
-            "selected": false,
-            "text": "kafka-1103265780-uvttz",
-            "value": "kafka-1103265780-uvttz"
-          },
-          {
-            "selected": true,
-            "text": "kafka-4126406481-c28ug",
-            "value": "kafka-4126406481-c28ug"
-          },
-          {
-            "selected": false,
-            "text": "kafka-604647518-4pk0f",
-            "value": "kafka-604647518-4pk0f"
-          },
-          {
-            "selected": false,
-            "text": "kafka-604647518-ejwtk",
-            "value": "kafka-604647518-ejwtk"
-          },
-          {
-            "selected": false,
-            "text": "kafka-604647518-pmxm7",
-            "value": "kafka-604647518-pmxm7"
-          },
-          {
-            "selected": false,
-            "text": "kafka-604647518-s3i0b",
-            "value": "kafka-604647518-s3i0b"
-          },
-          {
-            "selected": false,
-            "text": "kafka-604647518-u6qcj",
-            "value": "kafka-604647518-u6qcj"
-          },
-          {
-            "selected": false,
-            "text": "kafka-604647518-vkc0y",
-            "value": "kafka-604647518-vkc0y"
-          },
-          {
-            "selected": false,
-            "text": "kafka-604647518-w76t2",
-            "value": "kafka-604647518-w76t2"
-          },
-          {
-            "selected": false,
-            "text": "kafka-604647518-yr0ol",
-            "value": "kafka-604647518-yr0ol"
-          },
-          {
-            "selected": false,
-            "text": "kafka-604647518-zr27s",
-            "value": "kafka-604647518-zr27s"
-          },
-          {
-            "selected": true,
-            "text": "kafka-client-1686611126-nut2g",
-            "value": "kafka-client-1686611126-nut2g"
-          },
-          {
-            "selected": true,
-            "text": "keystone-2574516988-g7ukr",
-            "value": "keystone-2574516988-g7ukr"
-          },
-          {
-            "selected": true,
-            "text": "keystone-mysql-3894035189-406jf",
-            "value": "keystone-mysql-3894035189-406jf"
-          },
-          {
-            "selected": false,
-            "text": "kibana-1537428577-edmam",
-            "value": "kibana-1537428577-edmam"
-          },
-          {
-            "selected": false,
-            "text": "kube-discovery-1150918428-zzl6u",
-            "value": "kube-discovery-1150918428-zzl6u"
-          },
-          {
-            "selected": false,
-            "text": "kube-dns-654381707-mih7r",
-            "value": "kube-dns-654381707-mih7r"
-          },
-          {
-            "selected": false,
-            "text": "kube-dns-654381707-qh49w",
-            "value": "kube-dns-654381707-qh49w"
-          },
-          {
-            "selected": false,
-            "text": "kube-proxy-atz3s",
-            "value": "kube-proxy-atz3s"
-          },
-          {
-            "selected": false,
-            "text": "kube-proxy-jyb1b",
-            "value": "kube-proxy-jyb1b"
-          },
-          {
-            "selected": false,
-            "text": "kube-proxy-kodho",
-            "value": "kube-proxy-kodho"
-          },
-          {
-            "selected": false,
-            "text": "kube-proxy-vlj31",
-            "value": "kube-proxy-vlj31"
-          },
-          {
-            "selected": false,
-            "text": "kubernetes-dashboard-3203700628-w2jt3",
-            "value": "kubernetes-dashboard-3203700628-w2jt3"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-01w1e",
-            "value": "monasca-agent-01w1e"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-2z5q4",
-            "value": "monasca-agent-2z5q4"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-4803a",
-            "value": "monasca-agent-4803a"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-59464",
-            "value": "monasca-agent-59464"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-8z0pa",
-            "value": "monasca-agent-8z0pa"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-9ogtn",
-            "value": "monasca-agent-9ogtn"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-c9paj",
-            "value": "monasca-agent-c9paj"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-d4l16",
-            "value": "monasca-agent-d4l16"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-hmhn2",
-            "value": "monasca-agent-hmhn2"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-i6j6o",
-            "value": "monasca-agent-i6j6o"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-jy0l9",
-            "value": "monasca-agent-jy0l9"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-k9b8z",
-            "value": "monasca-agent-k9b8z"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-kubernetes-api-3728551208-bjb9q",
-            "value": "monasca-agent-kubernetes-api-3728551208-bjb9q"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-kubernetes-api-3728551208-jney1",
-            "value": "monasca-agent-kubernetes-api-3728551208-jney1"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-kwh2r",
-            "value": "monasca-agent-kwh2r"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-mn5tk",
-            "value": "monasca-agent-mn5tk"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-oolwx",
-            "value": "monasca-agent-oolwx"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-prometheus-client-4077595854-avw9b",
-            "value": "monasca-agent-prometheus-client-4077595854-avw9b"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-prometheus-client-4077595854-g1y7w",
-            "value": "monasca-agent-prometheus-client-4077595854-g1y7w"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-prometheus-client-aj6q7",
-            "value": "monasca-agent-prometheus-client-aj6q7"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-prometheus-client-ntgm4",
-            "value": "monasca-agent-prometheus-client-ntgm4"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-prometheus-client-sh75l",
-            "value": "monasca-agent-prometheus-client-sh75l"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-prometheus-client-znb5z",
-            "value": "monasca-agent-prometheus-client-znb5z"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-tynsj",
-            "value": "monasca-agent-tynsj"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-uz6ev",
-            "value": "monasca-agent-uz6ev"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-w8l9l",
-            "value": "monasca-agent-w8l9l"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-xj2so",
-            "value": "monasca-agent-xj2so"
-          },
-          {
-            "selected": false,
-            "text": "monasca-agent-yzijt",
-            "value": "monasca-agent-yzijt"
-          },
-          {
-            "selected": false,
-            "text": "monasca-api-1909953180-mjwy8",
-            "value": "monasca-api-1909953180-mjwy8"
-          },
-          {
-            "selected": false,
-            "text": "monasca-api-1909953180-tzc0u",
-            "value": "monasca-api-1909953180-tzc0u"
-          },
-          {
-            "selected": false,
-            "text": "monasca-notification-1640639098-cs009",
-            "value": "monasca-notification-1640639098-cs009"
-          },
-          {
-            "selected": true,
-            "text": "monasca-notification-1640639098-ldm71",
-            "value": "monasca-notification-1640639098-ldm71"
-          },
-          {
-            "selected": false,
-            "text": "monasca-notification-1946968924-spmqc",
-            "value": "monasca-notification-1946968924-spmqc"
-          },
-          {
-            "selected": false,
-            "text": "monasca-notification-4250709892-pdo4p",
-            "value": "monasca-notification-4250709892-pdo4p"
-          },
-          {
-            "selected": false,
-            "text": "monasca-persister-2842861372-mzley",
-            "value": "monasca-persister-2842861372-mzley"
-          },
-          {
-            "selected": true,
-            "text": "monasca-persister-2842861372-tffx7",
-            "value": "monasca-persister-2842861372-tffx7"
-          },
-          {
-            "selected": false,
-            "text": "monitoring-grafana-927606581-ip2pz",
-            "value": "monitoring-grafana-927606581-ip2pz"
-          },
-          {
-            "selected": false,
-            "text": "monitoring-influxdb-3276295126-zcr7r",
-            "value": "monitoring-influxdb-3276295126-zcr7r"
-          },
-          {
-            "selected": false,
-            "text": "mysql-1690333784-8uraa",
-            "value": "mysql-1690333784-8uraa"
-          },
-          {
-            "selected": false,
-            "text": "python-3423583199-7yiee",
-            "value": "python-3423583199-7yiee"
-          },
-          {
-            "selected": false,
-            "text": "python-3865485062-gntr7",
-            "value": "python-3865485062-gntr7"
-          },
-          {
-            "selected": false,
-            "text": "python-3865485062-tizku",
-            "value": "python-3865485062-tizku"
-          },
-          {
-            "selected": true,
-            "text": "storm-nimbus-2509548823-gvvbj",
-            "value": "storm-nimbus-2509548823-gvvbj"
-          },
-          {
-            "selected": true,
-            "text": "storm-supervisor-2427613262-hewqw",
-            "value": "storm-supervisor-2427613262-hewqw"
-          },
-          {
-            "selected": false,
-            "text": "tiller-deploy-2379477723-nrjls",
-            "value": "tiller-deploy-2379477723-nrjls"
-          },
-          {
-            "selected": false,
-            "text": "weave-net-1efbk",
-            "value": "weave-net-1efbk"
-          },
-          {
-            "selected": false,
-            "text": "weave-net-828oo",
-            "value": "weave-net-828oo"
-          },
-          {
-            "selected": false,
-            "text": "weave-net-d5e2v",
-            "value": "weave-net-d5e2v"
-          },
-          {
-            "selected": false,
-            "text": "weave-net-g92g3",
-            "value": "weave-net-g92g3"
-          },
-          {
-            "selected": false,
-            "text": "web-app-demo-2355953197-5jdad",
-            "value": "web-app-demo-2355953197-5jdad"
-          },
-          {
-            "selected": true,
-            "text": "zookeeper-753038548-9qspv",
-            "value": "zookeeper-753038548-9qspv"
-          }
-        ],
-        "query": "pod_name",
-        "refresh": 1,
-        "regex": "",
-        "sort": 1,
-        "tagValuesQuery": "",
-        "tagsQuery": "namespace",
-        "type": "query"
-      }
-    ]
+    "list": []
   },
   "annotations": {
     "list": []
   },
-  "refresh": "10s",
+  "refresh": "1m",
   "schemaVersion": 13,
-  "version": 1,
+  "version": 2,
   "links": [],
   "gnetId": null,
   "rows": [
     {
-      "collapse": false,
-      "height": 386,
-      "isNew": false,
+      "title": "CPU",
       "panels": [
         {
           "aliasColors": {},
@@ -546,7 +50,6 @@
           "error": false,
           "fill": 1,
           "id": 1,
-          "isNew": true,
           "legend": {
             "alignAsTable": true,
             "avg": false,
@@ -572,7 +75,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "aggregator": "avg",
+              "aggregator": "none",
               "alias": "@pod_name",
               "dimensions": [
                 {
@@ -581,7 +84,7 @@
                 }
               ],
               "error": "",
-              "group": false,
+              "group": true,
               "metric": "pod.cpu.total_time_sec",
               "period": "60",
               "refId": "A"
@@ -590,7 +93,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Pod CPU",
+          "title": "CPU",
           "tooltip": {
             "msResolution": false,
             "shared": false,
@@ -606,7 +109,7 @@
           },
           "yaxes": [
             {
-              "format": "ns",
+              "format": "s",
               "label": "",
               "logBase": 1,
               "max": null,
@@ -624,17 +127,16 @@
           ]
         }
       ],
+      "showTitle": true,
+      "titleSize": "h6",
+      "height": "350",
       "repeat": null,
-      "repeatIteration": null,
       "repeatRowId": null,
-      "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
+      "repeatIteration": null,
+      "collapse": false
     },
     {
-      "collapse": false,
-      "height": 462,
-      "isNew": false,
+      "title": "Memory",
       "panels": [
         {
           "aliasColors": {},
@@ -643,8 +145,7 @@
           "editable": true,
           "error": false,
           "fill": 1,
-          "id": 2,
-          "isNew": true,
+          "id": 14,
           "legend": {
             "alignAsTable": true,
             "avg": false,
@@ -657,7 +158,7 @@
             "values": false
           },
           "lines": true,
-          "linewidth": 2,
+          "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
           "percentage": false,
@@ -665,12 +166,12 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
-          "span": 6,
+          "span": 4,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "aggregator": "avg",
+              "aggregator": "none",
               "alias": "@pod_name",
               "dimensions": [
                 {
@@ -679,16 +180,16 @@
                 }
               ],
               "error": "",
-              "group": false,
-              "metric": "pod.net.in_bytes_sec",
-              "period": "60",
+              "group": true,
+              "metric": "pod.mem.rss_bytes",
+              "period": "300",
               "refId": "A"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Network in",
+          "title": "Memory RSS",
           "tooltip": {
             "msResolution": false,
             "shared": false,
@@ -704,7 +205,7 @@
           },
           "yaxes": [
             {
-              "format": "Bps",
+              "format": "decbytes",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -728,8 +229,7 @@
           "editable": true,
           "error": false,
           "fill": 1,
-          "id": 3,
-          "isNew": true,
+          "id": 15,
           "legend": {
             "alignAsTable": true,
             "avg": false,
@@ -742,7 +242,7 @@
             "values": false
           },
           "lines": true,
-          "linewidth": 2,
+          "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
           "percentage": false,
@@ -750,12 +250,12 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
-          "span": 6,
+          "span": 4,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "aggregator": "avg",
+              "aggregator": "none",
               "alias": "@pod_name",
               "dimensions": [
                 {
@@ -764,16 +264,16 @@
                 }
               ],
               "error": "",
-              "group": false,
-              "metric": "pod.net.out_bytes_sec",
-              "period": "60",
+              "group": true,
+              "metric": "pod.mem.cache_bytes",
+              "period": "300",
               "refId": "A"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Network Out",
+          "title": "Memory Cache",
           "tooltip": {
             "msResolution": false,
             "shared": false,
@@ -789,7 +289,7 @@
           },
           "yaxes": [
             {
-              "format": "Bps",
+              "format": "decbytes",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -805,20 +305,7 @@
               "show": true
             }
           ]
-        }
-      ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
-    },
-    {
-      "collapse": false,
-      "height": 483,
-      "isNew": false,
-      "panels": [
+        },
         {
           "aliasColors": {},
           "bars": false,
@@ -826,8 +313,7 @@
           "editable": true,
           "error": false,
           "fill": 1,
-          "id": 5,
-          "isNew": true,
+          "id": 16,
           "legend": {
             "alignAsTable": true,
             "avg": false,
@@ -840,7 +326,7 @@
             "values": false
           },
           "lines": true,
-          "linewidth": 2,
+          "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
           "percentage": false,
@@ -848,12 +334,12 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
-          "span": 12,
+          "span": 4,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "aggregator": "avg",
+              "aggregator": "none",
               "alias": "@pod_name",
               "dimensions": [
                 {
@@ -862,15 +348,16 @@
                 }
               ],
               "error": "",
-              "metric": "pod.mem.rss_bytes",
-              "period": "60",
+              "group": true,
+              "metric": "pod.mem.used_bytes",
+              "period": "300",
               "refId": "A"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Memory rss bytes",
+          "title": "Memory Used",
           "tooltip": {
             "msResolution": false,
             "shared": false,
@@ -904,17 +391,16 @@
           ]
         }
       ],
+      "showTitle": true,
+      "titleSize": "h6",
+      "height": "350",
       "repeat": null,
-      "repeatIteration": null,
       "repeatRowId": null,
-      "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
+      "repeatIteration": null,
+      "collapse": false
     },
     {
-      "collapse": false,
-      "height": 370,
-      "isNew": false,
+      "title": "Restart Count",
       "panels": [
         {
           "aliasColors": {},
@@ -923,8 +409,7 @@
           "editable": true,
           "error": false,
           "fill": 1,
-          "id": 7,
-          "isNew": true,
+          "id": 25,
           "legend": {
             "alignAsTable": true,
             "avg": false,
@@ -937,7 +422,7 @@
             "values": false
           },
           "lines": true,
-          "linewidth": 2,
+          "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
           "percentage": false,
@@ -959,6 +444,7 @@
                 }
               ],
               "error": "",
+              "group": true,
               "metric": "pod.restart_count",
               "period": "300",
               "refId": "A"
@@ -967,7 +453,7 @@
           "thresholds": [],
           "timeFrom": "1d",
           "timeShift": null,
-          "title": "Pod Restart Count",
+          "title": "Restart Count",
           "tooltip": {
             "msResolution": false,
             "shared": false,
@@ -1001,1831 +487,709 @@
           ]
         }
       ],
+      "showTitle": true,
+      "titleSize": "h6",
+      "height": "350",
       "repeat": null,
-      "repeatIteration": null,
       "repeatRowId": null,
-      "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
+      "repeatIteration": null,
+      "collapse": false
     },
     {
-      "collapse": false,
-      "height": 250,
-      "isNew": false,
+      "title": "Network In",
       "panels": [
         {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
+          "aliasColors": {},
+          "bars": false,
           "datasource": null,
           "editable": true,
           "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
+          "fill": 1,
+          "id": 6,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": false
           },
-          "height": "150px",
-          "hideTimeOverride": true,
-          "id": 8,
-          "interval": null,
-          "isNew": true,
+          "lines": true,
+          "linewidth": 1,
           "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
           "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": "pod_name",
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
           "targets": [
             {
               "aggregator": "none",
-              "dimensions": [],
+              "alias": "@pod_name",
+              "dimensions": [
+                {
+                  "key": "pod_name",
+                  "value": "$all"
+                }
+              ],
               "error": "",
-              "metric": "pod.phase",
+              "group": true,
+              "metric": "pod.net.in_bytes_sec",
               "period": "300",
               "refId": "A"
             }
           ],
-          "thresholds": "2,3",
-          "timeFrom": "30s",
-          "title": "$pod_name",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Network Bytes In",
+          "tooltip": {
+            "msResolution": false,
+            "shared": false,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
             {
-              "op": "=",
-              "text": "Succeeded",
-              "value": "0"
+              "format": "Bps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
             },
             {
-              "op": "=",
-              "text": "Running",
-              "value": "1"
-            },
-            {
-              "op": "=",
-              "text": "Pending",
-              "value": "2"
-            },
-            {
-              "op": "=",
-              "text": "Failed",
-              "value": "3"
-            },
-            {
-              "op": "=",
-              "text": "Unknown",
-              "value": "4"
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
             }
-          ],
-          "valueName": "current",
-          "scopedVars": {
-            "pod_name": {
-              "selected": true,
-              "text": "client-2176998044-30t6r",
-              "value": "client-2176998044-30t6r"
-            }
-          }
+          ]
         },
         {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
+          "aliasColors": {},
+          "bars": false,
           "datasource": null,
           "editable": true,
           "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "height": "150px",
-          "hideTimeOverride": true,
-          "id": 9,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "dimensions": [],
-              "error": "",
-              "metric": "pod.phase",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "2,3",
-          "timeFrom": "30s",
-          "title": "$pod_name",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "Succeeded",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "Running",
-              "value": "1"
-            },
-            {
-              "op": "=",
-              "text": "Pending",
-              "value": "2"
-            },
-            {
-              "op": "=",
-              "text": "Failed",
-              "value": "3"
-            },
-            {
-              "op": "=",
-              "text": "Unknown",
-              "value": "4"
-            }
-          ],
-          "valueName": "current",
-          "scopedVars": {
-            "pod_name": {
-              "selected": true,
-              "text": "fluentd-04js4",
-              "value": "fluentd-04js4"
-            }
-          },
-          "repeatIteration": 1483721073950,
-          "repeatPanelId": 8
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "height": "150px",
-          "hideTimeOverride": true,
-          "id": 10,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "dimensions": [],
-              "error": "",
-              "metric": "pod.phase",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "2,3",
-          "timeFrom": "30s",
-          "title": "$pod_name",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "Succeeded",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "Running",
-              "value": "1"
-            },
-            {
-              "op": "=",
-              "text": "Pending",
-              "value": "2"
-            },
-            {
-              "op": "=",
-              "text": "Failed",
-              "value": "3"
-            },
-            {
-              "op": "=",
-              "text": "Unknown",
-              "value": "4"
-            }
-          ],
-          "valueName": "current",
-          "scopedVars": {
-            "pod_name": {
-              "selected": true,
-              "text": "fluentd-0g48d",
-              "value": "fluentd-0g48d"
-            }
-          },
-          "repeatIteration": 1483721073950,
-          "repeatPanelId": 8
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "height": "150px",
-          "hideTimeOverride": true,
-          "id": 11,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "dimensions": [],
-              "error": "",
-              "metric": "pod.phase",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "2,3",
-          "timeFrom": "30s",
-          "title": "$pod_name",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "Succeeded",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "Running",
-              "value": "1"
-            },
-            {
-              "op": "=",
-              "text": "Pending",
-              "value": "2"
-            },
-            {
-              "op": "=",
-              "text": "Failed",
-              "value": "3"
-            },
-            {
-              "op": "=",
-              "text": "Unknown",
-              "value": "4"
-            }
-          ],
-          "valueName": "current",
-          "scopedVars": {
-            "pod_name": {
-              "selected": true,
-              "text": "fluentd-5nqxb",
-              "value": "fluentd-5nqxb"
-            }
-          },
-          "repeatIteration": 1483721073950,
-          "repeatPanelId": 8
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "height": "150px",
-          "hideTimeOverride": true,
-          "id": 12,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "dimensions": [],
-              "error": "",
-              "metric": "pod.phase",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "2,3",
-          "timeFrom": "30s",
-          "title": "$pod_name",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "Succeeded",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "Running",
-              "value": "1"
-            },
-            {
-              "op": "=",
-              "text": "Pending",
-              "value": "2"
-            },
-            {
-              "op": "=",
-              "text": "Failed",
-              "value": "3"
-            },
-            {
-              "op": "=",
-              "text": "Unknown",
-              "value": "4"
-            }
-          ],
-          "valueName": "current",
-          "scopedVars": {
-            "pod_name": {
-              "selected": true,
-              "text": "fluentd-q0f36",
-              "value": "fluentd-q0f36"
-            }
-          },
-          "repeatIteration": 1483721073950,
-          "repeatPanelId": 8
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "height": "150px",
-          "hideTimeOverride": true,
-          "id": 13,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "dimensions": [],
-              "error": "",
-              "metric": "pod.phase",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "2,3",
-          "timeFrom": "30s",
-          "title": "$pod_name",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "Succeeded",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "Running",
-              "value": "1"
-            },
-            {
-              "op": "=",
-              "text": "Pending",
-              "value": "2"
-            },
-            {
-              "op": "=",
-              "text": "Failed",
-              "value": "3"
-            },
-            {
-              "op": "=",
-              "text": "Unknown",
-              "value": "4"
-            }
-          ],
-          "valueName": "current",
-          "scopedVars": {
-            "pod_name": {
-              "selected": true,
-              "text": "grafana-1548781338-gjlps",
-              "value": "grafana-1548781338-gjlps"
-            }
-          },
-          "repeatIteration": 1483721073950,
-          "repeatPanelId": 8
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "height": "150px",
-          "hideTimeOverride": true,
-          "id": 14,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "dimensions": [],
-              "error": "",
-              "metric": "pod.phase",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "2,3",
-          "timeFrom": "30s",
-          "title": "$pod_name",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "Succeeded",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "Running",
-              "value": "1"
-            },
-            {
-              "op": "=",
-              "text": "Pending",
-              "value": "2"
-            },
-            {
-              "op": "=",
-              "text": "Failed",
-              "value": "3"
-            },
-            {
-              "op": "=",
-              "text": "Unknown",
-              "value": "4"
-            }
-          ],
-          "valueName": "current",
-          "scopedVars": {
-            "pod_name": {
-              "selected": true,
-              "text": "influx-cdqd1",
-              "value": "influx-cdqd1"
-            }
-          },
-          "repeatIteration": 1483721073950,
-          "repeatPanelId": 8
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "height": "150px",
-          "hideTimeOverride": true,
-          "id": 15,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "dimensions": [],
-              "error": "",
-              "metric": "pod.phase",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "2,3",
-          "timeFrom": "30s",
-          "title": "$pod_name",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "Succeeded",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "Running",
-              "value": "1"
-            },
-            {
-              "op": "=",
-              "text": "Pending",
-              "value": "2"
-            },
-            {
-              "op": "=",
-              "text": "Failed",
-              "value": "3"
-            },
-            {
-              "op": "=",
-              "text": "Unknown",
-              "value": "4"
-            }
-          ],
-          "valueName": "current",
-          "scopedVars": {
-            "pod_name": {
-              "selected": true,
-              "text": "kafka-4126406481-c28ug",
-              "value": "kafka-4126406481-c28ug"
-            }
-          },
-          "repeatIteration": 1483721073950,
-          "repeatPanelId": 8
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "height": "150px",
-          "hideTimeOverride": true,
-          "id": 16,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "dimensions": [],
-              "error": "",
-              "metric": "pod.phase",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "2,3",
-          "timeFrom": "30s",
-          "title": "$pod_name",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "Succeeded",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "Running",
-              "value": "1"
-            },
-            {
-              "op": "=",
-              "text": "Pending",
-              "value": "2"
-            },
-            {
-              "op": "=",
-              "text": "Failed",
-              "value": "3"
-            },
-            {
-              "op": "=",
-              "text": "Unknown",
-              "value": "4"
-            }
-          ],
-          "valueName": "current",
-          "scopedVars": {
-            "pod_name": {
-              "selected": true,
-              "text": "kafka-client-1686611126-nut2g",
-              "value": "kafka-client-1686611126-nut2g"
-            }
-          },
-          "repeatIteration": 1483721073950,
-          "repeatPanelId": 8
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "height": "150px",
-          "hideTimeOverride": true,
-          "id": 17,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "dimensions": [],
-              "error": "",
-              "metric": "pod.phase",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "2,3",
-          "timeFrom": "30s",
-          "title": "$pod_name",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "Succeeded",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "Running",
-              "value": "1"
-            },
-            {
-              "op": "=",
-              "text": "Pending",
-              "value": "2"
-            },
-            {
-              "op": "=",
-              "text": "Failed",
-              "value": "3"
-            },
-            {
-              "op": "=",
-              "text": "Unknown",
-              "value": "4"
-            }
-          ],
-          "valueName": "current",
-          "scopedVars": {
-            "pod_name": {
-              "selected": true,
-              "text": "keystone-2574516988-g7ukr",
-              "value": "keystone-2574516988-g7ukr"
-            }
-          },
-          "repeatIteration": 1483721073950,
-          "repeatPanelId": 8
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "height": "150px",
-          "hideTimeOverride": true,
-          "id": 18,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "dimensions": [],
-              "error": "",
-              "metric": "pod.phase",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "2,3",
-          "timeFrom": "30s",
-          "title": "$pod_name",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "Succeeded",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "Running",
-              "value": "1"
-            },
-            {
-              "op": "=",
-              "text": "Pending",
-              "value": "2"
-            },
-            {
-              "op": "=",
-              "text": "Failed",
-              "value": "3"
-            },
-            {
-              "op": "=",
-              "text": "Unknown",
-              "value": "4"
-            }
-          ],
-          "valueName": "current",
-          "scopedVars": {
-            "pod_name": {
-              "selected": true,
-              "text": "keystone-mysql-3894035189-406jf",
-              "value": "keystone-mysql-3894035189-406jf"
-            }
-          },
-          "repeatIteration": 1483721073950,
-          "repeatPanelId": 8
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "height": "150px",
-          "hideTimeOverride": true,
-          "id": 19,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "dimensions": [],
-              "error": "",
-              "metric": "pod.phase",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "2,3",
-          "timeFrom": "30s",
-          "title": "$pod_name",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "Succeeded",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "Running",
-              "value": "1"
-            },
-            {
-              "op": "=",
-              "text": "Pending",
-              "value": "2"
-            },
-            {
-              "op": "=",
-              "text": "Failed",
-              "value": "3"
-            },
-            {
-              "op": "=",
-              "text": "Unknown",
-              "value": "4"
-            }
-          ],
-          "valueName": "current",
-          "scopedVars": {
-            "pod_name": {
-              "selected": true,
-              "text": "monasca-notification-1640639098-ldm71",
-              "value": "monasca-notification-1640639098-ldm71"
-            }
-          },
-          "repeatIteration": 1483721073950,
-          "repeatPanelId": 8
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "height": "150px",
-          "hideTimeOverride": true,
+          "fill": 1,
           "id": 20,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": false
           },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
           "targets": [
             {
               "aggregator": "none",
-              "dimensions": [],
+              "alias": "@pod_name",
+              "dimensions": [
+                {
+                  "key": "pod_name",
+                  "value": "$all"
+                }
+              ],
               "error": "",
-              "metric": "pod.phase",
+              "group": true,
+              "metric": "pod.net.in_dropped_packets_sec",
               "period": "300",
               "refId": "A"
             }
           ],
-          "thresholds": "2,3",
-          "timeFrom": "30s",
-          "title": "$pod_name",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "Succeeded",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "Running",
-              "value": "1"
-            },
-            {
-              "op": "=",
-              "text": "Pending",
-              "value": "2"
-            },
-            {
-              "op": "=",
-              "text": "Failed",
-              "value": "3"
-            },
-            {
-              "op": "=",
-              "text": "Unknown",
-              "value": "4"
-            }
-          ],
-          "valueName": "current",
-          "scopedVars": {
-            "pod_name": {
-              "selected": true,
-              "text": "monasca-persister-2842861372-tffx7",
-              "value": "monasca-persister-2842861372-tffx7"
-            }
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Network Dropped Packets In",
+          "tooltip": {
+            "msResolution": false,
+            "shared": false,
+            "sort": 0,
+            "value_type": "individual"
           },
-          "repeatIteration": 1483721073950,
-          "repeatPanelId": 8
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "pps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
         },
         {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
+          "aliasColors": {},
+          "bars": false,
           "datasource": null,
           "editable": true,
           "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
+          "fill": 1,
+          "id": 7,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": false
           },
-          "height": "150px",
-          "hideTimeOverride": true,
-          "id": 21,
-          "interval": null,
-          "isNew": true,
+          "lines": true,
+          "linewidth": 1,
           "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
           "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
           "targets": [
             {
               "aggregator": "none",
-              "dimensions": [],
+              "alias": "@pod_name",
+              "dimensions": [
+                {
+                  "key": "pod_name",
+                  "value": "$all"
+                }
+              ],
               "error": "",
-              "metric": "pod.phase",
+              "group": true,
+              "metric": "pod.net.in_packets_sec",
               "period": "300",
               "refId": "A"
             }
           ],
-          "thresholds": "2,3",
-          "timeFrom": "30s",
-          "title": "$pod_name",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "Succeeded",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "Running",
-              "value": "1"
-            },
-            {
-              "op": "=",
-              "text": "Pending",
-              "value": "2"
-            },
-            {
-              "op": "=",
-              "text": "Failed",
-              "value": "3"
-            },
-            {
-              "op": "=",
-              "text": "Unknown",
-              "value": "4"
-            }
-          ],
-          "valueName": "current",
-          "scopedVars": {
-            "pod_name": {
-              "selected": true,
-              "text": "storm-nimbus-2509548823-gvvbj",
-              "value": "storm-nimbus-2509548823-gvvbj"
-            }
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Network Packets In",
+          "tooltip": {
+            "msResolution": false,
+            "shared": false,
+            "sort": 0,
+            "value_type": "individual"
           },
-          "repeatIteration": 1483721073950,
-          "repeatPanelId": 8
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "pps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
         },
         {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
+          "aliasColors": {},
+          "bars": false,
           "datasource": null,
           "editable": true,
           "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
+          "fill": 1,
+          "id": 10,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": false
           },
-          "height": "150px",
-          "hideTimeOverride": true,
-          "id": 22,
-          "interval": null,
-          "isNew": true,
+          "lines": true,
+          "linewidth": 1,
           "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
           "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
           "targets": [
             {
               "aggregator": "none",
-              "dimensions": [],
+              "alias": "@pod_name",
+              "dimensions": [
+                {
+                  "key": "pod_name",
+                  "value": "$all"
+                }
+              ],
               "error": "",
-              "metric": "pod.phase",
+              "group": true,
+              "metric": "pod.net.in_errors_sec",
               "period": "300",
               "refId": "A"
             }
           ],
-          "thresholds": "2,3",
-          "timeFrom": "30s",
-          "title": "$pod_name",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "Succeeded",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "Running",
-              "value": "1"
-            },
-            {
-              "op": "=",
-              "text": "Pending",
-              "value": "2"
-            },
-            {
-              "op": "=",
-              "text": "Failed",
-              "value": "3"
-            },
-            {
-              "op": "=",
-              "text": "Unknown",
-              "value": "4"
-            }
-          ],
-          "valueName": "current",
-          "scopedVars": {
-            "pod_name": {
-              "selected": true,
-              "text": "storm-supervisor-2427613262-hewqw",
-              "value": "storm-supervisor-2427613262-hewqw"
-            }
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Network In Errors",
+          "tooltip": {
+            "msResolution": false,
+            "shared": false,
+            "sort": 0,
+            "value_type": "individual"
           },
-          "repeatIteration": 1483721073950,
-          "repeatPanelId": 8
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": true,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
           },
-          "height": "150px",
-          "hideTimeOverride": true,
-          "id": 23,
-          "interval": null,
-          "isNew": true,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
+          "yaxes": [
             {
-              "name": "value to text",
-              "value": 1
+              "format": "none",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
             },
             {
-              "name": "range to text",
-              "value": 2
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
             }
-          ],
-          "maxDataPoints": 100,
-          "minSpan": 3,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "repeat": null,
-          "span": 3,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "aggregator": "none",
-              "dimensions": [],
-              "error": "",
-              "metric": "pod.phase",
-              "period": "300",
-              "refId": "A"
-            }
-          ],
-          "thresholds": "2,3",
-          "timeFrom": "30s",
-          "title": "$pod_name",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "Succeeded",
-              "value": "0"
-            },
-            {
-              "op": "=",
-              "text": "Running",
-              "value": "1"
-            },
-            {
-              "op": "=",
-              "text": "Pending",
-              "value": "2"
-            },
-            {
-              "op": "=",
-              "text": "Failed",
-              "value": "3"
-            },
-            {
-              "op": "=",
-              "text": "Unknown",
-              "value": "4"
-            }
-          ],
-          "valueName": "current",
-          "scopedVars": {
-            "pod_name": {
-              "selected": true,
-              "text": "zookeeper-753038548-9qspv",
-              "value": "zookeeper-753038548-9qspv"
-            }
-          },
-          "repeatIteration": 1483721073950,
-          "repeatPanelId": 8
+          ]
         }
       ],
+      "showTitle": true,
+      "titleSize": "h6",
+      "height": "350",
       "repeat": null,
-      "repeatIteration": null,
       "repeatRowId": null,
-      "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
+      "repeatIteration": null,
+      "collapse": false
+    },
+    {
+      "title": "Network Out",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "id": 21,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "aggregator": "none",
+              "alias": "@pod_name",
+              "dimensions": [
+                {
+                  "key": "pod_name",
+                  "value": "$all"
+                }
+              ],
+              "error": "",
+              "group": true,
+              "metric": "pod.net.out_bytes_sec",
+              "period": "300",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Network Bytes Out",
+          "tooltip": {
+            "msResolution": false,
+            "shared": false,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "Bps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "id": 22,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "aggregator": "none",
+              "alias": "@pod_name",
+              "dimensions": [
+                {
+                  "key": "pod_name",
+                  "value": "$all"
+                }
+              ],
+              "error": "",
+              "group": true,
+              "metric": "pod.net.out_packets_sec",
+              "period": "300",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Network Packets Out",
+          "tooltip": {
+            "msResolution": false,
+            "shared": false,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "pps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "id": 23,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "aggregator": "none",
+              "alias": "@pod_name",
+              "dimensions": [
+                {
+                  "key": "pod_name",
+                  "value": "$all"
+                }
+              ],
+              "error": "",
+              "group": true,
+              "metric": "pod.net.out_dropped_packets_sec",
+              "period": "300",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Network Dropped Packets Out",
+          "tooltip": {
+            "msResolution": false,
+            "shared": false,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "pps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "id": 24,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "aggregator": "none",
+              "alias": "@pod_name",
+              "dimensions": [
+                {
+                  "key": "pod_name",
+                  "value": "$all"
+                }
+              ],
+              "error": "",
+              "group": true,
+              "metric": "pod.net.out_errors_sec",
+              "period": "300",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Network Out Errors",
+          "tooltip": {
+            "msResolution": false,
+            "shared": false,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "showTitle": true,
+      "titleSize": "h6",
+      "height": "350",
+      "repeat": null,
+      "repeatRowId": null,
+      "repeatIteration": null,
+      "collapse": false
     }
   ]
 }

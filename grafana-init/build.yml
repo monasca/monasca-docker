@@ -1,0 +1,5 @@
+repository: monasca/grafana-init
+variants:
+  - tag: latest
+    aliases:
+      - :1.2.0

@@ -35,4 +35,12 @@ endpoints:
     type: monitoring
     region: RegionOne
     url: http://monasca:8070/v2.0
-    interfaces: ['public', 'internal', 'admin']
+    interfaces:
+      - name: internal
+        url: http://monasca:8070/v2.0
+      - name: public
+        url: http://monasca:8070/v2.0
+        resolve: true
+      - name: admin
+        url: http://monasca:8070/v2.0
+        resolve: true

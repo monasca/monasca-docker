@@ -82,6 +82,9 @@ notification_types:
     {% if NF_HIPCHAT_PROXY %}
         proxy: {{ NF_HIPCHAT_PROXY }}
     {% endif %}
+    {% if NF_HIPCHAT_TEMPLATE %}
+        template: "{{ NF_HIPCHAT_TEMPLATE }}"
+    {% endif %}
 {% endif -%}
 
 {% if 'slack' in plugins %}

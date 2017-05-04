@@ -209,6 +209,7 @@ def main():
     print('TRAVIS_PULL_REQUEST_BRANCH=',
           os.environ.get('TRAVIS_PULL_REQUEST_BRANCH'))
     print('TRAVIS_TAG=', os.environ.get('TRAVIS_TAG'))
+    print('TRAVIS_COMMIT_MESSAGE=', os.environ.get('TRAVIS_COMMIT_MESSAGE'))
 
     files = get_changed_files()
     modules = get_dirty_modules(files)

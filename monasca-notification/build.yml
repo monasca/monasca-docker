@@ -3,5 +3,6 @@ variants:
   - tag: master
     aliases:
       - :latest
+      - :master-{date}-{time}
     args:
       NOTIFICATION_BRANCH: master

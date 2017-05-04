@@ -18,9 +18,13 @@
 from __future__ import print_function
 
 import os
+import re
 import signal
 import subprocess
 import sys
+
+
+TAG_REGEX = re.compile(r'^!(\w+)(?:\s+(\w+))?$')
 
 
 class SubprocessException(Exception):
@@ -41,6 +45,28 @@ def get_changed_files():
         raise SubprocessException('git returned non-zero exit code')
 
     return [line.strip() for line in stdout.splitlines()]
+
+
+def get_message_tags():
+    commit = os.environ.get('TRAVIS_COMMIT', None)
+    if not commit:
+        return []
+
+    p = subprocess.Popen([
+        'git', 'log', '--pretty=%B', '-1', commit
+    ], stdout=subprocess.PIPE)
+    stdout, _ = p.communicate()
+    if p.returncode != 0:
+        raise SubprocessException('git returned non-zero exit code')
+
+    tags = []
+    for line in stdout.splitlines():
+        line = line.strip()
+        m = TAG_REGEX.match(line)
+        if m:
+            tags.append(m.groups())
+
+    return tags
 
 
 def get_dirty_modules(dirty_files):
@@ -152,7 +178,7 @@ def run_readme(modules):
         sys.exit(p.returncode)
 
 
-def handle_pull_request(files, modules):
+def handle_pull_request(files, modules, tags):
     if os.environ.get('TRAVIS_BRANCH', None) != 'master':
         print('Not master branch, skipping tests.')
         return
@@ -163,7 +189,7 @@ def handle_pull_request(files, modules):
         print('No modules to build.')
 
 
-def handle_push(files, modules):
+def handle_push(files, modules, tags):
     if os.environ.get('TRAVIS_BRANCH', None) != 'master':
         print('Not master branch, skipping tests.')
         return
@@ -171,12 +197,27 @@ def handle_push(files, modules):
     modules_to_push = []
     modules_to_readme = []
 
+    force_push = False
+    force_readme = False
+
+    for tag, arg in tags:
+        if tag == 'push':
+            if arg is None:
+                force_push = True
+            else:
+                modules_to_push.append(arg)
+        elif tag == 'readme':
+            if arg is None:
+                force_readme = True
+            else:
+                modules_to_readme.append(arg)
+
     for module in modules:
         dirty = get_dirty_for_module(files, module)
-        if 'build.yml' in dirty:
+        if force_push or 'build.yml' in dirty:
             modules_to_push.append(module)
 
-        if 'README.md' in dirty:
+        if force_readme or 'README.md' in dirty:
             modules_to_readme.append(module)
 
     if modules_to_push:
@@ -190,8 +231,8 @@ def handle_push(files, modules):
         print('No READMEs to update.')
 
 
-def handle_other(files, modules):
-    print('Unsupported event type %s, nothing to do.' % (
+def handle_other(files, modules, tags):
+    print('Unsupported event type "%s", nothing to do.' % (
         os.environ.get('TRAVS_EVENT_TYPE')))
 
 
@@ -213,12 +254,14 @@ def main():
 
     files = get_changed_files()
     modules = get_dirty_modules(files)
+    tags = get_message_tags()
 
     func = {
         'pull_request': handle_pull_request,
         'push': handle_push
     }.get(os.environ.get('TRAVIS_EVENT_TYPE', None), handle_other)
-    func(files, modules)
+
+    func(files, modules, tags)
 
 
 if __name__ == '__main__':

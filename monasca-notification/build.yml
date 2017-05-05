@@ -5,4 +5,4 @@ variants:
       - :latest
       - :master-{date}-{time}
     args:
-      NOTIFICATION_BRANCH: master
+      NOTIFICATION_BRANCH: refs/changes/17/461917/3

@@ -18,6 +18,10 @@ ENV COMMON_REPO=https://git.openstack.org/openstack/monasca-common.git \
   MYSQL_DB_PASSWORD=password \
   MYSQL_DB_DATABASE=mon
 
+ARG REBUILD=1
+ARG SKIP_COMMON_TESTS=false
+ARG SKIP_THRESH_TESTS=false
+
 RUN apk add --no-cache --virtual build-dep maven git openjdk8 && \
   mkdir /root/.m2 && \
   python /template.py settings.xml.j2 /root/.m2/settings.xml && \
@@ -27,7 +31,7 @@ RUN apk add --no-cache --virtual build-dep maven git openjdk8 && \
   git remote add origin $COMMON_REPO && \
   git fetch origin $COMMON_BRANCH && \
   git reset --hard FETCH_HEAD && \
-  mvn -B clean install && \
+  mvn -B clean install $([ "$SKIP_COMMON_TESTS" = "true" ] && echo "-DskipTests") && \
   cd / && \
   rm -rf /monasca-common && \
   mkdir /monasca-thresh && cd /monasca-thresh && \
@@ -36,7 +40,7 @@ RUN apk add --no-cache --virtual build-dep maven git openjdk8 && \
   git fetch origin $THRESH_BRANCH && \
   git reset --hard FETCH_HEAD && \
   cd thresh && \
-  mvn -B clean package && \
+  mvn -B clean package $([ "$SKIP_THRESH_TESTS" = "true" ] && echo "-DskipTests") && \
   cp /monasca-thresh/thresh/target/*-SNAPSHOT-shaded.jar /monasca-thresh.jar && \
   cd / && \
   rm -rf /monasca-thresh && \

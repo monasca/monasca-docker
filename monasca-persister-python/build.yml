@@ -1,0 +1,26 @@
+repository: monasca/persister
+variants:
+  - tag: 1.5.0-python
+    aliases:
+      - :latest
+      - :latest-python
+      - :1.5.0
+      - :1.5
+      - :1.5-python
+      - :1
+      - :1-python
+    args:
+      PERSISTER_BRANCH: 1.5.0
+
+  - tag: ocata-python
+    aliases:
+      - :ocata
+    args:
+      PERSISTER_BRANCH: stable/ocata
+
+  - tag: master
+    aliases:
+      - :master-{date}-{time}
+      - :master-python
+    args:
+      API_BRANCH: master

@@ -48,7 +48,7 @@ def get_changed_files():
 
 
 def get_message_tags():
-    commit = os.environ.get('TRAVIS_COMMIT', None)
+    commit = os.environ.get('TRAVIS_COMMIT_RANGE', None)
     if not commit:
         return []
 

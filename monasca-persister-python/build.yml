@@ -23,4 +23,4 @@ variants:
       - :master-{date}-{time}
       - :master-python
     args:
-      API_BRANCH: master
+      PERSISTER_BRANCH: master

@@ -18,24 +18,19 @@ ENV COMMON_REPO=https://git.openstack.org/openstack/monasca-common.git \
   MYSQL_DB_PASSWORD=password \
   MYSQL_DB_DATABASE=mon
 
-ARG REBUILD_DEPENDENCIES=1
 RUN apk add --no-cache --virtual build-dep maven git openjdk8 && \
   mkdir /root/.m2 && \
   python /template.py settings.xml.j2 /root/.m2/settings.xml && \
-  mkdir /repo
-
-ARG REBUILD_COMMON=1
-RUN set -x && mkdir /monasca-common && cd /monasca-common && \
+  mkdir /repo && \
+  set -x && mkdir /monasca-common && cd /monasca-common && \
   git init && \
   git remote add origin $COMMON_REPO && \
   git fetch origin $COMMON_BRANCH && \
   git reset --hard FETCH_HEAD && \
   mvn -B clean install && \
   cd / && \
-  rm -rf /monasca-common
-
-ARG REBUILD_THRESH=1
-RUN mkdir /monasca-thresh && cd /monasca-thresh && \
+  rm -rf /monasca-common && \
+  mkdir /monasca-thresh && cd /monasca-thresh && \
   git init && \
   git remote add origin $THRESH_REPO && \
   git fetch origin $THRESH_BRANCH && \
@@ -44,10 +39,8 @@ RUN mkdir /monasca-thresh && cd /monasca-thresh && \
   mvn -B clean package && \
   cp /monasca-thresh/thresh/target/*-SNAPSHOT-shaded.jar /monasca-thresh.jar && \
   cd / && \
-  rm -rf /monasca-thresh
-
-ARG REBUILD_CLEANUP=1
-RUN rm -rf /repo && \
+  rm -rf /monasca-thresh && \
+  rm -rf /repo && \
   apk del build-dep
 
 COPY submit.sh /

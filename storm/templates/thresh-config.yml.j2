@@ -14,7 +14,25 @@
 {% set zookeeper = ZOOKEEPER_SERVERS.split(',')[0] %}
 
 metricSpoutThreads: {{ METRIC_SPOUT_THREADS | default(2) }}
-metricSpoutTasks: {{ METRIC_SPOUT_TASKS | default(2) }}
+metricSpoutTasks: {{ METRIC_SPOUT_TASKS | default(4) }}
+
+eventSpoutThreads: {{ EVENT_SPOUT_THREADS | default(1) }}
+eventSpoutTasks: {{ EVENT_SPOUT_TASKS | default(2) }}
+
+eventBoltThreads: {{ EVENT_BOLT_THREADS | default(1) }}
+eventBoltTasks: {{ EVENT_BOLT_TASKS | default(2) }}
+
+filteringBoltThreads: {{ FILTERING_BOLT_THREADS | default(2) }}
+filteringBoltTasks: {{ FILTERING_BOLT_TASKS | default(4) }}
+
+alarmCreationBoltThreads: {{ ALARM_CREATION_BOLT_THREADS | default(1) }}
+alarmCreationBoltTasks: {{ ALARM_CREATION_BOLT_TASKS | default(2) }}
+
+aggregationBoltThreads: {{ AGGREGATION_BOLT_THREADS | default(2) }}
+aggregationBoltTasks: {{ AGGREGATION_BOLT_TASKS | default(4) }}
+
+thresholdingBoltThreads: {{ THRESHOLDING_BOLT_THREADS | default(2) }}
+thresholdingBoltTasks: {{ THRESHOLDING_BOLT_TASKS | default(4) }}
 
 statsdConfig:
   host: "127.0.0.1"

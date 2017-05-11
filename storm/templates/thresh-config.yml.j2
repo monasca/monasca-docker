@@ -14,25 +14,25 @@
 {% set zookeeper = ZOOKEEPER_SERVERS.split(',')[0] %}
 
 metricSpoutThreads: {{ METRIC_SPOUT_THREADS | default(2) }}
-metricSpoutTasks: {{ METRIC_SPOUT_TASKS | default(4) }}
+metricSpoutTasks: {{ METRIC_SPOUT_TASKS | default(2) }}
 
-eventSpoutThreads: {{ EVENT_SPOUT_THREADS | default(1) }}
+eventSpoutThreads: {{ EVENT_SPOUT_THREADS | default(2) }}
 eventSpoutTasks: {{ EVENT_SPOUT_TASKS | default(2) }}
 
-eventBoltThreads: {{ EVENT_BOLT_THREADS | default(1) }}
+eventBoltThreads: {{ EVENT_BOLT_THREADS | default(2) }}
 eventBoltTasks: {{ EVENT_BOLT_TASKS | default(2) }}
 
 filteringBoltThreads: {{ FILTERING_BOLT_THREADS | default(2) }}
-filteringBoltTasks: {{ FILTERING_BOLT_TASKS | default(4) }}
+filteringBoltTasks: {{ FILTERING_BOLT_TASKS | default(2) }}
 
-alarmCreationBoltThreads: {{ ALARM_CREATION_BOLT_THREADS | default(1) }}
+alarmCreationBoltThreads: {{ ALARM_CREATION_BOLT_THREADS | default(2) }}
 alarmCreationBoltTasks: {{ ALARM_CREATION_BOLT_TASKS | default(2) }}
 
 aggregationBoltThreads: {{ AGGREGATION_BOLT_THREADS | default(2) }}
-aggregationBoltTasks: {{ AGGREGATION_BOLT_TASKS | default(4) }}
+aggregationBoltTasks: {{ AGGREGATION_BOLT_TASKS | default(2) }}
 
 thresholdingBoltThreads: {{ THRESHOLDING_BOLT_THREADS | default(2) }}
-thresholdingBoltTasks: {{ THRESHOLDING_BOLT_TASKS | default(4) }}
+thresholdingBoltTasks: {{ THRESHOLDING_BOLT_TASKS | default(2) }}
 
 statsdConfig:
   host: "127.0.0.1"

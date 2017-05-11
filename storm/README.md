@@ -101,18 +101,18 @@ number of additional configuration options:
 | `MYSQL_DB_DATABASE`           | `mon`        | Monasca database name       |
 | `MYSQL_DB_USERNAME`           | `thresh`     | MySQL user                  |
 | `MYSQL_DB_PASSWORD`           | `password`   | MySQL password              |
-| `EVENT_SPOUT_THREADS`         | `1`          | Event Spout Threads         |
+| `EVENT_SPOUT_THREADS`         | `2`          | Event Spout Threads         |
 | `EVENT_SPOUT_TASKS`           | `2`          | Event Spout Tasks           |
-| `EVENT_BOLT_THREADS`          | `1`          | Event Bolt Threads          |
+| `EVENT_BOLT_THREADS`          | `2`          | Event Bolt Threads          |
 | `EVENT_BOLT_TASKS`            | `2`          | Event Bolt Tasks            |
 | `FILTERING_BOLT_THREADS`      | `2`          | Filtering Bolt Threads      |
-| `FILTERING_BOLT_TASKS`        | `4`          | Filtering Bolt Tasks        |
-| `ALARM_CREATION_BOLT_THREADS` | `1`          | Alarm Creation Bolt Threads |
+| `FILTERING_BOLT_TASKS`        | `2`          | Filtering Bolt Tasks        |
+| `ALARM_CREATION_BOLT_THREADS` | `2`          | Alarm Creation Bolt Threads |
 | `ALARM_CREATION_BOLT_TASKS`   | `2`          | Alarm Creation Bolt Tasks   |
 | `AGGREGATION_BOLT_THREADS`    | `2`          | Aggregation Bolt Threads    |
-| `AGGREGATION_BOLT_TASKS`      | `4`          | Aggregation Bolt Tasks      |
+| `AGGREGATION_BOLT_TASKS`      | `2`          | Aggregation Bolt Tasks      |
 | `THRESHOLDING_BOLT_THREADS`   | `2`          | Thresholding Bolt Threads   |
-| `THRESHOLDING_BOLT_TASKS`     | `4`          | Thresholding Bolt Tasks     |
+| `THRESHOLDING_BOLT_TASKS`     | `2`          | Thresholding Bolt Tasks     |
 
 Note that monasca-thresh configs can be removed by overwriting or removing
 `/templates/thresh-config.yml.j2`.

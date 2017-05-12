@@ -36,6 +36,8 @@ if [ "$found" = "true" ]; then
   echo "Storm topology already exists, will not submit again"
   # TODO handle upgrades
 else
+  echo "Using Thresh Config file /storm/conf/thresh-config.yml. Contents:"
+  cat /storm/conf/thresh-config.yml | grep -vi password
   echo "Submitting storm topology..."
   storm jar /monasca-thresh.jar \
     monasca.thresh.ThresholdingEngine \

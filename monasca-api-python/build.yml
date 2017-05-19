@@ -1,0 +1,10 @@
+repository: monasca/api
+variants:
+  - tag: master
+    aliases:
+      - :latest
+      - :latest-python
+      - :master
+      - :master-python
+    args:
+      API_BRANCH: master

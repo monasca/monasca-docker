@@ -1,0 +1,12 @@
+repository: monasca/client
+variants:
+  - tag: latest
+    aliases:
+      - :1.6.0
+    args:
+      CLIENT_BRANCH: 1.6.0
+  - tag: master
+    aliases:
+      - :master-{date}-{time}
+    args:
+      CLIENT_BRANCH: master

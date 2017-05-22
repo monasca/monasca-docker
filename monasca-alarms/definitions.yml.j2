@@ -104,6 +104,8 @@ alarm_definitions:
     description: "Alarms when memory usage is high"
     severity: "HIGH"
     expression: "avg(mem.usable_perc) < 10 times 3"
+    match_by:
+      - "hostname"
     alarm_actions:
       - default
     ok_actions:
@@ -115,6 +117,8 @@ alarm_definitions:
       "Alarms when either incoming or outgoing network errors are high"
     severity: "MEDIUM"
     expression: "net.in_errors_sec > 5 or net.out_errors_sec > 5"
+    match_by:
+      - "hostname"
     alarm_actions:
       - default
     ok_actions:

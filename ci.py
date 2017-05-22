@@ -48,7 +48,7 @@ def get_changed_files():
 
 
 def get_message_tags():
-    commit = os.environ.get('TRAVIS_COMMIT', None)
+    commit = os.environ.get('TRAVIS_COMMIT_RANGE', None)
     if not commit:
         return []
 
@@ -238,6 +238,7 @@ def handle_other(files, modules, tags):
 
 def main():
     print('Environment details:')
+    print('TRAVIS_COMMIT=', os.environ.get('TRAVIS_COMMIT'))
     print('TRAVIS_COMMIT_RANGE=', os.environ.get('TRAVIS_COMMIT_RANGE'))
     print('TRAVIS_PULL_REQUEST=', os.environ.get('TRAVIS_PULL_REQUEST'))
     print('TRAVIS_PULL_REQUEST_SHA=',
@@ -255,6 +256,13 @@ def main():
     files = get_changed_files()
     modules = get_dirty_modules(files)
     tags = get_message_tags()
+
+    if tags:
+        print('Tags detected:')
+        for tag in tags:
+            print('  ', tag)
+    else:
+        print('No tags detected.')
 
     func = {
         'pull_request': handle_pull_request,

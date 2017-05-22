@@ -27,6 +27,10 @@ template () {
 
 if [ "$HOSTNAME_FROM_KUBERNETES" = "true" ]; then
   AGENT_HOSTNAME=$(python /kubernetes_get_host.py)
+  if [ $? != 0 ]; then
+    echo "Error getting hostname from Kubernetes"
+    return 1
+  fi
   export AGENT_HOSTNAME
 fi
 

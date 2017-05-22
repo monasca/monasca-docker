@@ -179,10 +179,6 @@ def run_readme(modules):
 
 
 def handle_pull_request(files, modules, tags):
-    if os.environ.get('TRAVIS_BRANCH', None) != 'master':
-        print('Not master branch, skipping tests.')
-        return
-
     if modules:
         run_build(modules)
     else:
@@ -190,10 +186,6 @@ def handle_pull_request(files, modules, tags):
 
 
 def handle_push(files, modules, tags):
-    if os.environ.get('TRAVIS_BRANCH', None) != 'master':
-        print('Not master branch, skipping tests.')
-        return
-
     modules_to_push = []
     modules_to_readme = []
 
@@ -252,6 +244,10 @@ def main():
           os.environ.get('TRAVIS_PULL_REQUEST_BRANCH'))
     print('TRAVIS_TAG=', os.environ.get('TRAVIS_TAG'))
     print('TRAVIS_COMMIT_MESSAGE=', os.environ.get('TRAVIS_COMMIT_MESSAGE'))
+
+    if os.environ.get('TRAVIS_BRANCH', None) != 'master':
+        print('Not master branch, skipping tests.')
+        return
 
     files = get_changed_files()
     modules = get_dirty_modules(files)

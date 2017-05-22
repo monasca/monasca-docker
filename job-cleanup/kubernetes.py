@@ -26,7 +26,7 @@ from dotmap import DotMap
 CACERT_PATH = '/var/run/secrets/kubernetes.io/serviceaccount/ca.crt'
 TOKEN_PATH = '/var/run/secrets/kubernetes.io/serviceaccount/token'
 
-KUBE_CONFIG_PATH = '~/.kube/config'
+KUBE_CONFIG_PATH = os.environ.get('KUBECONFIG', '~/.kube/config')
 
 KUBERNETES_SERVICE_HOST = os.environ.get('KUBERNETES_SERVICE_HOST', 'kubernetes.default')
 KUBERNETES_SERVICE_PORT = os.environ.get('KUBERNETES_SERVICE_PORT', '443')

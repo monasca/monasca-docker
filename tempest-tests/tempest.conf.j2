@@ -1,0 +1,20 @@
+[identity]
+username = mini-mon
+password = password
+tenant_name = mini-mon
+domain_name = Default
+alt_username = mini-mon 
+alt_password = password
+alt_tenant_name = mini-mon
+use_ssl = False
+auth_version = v3
+uri = http://{{ KEYSTONE_SERVER | default('keystone') }}:{{ KEYSTONE_PORT | default("35357") }} /v2.0/
+uri_v3 = http://{{ KEYSTONE_SERVER | default('keystone') }}:{{ KEYSTONE_ADMIN_PORT | default("5000") }}/v3/
+
+[auth]
+#use_dynamic_credentials = false
+tempest_roles = monasca-user
+admin_project_name = mini-mon
+admin_username = mini-mon
+admin_password = password
+admin_domain_name = Default

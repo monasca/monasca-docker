@@ -75,6 +75,8 @@ else
   cp /etc/monasca/api-logging.conf.j2 /etc/monasca/api-logging.conf
 fi
 
+# Needed to allow utf8 use in the Monasca API
+export PYTHONIOENCODING=utf-8
 gunicorn --capture-output \
   -n monasca-api \
   --worker-class="$GUNICORN_WORKER_CLASS" \

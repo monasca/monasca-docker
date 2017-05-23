@@ -1,0 +1,7 @@
+repository: monasca/api
+variants:
+  - tag: master
+    aliases:
+      - :master-{date}-{time}
+    args:
+      API_BRANCH: refs/changes/63/417163/9

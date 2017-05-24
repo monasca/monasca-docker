@@ -5,7 +5,7 @@ services:
     image: influxdb:latest
 
   agent:
-    image: hoppalm/monasca-agent:latest
+    image: monasca/agent:latest
 
   influxdb-init:
     image: monasca/influxdb-init:latest
@@ -32,12 +32,6 @@ services:
         60-seconds-notifications:3:1"
     depends_on:
       - zookeeper
-
-#  tempest-tests:
-#    image: monasca/tempest-tests:test
-#    environment:
-#        KEYSTONE_SERVER: "keystone"
-#        CONFIG_TEMPLATE: "true"
 
   mysql:
     image: mysql:5.5
@@ -71,8 +65,7 @@ services:
     image: timothyb89/monasca-sidecar:1.0.0
 
   monasca:
-    # image: monasca/api:master-prometheus
-    image:  timothyb89/monasca-api:prometheus-test-20170519-172008
+    image: monasca/api:latest
     environment:
       SIDECAR_URL: http://monasca-sidecar:4888/v1/ingest
     depends_on:

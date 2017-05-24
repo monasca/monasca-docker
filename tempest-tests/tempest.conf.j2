@@ -1,20 +1,20 @@
 [identity]
-username = mini-mon
-password = password
-tenant_name = mini-mon
-domain_name = Default
-alt_username = mini-mon 
-alt_password = password
-alt_tenant_name = mini-mon
-use_ssl = False
+username = {{ OS_USERNAME | default('mini-mon') }}
+password = {{ OS_PASSWORD | default('password') }}
+tenant_name = {{ OS_TENANT_NAME | default('}mini-mon') }}
+domain_name = {{ OS_DOMAIN_NAME | default('Default') }}
+alt_username = {{ ALT_USERNAME | default('mini-mon') }}
+alt_password = {{ ALT_PASSWORD | default('password') }}
+alt_tenant_name = {{ ALT_TENANT_NAME | default('mini-mon') }}
+use_ssl = {{ AUTH_USE_SSL | default('False') }}
 auth_version = v3
 uri = http://{{ KEYSTONE_SERVER | default('keystone') }}:{{ KEYSTONE_PORT | default("35357") }} /v2.0/
 uri_v3 = http://{{ KEYSTONE_SERVER | default('keystone') }}:{{ KEYSTONE_ADMIN_PORT | default("5000") }}/v3/
 
 [auth]
-#use_dynamic_credentials = false
-tempest_roles = monasca-user
-admin_project_name = mini-mon
-admin_username = mini-mon
-admin_password = password
-admin_domain_name = Default
+use_dynamic_credentials = {{ USE_DYNAMIC_CREDS | default('True') }}
+tempest_roles =
+admin_project_name = {{ ADMIN_PROJECT_NAME | default('mini-mon') }}
+admin_username = {{ ADMIN_USERNAME | default('mini-mon') }}
+admin_password = {{ ADMIN_PASSWORD | default('password') }}
+admin_domain_name = {{ ADMIN_DOMAIN_NAME | default('Default') }}

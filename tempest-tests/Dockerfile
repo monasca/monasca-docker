@@ -22,7 +22,7 @@ RUN set -x && \
 
 RUN set -x && \
   mkdir /monasca-api && cd /monasca-api && \
-  git init && \
+  git init &&  \
   git remote add origin $API_REPO && \
   git fetch origin $API_BRANCH && \
   git reset --hard FETCH_HEAD && \

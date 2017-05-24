@@ -1,7 +1,8 @@
 FROM alpine:3.5
 
 ARG NOTIFICATION_REPO=https://git.openstack.org/openstack/monasca-notification
-ARG NOTIFICATION_BRANCH=master
+#ARG NOTIFICATION_BRANCH=master
+ARG NOTIFICATION_BRANCH=refs/changes/37/434537/46
 
 # To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
 # `docker build`
@@ -9,7 +10,7 @@ ARG REBUILD=1
 
 ENV CONFIG_TEMPLATE=true \
   KAFKA_URI=kafka:9092 \
-  KAFKA_WAIT_FOR_TOPICS=retry-notifications,alarm-state-transitions,alarm-notifications,60-seconds-notifications \
+  KAFKA_WAIT_FOR_TOPICS=retry-notifications,alarm-state-transitions,alarm-notifications,60-seconds-notifications,30-seconds-manager \
   MYSQL_DB_HOST=mysql \
   MYSQL_DB_PORT=3306 \
   MYSQL_DB_USERNAME=notification \

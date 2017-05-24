@@ -24,6 +24,7 @@ services:
         alarm-notifications:12:1,\
         retry-notifications:3:1,\
         events:12:1,\
+        30-seconds-manager:12:1,\
         60-seconds-notifications:3:1"
     depends_on:
       - zookeeper
@@ -33,7 +34,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: secretmysql
   mysql-init:
-    image: monasca/mysql-init:1.5.0
+    image: monasca/mysql-init:alarms
     environment:
       MYSQL_INIT_DISABLE_REMOTE_ROOT: "false"
       MYSQL_INIT_RANDOM_PASSWORD: "false"
@@ -60,7 +61,7 @@ services:
     image: timothyb89/monasca-sidecar:1.0.0
 
   monasca:
-    image: monasca/api:master-prometheus
+    image: monasca/api:alarms
     environment:
       SIDECAR_URL: http://monasca-sidecar:4888/v1/ingest
     depends_on:
@@ -104,12 +105,14 @@ services:
       - storm-supervisor
 
   monasca-notification:
-    image: monasca/notification:master
+    image: monasca/notification:alarms
     depends_on:
       - monasca
       - zookeeper
       - kafka
       - mysql
+    environment:
+      NF_PLUGINS: "webhook"
 
   grafana:
     image: monasca/grafana:4.0.0-1.1.0

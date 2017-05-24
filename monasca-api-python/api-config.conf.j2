@@ -20,6 +20,9 @@ notification_methods = monasca_api.v2.reference.notifications:Notifications
 dimension_values = monasca_api.v2.reference.metrics:DimensionValues
 dimension_names = monasca_api.v2.reference.metrics:DimensionNames
 notification_method_types = monasca_api.v2.reference.notificationstype:NotificationsType
+alarm_group_definitions = monasca_api.v2.reference.alarm_group_definitions:AlarmGroupDefinitions
+alarm_inhibition_definitions = monasca_api.v2.reference.alarm_inhibition_definitions:AlarmInhibitionDefinitions
+alarm_silence_definitions = monasca_api.v2.reference.alarm_silence_definitions:AlarmSilenceDefinitions
 
 [security]
 # The roles that are allowed full access to the API.
@@ -55,6 +58,12 @@ notifications_driver = monasca_api.common.repositories.sqla.notifications_reposi
 
 # The driver to use for the notification  method type repository
 notification_method_type_driver = monasca_api.common.repositories.sqla.notification_method_type_repository:NotificationMethodTypeRepository
+
+# The driver to use for the alarm group definitions repository
+alarm_group_definitions_driver = monasca_api.common.repositories.sqla.alarm_group_definitions_repository:AlarmGroupDefinitionsRepository
+
+# The driver to use for the alarm inhibition definitions repository
+alarm_inhibition_definitions_driver = monasca_api.common.repositories.sqla.alarm_inhibition_definitions_repository:AlarmInhibitionDefinitionsRepository
 
 [dispatcher]
 driver = v2_reference

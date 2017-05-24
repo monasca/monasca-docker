@@ -18,6 +18,11 @@ kafka:
     alarm_topic: "alarm-state-transitions"
     notification_topic: "alarm-notifications"
     notification_retry_topic: "retry-notifications"
+    notification_rule_topic: events
+    manager:
+        default_wait_time: 30
+        topics:
+            30: 30-seconds-manager
     periodic:
         60: 60-seconds-notifications
     max_offset_lag: 600  # In seconds, undefined for none
@@ -120,6 +125,9 @@ zookeeper:
     url: "{{ ZOOKEEPER_URL | default('zookeeper:2181') }}"
     notification_path: "/notification/alarms"
     notification_retry_path: "/notification/retry"
+    rule_path: /notification/rules
+    manager_path:
+        30: /notification/30_seconds_manager
     periodic_path:
         60: /notification/60_seconds
 

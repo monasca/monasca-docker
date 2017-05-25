@@ -65,7 +65,7 @@ services:
     image: timothyb89/monasca-sidecar:1.0.0
 
   monasca:
-    image: monasca/api:latest
+    image: monasca/api:master
     environment:
       SIDECAR_URL: http://monasca-sidecar:4888/v1/ingest
     depends_on:

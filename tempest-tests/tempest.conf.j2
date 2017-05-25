@@ -1,20 +1,20 @@
 [identity]
-username = {{ OS_USERNAME | default('mini-mon') }}
-password = {{ OS_PASSWORD | default('password') }}
-tenant_name = {{ OS_TENANT_NAME | default('}mini-mon') }}
-domain_name = {{ OS_DOMAIN_NAME | default('Default') }}
-alt_username = {{ ALT_USERNAME | default('mini-mon') }}
-alt_password = {{ ALT_PASSWORD | default('password') }}
-alt_tenant_name = {{ ALT_TENANT_NAME | default('mini-mon') }}
-use_ssl = {{ AUTH_USE_SSL | default('False') }}
+username = {{ OS_USERNAME }}
+password = {{ OS_PASSWORD }}
+tenant_name = {{ OS_TENANT_NAME }}
+domain_name = {{ OS_DOMAIN_NAME }}
+alt_username = {{ ALT_USERNAME }}
+alt_password = {{ ALT_PASSWORD }}
+alt_tenant_name = {{ ALT_TENANT_NAME }}
+use_ssl = {{ AUTH_USE_SSL }}
 auth_version = v3
-uri = http://{{ KEYSTONE_SERVER | default('keystone') }}:{{ KEYSTONE_PORT | default("35357") }} /v2.0/
-uri_v3 = http://{{ KEYSTONE_SERVER | default('keystone') }}:{{ KEYSTONE_ADMIN_PORT | default("5000") }}/v3/
+uri = {{ AUTH_URI }}
+uri_v3 = {{ AUTH_URI_V3 }}
 
 [auth]
-use_dynamic_credentials = {{ USE_DYNAMIC_CREDS | default('True') }}
+use_dynamic_credentials = {{ USE_DYNAMIC_CREDS }}
 tempest_roles =
-admin_project_name = {{ ADMIN_PROJECT_NAME | default('mini-mon') }}
-admin_username = {{ ADMIN_USERNAME | default('mini-mon') }}
-admin_password = {{ ADMIN_PASSWORD | default('password') }}
-admin_domain_name = {{ ADMIN_DOMAIN_NAME | default('Default') }}
+admin_project_name = {{ ADMIN_PROJECT_NAME }}
+admin_username = {{ ADMIN_USERNAME }}
+admin_password = {{ ADMIN_PASSWORD }}
+admin_domain_name = {{ ADMIN_DOMAIN_NAME }}

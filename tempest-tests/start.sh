@@ -63,10 +63,16 @@ python template.py \
 cd /monasca-api
 export OS_TEST_PATH=./monasca_tempest_tests/tests/api
 
+if [ ! -r .testrepository ]; then
+  testr init
+fi
+
 OSTESTR_REGEX=${OSTESTR_REGEX:-"monasca_tempest_tests"}
-testr init && \
 ostestr --serial --regex "${OSTESTR_REGEX}"
 
-if [ "$STAY_ALIVE" = "true" ]; then
+RESULT=$?
+
+if [ $RESULT != 0 -a "$STAY_ALIVE_ON_FAILURE" = "true" ]; then
   sleep 7200
 fi
+exit $RESULT

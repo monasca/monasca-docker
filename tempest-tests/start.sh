@@ -23,10 +23,10 @@ export ADMIN_USERNAME=${ADMIN_USERNAME:-"mini-mon"}
 export ADMIN_PASSWORD=${ADMIN_PASSWORD:-"password"}
 export ADMIN_DOMAIN_NAME=${ADMIN_DOMAIN_NAME:-"Default"}
 
-if [ "$AUTH_USE_SSL" = "False" ]; then
-  export AUTH_PROTOCOL="http"
-else
+if [ "$AUTH_USE_SSL" = "true" ]; then
   export AUTH_PROTOCOL="https"
+else
+  export AUTH_PROTOCOL="http"
 fi
 
 export AUTH_URI="${AUTH_PROTOCOL}://${KEYSTONE_SERVER}:${KEYSTONE_PORT}/v2.0/"

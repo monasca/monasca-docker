@@ -16,10 +16,10 @@ Usage
 
 To run, this container needs to connect to a working Keystone and Monasca API.
 
-In environments resembling the [official Kubernetes environment]
-does not require additional configuration parameters, and can be run like so:
+To run in environments resembling the [official Kubernetes environment][1] see
+the [Monasca HELM charts][2].
 
-In order to use in docker-compose add this section to docker-compose.yaml:
+In order to run in docker-compose add this section to docker-compose.yaml:
 ```
   tempest-tests:
     image: monasca/tempest-tests:master
@@ -65,3 +65,4 @@ Configuration
 
 
 [1]: https://github.com/hpcloud-mon/monasca-docker/blob/master/k8s/
+[2]: https://github.com/monasca/monasca-helm

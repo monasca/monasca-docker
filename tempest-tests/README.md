@@ -22,7 +22,7 @@ does not require additional configuration parameters, and can be run like so:
 In order to use in docker-compose add this section to docker-compose.yaml:
 ```
   tempest-tests:
-    image: monasca/tempest-tests:test
+    image: monasca/tempest-tests:master
     environment:
         KEYSTONE_SERVER: "keystone"
         STAY_ALIVE_ON_FAILURE: "true"

@@ -22,7 +22,7 @@ the [Monasca HELM charts][2].
 In order to run in docker-compose add this section to docker-compose.yaml:
 ```
   tempest-tests:
-    image: monasca/tempest-tests:master
+    image: monasca/tempest-tests:latest
     environment:
         KEYSTONE_SERVER: "keystone"
         STAY_ALIVE_ON_FAILURE: "true"

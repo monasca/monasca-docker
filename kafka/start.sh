@@ -46,6 +46,10 @@ if [ "$KAFKA_HOSTNAME_FROM_IP" = "true" ]; then
   export KAFKA_ADVERTISED_HOST_NAME=$ip
 fi
 
+if [ "$KAFKA_BROKER_ID_FROM_HOSTNAME" = "true" ]; then
+  export KAFKA_BROKER_ID=${HOSTNAME##*-}
+fi
+
 # copy all normal .properties files
 for f in $CONFIG_TEMPLATES/*.properties; do
   if [ -e "$f" ]; then

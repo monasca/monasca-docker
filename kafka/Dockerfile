@@ -25,7 +25,8 @@ RUN set -x && \
   echo "Download verified, continuing..." && \
   tar zxf /kafka.tar.gz -C /kafka --strip-components=1 && \
   rm /kafka.tar.gz /kafka_mirror.py && \
-  apk del build-dep
+  apk del build-dep \
+  echo "hello world"
 
 COPY template.py start.sh create_topics.py /
 COPY templates /templates

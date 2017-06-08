@@ -82,5 +82,7 @@ gunicorn --capture-output \
   --worker-class="$GUNICORN_WORKER_CLASS" \
   --worker-connections="$GUNICORN_WORKER_CONNECTIONS" \
   --backlog=$GUNICORN_BACKLOG \
+  --access-logfile - \
+  --access-logformat "$ACCESS_LOG_FIELDS" \
   --paste /etc/monasca/api-config.ini \
   -w "$GUNICORN_WORKERS"

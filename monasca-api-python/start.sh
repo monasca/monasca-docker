@@ -75,6 +75,12 @@ else
   cp /etc/monasca/api-logging.conf.j2 /etc/monasca/api-logging.conf
 fi
 
+if [ "$ADD_ACCESS_LOG" = "true" ]; then
+  access_arg="--access-logfile -"
+else
+  access_arg=
+fi
+
 # Needed to allow utf8 use in the Monasca API
 export PYTHONIOENCODING=utf-8
 gunicorn --capture-output \
@@ -82,7 +88,7 @@ gunicorn --capture-output \
   --worker-class="$GUNICORN_WORKER_CLASS" \
   --worker-connections="$GUNICORN_WORKER_CONNECTIONS" \
   --backlog=$GUNICORN_BACKLOG \
-  --access-logfile - \
+  $access_arg \
   --access-logformat "$ACCESS_LOG_FIELDS" \
   --paste /etc/monasca/api-config.ini \
   -w "$GUNICORN_WORKERS"

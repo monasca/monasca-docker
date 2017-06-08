@@ -10,6 +10,7 @@ ARG REBUILD=1
 ENV CONFIG_TEMPLATE=true \
   LOG_LEVEL_ROOT=WARN \
   LOG_LEVEL_CONSOLE=INFO \
+  LOG_LEVEL_ACCESS=INFO \
   API_PORT=8070 \
   KAFKA_URI=kafka:9092 \
   KAFKA_WAIT_FOR_TOPICS=alarm-state-transitions,metrics \
@@ -27,7 +28,9 @@ ENV CONFIG_TEMPLATE=true \
   KEYSTONE_ADMIN_USER=admin \
   KEYSTONE_ADMIN_PASSWORD=secretadmin \
   KEYSTONE_ADMIN_TENANT=admin \
-  KEYSTONE_ADMIN_DOMAIN=default
+  KEYSTONE_ADMIN_DOMAIN=default \
+  ACCESS_LOG_FORMAT="%(asctime)s [%(process)d] gunicorn.access [%(levelname)s] %(message)s" \
+  ACCESS_LOG_FIELDS='%(h)s %(l)s %(u)s %(t)s %(r)s %(s)s %(b)s "%(f)s" "%(a)s" %(L)s'
 
 RUN apk add --no-cache python py2-pip py2-jinja2 curl mysql-client && \
   apk add --no-cache --virtual build-dep \

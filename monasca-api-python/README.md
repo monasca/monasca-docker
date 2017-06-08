@@ -68,6 +68,7 @@ A number of environment variables can be passed to the container:
 |---------------------------|---------------|----------------------------------|
 | `LOG_LEVEL_ROOT`          | `WARN`        | The level of the root logger     |
 | `LOG_LEVEL_CONSOLE`       | `INFO`        | Minimum level for console output |
+| `LOG_LEVEL_ACCESS`        | `INFO`        | Minimum level for access output  |
 | `API_PORT`                | `8070`        | The API's HTTP port              |
 | `KAFKA_URI`               | `kafka:9092`  | The host and port for kafka      |
 | `KAFKA_WAIT_FOR_TOPICS`   | `alarm-state-transitions,metrics` | Topics to wait on at startup |
@@ -97,6 +98,8 @@ A number of environment variables can be passed to the container:
 | `AGENT_AUTHORIZED_ROLES`     | `monasca-agent` | Roles for metric write only users |
 | `READ_ONLY_AUTHORIZED_ROLES` | `monasca-read-only-user` | Roles for read only users    |
 | `DELEGATE_AUTHORIZED_ROLES`  | `admin`       | Roles allow to read/write cross tenant ID |
+| `ACCESS_LOG_FORMAT`  | `%(asctime)s [%(process)d] gunicorn.access [%(levelname)s] %(message)s` | Log format for access log |
+| `ACCESS_LOG_FIELDS`  | `%(h)s %(l)s %(u)s %(t)s %(r)s %(s)s %(b)s "%(f)s" "%(a)s" %(L)s` | Access log fields |
 
 If additional values need to be overridden, new config files or jinja2 templates
 can be provided by mounting a replacement on top of the original template:

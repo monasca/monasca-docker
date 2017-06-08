@@ -108,15 +108,19 @@ password = {{ INFLUX_PASSWORD }}
 database_name = {{ INFLUX_DB }}
 
 [database]
-url = "mysql+pymysql://{{ MYSQL_USER }}:{{ MYSQL_PASSWORD }}@{{ MYSQL_HOST }}/{{ MYSQL_DB }}"
+connection = "mysql+pymysql://{{ MYSQL_USER }}:{{ MYSQL_PASSWORD }}@{{ MYSQL_HOST }}/{{ MYSQL_DB }}"
 
 [keystone_authtoken]
-identity_uri = {{ KEYSTONE_IDENTITY_URI }}
+auth_type = password
+auth_url = {{ KEYSTONE_IDENTITY_URI }}
 auth_uri = {{ KEYSTONE_AUTH_URI }}
-admin_password = {{ KEYSTONE_ADMIN_PASSWORD }}
-admin_user = {{ KEYSTONE_ADMIN_USER }}
-admin_tenant_name = {{ KEYSTONE_ADMIN_TENANT }}
+username = {{ KEYSTONE_ADMIN_USER }}
+password = {{ KEYSTONE_ADMIN_PASSWORD }}
+user_domain_name = Default
+project_name = {{ KEYSTONE_ADMIN_TENANT }}
+project_domain_name = Default
+service_token_roles_required = true
+insecure = false
 cafile =
 certfile =
 keyfile =
-insecure = false

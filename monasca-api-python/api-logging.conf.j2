@@ -37,13 +37,13 @@ propagate = 0
 
 [handler_console]
 class = logging.StreamHandler
-args = (sys.stderr,)
+args = (sys.stdout,)
 level = {{ LOG_LEVEL_CONSOLE }}
 formatter = context
 
 [handler_console_access]
 class = logging.StreamHandler
-args = (sys.stderr,)
+args = (sys.stdout,)
 level = {{ LOG_LEVEL_ACCESS }}
 formatter = generic
 

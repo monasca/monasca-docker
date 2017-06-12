@@ -1,0 +1,5 @@
+repository: monasca/smoke-tests
+variants:
+  - tag: 0.0.1
+    aliases:
+      - :latest

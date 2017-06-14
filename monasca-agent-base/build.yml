@@ -1,0 +1,5 @@
+repository: monasca/agent-base
+variants:
+  - tag: master
+    aliases:
+      - :master-{date}-{time}

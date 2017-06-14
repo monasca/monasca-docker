@@ -40,7 +40,10 @@ for those images
 Building
 --------
 
-To build the container from scratch, run:
+[dbuild][6] can be used with the build.yml file to build and push the
+container.
+
+To build the container from scratch using just docker commands, run:
 
     docker build -t youruser/agent-base:latest .
 
@@ -64,3 +67,4 @@ using [git-sync][5] to mirror your local tree to a temporary git repository.
 [3]: https://github.com/hpcloud-mon/monasca-docker/
 [4]: https://github.com/hpcloud-mon/monasca-agent-base/blob/master/monasca-agent/Dockerfile
 [5]: https://github.com/timothyb89/git-sync
+[5]: https://github.com/timothyb89/dbuild

@@ -55,6 +55,7 @@ A few build argument can be set:
    be a tagged point release (e.g. `1.6.0`), an OpenStack release branch (e.g.
    `stable/newton`), a Gerrit patch ref (e.g. `refs/changes/71/427271/10`),
    or any other valid Git ref for the target repository.
+ * `AGENT_USER`: the user used to run the forwarder
  * `REBULID`: a simple method to invalidate the Docker image cache. Set to
    `--build-arg REBUILD="$(date)"` to force a full image rebuild.
  * `HTTP_PROXY` and `HTTPS_PROXY` should be set as needed for your environment

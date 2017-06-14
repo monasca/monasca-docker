@@ -1,7 +1,7 @@
 FROM alpine:3.5
 
 arg SMOKE_TEST_REPO=https://github.com/monasca/smoke-test
-arg SMOKE_TEST_BRANCH=initial_commit
+arg SMOKE_TEST_BRANCH=master
 
 env GOPATH=/go
 

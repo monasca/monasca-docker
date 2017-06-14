@@ -24,7 +24,7 @@ import subprocess
 import sys
 
 
-TAG_REGEX = re.compile(r'^!(\w+)(?:\s+(\w+))?$')
+TAG_REGEX = re.compile(r'^!(\w+)(?:\s+([\w-]+))?$')
 
 
 class SubprocessException(Exception):

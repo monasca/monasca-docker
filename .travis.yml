@@ -4,8 +4,8 @@ services:
 language: python
 
 env:
-  - IGNORE_DOCKER_VERSION: true
-  - DOCKER_COMPOSE_VERSION: 1.13.0
+  - IGNORE_DOCKER_VERSION=true
+  - DOCKER_COMPOSE_VERSION=1.13.0
 
 before_install:
   - pip install git+https://github.com/timothyb89/dbuild.git

@@ -61,6 +61,25 @@ Several parameters can be specified using environment variables:
 | `KAFKA_JMX`                   | unset   | If `true`, expose JMX metrics over TCP         |
 | `KAFKA_JMX_PORT`              | `7203`  | Port to expose JMX metrics                     |
 | `KAFKA_JMX_OPTS`              | no SSL/auth, etc | Override default opts                 |
+| `SERVER_LOG_LEVEL`            | `INFO`  | Log Level for server                           |
+| `REQUEST_LOG_LEVEL`           | `WARN`  | Log Level for request logging                  |
+| `CONTROLLER_LOG_LEVEL`        | `INFO`  | Log Level for controller                       |
+| `LOG_CLEANER_LOG_LEVEL`       | `INFO`  | Log Level for log cleaner                      |
+| `STATE_CHANGE_LOG_LEVEL`      | `INFO`  | Log Level for state changes                    |
+| `AUTHORIZER_LOG_LEVEL`        | `WARN`  | Log Level for the authorizer                   |
+| `GC_LOG_ENABLED`              | `False` | If True, JVM garbage collection log enabled    |
+
+### Log Files
+
+Multiple Kafka log files are written to stdout for the container. They can be distinguished via
+the filename attribute in each message. For example:
+
+```
+kafka_1                 | [2017-06-15 06:32:09,572] INFO filename=server.log Loading logs. (kafka.log.LogManager)
+```
+
+If `GC_LOG_ENABLED` is set to True, the JVM Garbage Collection log will be written within the
+container at /kafka/logs/kafkaServer-gc.log. It can't be redirected to stdout.
 
 ### Topic creation
 

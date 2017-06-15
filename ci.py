@@ -223,6 +223,23 @@ def handle_push(files, modules, tags):
         print('No READMEs to update.')
 
 
+def run_docker_compose():
+    docker_compose_command = ['docker-compose', 'up']
+
+    p = subprocess.Popen(docker_compose_command, stdin=subprocess.PIPE)
+
+    def kill(signal, frame):
+        p.kill()
+        print()
+        print('killed!')
+        sys.exit(1)
+
+    signal.signal(signal.SIGINT, kill)
+    if p.wait() != 0:
+        print('build failed, exiting!')
+        sys.exit(p.returncode)
+
+
 def handle_other(files, modules, tags):
     print('Unsupported event type "%s", nothing to do.' % (
         os.environ.get('TRAVS_EVENT_TYPE')))
@@ -248,6 +265,8 @@ def main():
     if os.environ.get('TRAVIS_BRANCH', None) != 'master':
         print('Not master branch, skipping tests.')
         return
+
+    run_docker_compose()
 
     files = get_changed_files()
     modules = get_dirty_modules(files)

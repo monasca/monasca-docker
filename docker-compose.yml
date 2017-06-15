@@ -5,12 +5,12 @@ services:
     image: influxdb:latest
 
   agent-forwarder:
-    image: monasca/agent-forwarder:latest
+    image: monasca/agent-forwarder:master
     environment:
       NON_LOCAL_TRAFFIC: "true"
 
   agent-collector:
-    image: monasca/agent-collector:latest
+    image: monasca/agent-collector:master
     environment:
       FORWARDER_URL: "http://agent-forwarder:17123"
 

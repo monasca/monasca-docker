@@ -242,7 +242,7 @@ def run_docker_compose():
 
 
 def run_smoke_tests():
-    smoke_tests_run = ['docker', 'run', '-e', 'MONASCA_URL=http://monasca:8070', '-net', 'monascadocker_default', '-p',
+    smoke_tests_run = ['docker', 'run', '-e', 'MONASCA_URL=http://monasca:8070', '--net', 'monascadocker_default', '-p',
                        '0.0.0.0:8080:8080', 'monasca/smoke-tests:1.0.0']
 
     p = subprocess.Popen(smoke_tests_run, stdin=subprocess.PIPE)

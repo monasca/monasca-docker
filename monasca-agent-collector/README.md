@@ -224,5 +224,5 @@ using [git-sync][11] to mirror your local tree to a temporary git repository.
 [7]: https://kubernetes.io/docs/user-guide/downward-api/
 [8]: https://github.com/hpcloud-mon/monasca-docker/blob/master/monasca-agent/agent.yaml.j2
 [9]: https://github.com/google/cadvisor#quick-start-running-cadvisor-in-a-docker-container
-[10]: https://github.com/timothyb89/git-sync
+[10]: https://github.com/timothyb89/dbuild
 [11]: https://github.com/timothyb89/git-sync

@@ -30,36 +30,7 @@ In environments resembling the official [docker-compose][3] or [Kubernetes][6]
 environments, the image does not require additional configuration parameters and
 can be minimally run like so:
 
-    docker run -it monasca/agent:latest
-
-However, without any plugins enabled (the default config), the agent will not
-collect any metrics. This agent container supports a number of "monitoring
-scenarios" that can be enabled via environment variables passed at container
-startup:
-
- * Docker container monitoring: On a plain Docker host, collects standard
-   system-level metrics about each running container (e.g. cpu, memory, etc).
-   Requires `DOCKER=true`.
- * Kubernetes container monitoring: Collects container metrics for a particular
-   node from cAdvisor. Intended to be run on each node as a `DaemonSet`.
-   Requires `KUBERNETES=true`.
- * Kubernetes API monitoring: Collects metrics about a Kubernetes cluster,
-   including health status, node disk/memory pressure, capacities, etc.
-   Requires `KUBERNETES_API=true`.
- * cAdvisor monitoring: collects host metrics from a cAdvisor instance, such as
-   the instance embedded in the Kubernetes API server. Requires `CADVISOR=true`.
- * Prometheus monitoring: Scrapes metrics from applications exposing Prometheus
-   endpoints. In Kubernetes environments, these can be detected automatically
-   when run alongside the Kubernetes plugin. Requires `PROMETHEUS=true`.
-
-Note that when running in a Kubernetes environment, additional variables must be
-set via the [Downward API][7]:
-
- * `AGENT_POD_NAME`: set `fieldRef` to `fieldPath: metadata.name`
- * `AGENT_POD_NAMESPACE`: set `fieldRef` to `fieldPath: metadata.namespace`
-
-When monitoring parts of a Kubernetes environment externally, additional
-variables must be set instead, see below for details.
+    docker run -it monasca/agent-forwarder:latest
 
 Configuration
 -------------
@@ -75,7 +46,7 @@ Configuration
 | `OS_PROJECT_DOMAIN_NAME` | `Default`        | Agent Keystone project domain       |
 | `MONASCA_URL`            | `http://monasca:8070/v2.0` | Versioned Monasca API URL |
 | `HOSTNAME_FROM_KUBERNETES` | `false` | If true, determine node hostname from Kubernetes  |
-| 'NON_LOCAL_TRAFFIC'        | `false` | If true, collector listens on all addresses |
+| 'NON_LOCAL_TRAFFIC'        | `false` | If true, forwarder listens on all addresses |
 
 Note that additional variables can be specified as well, see the
 [config template][8] for a definitive list.

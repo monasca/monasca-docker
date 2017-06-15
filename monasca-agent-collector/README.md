@@ -28,7 +28,7 @@ released or merged. Until this changes, only `master` images may be available.
 Usage
 -----
 
-The agent collector requires at least a reachable [monasca-collector][5]. Access
+The agent collector requires at least a reachable [monasca-forwarder][5]. Access
 to additional services, like the Kubernetes API, is also necessary if they are to
 be monitored.
 
@@ -202,7 +202,7 @@ container.
 
 To build the container from scratch using just docker commands, run:
 
-    docker build -t youruser/monasca-agent:latest .
+    docker build -t youruser/agent-collector:latest .
 
 A few build argument can be set:
 
@@ -219,7 +219,7 @@ using [git-sync][11] to mirror your local tree to a temporary git repository.
 [2]: https://github.com/openstack/monasca-agent
 [3]: https://github.com/hpcloud-mon/monasca-docker/
 [4]: https://github.com/hpcloud-mon/monasca-docker/blob/master/monasca-agent/Dockerfile
-[5]: https://hub.docker.com/r/monasca/agent-collector/
+[5]: https://hub.docker.com/r/monasca/agent-forwarder/
 [6]: https://github.com/hpcloud-mon/monasca-docker/blob/master/k8s/
 [7]: https://kubernetes.io/docs/user-guide/downward-api/
 [8]: https://github.com/hpcloud-mon/monasca-docker/blob/master/monasca-agent/agent.yaml.j2

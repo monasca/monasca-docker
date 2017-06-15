@@ -224,7 +224,7 @@ def handle_push(files, modules, tags):
 
 
 def run_docker_compose():
-    docker_compose_command = ['docker-compose', 'up']
+    docker_compose_command = ['docker-compose', 'up', '-d']
 
     p = subprocess.Popen(docker_compose_command, stdin=subprocess.PIPE)
 

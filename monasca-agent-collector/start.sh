@@ -8,14 +8,8 @@ USER_PLUGINS="/plugins.d"
 
 AGENT_CONF="/etc/monasca/agent"
 AGENT_PLUGINS="$AGENT_CONF/conf.d"
-AGENT_LOG_DIR="/var/log/monasca/agent/"
-AGENT_USER="mon-agent"
-
-adduser -S $AGENT_USER
 
 mkdir -p "$AGENT_PLUGINS"
-mkdir -p "$AGENT_LOG_DIR"
-chown $AGENT_USER "$AGENT_LOG_DIR"
 
 template () {
   if [ "$CONFIG_TEMPLATE" = "true" ]; then
@@ -74,4 +68,4 @@ done
 
 template $AGENT_CONF/agent.yaml.j2 $AGENT_CONF/agent.yaml
 
-supervisord --nodaemon -c /etc/supervisor/supervisord.conf
+/usr/bin/monasca-collector foreground

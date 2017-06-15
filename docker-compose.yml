@@ -4,8 +4,15 @@ services:
   influxdb:
     image: influxdb:latest
 
-  agent:
-    image: monasca/agent:latest
+  agent-forwarder:
+    image: monasca/agent-forwarder:latest
+    environment:
+      NON_LOCAL_TRAFFIC: "true"
+
+  agent-collector:
+    image: monasca/agent-collector:latest
+    environment:
+      FORWARDER_URL: "http://agent-forwarder:17123"
 
   influxdb-init:
     image: monasca/influxdb-init:latest

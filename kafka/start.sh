@@ -14,6 +14,14 @@ ZOOKEEPER_WAIT_TIMEOUT=${ZOOKEEPER_WAIT_TIMEOUT:-"3"}
 ZOOKEEPER_WAIT_DELAY=${ZOOKEEPER_WAIT_DELAY:-"10"}
 ZOOKEEPER_WAIT_RETRIES=${ZOOKEEPER_WAIT_RETRIES:-"20"}
 
+export SERVER_LOG_LEVEL=${SERVER_LOG_LEVEL:-"INFO"}
+export REQUEST_LOG_LEVEL=${REQUEST_LOG_LEVEL:-"WARN"}
+export CONTROLLER_LOG_LEVEL=${CONTROLLER_LOG_LEVEL:-"INFO"}
+export LOG_CLEANER_LOG_LEVEL=${LOG_CLEANER_LOG_LEVEL:-"INFO"}
+export STATE_CHANGE_LOG_LEVEL=${STATE_CHANGE_LOG_LEVEL:-"INFO"}
+export AUTHORIZER_LOG_LEVEL=${AUTHORIZER_LOG_LEVEL:-"WARN"}
+GC_LOG_ENABLED=${GC_LOG_ENABLED:-"False"}
+
 first_zk=$(echo $ZOOKEEPER_CONNECTION_STRING | cut -d, -f1)
 zk_host=$(echo $first_zk | cut -d\: -f1)
 zk_port=$(echo $first_zk | cut -d\: -f2)
@@ -82,6 +90,12 @@ fi
 
 echo "Creating topics..."
 python /create_topics.py &
+
+if [ "$GC_LOG_ENABLED" != "true" ]; then
+  # This turns off the GC logging in /kafka/bin/kafka-server-start.sh
+  # It is a hack, but I could not find another way to do it
+  sed "-i.sv" -e "s/-loggc//" /kafka/bin/kafka-server-start.sh
+fi
 
 echo "Starting kafka..."
 exec /kafka/bin/kafka-server-start.sh "$CONFIG_DEST/server.properties"

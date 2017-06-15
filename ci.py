@@ -24,7 +24,7 @@ import subprocess
 import sys
 
 
-TAG_REGEX = re.compile(r'^!(\w+)(?:\s+(\w+))?$')
+TAG_REGEX = re.compile(r'^!(\w+)(?:\s+([\w-]+))?$')
 
 
 class SubprocessException(Exception):
@@ -213,12 +213,12 @@ def handle_push(files, modules, tags):
             modules_to_readme.append(module)
 
     if modules_to_push:
-        run_push(modules)
+        run_push(modules_to_push)
     else:
         print('No modules to push.')
 
     if modules_to_readme:
-        run_readme(modules)
+        run_readme(modules_to_readme)
     else:
         print('No READMEs to update.')
 

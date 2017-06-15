@@ -23,6 +23,7 @@ import signal
 import subprocess
 import sys
 
+import time
 
 TAG_REGEX = re.compile(r'^!(\w+)(?:\s+([\w-]+))?$')
 
@@ -240,6 +241,24 @@ def run_docker_compose():
         sys.exit(p.returncode)
 
 
+def run_smoke_tests():
+    smoke_tests_run = ['docker', 'run', '-e', 'MONASCA_URL=http://monasca:8070', '-net', 'monascadocker_default', '-p',
+                       '0.0.0.0:8080:8080', 'monasca/smoke-tests:1.0.0']
+
+    p = subprocess.Popen(smoke_tests_run, stdin=subprocess.PIPE)
+
+    def kill(signal, frame):
+        p.kill()
+        print()
+        print('killed!')
+        sys.exit(1)
+
+    signal.signal(signal.SIGINT, kill)
+    if p.wait() != 0:
+        print('build failed, exiting!')
+        sys.exit(p.returncode)
+
+
 def handle_other(files, modules, tags):
     print('Unsupported event type "%s", nothing to do.' % (
         os.environ.get('TRAVS_EVENT_TYPE')))
@@ -267,6 +286,8 @@ def main():
         return
 
     run_docker_compose()
+    time.sleep(45)
+    run_smoke_tests()
 
     files = get_changed_files()
     modules = get_dirty_modules(files)

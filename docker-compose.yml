@@ -117,6 +117,8 @@ services:
 
   monasca-notification:
     image: monasca/notification:master
+    environment:
+      NF_PLUGINS: "webhook"
     depends_on:
       - monasca
       - zookeeper

@@ -45,7 +45,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: secretmysql
   mysql-init:
-    image: monasca/mysql-init:1.5.0
+    image: monasca/mysql-init:1.5.1
     environment:
       MYSQL_INIT_DISABLE_REMOTE_ROOT: "false"
       MYSQL_INIT_RANDOM_PASSWORD: "false"

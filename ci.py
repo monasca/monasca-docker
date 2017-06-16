@@ -241,51 +241,6 @@ def run_docker_compose():
         sys.exit(p.returncode)
 
 def run_smoke_tests():
-    docker_check = ['docker', 'ps', '-a']
-
-    p = subprocess.Popen(docker_check, stdin=subprocess.PIPE)
-
-    def kill(signal, frame):
-        p.kill()
-        print()
-        print('killed!')
-        sys.exit(1)
-
-    signal.signal(signal.SIGINT, kill)
-    if p.wait() != 0:
-        print('build failed, exiting!')
-        sys.exit(p.returncode)
-
-    docker_logs = ['docker-compose', 'logs', 'keystone']
-
-    p = subprocess.Popen(docker_logs, stdin=subprocess.PIPE)
-
-    def kill(signal, frame):
-        p.kill()
-        print()
-        print('killed!')
-        sys.exit(1)
-
-    signal.signal(signal.SIGINT, kill)
-    if p.wait() != 0:
-        print('build failed, exiting!')
-        sys.exit(p.returncode)
-
-    docker_mysql_logs = ['docker-compose', 'logs', 'mysql-init']
-
-    p = subprocess.Popen(docker_mysql_logs, stdin=subprocess.PIPE)
-
-    def kill(signal, frame):
-        p.kill()
-        print()
-        print('killed!')
-        sys.exit(1)
-
-    signal.signal(signal.SIGINT, kill)
-    if p.wait() != 0:
-        print('build failed, exiting!')
-        sys.exit(p.returncode)
-
     smoke_tests_run = ['docker', 'run', '-e', 'MONASCA_URL=http://monasca:8070', '-e',
                        'METRIC_NAME_TO_CHECK=monasca.thread_count', '--net', 'monascadocker_default', '-p',
                        '0.0.0.0:8080:8080', 'monasca/smoke-tests:1.0.1']
@@ -303,20 +258,6 @@ def run_smoke_tests():
         print('build failed, exiting!')
         sys.exit(p.returncode)
 
-    docker_check = ['docker', 'ps', '-a']
-
-    p = subprocess.Popen(docker_check, stdin=subprocess.PIPE)
-
-    def kill(signal, frame):
-        p.kill()
-        print()
-        print('killed!')
-        sys.exit(1)
-
-    signal.signal(signal.SIGINT, kill)
-    if p.wait() != 0:
-        print('build failed, exiting!')
-        sys.exit(p.returncode)
 
 def handle_other(files, modules, tags):
     print('Unsupported event type "%s", nothing to do.' % (
@@ -345,35 +286,7 @@ def main():
         return
 
     run_docker_compose()
-    docker_check = ['docker', 'ps', '-a']
-
-    p = subprocess.Popen(docker_check, stdin=subprocess.PIPE)
-
-    def kill(signal, frame):
-        p.kill()
-        print()
-        print('killed!')
-        sys.exit(1)
-
-    signal.signal(signal.SIGINT, kill)
-    if p.wait() != 0:
-        print('build failed, exiting!')
-        sys.exit(p.returncode)
-    docker_logs = ['docker-compose', 'logs', 'keystone']
-
-    p = subprocess.Popen(docker_logs, stdin=subprocess.PIPE)
-
-    def kill(signal, frame):
-        p.kill()
-        print()
-        print('killed!')
-        sys.exit(1)
-
-    signal.signal(signal.SIGINT, kill)
-    if p.wait() != 0:
-        print('build failed, exiting!')
-        sys.exit(p.returncode)
-    time.sleep(90)
+    time.sleep(45)
     run_smoke_tests()
 
     files = get_changed_files()

@@ -286,7 +286,7 @@ def main():
         return
 
     run_docker_compose()
-    time.sleep(45)
+    time.sleep(90)
     run_smoke_tests()
 
     files = get_changed_files()

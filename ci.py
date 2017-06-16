@@ -240,11 +240,25 @@ def run_docker_compose():
         print('build failed, exiting!')
         sys.exit(p.returncode)
 
-
 def run_smoke_tests():
     docker_check = ['docker', 'ps']
 
     p = subprocess.Popen(docker_check, stdin=subprocess.PIPE)
+
+    def kill(signal, frame):
+        p.kill()
+        print()
+        print('killed!')
+        sys.exit(1)
+
+    signal.signal(signal.SIGINT, kill)
+    if p.wait() != 0:
+        print('build failed, exiting!')
+        sys.exit(p.returncode)
+
+    docker_logs = ['docker-compose', 'logs', 'keystone']
+
+    p = subprocess.Popen(docker_logs, stdin=subprocess.PIPE)
 
     def kill(signal, frame):
         p.kill()
@@ -319,6 +333,20 @@ def main():
     docker_check = ['docker', 'ps']
 
     p = subprocess.Popen(docker_check, stdin=subprocess.PIPE)
+
+    def kill(signal, frame):
+        p.kill()
+        print()
+        print('killed!')
+        sys.exit(1)
+
+    signal.signal(signal.SIGINT, kill)
+    if p.wait() != 0:
+        print('build failed, exiting!')
+        sys.exit(p.returncode)
+    docker_logs = ['docker-compose', 'logs', 'keystone']
+
+    p = subprocess.Popen(docker_logs, stdin=subprocess.PIPE)
 
     def kill(signal, frame):
         p.kill()

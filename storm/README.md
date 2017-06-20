@@ -53,8 +53,9 @@ Several parameters can be specified using environment variables:
 | `ZOOKEEPER_WAIT`         | `true`         | If `true`, wait for ZK before startup |
 | `SUPERVISOR_SLOTS_PORTS` | `6701,6702`    | List of supervisor ports, 1 per process |
 | `NIMBUS_SEEDS`           | `storm-nimbus` | Comma-separated list of Nimbus hosts  |
-| `STORM_HOSTNAME_FROM_IP` | `true`         | If `true`, use container IP as local hostname |
+| `STORM_LOCAL_HOSTNAME`   |                | If set, use as storm hostname, if not set, use container IP |
 | `LOG_LEVEL`              | `warn`         | log4j2 console logging level          |
+| `WORKER_LOGS_TO_STDOUT`  | `false`        | if `true`, workers log to container stdout |
 
 Note that the configuration template also supports a number of less common
 environment variables. See the [`storm.yaml.j2`][5] template for a full list.

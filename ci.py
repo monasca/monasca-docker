@@ -304,7 +304,7 @@ def run_smoke_tests():
 
     smoke_tests_run = ['docker', 'run', '-e', 'MONASCA_URL=http://monasca:8070', '-e',
                        'METRIC_NAME_TO_CHECK=monasca.thread_count', '--net', 'monascadocker_default', '-p',
-                       '0.0.0.0:8080:8080', 'monasca/smoke-tests:1.0.1']
+                       '0.0.0.0:8080:8080', 'monasca/smoke-tests:1.0.2']
 
     p = subprocess.Popen(smoke_tests_run, stdin=subprocess.PIPE)
 

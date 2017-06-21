@@ -389,7 +389,7 @@ def main():
     if p.wait() != 0:
         print('build failed, exiting!')
         sys.exit(p.returncode)
-    time.sleep(180)
+    time.sleep(360)
     run_smoke_tests()
 
     files = get_changed_files()

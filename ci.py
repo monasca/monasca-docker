@@ -300,6 +300,7 @@ def run_docker_compose():
         print('docker compose failed, exiting!')
         sys.exit(p.returncode)
 
+
 def run_smoke_tests():
     smoke_tests_run = ['docker', 'run', '-e', 'MONASCA_URL=http://monasca:8070', '-e',
                        'METRIC_NAME_TO_CHECK=monasca.thread_count', '--net', 'monascadocker_default', '-p',
@@ -318,16 +319,16 @@ def run_smoke_tests():
         print('Smoke-tests failed, listing containers.')
         docker_check = ['docker', 'ps']
 
-        p = subprocess.Popen(docker_check, stdin=subprocess.PIPE)
+        docker_ps_process = subprocess.Popen(docker_check, stdin=subprocess.PIPE)
 
         def kill(signal, frame):
-            p.kill()
+            docker_ps_process.kill()
             print()
             print('killed!')
             sys.exit(1)
 
         signal.signal(signal.SIGINT, kill)
-        if p.wait() != 0:
+        if docker_ps_process.wait() != 0:
             print('Error listing containers')
         print('Exiting!')
         sys.exit(p.returncode)

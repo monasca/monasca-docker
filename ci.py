@@ -337,7 +337,7 @@ def wait_for_init_jobs():
         amount_succeeded = 0
         for init_job, status in init_status_dict.iteritems():
             if docker_id_dict[init_job] == "":
-                docker_id_dict[init_job] = get_docker_id(init_job)
+                docker_id_dict[init_job] = get_docker_id(init_job).rstrip()
             if status:
                 amount_succeeded += 1
             else:

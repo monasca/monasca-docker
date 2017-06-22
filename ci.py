@@ -247,8 +247,9 @@ def handle_pull_request(files, modules, tags):
 
 
 def get_current_init_status(docker_id):
+    print(docker_id)
     init_status = ['docker', 'inspect', '-f', '{{ .State.ExitCode }}:{{ .State.Status }}', docker_id]
-
+    print(init_status)
     p = subprocess.Popen(init_status, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     def kill(signal, frame):

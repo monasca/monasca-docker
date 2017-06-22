@@ -247,9 +247,7 @@ def handle_pull_request(files, modules, tags):
 
 
 def get_current_init_status(docker_id):
-    print(docker_id)
     init_status = ['docker', 'inspect', '-f', '{{ .State.ExitCode }}:{{ .State.Status }}', docker_id]
-    print(init_status)
     p = subprocess.Popen(init_status, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     def kill(signal, frame):
@@ -266,7 +264,7 @@ def get_current_init_status(docker_id):
         print('getting current status failed')
         return False
     status_output = output.rstrip()
-    print(status_output)
+
     exit_code, status = status_output.split(":", 1)
     if exit_code == "0" and status == "exited":
         return True
@@ -359,7 +357,7 @@ def wait_for_init_jobs():
         sys.exit(1)
 
     # Sleep incase jobs just succeeded
-    time.sleep(30)
+    time.sleep(60)
 
 def handle_push(files, modules, tags):
     modules_to_push = []

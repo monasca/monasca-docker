@@ -246,11 +246,8 @@ def handle_pull_request(files, modules, tags):
     run_smoke_tests()
 
 
-def get_current_init_status(init_job):
-    init_status = ['docker-compose', 'ps', '-q', init_job, '|', 'xargs', 'docker', 'inspect', '-f',
-                   '{{ .State.ExitCode }}:{{ .State.Status }}']
-
-    print(init_status)
+def get_current_init_status(docker_id):
+    init_status = ['docker', 'inspect', '-f', '{{ .State.ExitCode }}:{{ .State.Status }}', docker_id]
 
     p = subprocess.Popen(init_status, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
@@ -305,19 +302,45 @@ def output_docker_ps():
         print('Error running docker ps')
 
 
+def get_docker_id(init_job):
+    docker_id = ['docker-compose', 'ps', '-q', init_job]
+
+    p = subprocess.Popen(docker_id, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+    def kill(signal, frame):
+        p.kill()
+        print()
+        print('killed!')
+        sys.exit(1)
+
+    signal.signal(signal.SIGINT, kill)
+
+    output, err = p.communicate()
+
+    if p.wait() != 0:
+        print('error getting docker id')
+        return ""
+    return output
+
+
 def wait_for_init_jobs():
     init_status_dict = {"mysql-init": False,
                         "thresh-init": False,
                         "influxdb-init": False}
+    docker_id_dict = {"mysql-init": "",
+                      "thresh-init": "",
+                      "influxdb-init": ""}
     amount_succeeded = 0
     for attempt in range(20):
         time.sleep(30)
         amount_succeeded = 0
         for init_job, status in init_status_dict.iteritems():
+            if docker_id_dict[init_job] == "":
+                docker_id_dict[init_job] = get_docker_id(init_job)
             if status:
                 amount_succeeded += 1
             else:
-                updated_status = get_current_init_status(init_job)
+                updated_status = get_current_init_status(docker_id_dict[init_job])
                 init_status_dict[init_job] = updated_status
                 if updated_status:
                     amount_succeeded += 1

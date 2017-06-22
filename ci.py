@@ -25,10 +25,39 @@ import sys
 
 import time
 
+import yaml
+
 TAG_REGEX = re.compile(r'^!(\w+)(?:\s+([\w-]+))?$')
+
+MODULE_TO_COMPOSE_SERVICE = {
+    'storm': 'storm-supervisor,storm-nimbus',
+    'monasca-agent-forwarder': 'agent-forwarder',
+    'zookeeper': 'zookeeper',
+    'influxdb': 'influxdb',
+    'kafka': 'kafka',
+    'monasca-thresh': 'thresh-init',
+    'monasca-persister-python': 'monasca-persister',
+    'mysql-init': 'mysql-init',
+    'monasca-api-python': 'monasca',
+    'influxdb-init': 'influxdb-init',
+    'monasca-agent-collector': 'agent-collector',
+    'grafana': 'grafana',
+    'keystone': 'keystone',
+    'monasca-alarms': 'alarms',
+    'monasca-notification': 'monasca-notification',
+    'grafana-init': 'grafana-init'
+}
 
 
 class SubprocessException(Exception):
+    pass
+
+
+class FileReadException(Exception):
+    pass
+
+
+class FileWriteException(Exception):
     pass
 
 
@@ -103,7 +132,7 @@ def get_dirty_for_module(files, module=None):
 
 
 def run_build(modules):
-    build_args = ['dbuild', '-sd', 'build', 'all'] + modules
+    build_args = ['dbuild', '-sd', 'build', 'all', '+', ':ci-cd'] + modules
     print('build command:', build_args)
 
     p = subprocess.Popen(build_args, stdin=subprocess.PIPE)
@@ -179,11 +208,42 @@ def run_readme(modules):
         sys.exit(p.returncode)
 
 
+def update_docker_compose(modules):
+    try:
+        with open("docker-compose.yml") as compose_file:
+            compose_dict = yaml.load(compose_file)
+    except:
+        raise FileReadException('Error reading chart yaml for changed chart')
+
+    compose_services = compose_dict['services']
+    for module in modules:
+        service_name = MODULE_TO_COMPOSE_SERVICE[module]
+        services_to_update = []
+        if ',' in service_name:
+            services_to_update.extend(service_name.split(','))
+        else:
+            services_to_update.append(service_name)
+        for service in services_to_update:
+            image = compose_services[service]['image']
+            image = image.split(':')[0]
+            image += ":ci-cd"
+            compose_services[service]['image'] = image
+    print(compose_services['services'])
+    try:
+        with open('docker-compose.yml', 'w') as docker_compose:
+            yaml.dump(compose_services, docker_compose, default_flow_style=False)
+    except:
+        raise FileWriteException('Error writing modified dictionary to docker-compose.yml')
+
 def handle_pull_request(files, modules, tags):
     if modules:
         run_build(modules)
+        update_docker_compose(modules)
     else:
         print('No modules to build.')
+    run_docker_compose()
+    time.sleep(360)
+    run_smoke_tests()
 
 
 def handle_push(files, modules, tags):
@@ -237,74 +297,13 @@ def run_docker_compose():
 
     signal.signal(signal.SIGINT, kill)
     if p.wait() != 0:
-        print('build failed, exiting!')
+        print('docker compose failed, exiting!')
         sys.exit(p.returncode)
 
 def run_smoke_tests():
-    docker_check = ['docker', 'ps']
-
-    p = subprocess.Popen(docker_check, stdin=subprocess.PIPE)
-
-    def kill(signal, frame):
-        p.kill()
-        print()
-        print('killed!')
-        sys.exit(1)
-
-    signal.signal(signal.SIGINT, kill)
-    if p.wait() != 0:
-        print('build failed, exiting!')
-        sys.exit(p.returncode)
-
-    docker_logs = ['docker-compose', 'logs', 'keystone']
-
-    p = subprocess.Popen(docker_logs, stdin=subprocess.PIPE)
-
-    def kill(signal, frame):
-        p.kill()
-        print()
-        print('killed!')
-        sys.exit(1)
-
-    signal.signal(signal.SIGINT, kill)
-    if p.wait() != 0:
-        print('build failed, exiting!')
-        sys.exit(p.returncode)
-
-
-    docker_logs = ['docker-compose', 'logs', 'monasca']
-
-    p = subprocess.Popen(docker_logs, stdin=subprocess.PIPE)
-
-    def kill(signal, frame):
-        p.kill()
-        print()
-        print('killed!')
-        sys.exit(1)
-
-    signal.signal(signal.SIGINT, kill)
-    if p.wait() != 0:
-        print('build failed, exiting!')
-        sys.exit(p.returncode)
-
-    docker_logs = ['docker', 'network', 'ls']
-
-    p = subprocess.Popen(docker_logs, stdin=subprocess.PIPE)
-
-    def kill(signal, frame):
-        p.kill()
-        print()
-        print('killed!')
-        sys.exit(1)
-
-    signal.signal(signal.SIGINT, kill)
-    if p.wait() != 0:
-        print('build failed, exiting!')
-        sys.exit(p.returncode)
-
     smoke_tests_run = ['docker', 'run', '-e', 'MONASCA_URL=http://monasca:8070', '-e',
                        'METRIC_NAME_TO_CHECK=monasca.thread_count', '--net', 'monascadocker_default', '-p',
-                       '0.0.0.0:8080:8080', 'monasca/smoke-tests:1.0.2']
+                       '0.0.0.0:8080:8080', 'monasca/smoke-tests:latest']
 
     p = subprocess.Popen(smoke_tests_run, stdin=subprocess.PIPE)
 
@@ -316,23 +315,23 @@ def run_smoke_tests():
 
     signal.signal(signal.SIGINT, kill)
     if p.wait() != 0:
-        print('build failed, exiting!')
+        print('Smoke-tests failed, listing containers.')
+        docker_check = ['docker', 'ps']
+
+        p = subprocess.Popen(docker_check, stdin=subprocess.PIPE)
+
+        def kill(signal, frame):
+            p.kill()
+            print()
+            print('killed!')
+            sys.exit(1)
+
+        signal.signal(signal.SIGINT, kill)
+        if p.wait() != 0:
+            print('Error listing containers')
+        print('Exiting!')
         sys.exit(p.returncode)
 
-    docker_check = ['docker', 'ps']
-
-    p = subprocess.Popen(docker_check, stdin=subprocess.PIPE)
-
-    def kill(signal, frame):
-        p.kill()
-        print()
-        print('killed!')
-        sys.exit(1)
-
-    signal.signal(signal.SIGINT, kill)
-    if p.wait() != 0:
-        print('build failed, exiting!')
-        sys.exit(p.returncode)
 
 def handle_other(files, modules, tags):
     print('Unsupported event type "%s", nothing to do.' % (
@@ -359,38 +358,6 @@ def main():
     if os.environ.get('TRAVIS_BRANCH', None) != 'master':
         print('Not master branch, skipping tests.')
         return
-
-    run_docker_compose()
-    docker_check = ['docker', 'ps']
-
-    p = subprocess.Popen(docker_check, stdin=subprocess.PIPE)
-
-    def kill(signal, frame):
-        p.kill()
-        print()
-        print('killed!')
-        sys.exit(1)
-
-    signal.signal(signal.SIGINT, kill)
-    if p.wait() != 0:
-        print('build failed, exiting!')
-        sys.exit(p.returncode)
-    docker_logs = ['docker-compose', 'logs', 'keystone']
-
-    p = subprocess.Popen(docker_logs, stdin=subprocess.PIPE)
-
-    def kill(signal, frame):
-        p.kill()
-        print()
-        print('killed!')
-        sys.exit(1)
-
-    signal.signal(signal.SIGINT, kill)
-    if p.wait() != 0:
-        print('build failed, exiting!')
-        sys.exit(p.returncode)
-    time.sleep(360)
-    run_smoke_tests()
 
     files = get_changed_files()
     modules = get_dirty_modules(files)

@@ -22,9 +22,7 @@ import re
 import signal
 import subprocess
 import sys
-
 import time
-
 import yaml
 
 TAG_REGEX = re.compile(r'^!(\w+)(?:\s+([\w-]+))?$')

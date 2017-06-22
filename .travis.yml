@@ -8,6 +8,7 @@ env:
 
 before_install:
   - pip install git+https://github.com/timothyb89/dbuild.git
+  - sed -i "s/version: '3'/version: '2'/" docker-compose.yml
 
 script:
   - python ci.py

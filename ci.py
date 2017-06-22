@@ -316,7 +316,21 @@ def run_smoke_tests():
 
     signal.signal(signal.SIGINT, kill)
     if p.wait() != 0:
-        print('Smoke-tests failed, listing containers.')
+        print('Smoke-tests failed, listing containers/logs.')
+        docker_logs = ['docker-compose', 'logs']
+
+        docker_logs_process = subprocess.Popen(docker_logs, stdin=subprocess.PIPE)
+
+        def kill(signal, frame):
+            docker_logs_process.kill()
+            print()
+            print('killed!')
+            sys.exit(1)
+
+        signal.signal(signal.SIGINT, kill)
+        if docker_logs_process.wait() != 0:
+            print('Error listing logs')
+
         docker_check = ['docker', 'ps']
 
         docker_ps_process = subprocess.Popen(docker_check, stdin=subprocess.PIPE)

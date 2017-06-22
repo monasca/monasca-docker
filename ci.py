@@ -250,6 +250,8 @@ def get_current_init_status(init_job):
     init_status = ['docker-compose', 'ps', '-q', init_job, '|', 'xargs', 'docker', 'inspect', '-f',
                    '{{ .State.ExitCode }}:{{ .State.Status }}']
 
+    print(init_status)
+
     p = subprocess.Popen(init_status, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     def kill(signal, frame):
@@ -303,7 +305,6 @@ def output_docker_ps():
         print('Error running docker ps')
 
 
-
 def wait_for_init_jobs():
     init_status_dict = {"mysql-init": False,
                         "thresh-init": False,
@@ -312,7 +313,7 @@ def wait_for_init_jobs():
     for attempt in range(20):
         time.sleep(30)
         amount_succeeded = 0
-        for init_job,status in init_status_dict.iteritems():
+        for init_job, status in init_status_dict.iteritems():
             if status:
                 amount_succeeded += 1
             else:

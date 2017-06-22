@@ -212,21 +212,22 @@ def update_docker_compose(modules):
             compose_dict = yaml.load(compose_file)
     except:
         raise FileReadException('Error reading chart yaml for changed chart')
-
-    compose_services = compose_dict['services']
-    for module in modules:
-        service_name = MODULE_TO_COMPOSE_SERVICE[module]
-        services_to_update = []
-        if ',' in service_name:
-            services_to_update.extend(service_name.split(','))
-        else:
-            services_to_update.append(service_name)
-        for service in services_to_update:
-            image = compose_services[service]['image']
-            image = image.split(':')[0]
-            image += ":ci-cd"
-            compose_services[service]['image'] = image
-    print(compose_dict)
+    if modules:
+        compose_services = compose_dict['services']
+        for module in modules:
+            service_name = MODULE_TO_COMPOSE_SERVICE[module]
+            services_to_update = []
+            if ',' in service_name:
+                services_to_update.extend(service_name.split(','))
+            else:
+                services_to_update.append(service_name)
+            for service in services_to_update:
+                image = compose_services[service]['image']
+                image = image.split(':')[0]
+                image += ":ci-cd"
+                compose_services[service]['image'] = image
+    # Update compose version
+    compose_dict['version'] = '2'
     try:
         with open('docker-compose.yml', 'w') as docker_compose:
             yaml.dump(compose_dict, docker_compose, default_flow_style=False)
@@ -236,9 +237,9 @@ def update_docker_compose(modules):
 def handle_pull_request(files, modules, tags):
     if modules:
         run_build(modules)
-        update_docker_compose(modules)
     else:
         print('No modules to build.')
+    update_docker_compose(modules)
     run_docker_compose()
     time.sleep(360)
     run_smoke_tests()

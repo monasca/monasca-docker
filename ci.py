@@ -268,7 +268,7 @@ def get_current_init_status(docker_id):
     status_output = output.rstrip()
     print(status_output)
     exit_code, status = status_output.split(":", 1)
-    if exit_code == 0 and status == "exited":
+    if exit_code == "0" and status == "exited":
         return True
     return False
 

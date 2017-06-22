@@ -234,6 +234,7 @@ def update_docker_compose(modules):
     except:
         raise FileWriteException('Error writing modified dictionary to docker-compose.yml')
 
+
 def handle_pull_request(files, modules, tags):
     if modules:
         run_build(modules)
@@ -241,9 +242,97 @@ def handle_pull_request(files, modules, tags):
         print('No modules to build.')
     update_docker_compose(modules)
     run_docker_compose()
-    time.sleep(360)
+    wait_for_init_jobs()
     run_smoke_tests()
 
+
+def get_current_init_status(init_job):
+    init_status = ['docker-compose', 'ps', '-q', init_job, '|', 'xargs', 'docker', 'inspect', '-f',
+                   '{{ .State.ExitCode }}:{{ .State.Status }}']
+
+    p = subprocess.Popen(init_status, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+    def kill(signal, frame):
+        p.kill()
+        print()
+        print('killed!')
+        sys.exit(1)
+
+    signal.signal(signal.SIGINT, kill)
+
+    output, err = p.communicate()
+
+    if p.wait() != 0:
+        print('getting current status failed')
+        return False
+    exit_code, status = output.split(":", 1)
+    if exit_code == 0 and status == "exited":
+        return True
+    return False
+
+
+def output_docker_logs():
+    docker_logs = ['docker-compose', 'logs']
+
+    docker_logs_process = subprocess.Popen(docker_logs, stdin=subprocess.PIPE)
+
+    def kill(signal, frame):
+        docker_logs_process.kill()
+        print()
+        print('killed!')
+        sys.exit(1)
+
+    signal.signal(signal.SIGINT, kill)
+    if docker_logs_process.wait() != 0:
+        print('Error listing logs')
+
+
+def output_docker_ps():
+    docker_ps = ['docker', 'ps', '-a']
+
+    docker_ps_process = subprocess.Popen(docker_ps, stdin=subprocess.PIPE)
+
+    def kill(signal, frame):
+        docker_ps_process.kill()
+        print()
+        print('killed!')
+        sys.exit(1)
+
+    signal.signal(signal.SIGINT, kill)
+    if docker_ps_process.wait() != 0:
+        print('Error running docker ps')
+
+
+
+def wait_for_init_jobs():
+    init_status_dict = {"mysql-init": False,
+                        "thresh-init": False,
+                        "influxdb-init": False}
+    amount_succeeded = 0
+    for attempt in range(20):
+        time.sleep(30)
+        amount_succeeded = 0
+        for init_job,status in init_status_dict.iteritems():
+            if status:
+                amount_succeeded += 1
+            else:
+                updated_status = get_current_init_status(init_job)
+                init_status_dict[init_job] = updated_status
+                if updated_status:
+                    amount_succeeded += 1
+        if amount_succeeded == 3:
+            print("All init-jobs passed!")
+            break
+
+    if amount_succeeded != 3:
+        print("Init-jobs did not succeed printing docker ps and logs")
+        output_docker_ps()
+        output_docker_logs()
+        print('Exiting!')
+        sys.exit(1)
+
+    # Sleep incase jobs just succeeded
+    time.sleep(30)
 
 def handle_push(files, modules, tags):
     modules_to_push = []
@@ -316,33 +405,8 @@ def run_smoke_tests():
     signal.signal(signal.SIGINT, kill)
     if p.wait() != 0:
         print('Smoke-tests failed, listing containers/logs.')
-        docker_logs = ['docker-compose', 'logs']
-
-        docker_logs_process = subprocess.Popen(docker_logs, stdin=subprocess.PIPE)
-
-        def kill(signal, frame):
-            docker_logs_process.kill()
-            print()
-            print('killed!')
-            sys.exit(1)
-
-        signal.signal(signal.SIGINT, kill)
-        if docker_logs_process.wait() != 0:
-            print('Error listing logs')
-
-        docker_check = ['docker', 'ps']
-
-        docker_ps_process = subprocess.Popen(docker_check, stdin=subprocess.PIPE)
-
-        def kill(signal, frame):
-            docker_ps_process.kill()
-            print()
-            print('killed!')
-            sys.exit(1)
-
-        signal.signal(signal.SIGINT, kill)
-        if docker_ps_process.wait() != 0:
-            print('Error listing containers')
+        output_docker_logs()
+        output_docker_ps()
         print('Exiting!')
         sys.exit(p.returncode)
 

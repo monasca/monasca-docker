@@ -196,6 +196,7 @@ schema_upgrade() {
 
 }
 
+wait_mysql
 query="select major, minor, patch from schema_version order by id desc limit 1;"
 version=$(echo "$query" | mysql \
     --host="$MYSQL_INIT_HOST" \

@@ -26,7 +26,7 @@ alarm_definitions:
   - name: "Host Status"
     description: "Alarms when the specified host is down or not reachable"
     severity: "HIGH"
-    expression: "host_alive_status > 1"
+    expression: "host_alive_status > 0"
     match_by:
       - "target_host"
       - "hostname"

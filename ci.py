@@ -228,7 +228,7 @@ def update_docker_compose(modules):
             image = image.split(':')[0]
             image += ":ci-cd"
             compose_services[service]['image'] = image
-    print(compose_services['services'])
+    print(compose_services)
     try:
         with open('docker-compose.yml', 'w') as docker_compose:
             yaml.dump(compose_services, docker_compose, default_flow_style=False)

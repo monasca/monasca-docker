@@ -265,7 +265,9 @@ def get_current_init_status(docker_id):
     if p.wait() != 0:
         print('getting current status failed')
         return False
-    exit_code, status = output.split(":", 1)
+    status_output = output.rstrip()
+    print(status_output)
+    exit_code, status = status_output.split(":", 1)
     if exit_code == 0 and status == "exited":
         return True
     return False
@@ -321,7 +323,7 @@ def get_docker_id(init_job):
     if p.wait() != 0:
         print('error getting docker id')
         return ""
-    return output
+    return output.rstrip()
 
 
 def wait_for_init_jobs():
@@ -337,7 +339,7 @@ def wait_for_init_jobs():
         amount_succeeded = 0
         for init_job, status in init_status_dict.iteritems():
             if docker_id_dict[init_job] == "":
-                docker_id_dict[init_job] = get_docker_id(init_job).rstrip()
+                docker_id_dict[init_job] = get_docker_id(init_job)
             if status:
                 amount_succeeded += 1
             else:

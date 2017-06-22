@@ -228,10 +228,10 @@ def update_docker_compose(modules):
             image = image.split(':')[0]
             image += ":ci-cd"
             compose_services[service]['image'] = image
-    print(compose_services)
+    print(compose_dict)
     try:
         with open('docker-compose.yml', 'w') as docker_compose:
-            yaml.dump(compose_services, docker_compose, default_flow_style=False)
+            yaml.dump(compose_dict, docker_compose, default_flow_style=False)
     except:
         raise FileWriteException('Error writing modified dictionary to docker-compose.yml')
 

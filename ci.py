@@ -22,12 +22,40 @@ import re
 import signal
 import subprocess
 import sys
-
+import time
+import yaml
 
 TAG_REGEX = re.compile(r'^!(\w+)(?:\s+([\w-]+))?$')
 
+MODULE_TO_COMPOSE_SERVICE = {
+    'storm': 'storm-supervisor,storm-nimbus',
+    'monasca-agent-forwarder': 'agent-forwarder',
+    'zookeeper': 'zookeeper',
+    'influxdb': 'influxdb',
+    'kafka': 'kafka',
+    'monasca-thresh': 'thresh-init',
+    'monasca-persister-python': 'monasca-persister',
+    'mysql-init': 'mysql-init',
+    'monasca-api-python': 'monasca',
+    'influxdb-init': 'influxdb-init',
+    'monasca-agent-collector': 'agent-collector',
+    'grafana': 'grafana',
+    'keystone': 'keystone',
+    'monasca-alarms': 'alarms',
+    'monasca-notification': 'monasca-notification',
+    'grafana-init': 'grafana-init'
+}
+
 
 class SubprocessException(Exception):
+    pass
+
+
+class FileReadException(Exception):
+    pass
+
+
+class FileWriteException(Exception):
     pass
 
 
@@ -102,7 +130,7 @@ def get_dirty_for_module(files, module=None):
 
 
 def run_build(modules):
-    build_args = ['dbuild', '-sd', 'build', 'all'] + modules
+    build_args = ['dbuild', '-sd', 'build', 'all', '+', ':ci-cd'] + modules
     print('build command:', build_args)
 
     p = subprocess.Popen(build_args, stdin=subprocess.PIPE)
@@ -178,11 +206,157 @@ def run_readme(modules):
         sys.exit(p.returncode)
 
 
+def update_docker_compose(modules):
+    try:
+        with open("docker-compose.yml") as compose_file:
+            compose_dict = yaml.load(compose_file)
+    except:
+        raise FileReadException('Error reading docker-compose.yml')
+    if modules:
+        compose_services = compose_dict['services']
+        for module in modules:
+            # Not all modules are included in docker compose
+            if module not in MODULE_TO_COMPOSE_SERVICE:
+                continue
+            service_name = MODULE_TO_COMPOSE_SERVICE[module]
+            services_to_update = service_name.split(',')
+            for service in services_to_update:
+                image = compose_services[service]['image']
+                image = image.split(':')[0]
+                image += ":ci-cd"
+                compose_services[service]['image'] = image
+    # Update compose version
+    compose_dict['version'] = '2'
+    try:
+        with open('docker-compose.yml', 'w') as docker_compose:
+            yaml.dump(compose_dict, docker_compose, default_flow_style=False)
+    except:
+        raise FileWriteException('Error writing modified dictionary to docker-compose.yml')
+
+
 def handle_pull_request(files, modules, tags):
     if modules:
         run_build(modules)
     else:
         print('No modules to build.')
+    update_docker_compose(modules)
+    run_docker_compose()
+    wait_for_init_jobs()
+    run_smoke_tests()
+
+
+def get_current_init_status(docker_id):
+    init_status = ['docker', 'inspect', '-f', '{{ .State.ExitCode }}:{{ .State.Status }}', docker_id]
+    p = subprocess.Popen(init_status, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+    def kill(signal, frame):
+        p.kill()
+        print()
+        print('killed!')
+        sys.exit(1)
+
+    signal.signal(signal.SIGINT, kill)
+
+    output, err = p.communicate()
+
+    if p.wait() != 0:
+        print('getting current status failed')
+        return False
+    status_output = output.rstrip()
+
+    exit_code, status = status_output.split(":", 1)
+    return exit_code == "0" and status == "exited"
+
+
+def output_docker_logs():
+    docker_logs = ['docker-compose', 'logs']
+
+    docker_logs_process = subprocess.Popen(docker_logs, stdin=subprocess.PIPE)
+
+    def kill(signal, frame):
+        docker_logs_process.kill()
+        print()
+        print('killed!')
+        sys.exit(1)
+
+    signal.signal(signal.SIGINT, kill)
+    if docker_logs_process.wait() != 0:
+        print('Error listing logs')
+
+
+def output_docker_ps():
+    docker_ps = ['docker', 'ps', '-a']
+
+    docker_ps_process = subprocess.Popen(docker_ps, stdin=subprocess.PIPE)
+
+    def kill(signal, frame):
+        docker_ps_process.kill()
+        print()
+        print('killed!')
+        sys.exit(1)
+
+    signal.signal(signal.SIGINT, kill)
+    if docker_ps_process.wait() != 0:
+        print('Error running docker ps')
+
+
+def get_docker_id(init_job):
+    docker_id = ['docker-compose', 'ps', '-q', init_job]
+
+    p = subprocess.Popen(docker_id, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+    def kill(signal, frame):
+        p.kill()
+        print()
+        print('killed!')
+        sys.exit(1)
+
+    signal.signal(signal.SIGINT, kill)
+
+    output, err = p.communicate()
+
+    if p.wait() != 0:
+        print('error getting docker id')
+        return ""
+    return output.rstrip()
+
+
+def wait_for_init_jobs():
+    init_status_dict = {"mysql-init": False,
+                        "thresh-init": False,
+                        "influxdb-init": False}
+    docker_id_dict = {"mysql-init": "",
+                      "thresh-init": "",
+                      "influxdb-init": ""}
+    amount_succeeded = 0
+    for attempt in range(20):
+        time.sleep(30)
+        amount_succeeded = 0
+        for init_job, status in init_status_dict.iteritems():
+            if docker_id_dict[init_job] == "":
+                docker_id_dict[init_job] = get_docker_id(init_job)
+            if status:
+                amount_succeeded += 1
+            else:
+                updated_status = get_current_init_status(docker_id_dict[init_job])
+                init_status_dict[init_job] = updated_status
+                if updated_status:
+                    amount_succeeded += 1
+        if amount_succeeded == len(docker_id_dict):
+            print("All init-jobs passed!")
+            break
+        else:
+            print("Not all init jobs have succeeded. Attempt: " + str(attempt + 1) + " of 20")
+
+    if amount_succeeded != 3:
+        print("Init-jobs did not succeed printing docker ps and logs")
+        output_docker_ps()
+        output_docker_logs()
+        print('Exiting!')
+        sys.exit(1)
+
+    # Sleep in case jobs just succeeded
+    time.sleep(60)
 
 
 def handle_push(files, modules, tags):
@@ -221,6 +395,45 @@ def handle_push(files, modules, tags):
         run_readme(modules_to_readme)
     else:
         print('No READMEs to update.')
+
+
+def run_docker_compose():
+    docker_compose_command = ['docker-compose', 'up', '-d']
+
+    p = subprocess.Popen(docker_compose_command, stdin=subprocess.PIPE)
+
+    def kill(signal, frame):
+        p.kill()
+        print()
+        print('killed!')
+        sys.exit(1)
+
+    signal.signal(signal.SIGINT, kill)
+    if p.wait() != 0:
+        print('docker compose failed, exiting!')
+        sys.exit(p.returncode)
+
+
+def run_smoke_tests():
+    smoke_tests_run = ['docker', 'run', '-e', 'MONASCA_URL=http://monasca:8070', '-e',
+                       'METRIC_NAME_TO_CHECK=monasca.thread_count', '--net', 'monascadocker_default', '-p',
+                       '0.0.0.0:8080:8080', 'monasca/smoke-tests:latest']
+
+    p = subprocess.Popen(smoke_tests_run, stdin=subprocess.PIPE)
+
+    def kill(signal, frame):
+        p.kill()
+        print()
+        print('killed!')
+        sys.exit(1)
+
+    signal.signal(signal.SIGINT, kill)
+    if p.wait() != 0:
+        print('Smoke-tests failed, listing containers/logs.')
+        output_docker_logs()
+        output_docker_ps()
+        print('Exiting!')
+        sys.exit(p.returncode)
 
 
 def handle_other(files, modules, tags):

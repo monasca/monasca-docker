@@ -329,7 +329,7 @@ def wait_for_init_jobs():
                       "thresh-init": "",
                       "influxdb-init": ""}
     amount_succeeded = 0
-    for attempt in range(20):
+    for attempt in range(40):
         time.sleep(30)
         amount_succeeded = 0
         for init_job, status in init_status_dict.iteritems():
@@ -346,7 +346,7 @@ def wait_for_init_jobs():
             print("All init-jobs passed!")
             break
         else:
-            print("Not all init jobs have succeeded. Attempt: " + str(attempt + 1) + " of 20")
+            print("Not all init jobs have succeeded. Attempt: " + str(attempt + 1) + " of 40")
 
     if amount_succeeded != 3:
         print("Init-jobs did not succeed printing docker ps and logs")

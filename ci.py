@@ -215,6 +215,9 @@ def update_docker_compose(modules):
     if modules:
         compose_services = compose_dict['services']
         for module in modules:
+            # Not all modules are included in docker compose
+            if module not in MODULE_TO_COMPOSE_SERVICE:
+                continue
             service_name = MODULE_TO_COMPOSE_SERVICE[module]
             services_to_update = service_name.split(',')
             for service in services_to_update:
@@ -354,6 +357,7 @@ def wait_for_init_jobs():
 
     # Sleep in case jobs just succeeded
     time.sleep(60)
+
 
 def handle_push(files, modules, tags):
     modules_to_push = []

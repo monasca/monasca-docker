@@ -211,16 +211,12 @@ def update_docker_compose(modules):
         with open("docker-compose.yml") as compose_file:
             compose_dict = yaml.load(compose_file)
     except:
-        raise FileReadException('Error reading chart yaml for changed chart')
+        raise FileReadException('Error reading docker-compose.yml')
     if modules:
         compose_services = compose_dict['services']
         for module in modules:
             service_name = MODULE_TO_COMPOSE_SERVICE[module]
-            services_to_update = []
-            if ',' in service_name:
-                services_to_update.extend(service_name.split(','))
-            else:
-                services_to_update.append(service_name)
+            services_to_update = service_name.split(',')
             for service in services_to_update:
                 image = compose_services[service]['image']
                 image = image.split(':')[0]
@@ -266,9 +262,7 @@ def get_current_init_status(docker_id):
     status_output = output.rstrip()
 
     exit_code, status = status_output.split(":", 1)
-    if exit_code == "0" and status == "exited":
-        return True
-    return False
+    return exit_code == "0" and status == "exited"
 
 
 def output_docker_logs():
@@ -345,7 +339,7 @@ def wait_for_init_jobs():
                 init_status_dict[init_job] = updated_status
                 if updated_status:
                     amount_succeeded += 1
-        if amount_succeeded == 3:
+        if amount_succeeded == len(docker_id_dict):
             print("All init-jobs passed!")
             break
         else:
@@ -358,7 +352,7 @@ def wait_for_init_jobs():
         print('Exiting!')
         sys.exit(1)
 
-    # Sleep incase jobs just succeeded
+    # Sleep in case jobs just succeeded
     time.sleep(60)
 
 def handle_push(files, modules, tags):

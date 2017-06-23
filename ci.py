@@ -348,6 +348,8 @@ def wait_for_init_jobs():
         if amount_succeeded == 3:
             print("All init-jobs passed!")
             break
+        else:
+            print("Not all init jobs have succeeded. Attempt: " + str(attempt + 1) + " of 20")
 
     if amount_succeeded != 3:
         print("Init-jobs did not succeed printing docker ps and logs")

@@ -110,6 +110,8 @@ services:
 
   thresh-init:
     image: monasca/thresh:master
+    environment:
+      STORM_WAIT_RETRIES: 80
     depends_on:
       - zookeeper
       - storm-nimbus

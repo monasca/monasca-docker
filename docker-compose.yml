@@ -5,12 +5,12 @@ services:
     image: influxdb:latest
 
   agent-forwarder:
-    image: monasca/agent-forwarder:latest
+    image: monasca/agent-forwarder:master
     environment:
       NON_LOCAL_TRAFFIC: "true"
 
   agent-collector:
-    image: monasca/agent-collector:latest
+    image: monasca/agent-collector:master
     environment:
       FORWARDER_URL: "http://agent-forwarder:17123"
 
@@ -45,7 +45,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: secretmysql
   mysql-init:
-    image: monasca/mysql-init:1.5.0
+    image: monasca/mysql-init:1.5.1
     environment:
       MYSQL_INIT_DISABLE_REMOTE_ROOT: "false"
       MYSQL_INIT_RANDOM_PASSWORD: "false"
@@ -110,6 +110,8 @@ services:
 
   thresh-init:
     image: monasca/thresh:master
+    environment:
+      STORM_WAIT_RETRIES: 50
     depends_on:
       - zookeeper
       - storm-nimbus
@@ -117,6 +119,8 @@ services:
 
   monasca-notification:
     image: monasca/notification:master
+    environment:
+      NF_PLUGINS: "webhook"
     depends_on:
       - monasca
       - zookeeper

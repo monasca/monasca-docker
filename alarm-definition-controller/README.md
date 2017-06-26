@@ -6,7 +6,7 @@ The use is for having a Monasca Alarm Definition Kubernetes Third Party Resource
 allows users to create/modify/delete alarm definitions via creating Kubernetes Resources.
 
 This alleviates the need for users of Monasca to tie into our alarm init container or have
-to tie into a centralized location of all alarm definitions. They control and configure
+to tie into a centralized location of all alarm definitions. Each user controls and configures
 the alarm definitions relevant to what they are working on.
 
 Sources: [alarm-definition-controller][1] &middot; [Dockerfile][2] &middot; [Helm Implementation][3]

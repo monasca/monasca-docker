@@ -15,7 +15,7 @@
 
 kafka.logs.dir=/logs
 
-log4j.rootLogger={{ SERVER_LOG_LEVEL | default("INFO") }}, kafkaAppender
+log4j.rootLogger={{ SERVER_LOG_LEVEL }}, kafkaAppender
 
 log4j.appender.stdout=org.apache.log4j.ConsoleAppender
 log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
@@ -59,18 +59,18 @@ log4j.additivity.kafka.network.RequestChannel$=false
 #log4j.logger.kafka.network.Processor=TRACE, requestAppender
 #log4j.logger.kafka.server.KafkaApis=TRACE, requestAppender
 #log4j.additivity.kafka.server.KafkaApis=false
-log4j.logger.kafka.request.logger={{ REQUEST_LOG_LEVEL | default("WARN") }}, requestAppender
+log4j.logger.kafka.request.logger={{ REQUEST_LOG_LEVEL }}, requestAppender
 log4j.additivity.kafka.request.logger=false
 
-log4j.logger.kafka.controller={{ CONTROLLER_LOG_LEVEL | default("INFO") }}, controllerAppender
+log4j.logger.kafka.controller={{ CONTROLLER_LOG_LEVEL }}, controllerAppender
 log4j.additivity.kafka.controller=false
 
-log4j.logger.kafka.log.LogCleaner={{ LOG_CLEANER_LOG_LEVEL | default("INFO") }}, cleanerAppender
+log4j.logger.kafka.log.LogCleaner={{ LOG_CLEANER_LOG_LEVEL }}, cleanerAppender
 log4j.additivity.kafka.log.LogCleaner=false
 
-log4j.logger.state.change.logger={{ STATE_CHANGE_LOG_LEVEL | default("INFO") }}, stateChangeAppender
+log4j.logger.state.change.logger={{ STATE_CHANGE_LOG_LEVEL }}, stateChangeAppender
 log4j.additivity.state.change.logger=false
 
 #Change this to debug to get the actual audit log for authorizer.
-log4j.logger.kafka.authorizer.logger={{ AUTHORIZER_LOG_LEVEL | default("WARN") }}, authorizerAppender
+log4j.logger.kafka.authorizer.logger={{ AUTHORIZER_LOG_LEVEL }}, authorizerAppender
 log4j.additivity.kafka.authorizer.logger=false

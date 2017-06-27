@@ -23,27 +23,27 @@ log4j.appender.stdout.layout.ConversionPattern=[%d] %p %m (%c)%n
 
 log4j.appender.kafkaAppender=org.apache.log4j.ConsoleAppender
 log4j.appender.kafkaAppender.layout=org.apache.log4j.PatternLayout
-log4j.appender.kafkaAppender.layout.ConversionPattern=[%d] %p filename=server.log %m (%c)%n
+log4j.appender.kafkaAppender.layout.ConversionPattern=[%d] %p logfile=server.log %m (%c)%n
 
 log4j.appender.stateChangeAppender=org.apache.log4j.ConsoleAppender
 log4j.appender.stateChangeAppender.layout=org.apache.log4j.PatternLayout
-log4j.appender.stateChangeAppender.layout.ConversionPattern=[%d] %p filename=state-change.log %m (%c)%n
+log4j.appender.stateChangeAppender.layout.ConversionPattern=[%d] %p logfile=state-change.log %m (%c)%n
 
 log4j.appender.requestAppender=org.apache.log4j.ConsoleAppender
 log4j.appender.requestAppender.layout=org.apache.log4j.PatternLayout
-log4j.appender.requestAppender.layout.ConversionPattern=[%d] %p filename=kafka-request.log %m (%c)%n
+log4j.appender.requestAppender.layout.ConversionPattern=[%d] %p logfile=kafka-request.log %m (%c)%n
 
 log4j.appender.cleanerAppender=org.apache.log4j.ConsoleAppender
 log4j.appender.cleanerAppender.layout=org.apache.log4j.PatternLayout
-log4j.appender.cleanerAppender.layout.ConversionPattern=[%d] %p filename=log-cleaner.log %m (%c)%n
+log4j.appender.cleanerAppender.layout.ConversionPattern=[%d] %p logfile=log-cleaner.log %m (%c)%n
 
 log4j.appender.controllerAppender=org.apache.log4j.ConsoleAppender
 log4j.appender.controllerAppender.layout=org.apache.log4j.PatternLayout
-log4j.appender.controllerAppender.layout.ConversionPattern=[%d] %p filename=controller.log %m (%c)%n
+log4j.appender.controllerAppender.layout.ConversionPattern=[%d] %p logfile=controller.log %m (%c)%n
 
 log4j.appender.authorizerAppender=org.apache.log4j.ConsoleAppender
 log4j.appender.authorizerAppender.layout=org.apache.log4j.PatternLayout
-log4j.appender.authorizerAppender.layout.ConversionPattern=[%d] %p filename=kafka-authorizer.log %m (%c)%n
+log4j.appender.authorizerAppender.layout.ConversionPattern=[%d] %p logfile=kafka-authorizer.log %m (%c)%n
 
 # Turn on all our debugging info
 #log4j.logger.kafka.producer.async.DefaultEventHandler=DEBUG, kafkaAppender

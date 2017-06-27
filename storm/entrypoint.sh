@@ -57,7 +57,7 @@ if [ "$ZOOKEEPER_WAIT" = "true" ]; then
   fi
 fi
 
-if [ -z "STORM_LOCAL_HOSTNAME" ]; then
+if [ -z "$STORM_LOCAL_HOSTNAME" ]; then
   # see also: http://stackoverflow.com/a/21336679
   ip=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
   echo "Using autodetected IP as advertised hostname: $ip"

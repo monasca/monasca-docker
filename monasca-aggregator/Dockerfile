@@ -8,14 +8,14 @@ env GOPATH=/go
 
 run apk add --no-cache openssl py2-jinja2 && \
   apk add --no-cache --virtual build-dep \
-    librdkafka-dev git go make g++ openssl-dev && \
+    librdkafka-dev git go glide make g++ openssl-dev && \
   mkdir -p $GOPATH/src/github.com/monasca/monasca-aggregator && \
   cd $GOPATH/src/github.com/monasca/monasca-aggregator && \
   git init && \
   git remote add origin $AGGREGATOR_REPO && \
   git fetch origin $AGGREGATOR_BRANCH && \
   git reset --hard FETCH_HEAD && \
-  go get && \
+  glide install && \
   go build -tags static && \
   cp monasca-aggregator /monasca-aggregator && \
   cp aggregation-specifications.yaml / && \

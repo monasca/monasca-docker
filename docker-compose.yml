@@ -144,6 +144,6 @@ services:
       - monasca
 
   grafana-init:
-    image: monasca/grafana-init:1.1.0
+    image: monasca/grafana-init:1.1.1
     depends_on:
       - grafana

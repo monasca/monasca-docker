@@ -110,6 +110,8 @@ services:
 
   thresh-init:
     image: monasca/thresh:master
+    environment:
+      STORM_WAIT_RETRIES: 50
     depends_on:
       - zookeeper
       - storm-nimbus
@@ -117,6 +119,8 @@ services:
 
   monasca-notification:
     image: monasca/notification:master
+    environment:
+      NF_PLUGINS: "webhook"
     depends_on:
       - monasca
       - zookeeper

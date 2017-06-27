@@ -128,7 +128,7 @@ services:
       - mysql
 
   grafana:
-    image: monasca/grafana:4.0.0-1.1.0
+    image: monasca/grafana:4.0.0-1.1.1
     environment:
       GF_AUTH_BASIC_ENABLED: "false"
       GF_USERS_ALLOW_SIGN_UP: "true"
@@ -144,6 +144,6 @@ services:
       - monasca
 
   grafana-init:
-    image: monasca/grafana-init:1.1.1
+    image: monasca/grafana-init:1.1.0
     depends_on:
       - grafana

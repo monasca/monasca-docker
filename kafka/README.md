@@ -72,10 +72,10 @@ Several parameters can be specified using environment variables:
 ### Log Files
 
 Multiple Kafka log files are written to stdout for the container. They can be distinguished via
-the filename attribute in each message. For example:
+the logfile attribute in each message. For example:
 
 ```
-kafka_1                 | [2017-06-15 06:32:09,572] INFO filename=server.log Loading logs. (kafka.log.LogManager)
+kafka_1                 | [2017-06-15 06:32:09,572] INFO logfile=server.log Loading logs. (kafka.log.LogManager)
 ```
 
 If `GC_LOG_ENABLED` is set to True, the JVM Garbage Collection log will be written within the

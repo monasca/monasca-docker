@@ -235,10 +235,22 @@ def update_docker_compose(modules):
 
 
 def handle_pull_request(files, modules, tags):
+    modules_to_build = modules[:]
+
+    for tag, arg in tags:
+        if tag in ('build', 'push'):
+            if arg is None:
+                # arg-less doesn't make sense for PRs since any changes to a
+                # module already result in a rebuild
+                continue
+
+            modules_to_build.append(arg)
+
     if modules:
-        run_build(modules)
+        run_build(modules_to_build)
     else:
         print('No modules to build.')
+
     update_docker_compose(modules)
     run_docker_compose()
     wait_for_init_jobs()
@@ -367,7 +379,7 @@ def handle_push(files, modules, tags):
     force_readme = False
 
     for tag, arg in tags:
-        if tag == 'push':
+        if tag in ('build', 'push'):
             if arg is None:
                 force_push = True
             else:

@@ -97,7 +97,8 @@ services:
     image: monasca/storm:1.0.3
     command: storm nimbus
     environment:
-      DEBUG: "true"
+      STORM_LOCAL_HOSTNAME: "storm-nimbus"
+      WORKER_LOGS_TO_STDOUT: "true"
     depends_on:
       - zookeeper
       - kafka

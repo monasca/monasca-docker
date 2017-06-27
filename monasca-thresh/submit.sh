@@ -5,16 +5,12 @@ TOPOLOGY_NAME="thresh-cluster"
 echo "Waiting for storm to become available..."
 success="false"
 for i in $(seq $STORM_WAIT_RETRIES); do
-  date
   timeout -t $STORM_WAIT_TIMEOUT storm list
   if [ $? -eq 0 ]; then
     echo "Storm is available, continuing..."
     success="true"
     break
   else
-    echo $?
-    date
-    ps -ef
     echo "Connection attempt $i of $STORM_WAIT_RETRIES failed"
     sleep "$STORM_WAIT_DELAY"
   fi

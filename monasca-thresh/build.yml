@@ -3,5 +3,6 @@ variants:
   - tag: master
     aliases:
       - :master-{date}-{time}
+      - :latest
     args:
       SKIP_COMMON_TESTS: "true"

@@ -24,7 +24,7 @@ healthchecks = monasca_api.healthchecks:HealthChecks
 
 [security]
 # The roles that are allowed full access to the API.
-default_authorized_roles = {{ AUTHORIZED_ROLES | default('user, domainuser, domainadmin, monasca-user') }}
+default_authorized_roles = {{ AUTHORIZED_ROLES | default('admin, domainuser, domainadmin, monasca-user') }}
 
 # The roles that are allowed to only POST metrics to the API. This role would be used by the Monasca Agent.
 agent_authorized_roles = {{ AGENT_AUTHORIZED_ROLES | default('monasca-agent') }}

@@ -1,8 +1,20 @@
 version: '3'
 services:
-
   influxdb:
     image: influxdb:latest
+
+  # cadvisor will allow host metrics to be collected, but requires significant
+  # access to the host system
+  # if this is not desired, the following can be commented out, and the CADVISOR
+  # environment variable should be set to "false" in the `agent-collector`
+  # block - however no metrics will be collected
+  cadvisor:
+    image: google/cadvisor:v0.26.1
+    volumes:
+      - "/:/rootfs:ro"
+      - "/var/run:/var/run:rw"
+      - "/sys:/sys:ro"
+      - "/var/lib/docker:/var/lib/docker:ro"
 
   agent-forwarder:
     image: monasca/agent-forwarder:master
@@ -12,7 +24,10 @@ services:
   agent-collector:
     image: monasca/agent-collector:master
     environment:
+      AGENT_HOSTNAME: "docker-host"
       FORWARDER_URL: "http://agent-forwarder:17123"
+      CADVISOR: "true"
+      CADVISOR_URL: "http://cadvisor:8080/"
 
   influxdb-init:
     image: monasca/influxdb-init:latest

@@ -68,6 +68,12 @@ for f in $CONFIG_TEMPLATES/*.properties.j2; do
   fi
 done
 
+if [ -z "$KAFKA_HEAP_OPTS" ]; then
+  max_heap=$(python /heap.py $KAFKA_MAX_HEAP_MB)
+  KAFKA_HEAP_OPTS="-Xmx${max_heap} -Xms${max_heap}"
+  export KAFKA_HEAP_OPTS
+fi
+
 if [ "$KAFKA_JMX" = "true" ]; then
   KAFKA_JMX_PORT=${KAFKA_JMX_PORT:-"7203"}
 
@@ -75,7 +81,7 @@ if [ "$KAFKA_JMX" = "true" ]; then
   # we don't export any kafka options by default so JVMs spawned on this
   # container don't always hit port conflicts
   # this should make it possible to e.g. run scripts in /kafka/bin/ on the
-  # runnign server without the JVM crashing due to the RMI port being used
+  # running server without the JVM crashing due to the RMI port being used
   export JMX_PORT=$KAFKA_JMX_PORT
 
   if [ -z "$KAFKA_JMX_OPTS" ]; then

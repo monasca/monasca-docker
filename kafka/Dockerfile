@@ -7,7 +7,8 @@ ARG ASC_MIRROR=https://dist.apache.org/repos/dist/release/kafka
 ARG SKIP_VERIFY=false
 
 ENV KAFKA_HOSTNAME_FROM_IP=true \
-  ZOOKEEPER_CONNECTION_STRING=zookeeper:2181
+  ZOOKEEPER_CONNECTION_STRING=zookeeper:2181 \
+  KAFKA_MAX_HEAP_MB="1024"
 
 COPY kafka_mirror.py /
 
@@ -27,7 +28,7 @@ RUN set -x && \
   rm /kafka.tar.gz /kafka_mirror.py && \
   apk del build-dep
 
-COPY template.py start.sh create_topics.py /
+COPY template.py start.sh create_topics.py heap.py /
 COPY templates /templates
 
 ENV PATH /kafka/bin:$PATH

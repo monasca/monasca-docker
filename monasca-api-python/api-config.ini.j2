@@ -20,6 +20,6 @@ paste.filter_factory = oslo_middleware.request_id:RequestId.factory
 [server:main]
 use = egg:gunicorn#main
 host = 0.0.0.0
-port = {{ API_PORT }}
+port = {{ MONASCA_CONTAINER_API_PORT }}
 workers = 1
 proc_name = monasca_api

@@ -23,6 +23,7 @@ ENV CONFIG_TEMPLATE=true \
   MYSQL_USER=monapi \
   MYSQL_PASSWORD=password \
   MYSQL_DB=mon \
+  MEMCACHED_URI=memcached:11211 \
   KEYSTONE_IDENTITY_URI=http://keystone:35357 \
   KEYSTONE_AUTH_URI=http://keystone:5000 \
   KEYSTONE_ADMIN_USER=admin \
@@ -41,8 +42,8 @@ RUN apk add --no-cache python py2-pip py2-jinja2 curl mysql-client && \
   git remote add origin $API_REPO && \
   git fetch origin $API_BRANCH && \
   git reset --hard FETCH_HEAD && \
-  pip install gunicorn influxdb && \
-  pip install -r requirements.txt && \
+  pip install --no-cache-dir gunicorn influxdb \
+    python-memcached -r requirements.txt && \
   python setup.py install && \
   cd / && \
   rm -rf /monasca-api && \

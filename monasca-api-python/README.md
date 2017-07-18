@@ -69,7 +69,7 @@ A number of environment variables can be passed to the container:
 | `LOG_LEVEL_ROOT`          | `WARN`        | The level of the root logger     |
 | `LOG_LEVEL_CONSOLE`       | `INFO`        | Minimum level for console output |
 | `LOG_LEVEL_ACCESS`        | `INFO`        | Minimum level for access output  |
-| `API_PORT`                | `8070`        | The API's HTTP port              |
+| `MONASCA_CONTAINER_API_PORT` | `8070`        | The API's HTTP port           |
 | `KAFKA_URI`               | `kafka:9092`  | The host and port for kafka      |
 | `KAFKA_WAIT_FOR_TOPICS`   | `alarm-state-transitions,metrics` | Topics to wait on at startup |
 | `KAFKA_WAIT_RETRIES`      | `24`          | # of kafka wait attempts         |

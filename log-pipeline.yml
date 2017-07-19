@@ -66,7 +66,7 @@ services:
       - 5601:5601
 
   log-api:
-    image: kornicameister/monasca-log-api:master
+    image: kornicameister/log-api:master
     depends_on:
       - keystone
       - zookeeper

@@ -2,7 +2,8 @@ FROM python:2-alpine
 
 ARG LOG_API_REPO=https://github.com/openstack/monasca-log-api.git
 ARG LOG_API_BRANCH=master
-ARG CONSTRAINTS_FILE=https://git.openstack.org/cgit/openstack/requirements/plain/upper-constraints.txt?h=master
+ARG CONSTRAINTS_BRANCH=master
+ARG CONSTRAINTS_FILE=https://git.openstack.org/cgit/openstack/requirements/plain/upper-constraints.txt?h=$CONSTRAINTS_BRANCH
 
 # To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
 # `docker build`

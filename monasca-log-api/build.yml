@@ -1,0 +1,30 @@
+repository: kornicameister/log-api
+variants:
+  - tag: master
+    aliases:
+      - :master-{date}-{time}
+    args:
+      LOG_API_BRANCH: master
+      CONSTRAINTS_BRANCH: master
+  - tag: ocata
+    aliases:
+      - :ocata-{date}-{time}
+    args:
+      LOG_API_BRANCH: stable/ocata
+      CONSTRAINTS_BRANCH: stable/ocata
+  - tag: 2.2.1
+    aliases:
+      - latest
+    args:
+      LOG_API_BRANCH: 2.2.1
+  - tag: 2.1.0
+    args:
+      LOG_API_BRANCH: 2.1.0
+  - tag: 2.0.0
+    args:
+      LOG_API_BRANCH: 2.0.0
+  - tag: 1.4.1
+    args:
+      LOG_API_BRANCH: 1.4.1
+      CONSTRAINTS_BRANCH: stable/ocata
+

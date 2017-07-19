@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+sed -e "
+    s|monasca-kibana-plugin.enabled:\sFalse|monasca-kibana-plugin.enabled: ${MONASCA_PLUGIN_ENABLED}|g;
+" -i /opt/kibana/config/kibana.yml
+
+kibana

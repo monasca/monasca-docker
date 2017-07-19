@@ -6,8 +6,11 @@ ARG KIBANA_PLUGIN_BRANCH=master
 
 WORKDIR /mkp/
 
-RUN apk add --no-cache --virtual build-dep git rsync && \
-  git clone $KIBANA_PLUGIN_REPO --depth 1 --branch $KIBANA_PLUGIN_BRANCH monasca-kibana-plugin && \
+ARG REBUILD_PLUGIN_DEPS=1
+RUN apk add --no-cache --virtual build-dep git rsync
+
+ARG REBUILD_PLUGIN_PLUGIN=1
+RUN git clone $KIBANA_PLUGIN_REPO --depth 1 --branch $KIBANA_PLUGIN_BRANCH monasca-kibana-plugin && \
   cd monasca-kibana-plugin && \
   npm install && \
   npm run package && \
@@ -19,19 +22,20 @@ RUN apk add --no-cache --virtual build-dep git rsync && \
 
 FROM kibana:4
 
-ENV KEYSTONE_URI=keystone:5000
+ENV KEYSTONE_URI=keystone:5000 \
+    MONASCA_PLUGIN_ENABLED=False
 
 WORKDIR /
+
+ARG REBUILD_FILES=1
 COPY --from=0 /monasca-kibana-plugin.tar.gz .
-COPY wait-for /
+COPY wait-for plugin_config start /
+RUN chmod +x /wait-for /plugin_config /start
 
-RUN chmod +x /wait-for
-
-RUN echo "monasca-kibana-plugin.auth_uri: http://${KEYSTONE_URI}" >> /opt/kibana/config/kibana.yml && \
-  echo "monasca-kibana-plugin.enabled: True" >> /opt/kibana/config/kibana.yml && \
-  echo "monasca-kibana-plugin.cookie.isSecure: False" >> /opt/kibana/config/kibana.yml && \
+ARG REBUILD_INSTALL_PLUGIN=1
+RUN /plugin_config && \
   kibana plugin -r monasca-kibana-plugin && \
   kibana plugin -i monasca-kibana-plugin -u file:///monasca-kibana-plugin.tar.gz && \
   rm -rf /monasca-kibana-plugin.tar.gz
 
-CMD /wait-for $KEYSTONE_URI -- kibana
+CMD /wait-for $KEYSTONE_URI -- /start

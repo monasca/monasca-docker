@@ -1,0 +1,5 @@
+repository: kornicameister/kibana
+variants:
+  - tag: latest
+    aliases:
+      - :4

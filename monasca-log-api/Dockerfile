@@ -26,17 +26,21 @@ ENV CONFIG_TEMPLATE=true \
   ACCESS_LOG_FORMAT="%(asctime)s [%(process)d] gunicorn.access [%(levelname)s] %(message)s" \
   ACCESS_LOG_FIELDS='%(h)s %(l)s %(u)s %(t)s %(r)s %(s)s %(b)s "%(f)s" "%(a)s" %(L)s'
 
+ARG REBUILD_DEPENDENCIES=1
 RUN apk add --no-cache curl && \
   apk add --no-cache --virtual build-dep git make g++ linux-headers && \
-  git clone $LOG_API_REPO --depth 1 --branch $LOG_API_BRANCH monasca-log-api && \
+  pip install --no-cache-dir Jinja2 gunicorn -c $CONSTRAINTS_FILE
+
+ARG REBUILD_CHECKOUT=1
+RUN git clone $LOG_API_REPO --depth 1 --branch $LOG_API_BRANCH monasca-log-api && \
   cd monasca-log-api && \
-  pip install --no-cache-dir gunicorn Jinja2 -c $CONSTRAINTS_FILE && \
   pip install --no-cache-dir -r requirements.txt -c $CONSTRAINTS_FILE && \
   python setup.py install && \
   cd / && \
   rm -rf /monasca-log-api && \
   apk del build-dep
 
+ARG REBUILD_CONFIG=1
 COPY log-api* /etc/monasca/
 COPY template.py start.sh health-check.sh kafka_wait_for_topics.py /
 

@@ -9,12 +9,14 @@ ENV CONFIG_TEMPLATE=true \
   ZOOKEEPER_URI=zookeeper:2181 \
   KAFKA_WAIT_FOR_TOPICS=log-transformed,log
 
+ARG REBUILD_DEPENDENCIES=1
 RUN apk add --no-cache python py2-pip py2-jinja2 && \
   apk add --no-cache --virtual build-dep \
   python-dev make g++ linux-headers && \
   pip install pykafka && \
   apk del build-dep
 
+ARG REBUILD_CONFIG=1
 COPY log-transformer* /etc/monasca/
 COPY template.py start.sh kafka_wait_for_topics.py /
 

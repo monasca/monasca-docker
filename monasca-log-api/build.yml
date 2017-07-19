@@ -14,16 +14,25 @@ variants:
       CONSTRAINTS_BRANCH: stable/ocata
   - tag: 2.2.1
     aliases:
-      - latest
+      - :latest
+      - :2.2
+      - :2
     args:
       LOG_API_BRANCH: 2.2.1
   - tag: 2.1.0
+    aliases:
+      - :2.1
     args:
       LOG_API_BRANCH: 2.1.0
   - tag: 2.0.0
+    aliases:
+      - :2.0
     args:
       LOG_API_BRANCH: 2.0.0
   - tag: 1.4.1
+    aliases:
+      - :1.4
+      - :1
     args:
       LOG_API_BRANCH: 1.4.1
       CONSTRAINTS_BRANCH: stable/ocata

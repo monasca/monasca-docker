@@ -12,8 +12,8 @@ RUN apk add --no-cache --virtual build-dep git rsync
 ARG REBUILD_PLUGIN_PLUGIN=1
 RUN git clone $KIBANA_PLUGIN_REPO --depth 1 --branch $KIBANA_PLUGIN_BRANCH monasca-kibana-plugin && \
   cd monasca-kibana-plugin && \
-  npm install && \
-  npm run package && \
+  npm install --quiet && \
+  npm run package --quiet && \
   KIBANA_PLUGIN_VER=$(node -e "console.log(require('./package.json').version)") && \
   mv target/monasca-kibana-plugin-${KIBANA_PLUGIN_VER}.tar.gz /monasca-kibana-plugin.tar.gz && \
   cd / && \

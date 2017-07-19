@@ -2,14 +2,14 @@ version: '3'
 services:
 
   log-metrics:
-    image: kornicameister/monasca-log-metrics:latest
+    image: kornicameister/log-metrics:latest
     depends_on:
       - kafka
       - zookeeper
       - log-transformer
 
   log-persister:
-    image: kornicameister/monasca-log-persister:latest
+    image: kornicameister/log-persister:latest
     depends_on:
       - kafka
       - zookeeper
@@ -17,7 +17,7 @@ services:
       - log-transformer
 
   log-transformer:
-    image: kornicameister/monasca-log-transformer:latest
+    image: kornicameister/log-transformer:latest
     depends_on:
       - kafka
       - zookeeper
@@ -57,7 +57,7 @@ services:
   kibana:
     image: kornicameister/kibana:4
     environment:
-      SERVER_NAME: monasca-kibana
+      SERVER_NAME: kibana
       ELASTICSEARCH_PINGTIMEOUT: 1000
     depends_on:
       - elasticsearch

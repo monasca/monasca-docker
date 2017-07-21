@@ -3,8 +3,6 @@ services:
 
   memcached:
     image: memcached:alpine
-    ports:
-      - "22122:11211"
 
   influxdb:
     image: influxdb:latest
@@ -96,7 +94,6 @@ services:
     image: monasca/api:master
     environment:
       SIDECAR_URL: http://monasca-sidecar:4888/v1/ingest
-      MEMCACHED_URI: memcached:22122
     depends_on:
       - influxdb
       - keystone

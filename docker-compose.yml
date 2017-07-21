@@ -1,5 +1,9 @@
 version: '3'
 services:
+
+  memcached:
+    image: memcached:alpine
+
   influxdb:
     image: influxdb:latest
 
@@ -95,6 +99,7 @@ services:
       - zookeeper
       - kafka
       - monasca-sidecar
+      - memcached
     ports:
       - "8070:8070"
 

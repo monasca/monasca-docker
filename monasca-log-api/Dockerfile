@@ -1,4 +1,4 @@
-FROM python:2-alpine
+FROM alpine:3.5
 
 ARG LOG_API_REPO=https://github.com/openstack/monasca-log-api.git
 ARG LOG_API_BRANCH=master
@@ -26,14 +26,15 @@ ENV CONFIG_TEMPLATE=true \
   ACCESS_LOG_FORMAT="%(asctime)s [%(process)d] gunicorn.access [%(levelname)s] %(message)s" \
   ACCESS_LOG_FIELDS='%(h)s %(l)s %(u)s %(t)s %(r)s %(s)s %(b)s "%(f)s" "%(a)s" %(L)s'
 
-ARG REBUILD_DEPENDENCIES=1
-RUN apk add --no-cache curl && \
-  apk add --no-cache --virtual build-dep git make g++ linux-headers && \
-  pip install --no-cache-dir Jinja2 gunicorn -c $CONSTRAINTS_FILE
-
-ARG REBUILD_CHECKOUT=1
-RUN git clone $LOG_API_REPO --depth 1 --branch $LOG_API_BRANCH monasca-log-api && \
-  cd monasca-log-api && \
+ARG REBUILD_PROJECT=1
+RUN apk add --no-cache python py2-pip py2-jinja2 curl && \
+  apk add --no-cache --virtual build-dep python-dev git make g++ linux-headers && \
+  mkdir /monasca-log-api && cd /monasca-log-api && \
+  git init && \
+  git remote add origin $LOG_API_REPO && \
+  git fetch origin $LOG_API_BRANCH && \
+  git reset --hard FETCH_HEAD && \
+  pip install --no-cache-dir gunicorn -c $CONSTRAINTS_FILE && \
   pip install --no-cache-dir -r requirements.txt -c $CONSTRAINTS_FILE && \
   python setup.py install && \
   cd / && \

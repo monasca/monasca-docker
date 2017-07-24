@@ -357,8 +357,8 @@ def wait_for_init_jobs():
         else:
             print("Not all init jobs have succeeded. Attempt: " + str(attempt + 1) + " of 40")
 
-    if amount_succeeded != 3:
-        print("Init-jobs did not succeed printing docker ps and logs")
+    if amount_succeeded != len(docker_id_dict):
+        print("Init-jobs did not succeed, printing docker ps and logs")
         output_docker_ps()
         output_docker_logs()
         print('Exiting!')

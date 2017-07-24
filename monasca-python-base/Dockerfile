@@ -1,12 +1,12 @@
 FROM alpine:3.6
 
 ARG REPO=""
-ARG BRANCH=""
+ARG BRANCH=master
 
-ARG EXTRA_DEPS=""
-ARG EXTRAS=""
+ARG EXTRA_DEPS=-1
+ARG EXTRAS=-1
 
-ARG CONSTRAINTS_BRANCH=""
+ARG CONSTRAINTS_BRANCH=master
 ARG CONSTRAINTS_FILE=https://git.openstack.org/cgit/openstack/requirements/plain/upper-constraints.txt?h=$CONSTRAINTS_BRANCH
 
 ARG PYTHON_VERSION=2
@@ -18,7 +18,7 @@ RUN apk add --no-cache python${PYTHON_VERSION} py${PYTHON_VERSION}-pip py${PYTHO
   apk add --no-cache --virtual build-dep python${PYTHON_VERSION}-dev git make g++ linux-headers && \
   mkdir -p /app && cd /app && \
   chmod +x /install_app.sh && \
-  /install_app.sh ${REPO} ${BRANCH} ${EXTRAS} ${EXTRA_DEPS} ${CONSTRAINTS_FILE} && \
+  sh /install_app.sh ${REPO} ${BRANCH} ${EXTRAS} ${EXTRA_DEPS} ${CONSTRAINTS_FILE} && \
   cd / && \
-  rm -rf /app && \
+  rm -rf /app /install_app.sh && \
   apk del build-dep

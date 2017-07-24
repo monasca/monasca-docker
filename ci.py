@@ -28,12 +28,11 @@ import yaml
 TAG_REGEX = re.compile(r'^!(\w+)(?:\s+([\w-]+))?$')
 
 MODULE_TO_COMPOSE_SERVICE = {
-    'storm': 'storm-supervisor,storm-nimbus',
     'monasca-agent-forwarder': 'agent-forwarder',
     'zookeeper': 'zookeeper',
     'influxdb': 'influxdb',
     'kafka': 'kafka',
-    'monasca-thresh': 'thresh-init',
+    'monasca-thresh': 'thresh',
     'monasca-persister-python': 'monasca-persister',
     'mysql-init': 'mysql-init',
     'monasca-api-python': 'monasca',
@@ -335,10 +334,8 @@ def get_docker_id(init_job):
 
 def wait_for_init_jobs():
     init_status_dict = {"mysql-init": False,
-                        "thresh-init": False,
                         "influxdb-init": False}
     docker_id_dict = {"mysql-init": "",
-                      "thresh-init": "",
                       "influxdb-init": ""}
     amount_succeeded = 0
     for attempt in range(40):

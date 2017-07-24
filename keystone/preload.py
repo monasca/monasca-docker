@@ -15,8 +15,6 @@ from keystoneauth1.exceptions.connection import ConnectFailure
 from keystoneauth1.identity import v3
 from keystoneclient.v3 import client
 
-import k8s_get_service
-
 
 def _get_auth_plugin(auth_url, **kwargs):
     kwargs = {
@@ -179,6 +177,7 @@ def add_monasca_service():
 
 
 def resolve_k8s_service_by_url(url):
+    import k8s_get_service
     parsed = urlparse.urlparse(url)
     service = parsed.hostname
 

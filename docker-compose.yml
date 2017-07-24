@@ -111,32 +111,14 @@ services:
       - zookeeper
       - kafka
 
-  storm-nimbus:
-    image: monasca/storm:1.0.3
-    command: storm nimbus
+  thresh:
+    image: monasca/thresh:latest
     environment:
-      STORM_LOCAL_HOSTNAME: "storm-nimbus"
-      WORKER_LOGS_TO_STDOUT: "true"
+      NO_STORM_CLUSTER: "true"
+      WORKER_MAX_HEAP_MB: "256"
     depends_on:
       - zookeeper
       - kafka
-
-  storm-supervisor:
-    image: monasca/storm:1.0.3
-    command: storm supervisor
-    depends_on:
-      - storm-nimbus
-      - zookeeper
-      - kafka
-
-  thresh-init:
-    image: monasca/thresh:master
-    environment:
-      STORM_WAIT_RETRIES: 50
-    depends_on:
-      - zookeeper
-      - storm-nimbus
-      - storm-supervisor
 
   monasca-notification:
     image: monasca/notification:master

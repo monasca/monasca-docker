@@ -38,24 +38,38 @@ to no configuration and can be minimally run like so:
 Configuration
 -------------
 
-| Variable             | Default        | Description                              |
-|----------------------|----------------|------------------------------------------|
-| `MYSQL_DB_HOST`      | `mysql`        | MySQL hostname                           |
-| `MYSQL_DB_PORT`      | `3306`         | MySQL port                               |
-| `MYSQL_DB_USERNAME`  | `thresh`       | MySQL username                           |
-| `MYSQL_DB_PASSWORD`  | `password`     | MySQL password                           |
-| `MYSQL_DB_DATABASE`  | `mon`          | MySQL database name                      |
-| `MYSQL_WAIT_RETRIES` | `24`           | # of tries to verify MySQL availability  |
-| `MYSQL_WAIT_DELAY`   | `5`            | # seconds between retry attempts         |
-| `KAFKA_URI`          | `kafka:9092`   | If `true`, disable remote root login     |
-| `KAFKA_WAIT_FOR_TOPICS` | `alarm-state-transitions,metrics,events`    | Comma-separated list of topic names to check |
-| `KAFKA_WAIT_RETRIES` | `24`           | # of tries to verify Kafka availability  |
-| `KAFKA_WAIT_DELAY`   | `5`            | # seconds between retry attempts         |
-| `ZOOKEEPER_URL`      | `zookeeper:2181` | Zookeeper URL                          |
-| `NO_STORM_CLUSTER`   | unset          | If `true`, run without Storm daemons     |
-| `WORKER_MAX_HEAP_MB` | unset          | If set and `NO_STORM_CLUSTER` is `true`, use as Heap Size for JVM |
-| `STORM_WAIT_RETRIES` | `24`           | # of tries to verify Storm availability  |
-| `STORM_WAIT_DELAY`   | `5`            | # seconds between retry attempts         |
+| Variable                      | Default        | Description                              |
+|-------------------------------|----------------|------------------------------------------|
+| `MYSQL_DB_HOST`               | `mysql`        | MySQL hostname                           |
+| `MYSQL_DB_PORT`               | `3306`         | MySQL port                               |
+| `MYSQL_DB_USERNAME`           | `thresh`       | MySQL username                           |
+| `MYSQL_DB_PASSWORD`           | `password`     | MySQL password                           |
+| `MYSQL_DB_DATABASE`           | `mon`          | MySQL database name                      |
+| `MYSQL_WAIT_RETRIES`          | `24`           | # of tries to verify MySQL availability  |
+| `MYSQL_WAIT_DELAY`            | `5`            | # seconds between retry attempts         |
+| `KAFKA_URI`                   | `kafka:9092`   | If `true`, disable remote root login     |
+| `KAFKA_WAIT_FOR_TOPICS`       | `alarm-state-transitions,metrics,events`    | Comma-separated list of topic names to check |
+| `KAFKA_WAIT_RETRIES`          | `24`           | # of tries to verify Kafka availability  |
+| `KAFKA_WAIT_DELAY`            | `5`            | # seconds between retry attempts         |
+| `ZOOKEEPER_URL`               | `zookeeper:2181` | Zookeeper URL                          |
+| `NO_STORM_CLUSTER`            | unset          | If `true`, run without Storm daemons     |
+| `STORM_WAIT_RETRIES`          | `24`           | # of tries to verify Storm availability  |
+| `STORM_WAIT_DELAY`            | `5`            | # seconds between retry attempts         |
+| `WORKER_MAX_HEAP_MB`          | unset          | If set and `NO_STORM_CLUSTER` is `true`, use as Heap Size for JVM |
+| `METRIC_SPOUT_THREADS`        | `2`            | Metric Spout threads        |
+| `METRIC_SPOUT_TASKS`          | `2`            | Metric Spout tasks          |
+| `EVENT_SPOUT_THREADS`         | `2`            | Event Spout Threads         |
+| `EVENT_SPOUT_TASKS`           | `2`            | Event Spout Tasks           |
+| `EVENT_BOLT_THREADS`          | `2`            | Event Bolt Threads          |
+| `EVENT_BOLT_TASKS`            | `2`            | Event Bolt Tasks            |
+| `FILTERING_BOLT_THREADS`      | `2`            | Filtering Bolt Threads      |
+| `FILTERING_BOLT_TASKS`        | `2`            | Filtering Bolt Tasks        |
+| `ALARM_CREATION_BOLT_THREADS` | `2`            | Alarm Creation Bolt Threads |
+| `ALARM_CREATION_BOLT_TASKS`   | `2`            | Alarm Creation Bolt Tasks   |
+| `AGGREGATION_BOLT_THREADS`    | `2`            | Aggregation Bolt Threads    |
+| `AGGREGATION_BOLT_TASKS`      | `2`            | Aggregation Bolt Tasks      |
+| `THRESHOLDING_BOLT_THREADS`   | `2`            | Thresholding Bolt Threads   |
+| `THRESHOLDING_BOLT_TASKS`     | `2`            | Thresholding Bolt Tasks     |
 
 Running with and without Storm
 ------------------------------

@@ -1,24 +1,33 @@
-FROM alpine:3.6
+ARG BASE_IMG="alpine"
+ARG BASE_IMG_TAG="3.6"
 
-ARG REPO=""
+FROM ${BASE_IMG}:${BASE_IMG_TAG}
+
+ARG REPO
 ARG BRANCH=master
 
-ARG EXTRA_DEPS=-1
-ARG EXTRAS=-1
+ARG EXTRA_DEPS="?"
+ARG EXTRAS="?"
 
-ARG CONSTRAINTS_BRANCH=master
-ARG CONSTRAINTS_FILE=https://git.openstack.org/cgit/openstack/requirements/plain/upper-constraints.txt?h=$CONSTRAINTS_BRANCH
+ARG C_BRANCH=${BRANCH:-master}
+ARG C_URI=https://git.openstack.org/cgit/openstack/requirements/plain/upper-constraints.txt?h=$C_BRANCH
 
-ARG PYTHON_VERSION=2
+ARG PY_VER=2
+
+LABEL monasca.project=$REPO \
+      monasca.branch=$BRANCH
 
 WORKDIR /
 COPY install_app.sh /
 
-RUN apk add --no-cache python${PYTHON_VERSION} py${PYTHON_VERSION}-pip py${PYTHON_VERSION}-jinja2 curl && \
-  apk add --no-cache --virtual build-dep python${PYTHON_VERSION}-dev git make g++ linux-headers && \
+RUN apk add --no-cache python${PY_VER} py${PY_VER}-pip py${PY_VER}-jinja2 curl && \
+  apk add --no-cache --virtual build-dep python${PY_VER}-dev git make g++ linux-headers && \
   mkdir -p /app && cd /app && \
   chmod +x /install_app.sh && \
-  sh /install_app.sh ${REPO} ${BRANCH} ${EXTRAS} ${EXTRA_DEPS} ${CONSTRAINTS_FILE} && \
+  sh /install_app.sh \
+    -r ${REPO} -b ${BRANCH} \
+    -e ${EXTRAS} -d ${EXTRA_DEPS} \
+    -c ${C_URI} && \
   cd / && \
   rm -rf /app /install_app.sh && \
   apk del build-dep

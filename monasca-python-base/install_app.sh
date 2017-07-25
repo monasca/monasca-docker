@@ -2,49 +2,57 @@
 
 set -x
 
-REPO="${1}"
-BRANCH="${2}"
+OPTS=`getopt -n 'parse-options' -o r:b:e:d:c: --l repo:branch:extras:deps: -- "$@"`
+if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
 
-# list of extras i.e. monasca-agent['libvirt']
-EXTRAS="${3:-'-1'}"
+echo "$OPTS"
+eval set -- "$OPTS"
 
-# extra dependencies not listed anywhere in project
-# neither in requirements not in setup.cfg extras
-EXTRA_DEPS="${4:-'-1'}"
-
-# requirements file for given OpenStack release
-CONSTRAINTS_FILE="${5}"
+while true; do
+    case "${1}" in
+        -r | --repo) REPO=${2}; shift 2 ;;
+        -b | --branch) BRANCH=${2}; shift 2 ;;
+        -e | --extras) EXTRAS=${2}; shift 2 ;;
+        -d | --deps) EXTRA_DEPS=${2}; shift 2 ;;
+        -c) CONSTRAINTS=${2}; shift 2 ;;
+        -- ) shift; break ;;
+        * ) break ;;
+    esac
+done
 
 function install() {
+    if [[ "${EXTRA_DEPS}" != "?" ]]; then
+        for extra in ${EXTRA_DEPS:-""}; do
+            pip install --no-cache-dir $extra -c $CONSTRAINTS
+        done
+    fi
+    if [[ "${EXTRAS}" != "?" ]]; then
+        for extra in ${EXTRAS:-""}; do
+            pip install --no-cache-dir .[${extra}] -c $CONSTRAINTS
+        done
+    fi
+    pip install --no-cache-dir . -c $CONSTRAINTS
+}
+
+function clone() {
     git init
     git remote add origin $REPO
     git fetch origin $BRANCH
     git reset --hard FETCH_HEAD
-
-    if [ $EXTRA_DEPS != -1 ]; then
-        pip install --no-cache-dir $EXTRA_DEPS -c $CONSTRAINTS_FILE
-    fi
-    if [ $EXTRA != -1 ]; then
-        for extra in $EXTRA[@]; do
-            pip install --no-cache-dir .[${extra}] -c $CONSTRAINTS_FILE
-        done
-    fi
-
-    pip install --no-cache-dir -r requirements.txt -c $CONSTRAINTS_FILE
-    pip install --no-cache-dir . -c $CONSTRAINTS_FILE
 }
 
 function print_env() {
     cat << EOF
 Build environment:
 PROJECT=${REPO}@${BRANCH}
-EXTRA=${EXTRA}
-CONSTRAINTS=${CONSTRAINTS_FILE}
+EXTRAS=${EXTRAS}
+CONSTRAINTS=${CONSTRAINTS}
 EXTRA_DEPENDENCIES=${EXTRA_DEPS}
 EOF
 }
 
 if [ -n "$REPO" ] && [ -n "$BRANCH" ]; then
     print_env
+    clone
     install
 fi

@@ -1,0 +1,8 @@
+FROM monasca/base:latest
+
+ARG REPO=https://github.com/openstack/monasca-log-api
+ARG BRANCH=master
+
+RUN /build.sh -r ${REPO} -b ${BRANCH} -c ${C_URI} && rm -rf /build.sh
+
+

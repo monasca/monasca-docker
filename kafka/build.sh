@@ -14,5 +14,5 @@ docker_repo=${1:-"monasca/kafka"}
 # TODO something about this build script prevents the kafka tarball from being
 # downloaded successfully. Will need to build manually until solved.
 
-build 0.9.0.1-2.11
-retag 0.9.0.1-2.11 latest
+build 0.9.0.1
+retag 0.9.0.1 latest

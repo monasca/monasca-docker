@@ -1,8 +1,6 @@
 ARG KAFKA_VERSION=0.9.0.1
 FROM ches/kafka:${KAFKA_VERSION}
 
-ENV ZOOKEEPER_CONNECTION_STRING=zookeeper:2181
-
 USER root
 
 RUN export DEBIAN_FRONTEND=noninteractive && \

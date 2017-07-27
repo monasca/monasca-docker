@@ -109,7 +109,9 @@ password = {{ INFLUX_PASSWORD }}
 database_name = {{ INFLUX_DB }}
 
 [database]
+{% if not ( API_MYSQL_DISABLED is defined and API_MYSQL_DISABLED | lower == 'true' ) %}
 connection = "mysql+pymysql://{{ MYSQL_USER }}:{{ MYSQL_PASSWORD }}@{{ MYSQL_HOST }}/{{ MYSQL_DB }}"
+{% endif %}
 
 [keystone_authtoken]
 auth_type = password

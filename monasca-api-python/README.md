@@ -85,6 +85,7 @@ A number of environment variables can be passed to the container:
 | `MYSQL_DB`                | `mon`         | MySQL database name              |
 | `MYSQL_WAIT_RETRIES`      | `24`          | # of MySQL connection attempts   |
 | `MYSQL_WAIT_DELAY`        | `5`           | seconds to wait between attempts |
+| `API_MYSQL_DISABLED`      | unset         | if 'true' do not use a mysql database. Only metric API will work |
 | `KEYSTONE_IDENTITY_URI`   | `http://keystone:35357` | Keystone identity address |
 | `KEYSTONE_AUTH_URI`       | `http://keystone:5000`  | Keystone auth address     |
 | `KEYSTONE_ADMIN_USER`     | `admin`       | Keystone admin account user      |

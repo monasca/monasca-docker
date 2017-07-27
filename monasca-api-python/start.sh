@@ -11,28 +11,30 @@ MYSQL_WAIT_DELAY=${MYSQL_WAIT_DELAY:-"5"}
 KAFKA_WAIT_RETRIES=${KAFKA_WAIT_RETRIES:-"24"}
 KAFKA_WAIT_DELAY=${KAFKA_WAIT_DELAY:-"5"}
 
-echo "Waiting for MySQL to become available..."
-success="false"
-for i in $(seq $MYSQL_WAIT_RETRIES); do
-  mysqladmin status \
-      --host="$MYSQL_HOST" \
-      --user="$MYSQL_USER" \
-      --password="$MYSQL_PASSWORD" \
-      --connect_timeout=10
-  if [ $? -eq 0 ]; then
-    echo "MySQL is available, continuing..."
-    success="true"
-    break
-  else
-    echo "Connection attempt $i of $MYSQL_WAIT_RETRIES failed"
-    sleep "$MYSQL_WAIT_DELAY"
-  fi
-done
+if [ "$MYSQL_WAIT_RETRIES" != "0" ]; then
+  echo "Waiting for MySQL to become available..."
+  success="false"
+  for i in $(seq $MYSQL_WAIT_RETRIES); do
+    mysqladmin status \
+        --host="$MYSQL_HOST" \
+        --user="$MYSQL_USER" \
+        --password="$MYSQL_PASSWORD" \
+        --connect_timeout=10
+    if [ $? -eq 0 ]; then
+      echo "MySQL is available, continuing..."
+      success="true"
+      break
+    else
+      echo "Connection attempt $i of $MYSQL_WAIT_RETRIES failed"
+      sleep "$MYSQL_WAIT_DELAY"
+    fi
+  done
 
-if [ "$success" != "true" ]; then
-    echo "Unable to reach MySQL database! Exiting..."
-    sleep 1
-    exit 1
+  if [ "$success" != "true" ]; then
+      echo "Unable to reach MySQL database! Exiting..."
+      sleep 1
+      exit 1
+  fi
 fi
 
 if [ -n "$KAFKA_WAIT_FOR_TOPICS" ]; then

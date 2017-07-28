@@ -1,10 +1,10 @@
 repository: monasca/python
 variants:
-  - tag: 2
+  - tag: '2'
     aliases:
       - :default
     args:
-      PYTHON_VERSION: 2
-  - tag: 3
+      PYTHON_VERSION: '3'
+  - tag: '3'
     args:
-      PYTHON_VERSION: 3
+      PYTHON_VERSION: '3'

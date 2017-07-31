@@ -39,10 +39,8 @@ services:
 
   elasticsearch-init:
     image: monasca/elasticsearch-init
-    environment:
-      template: logs
     volumes:
-      - ./elasticsearch-templates/logs.template:/template
+      - ./elasticsearch-templates/logs.template:/templates/logs.json
 
   kibana:
     image: monasca/kibana:4

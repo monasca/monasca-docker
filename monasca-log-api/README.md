@@ -4,9 +4,9 @@ monasca-log-api
 This image contains containerized version of Monasca Log API.
 For more details about monasca-log-api, please visit:
 
-* [monasca-log-api's documentation](1)
-* [monasca-log-api's API reference](2)
-* [monasca-log-api's repository](3)
+* [monasca-log-api's documentation][1]
+* [monasca-log-api's API reference][2]
+* [monasca-log-api's repository][3]
 
 Tags
 ----
@@ -16,7 +16,7 @@ TBD
 Usage
 -----
 
-In order to run monasca-log-api container, [Kafka](5) needs to be available.
+In order to run monasca-log-api container, [Kafka][4] needs to be available.
 Once it is, **monasca-log-api** can be launched using 
 ```docker run -p 5607:5607 -l kafka monasca/log-api:latest``` .
 
@@ -64,12 +64,11 @@ can be set to `false`. Note that the jinja2 template should still be overwritten
 (rather than the target file without the `.j2` suffix) as it will be copied at
 runtime.
 
-The config file sources are available [in the repository][6]. If necessary, the
+The config file sources are available [in the repository][5]. If necessary, the
 generated config files can be viewed at runtime by running:
 
 [1]: https://docs.openstack.org/monasca-log-api/latest/
 [2]: https://developer.openstack.org/api-ref/monitoring-log-api/
 [3]: https://githubm/openstack/monasca-log-api
-[4]: https://hub.docker.com/_/zookeeper/
-[5]: https://github.com/monasca/monasca-docker/tree/master/kafka
-[6]: https://github.com/monasca/monasca-docker/blob/master/monasca-log-api/
+[4]: https://github.com/monasca/monasca-docker/tree/master/kafka
+[5]: https://github.com/monasca/monasca-docker/blob/master/monasca-log-api/

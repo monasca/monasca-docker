@@ -55,7 +55,8 @@ clean_install() {
   done
 
   for f in $USER_SCRIPTS/*.sql; do
-    if [ -e "$f" ]; then
+    # SQL files with zero length are ignored
+    if [ -s "$f" ]; then
       echo "Running script: $f"
       mysql --host="$MYSQL_INIT_HOST" \
           --user="$MYSQL_INIT_USERNAME" \
@@ -159,7 +160,8 @@ schema_upgrade() {
     done
 
     for f in $UPGRADE_SCRIPTS/$diff_version/*.sql; do
-      if [ -e "$f" ]; then
+      # SQL files with zero length are ignored
+      if [ -s "$f" ]; then
         echo "Running script: $f"
         set +x
         mysql --host="$MYSQL_INIT_HOST" \

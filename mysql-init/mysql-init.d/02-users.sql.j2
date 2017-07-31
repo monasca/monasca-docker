@@ -1,3 +1,4 @@
+{% if CREATE_MON_USERS | default ('true') | lower == 'true' -%}
 /*
  * To require ssl connections add 'REQUIRE SSL' to the end of all grant statements
  */
@@ -15,3 +16,4 @@ GRANT ALL ON {{ db }}.* TO '{{ monapi_user }}'@'%' IDENTIFIED BY '{{ monapi_pw }
 GRANT ALL ON {{ db }}.* TO '{{ monapi_user }}'@'localhost' IDENTIFIED BY '{{ monapi_pw }}';
 GRANT ALL ON {{ db }}.* TO '{{ thresh_user }}'@'%' IDENTIFIED BY '{{ thresh_pw }}';
 GRANT ALL ON {{ db }}.* TO '{{ thresh_user }}'@'localhost' IDENTIFIED BY '{{ thresh_pw }}';
+{%- endif %}

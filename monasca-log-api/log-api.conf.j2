@@ -16,13 +16,13 @@ default_roles = {{ AUTHORIZED_ROLES | default('admin, domainuser, domainadmin, m
 agent_roles = {{ AGENT_AUTHORIZED_ROLES | default('monasca-agent') }}
 
 [log_publisher]
-topics = {{ LOG_API_LOG_TOPIC | default('log') }}
+topics = log
 kafka_url = {{ KAFKA_URI | default('kafka:9092') }}
 max_message_size = 1048576
 
 [kafka_healthcheck]
 kafka_url = {{ KAFKA_URI | default('kafka:9092') }}
-kafka_topics = {{ LOG_API_LOG_TOPIC | default('log') }}
+kafka_topics = log
 
 [keystone_authtoken]
 auth_type = password

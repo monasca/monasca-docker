@@ -1,0 +1,3 @@
+repository: monasca/elasticsearch-init
+variants:
+  - tag: latest

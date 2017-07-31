@@ -1,3 +1,0 @@
-repository: monasca/elasticsearch-load-tpl
-variants:
-  - tag: latest

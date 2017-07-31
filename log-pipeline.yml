@@ -38,7 +38,7 @@ services:
       - elasticsearch-init
 
   elasticsearch-init:
-    image: monasca/elasticsearch-load-tpl
+    image: monasca/elasticsearch-init
     environment:
       template: logs
     volumes:

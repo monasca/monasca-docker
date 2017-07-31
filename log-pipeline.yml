@@ -2,14 +2,14 @@ version: '3'
 services:
 
   log-metrics:
-    image: kornicameister/log-metrics:latest
+    image: monasca/log-metrics:latest
     depends_on:
       - kafka
       - zookeeper
       - log-transformer
 
   log-persister:
-    image: kornicameister/log-persister:latest
+    image: monasca/log-persister:latest
     depends_on:
       - kafka
       - zookeeper
@@ -17,7 +17,7 @@ services:
       - log-transformer
 
   log-transformer:
-    image: kornicameister/log-transformer:latest
+    image: monasca/log-transformer:latest
     depends_on:
       - kafka
       - zookeeper
@@ -31,16 +31,6 @@ services:
       - transport.host=127.0.0.1
       - bootstrap.memory_lock=true
       - ES_JAVA_OPTS=-Xms1g -Xmx1g
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    deploy:
-      resources:
-        limit:
-          memory: 1G
-        reservations:
-          memory: 1G
     ports:
       - 9200:9200
       - 9300:9300
@@ -48,14 +38,14 @@ services:
       - elasticsearch-init
 
   elasticsearch-init:
-    image: kornicameister/elasticsearch-load-tpl
+    image: monasca/elasticsearch-load-tpl
     environment:
       template: logs
     volumes:
       - ./elasticsearch-templates/logs.template:/template
 
   kibana:
-    image: kornicameister/kibana:4
+    image: monasca/kibana:4
     environment:
       SERVER_NAME: kibana
       ELASTICSEARCH_PINGTIMEOUT: 1000
@@ -66,7 +56,7 @@ services:
       - 5601:5601
 
   log-api:
-    image: kornicameister/log-api:master
+    image: monasca/log-api:master
     depends_on:
       - keystone
       - zookeeper

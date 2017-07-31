@@ -1,4 +1,4 @@
-repository: kornicameister/log-api
+repository: monasca/log-api
 variants:
   - tag: master
     aliases:

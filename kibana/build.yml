@@ -1,4 +1,4 @@
-repository: kornicameister/kibana
+repository: monasca/kibana
 variants:
   - tag: latest
     aliases:

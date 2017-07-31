@@ -6,7 +6,7 @@ if [ -e /apk.sh ]; then
     echo "Overriding default apk dependencies install function"
     source /apk.sh
 else
-    echo "Usign default apk dependencies install function"
+    echo "Using default apk dependencies install function"
     install_apk_deps() {
         apk add --no-cache curl
         apk add --no-cache --virtual build-dep git make g++ linux-headers

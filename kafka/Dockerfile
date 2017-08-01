@@ -28,7 +28,7 @@ RUN set -x && \
   rm /kafka.tar.gz /kafka_mirror.py && \
   apk del build-dep
 
-COPY template.py start.sh create_topics.py heap.py /
+COPY template.py start.sh heap.py /
 COPY templates /templates
 
 ENV PATH /kafka/bin:$PATH

@@ -1,0 +1,8 @@
+repository: monasca/kafka-init
+variants:
+  - tag: 0.0.1
+    aliases:
+        - ':latest'
+    args:
+      KAFKA_VERSION: "0.9.0.1"
+      SCALA_VERSION: "2.11"

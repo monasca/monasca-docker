@@ -52,9 +52,6 @@ Several parameters can be specified using environment variables:
 | `KAFKA_HOSTNAME_FROM_IP`      | `true`  | If `true`, set advertised hostname to container IP  |
 | `KAFKA_ADVERTISED_HOST_NAME`  | from IP | If set, use value as advertised hostname       |
 | `KAFKA_BROKER_ID`             | `-1`    | Unique Kafka broker ID, `-1` for auto          |
-| `KAFKA_CREATE_TOPICS`         | unset   | Topics to create on startup, see below         |
-| `KAFKA_TOPIC_CONFIG`          | unset   | Default config args for created topics         |
-| `KAFKA_DELETE_TOPIC_ENABLE`   | `false` | Enable topic deletion                          |
 | `KAFKA_LISTEN_PORT`           | `9092`  | Port for Kafka to listen on                    |
 | `KAFKA_ADVERTISED_PORT`       | `$KAFKA_LISTEN_PORT` | Kafka port advertised to clients  |
 | `KAFKA_CONTROLLED_SHUTDOWN_ENABLE` | `true` | If `true`, enable [controlled shutdown][6] |
@@ -80,52 +77,6 @@ kafka_1                 | [2017-06-15 06:32:09,572] INFO logfile=server.log Load
 
 If `GC_LOG_ENABLED` is set to True, the JVM Garbage Collection log will be written within the
 container at /kafka/logs/kafkaServer-gc.log. It can't be redirected to stdout.
-
-### Topic creation
-
-This image will create topics automatically on first startup when
-`KAFKA_CREATE_TOPICS` is set:
-
-```
-docker run \
-    --name kafka \
-    --link zookeeper \
-    -e KAFKA_CREATE_TOPICS="topic1:64:1,topic2:16:1"
-    monasca/kafka:latest
-```
-
-The variable should be set to a comma-separated list of topic strings. These
-each look like so:
-
-```
-[topic name]:partitions=[partitions]:replicas=[replicas]:[key]=[val]:[key]=[val]
-```
-
-In the above, `partitions` and `replicas` are required, and tokens surrounded by
-`[brackets]` should be replaced with the desired value. All other properties
-will be translated to `--config key=val` when running `kafka-topics.sh`.
-Example:
-
-```
-my_topic_name:partitions=3:replicas=1:segment.ms=900000
-```
-
-Partitions and replicas also support an index-based shorthand, so the following
-works as well:
-
-```
-[topic name]:[partitions]:[replicas]
-```
-
-As an example, this is a valid `KAFKA_CREATE_TOPICS` string for [Monasca][8]
-installations as used in the [docker-compose][4] environment:
-
-    metrics:64:1,alarm-state-transitions:12:1,alarm-notifications:12:1,retry-notifications:3:1,events:12:1,60-seconds-notifications:3:1
-
-If desired, default config parameters can be set using `KAFKA_TOPIC_CONFIG`.
-These use `key=value,key2=value2` syntax and will be translated into
-`--config key=value` arguments as described above. If a duplicate key is passed
-in a specific topic string, it will override the value specified here.
 
 [1]: http://kafka.apache.org/
 [2]: https://github.com/hpcloud-mon/monasca-docker/blob/master/kafka/

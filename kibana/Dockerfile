@@ -1,3 +1,5 @@
+ARG KIBANA_VERSION="4.6.3"
+
 FROM node:4-alpine
 
 ARG KIBANA_PLUGIN_VER=""
@@ -20,7 +22,7 @@ RUN git clone $KIBANA_PLUGIN_REPO --depth 1 --branch $KIBANA_PLUGIN_BRANCH monas
   rm -rf /mpk/monasca-kibana-plugin && \
   apk del build-dep
 
-FROM kibana:4
+FROM kibana:${KIBANA_VERSION}
 
 ENV KEYSTONE_URI=keystone:5000 \
     MONASCA_PLUGIN_ENABLED=False
@@ -38,4 +40,4 @@ RUN /plugin_config && \
   kibana plugin -i monasca-kibana-plugin -u file:///monasca-kibana-plugin.tar.gz && \
   rm -rf /monasca-kibana-plugin.tar.gz
 
-CMD /wait-for $KEYSTONE_URI -- /start
+CMD /start

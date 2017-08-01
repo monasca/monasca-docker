@@ -36,6 +36,7 @@ To use this image, first you need to deploy [ElasticSearch][3] and [Keystone][4]
 Once prerequisites are met, image can ba launched, for example, with:
 ```docker run -it --rm -l elasticsearch monasca/kibana:4.6.3-master``` 
 
+[1]: https://hub.docker.com/r/library/kibana 
 [2]: https://github.com/openstack/monasca-kibana-plugin
 [3]: https://hub.docker.com/r/library/elasticsearch
 [4]: https://github.com/monasca/monasca-docker/keystone

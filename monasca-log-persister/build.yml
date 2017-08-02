@@ -1,3 +1,5 @@
 repository: monasca/log-persister
 variants:
-  - tag: latest
+  - tag: 0.0.1
+    aliases:
+      - :latest

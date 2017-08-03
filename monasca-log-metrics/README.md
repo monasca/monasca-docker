@@ -9,7 +9,7 @@ Tags
 
 **monasca-log-metrics** uses simple [SemVer][2] tags as follows:
 
-* `0.0.1` - `latest` 
+* `0.0.1` - `latest`
 
 Configuration
 -------------
@@ -29,7 +29,7 @@ In order to run **monasca-log-metrics**:
 
 * [kafka][3] needs to be available
 * [zookeeper][4] needs to be available
-* `transformed-log` and `metrics` topics needs to be created
+* `log-transformed` and `metrics` topics needs to be created
 
 After that, **monasca-log-metrics** can be run with:
 ```docker run -l zookeeper -l kafka monasca/log-metrics```

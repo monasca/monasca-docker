@@ -6,12 +6,7 @@ variants:
     args:
       LOG_API_BRANCH: master
       CONSTRAINTS_BRANCH: master
-  - tag: ocata
-    aliases:
-      - :ocata-{date}-{time}
-    args:
-      LOG_API_BRANCH: stable/ocata
-      CONSTRAINTS_BRANCH: stable/ocata
+
   - tag: 2.2.1
     aliases:
       - :latest
@@ -29,6 +24,11 @@ variants:
       - :2.0
     args:
       LOG_API_BRANCH: 2.0.0
+
+  - tag: ocata
+    args:
+      LOG_API_BRANCH: stable/ocata
+      CONSTRAINTS_BRANCH: stable/ocata
   - tag: 1.4.1
     aliases:
       - :1.4

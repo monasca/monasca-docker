@@ -29,7 +29,7 @@ In order to run **monasca-log-transformer**:
 
 * [kafka][3] needs to be available
 * [zookeeper][4] needs to be available
-* `transformed-log` and `log` topics needs to be created
+* `log-transformed` and `log` topics needs to be created
 
 After that, **monasca-log-transformer** can be run with:
 ```docker run -l zookeeper -l kafka monasca/log-transformer```

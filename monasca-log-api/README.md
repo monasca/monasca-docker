@@ -11,13 +11,22 @@ For more details about monasca-log-api, please visit:
 Tags
 ----
 
-TBD
+The images in this repository follow a few tagging conventions:
+
+* `latest`: refers to the latest stable Python point release, e.g.
+  `2.2.1`
+* `2.2.1`, `2.2`, `2`: standard semver tags, based on git tags in the
+  [official repository][3]
+* `ocata`: named versions following OpenStack release names
+  built from the tip of the `stable/RELEASENAME` branches in the repository
+* `master`, `master-DATESTAMP`: unstable builds from the master branch, not
+intended for general use
 
 Usage
 -----
 
 In order to run monasca-log-api container, [Kafka][4] needs to be available.
-Once it is, **monasca-log-api** can be launched using 
+Once it is, **monasca-log-api** can be launched using
 ```docker run -p 5607:5607 -l kafka monasca/log-api:latest``` .
 
 Configuration
@@ -66,6 +75,28 @@ runtime.
 
 The config file sources are available [in the repository][5]. If necessary, the
 generated config files can be viewed at runtime by running:
+
+```bash
+docker exec -it some_container_id cat /etc/monasca/log-api.conf
+docker exec -it some_container_id cat /etc/monasca/log-api-paste.ini
+docker exec -it some_container_id cat /etc/monasca/log-api-logging.conf
+```
+
+Troubleshooting
+-------------
+
+Container status can be checked by the following command (example):
+```bash
+docker ps --filter 'name=log-api' --format '{{.Names}}\t{{.Image}}\t{{.Status}}'
+```
+
+Result of health check can be get by the following command:
+```bash
+docker inspect --format '{{json .State.Health}}' log-api | python -m json.tool
+```
+
+Health check `ExitCode`s:
+ * 1: Monasca API error
 
 [1]: https://docs.openstack.org/monasca-log-api/latest/
 [2]: https://developer.openstack.org/api-ref/monitoring-log-api/

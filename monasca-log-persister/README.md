@@ -36,7 +36,7 @@ In order to run **monasca-log-persister**:
 * [kafka][3] needs to be available
 * [zookeeper][4] needs to be available
 * [elasticsearch][5] needs to be available
-* `transformed-log` and `log` topics needs to be created
+* `log-transformed` topic needs to be created
 
 After that, **monasca-log-persister** can be run with:
 ```docker run -l zookeeper -l kafka -l elasticsearch monasca/log-persister```

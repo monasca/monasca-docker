@@ -2,4 +2,4 @@ repository: monasca/log-transformer
 variants:
   - tag: 0.0.1
     aliases:
-      - latest
+      - :latest

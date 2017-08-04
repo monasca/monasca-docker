@@ -13,4 +13,4 @@ RUN apk add --no-cache ca-certificates && \
 
 COPY keystone_init.py kubernetes.py preload.yml /
 
-CMD ["sleep", "1000"]
+CMD ["/start.sh"]

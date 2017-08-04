@@ -3,8 +3,11 @@ variants:
   - tag: '2'
     aliases:
       - :default
+      - :2-{date}-{time}
     args:
-      PYTHON_VERSION: '3'
+      PYTHON_VERSION: '2'
   - tag: '3'
+    aliases:
+      - :3-{date}-{time}
     args:
       PYTHON_VERSION: '3'

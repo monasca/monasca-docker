@@ -69,7 +69,7 @@ CONSTRAINTS=""
 CONSTRAINTS_URL=""
 CONSTRAINTS_BRANCH=""
 
-OPTS=`getopt -n 'parse-options' -o r:b:e:d:c:cu:cb: -- "$@"`
+OPTS=`getopt -n 'parse-options' -o r:b:e:d:c:u:q: -- "$@"`
 if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
 
 echo "$OPTS"
@@ -83,8 +83,8 @@ while true; do
         -e) EXTRAS=${2}; shift 2 ;;
         -d) EXTRA_DEPS=${2}; shift 2 ;;
         -c) CONSTRAINTS=${2}; shift ;;
-        -cu) CONSTRAINTS_URL=${2}; shift 2 ;;
-        -cb) CONSTRAINTS_BRANCH=${2}; shift 2 ;;
+        -u) CONSTRAINTS_URL=${2}; shift 2 ;;
+        -q) CONSTRAINTS_BRANCH=${2}; shift 2 ;;
         -- ) shift; break ;;
         * ) break ;;
     esac

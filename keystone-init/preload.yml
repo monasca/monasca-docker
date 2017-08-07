@@ -1,0 +1,5 @@
+domains:
+  default:
+    projects: []
+    roles: []
+    users: []

@@ -1,7 +1,8 @@
-FROM alpine:3.5
+FROM monasca/python:2
 
 ARG API_REPO=https://github.com/openstack/monasca-api.git
 ARG API_BRANCH=master
+ARG API_CONSTRAINTS_BRANCH=${API_CONSTRAINTS_BRANCH:-$API_BRANCH}
 
 # To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
 # `docker build`
@@ -34,20 +35,10 @@ ENV CONFIG_TEMPLATE=true \
   ACCESS_LOG_FORMAT="%(asctime)s [%(process)d] gunicorn.access [%(levelname)s] %(message)s" \
   ACCESS_LOG_FIELDS='%(h)s %(l)s %(u)s %(t)s %(r)s %(s)s %(b)s "%(f)s" "%(a)s" %(L)s'
 
-RUN apk add --no-cache python py2-pip py2-jinja2 curl mysql-client && \
-  apk add --no-cache --virtual build-dep \
-    python-dev git make g++ linux-headers && \
-  mkdir /monasca-api && cd /monasca-api && \
-  git init && \
-  git remote add origin $API_REPO && \
-  git fetch origin $API_BRANCH && \
-  git reset --hard FETCH_HEAD && \
-  pip install --no-cache-dir gunicorn influxdb \
-    python-memcached -r requirements.txt && \
-  python setup.py install && \
-  cd / && \
-  rm -rf /monasca-api && \
-  apk del build-dep
+
+RUN apk add --no-cache mysql-client && \
+  /build.sh -r ${API_REPO} -b ${API_BRANCH} \
+  -q ${API_CONSTRAINTS_BRANCH} -d "gunicorn influxdb python-memcached"
 
 COPY api-* /etc/monasca/
 COPY template.py start.sh health-check.sh kafka_wait_for_topics.py /

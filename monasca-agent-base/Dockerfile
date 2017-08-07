@@ -1,4 +1,4 @@
-FROM alpine:3.5
+FROM monasca/python:2
 
 ARG AGENT_REPO=https://git.openstack.org/openstack/monasca-agent
 ARG AGENT_BRANCH="master"
@@ -20,23 +20,9 @@ ENV CONFIG_TEMPLATE=true \
   LOG_LEVEL=WARN \
   HOSTNAME_FROM_KUBERNETES=false
 
-RUN apk add --no-cache \
-    python py2-pip py2-jinja2 libxml2 py2-psutil && \
-  apk add --no-cache --virtual build-dep \
-     git python-dev make g++ linux-headers libxml2-dev libxslt-dev && \
-  mkdir /monasca-agent && cd /monasca-agent && \
-  git init && \
-  git remote add origin $AGENT_REPO && \
-  git fetch origin $AGENT_BRANCH && \
-  git reset --hard FETCH_HEAD && \
-  pip install docker-py prometheus_client && \
-  cd /monasca-agent && \
-  pip install -r requirements.txt -c "$UPPER_CONSTRAINTS" && \
-  python setup.py install && \
-  cd / && \
-  rm -rf /monasca-agent && \
-  rm -rf /root/.cache/pip && \
-  apk del build-dep
+RUN apk add --no-cache libxml2 py2-psutil && \
+  apk add --no-cache --virtual libxml2-dev libxslt-dev && \
+  /build.sh -r ${AGENT_REPO} -b ${AGENT_BRANCH} -c ${UPPER_CONSTRAINTS} -d "prometheus_client"
 
 COPY agent.yaml.j2 /etc/monasca/agent/agent.yaml.j2
 COPY template.py kubernetes_get_host.py /

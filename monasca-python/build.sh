@@ -39,7 +39,8 @@ else
             echo "No extras"
         fi
 
-        pip install --no-cache-dir . -c $constraints
+        pip install --no-cache-dir -r requirements.txt -c $constraints
+        python setup.py install
     }
 fi
 

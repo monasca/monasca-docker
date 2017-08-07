@@ -11,6 +11,6 @@ RUN apk add --no-cache ca-certificates && \
     rm -rf /root/.cache/pip && \
     apk del build-dep
 
-COPY keystone_init.py kubernetes.py preload.yml /
+COPY keystone_init.py kubernetes.py preload.yml start.sh /
 
 CMD ["/start.sh"]

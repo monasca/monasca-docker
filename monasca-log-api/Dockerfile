@@ -28,7 +28,7 @@ ENV CONFIG_TEMPLATE=true \
   ACCESS_LOG_FIELDS='%(h)s %(l)s %(u)s %(t)s %(r)s %(s)s %(b)s "%(f)s" "%(a)s" %(L)s'
 
 ARG REBUILD_PROJECT=1
-RUN /build.sh -r ${LOG_API_REPO} -b ${LOG_API_BRANCH} -q ${CONSTRAINTS_BRANCH} && \
+RUN /build.sh -r ${LOG_API_REPO} -b ${LOG_API_BRANCH} -q ${CONSTRAINTS_BRANCH} -d "gunicorn" && \
   rm -rf /usr/local/etc/monasca
 
 ARG REBUILD_CONFIG=1

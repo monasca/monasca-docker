@@ -20,9 +20,8 @@ ENV CONFIG_TEMPLATE=true \
   LOG_LEVEL=WARN \
   HOSTNAME_FROM_KUBERNETES=false
 
-RUN apk add --no-cache libxml2 py2-psutil && \
-  apk add --no-cache --virtual libxml2-dev libxslt-dev && \
-  /build.sh -r ${AGENT_REPO} -b ${AGENT_BRANCH} -c ${UPPER_CONSTRAINTS} -d "prometheus_client"
+COPY apk_install.sh /apk.sh
+RUN /build.sh -r ${AGENT_REPO} -b ${AGENT_BRANCH} -c ${UPPER_CONSTRAINTS} -d "prometheus_client docker-py"
 
 COPY agent.yaml.j2 /etc/monasca/agent/agent.yaml.j2
 COPY template.py kubernetes_get_host.py /

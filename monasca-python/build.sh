@@ -117,6 +117,6 @@ echo "Installing ${REPO}" && install "${CONSTRAINTS}" "${EXTRAS}" "${EXTRA_DEPS}
 # end of actual build
 
 cd -
-rm -rf /install.sh /clone.sh /install_apk_deps.sh /app
+rm -rf /install.sh /clone.sh /install_apk_deps.sh /app /root/.cache/pip
 
 apk del build-dep

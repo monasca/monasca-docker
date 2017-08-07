@@ -101,7 +101,6 @@ EXTRAS="${EXTRAS:-""}"
 EXTRA_DEPS="${EXTRA_DEPS:-""}"
 
 echo "Installing APK Dependencies" && install_apk_deps
-echo "Installing PIP" && install_pip
 mkdir -p /app
 cd /app
 

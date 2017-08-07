@@ -14,16 +14,19 @@ variants:
       - :2
     args:
       LOG_API_BRANCH: 2.2.1
+      CONSTRAINTS_BRANCH: master
   - tag: 2.1.0
     aliases:
       - :2.1
     args:
       LOG_API_BRANCH: 2.1.0
+      CONSTRAINTS_BRANCH: master
   - tag: 2.0.0
     aliases:
       - :2.0
     args:
       LOG_API_BRANCH: 2.0.0
+      CONSTRAINTS_BRANCH: master
 
   - tag: ocata
     args:

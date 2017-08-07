@@ -1,9 +1,10 @@
-FROM alpine:3.5
+ARG PYTHON_VERSION='2'
+
+FROM monasca/python:${PYTHON_VERSION}
 
 ARG LOG_API_REPO=https://github.com/openstack/monasca-log-api.git
 ARG LOG_API_BRANCH=master
 ARG CONSTRAINTS_BRANCH=master
-ARG CONSTRAINTS_FILE=https://git.openstack.org/cgit/openstack/requirements/plain/upper-constraints.txt?h=$CONSTRAINTS_BRANCH
 
 # To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
 # `docker build`
@@ -27,19 +28,7 @@ ENV CONFIG_TEMPLATE=true \
   ACCESS_LOG_FIELDS='%(h)s %(l)s %(u)s %(t)s %(r)s %(s)s %(b)s "%(f)s" "%(a)s" %(L)s'
 
 ARG REBUILD_PROJECT=1
-RUN apk add --no-cache python py2-pip py2-jinja2 curl && \
-  apk add --no-cache --virtual build-dep python-dev git make g++ linux-headers && \
-  mkdir /monasca-log-api && cd /monasca-log-api && \
-  git init && \
-  git remote add origin $LOG_API_REPO && \
-  git fetch origin $LOG_API_BRANCH && \
-  git reset --hard FETCH_HEAD && \
-  pip install --no-cache-dir gunicorn -c $CONSTRAINTS_FILE && \
-  pip install --no-cache-dir -r requirements.txt -c $CONSTRAINTS_FILE && \
-  python setup.py install && \
-  cd / && \
-  rm -rf /monasca-log-api && \
-  apk del build-dep
+RUN /build.sh -r ${LOG_API_REPO} -b ${LOG_API_BRANCH} -q ${CONSTRAINTS_BRANCH}
 
 ARG REBUILD_CONFIG=1
 COPY log-api* /etc/monasca/

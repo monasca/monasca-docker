@@ -3,3 +3,8 @@ variants:
   - tag: latest
     aliases:
       - :4.0.0-1.1.1
+  - tag: app
+    aliases:
+      - :4.0.0-1.2.0
+    args:
+         MONASCA_APP_REPO: https://github.com/monasca/monasca-grafana.git

@@ -21,7 +21,9 @@ ENV CONFIG_TEMPLATE=true \
   HOSTNAME_FROM_KUBERNETES=false
 
 COPY apk_install.sh /apk.sh
-RUN /build.sh -r ${AGENT_REPO} -b ${AGENT_BRANCH} -c ${UPPER_CONSTRAINTS} -d "prometheus_client docker-py"
+RUN /build.sh -r ${AGENT_REPO} -b ${AGENT_BRANCH} -c ${UPPER_CONSTRAINTS}  \
+  -d "prometheus_client docker-py" && \
+  rm -rf /build.sh
 
 COPY agent.yaml.j2 /etc/monasca/agent/agent.yaml.j2
 COPY template.py kubernetes_get_host.py /

@@ -1,7 +1,10 @@
-FROM alpine:3.5
+ARG PYTHON_VERSION=2
+
+FROM monasca/python:${PYTHON_VERSION}
 
 ARG PERSISTER_REPO=https://github.com/openstack/monasca-persister.git
 ARG PERSISTER_BRANCH="master"
+ARG CONSTRAINTS_BRANCH=${PERSISTER_BRANCH}
 
 # To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
 # `docker build`
@@ -23,19 +26,9 @@ ENV CONFIG_TEMPLATE=true \
   INFLUX_PASSWORD=password \
   INFLUX_DB=mon
 
-RUN apk add --no-cache python py2-pip py2-jinja2 && \
-  apk add --no-cache --virtual build-dep \
-     python-dev git make g++ linux-headers && \
-  git clone \
-    --single-branch --depth=1 -b $PERSISTER_BRANCH \
-    $PERSISTER_REPO /monasca-persister && \
-  pip install influxdb && \
-  cd /monasca-persister && \
-  pip install -r requirements.txt && \
-  python setup.py install && \
-  cd / && \
-  rm -rf /monasca-persister && \
-  apk del build-dep
+RUN /build.sh -r ${PERSISTER_REPO} -b ${PERSISTER_BRANCH} \
+  -q ${CONSTRAINTS_BRANCH} -d "influxdb" && \
+  rm -rf /build.sh
 
 COPY persister.conf.j2 /etc/monasca-persister/
 COPY template.py start.sh kafka_wait_for_topics.py /

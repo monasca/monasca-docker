@@ -2,11 +2,23 @@ repository: monasca/client
 variants:
   - tag: latest
     aliases:
-      - :1.6.0
+      - :1.7.0
+      - :1.7
+    args:
+      CLIENT_BRANCH: 1.7.0
+
+  - tag: 1.6.0
+    aliases:
+      - :1.6
     args:
       CLIENT_BRANCH: 1.6.0
+
   - tag: master
     aliases:
       - :master-{date}-{time}
     args:
       CLIENT_BRANCH: master
+
+  - tag: pike
+    args:
+      CLIENT_BRANCH: stable/pike

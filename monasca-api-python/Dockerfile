@@ -35,10 +35,10 @@ ENV CONFIG_TEMPLATE=true \
   ACCESS_LOG_FORMAT="%(asctime)s [%(process)d] gunicorn.access [%(levelname)s] %(message)s" \
   ACCESS_LOG_FIELDS='%(h)s %(l)s %(u)s %(t)s %(r)s %(s)s %(b)s "%(f)s" "%(a)s" %(L)s'
 
-
-RUN apk add --no-cache mysql-client && \
-  /build.sh -r ${API_REPO} -b ${API_BRANCH} \
-  -q ${API_CONSTRAINTS_BRANCH} -d "gunicorn influxdb python-memcached"
+COPY apk_install.sh /apk.sh
+RUN /build.sh -r ${API_REPO} -b ${API_BRANCH} \
+  -q ${API_CONSTRAINTS_BRANCH} -d "gunicorn influxdb python-memcached" && \
+  rm -rf /build.sh
 
 COPY api-* /etc/monasca/
 COPY template.py start.sh health-check.sh kafka_wait_for_topics.py /

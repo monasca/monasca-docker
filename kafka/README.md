@@ -84,5 +84,3 @@ container at /kafka/logs/kafkaServer-gc.log. It can't be redirected to stdout.
 [4]: https://github.com/hpcloud-mon/monasca-docker/
 [5]: https://hub.docker.com/r/library/zookeeper/
 [6]: https://kafka.apache.org/documentation/#basic_ops_restarting
-[7]: https://github.com/wurstmeister/kafka-docker
-[8]: https://hub.docker.com/r/monasca/api/

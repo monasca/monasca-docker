@@ -32,7 +32,7 @@ Several parameters can be specified using environment variables:
 | `KAFKA_TIMEOUT`               | `60`      | How long to wait for Kafka to become available |
 | `KAFKA_CREATE_TOPICS`         | `unset`   | Topics to create on startup, see below       |
 | `KAFKA_TOPIC_CONFIG`          | `unset`   | Default config args for created topics       |
-| `KAFKA_CREATE_TOPICS_SCRIPT`  | `KAFKA_CREATE_TOPICS_SCRIPT` | Path to script that creates topics |
+| `KAFKA_CREATE_TOPICS_SCRIPT`  | `/kafka/bin/kafka-topics.sh` | Path to script that creates topics |
 
 Topic creation
 --------------
@@ -72,7 +72,7 @@ works as well:
 [topic name]:[partitions]:[replicas]
 ```
 
-As an example, this is a valid `KAFKA_CREATE_TOPICS` string for [Monasca][8]
+As an example, this is a valid `KAFKA_CREATE_TOPICS` string for [Monasca][3]
 installations as used in the [docker-compose][4] environment:
 
     metrics:64:1,alarm-state-transitions:12:1,alarm-notifications:12:1,retry-notifications:3:1,events:12:1,60-seconds-notifications:3:1
@@ -84,4 +84,6 @@ in a specific topic string, it will override the value specified here.
 
 
 [1]: http://semver.org/
-[2]: https://github.com/monasca/monasca-docker/kafka
+[2]: https://github.com/monasca/monasca-docker/tree/master/kafka
+[3]: https://hub.docker.com/r/monasca/api/
+[4]: https://github.com/monasca/monasca-docker/

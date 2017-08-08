@@ -321,7 +321,7 @@ class MonascaLoadDefinitions(object):
             else:
                 raise Exception(str(resp.status_code) + resp.text)
         else:  # Only other option is state=present
-            
+
             alarm_actions = self._map_notifications(definition.get('alarm_actions', []), notification_ids)
             ok_actions = self._map_notifications(definition.get('ok_actions', []), notification_ids)
             undetermined_actions = self._map_notifications(definition.get('undetermined_actions', []), notification_ids)
@@ -568,7 +568,7 @@ def main(args=None):
     }
 
     if not monascaclient_found:
-        print("python-monascaclient >= 1.0.9 is required", file=sys.stderr)
+        print("python-monascaclient>=1.6.0<1.7.0 is required", file=sys.stderr)
         sys.exit(1)
 
     if not args.definitions_file:

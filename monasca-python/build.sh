@@ -39,7 +39,8 @@ else
             echo "No extras"
         fi
 
-        pip install --no-cache-dir . -c $constraints
+        pip install --no-cache-dir -r requirements.txt -c $constraints
+        python setup.py install
     }
 fi
 
@@ -69,7 +70,7 @@ CONSTRAINTS=""
 CONSTRAINTS_URL=""
 CONSTRAINTS_BRANCH=""
 
-OPTS=`getopt -n 'parse-options' -o r:b:e:d:c:cu:cb: -- "$@"`
+OPTS=`getopt -n 'parse-options' -o r:b:e:d:c:u:q: -- "$@"`
 if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
 
 echo "$OPTS"
@@ -83,8 +84,8 @@ while true; do
         -e) EXTRAS=${2}; shift 2 ;;
         -d) EXTRA_DEPS=${2}; shift 2 ;;
         -c) CONSTRAINTS=${2}; shift ;;
-        -cu) CONSTRAINTS_URL=${2}; shift 2 ;;
-        -cb) CONSTRAINTS_BRANCH=${2}; shift 2 ;;
+        -u) CONSTRAINTS_URL=${2}; shift 2 ;;
+        -q) CONSTRAINTS_BRANCH=${2}; shift 2 ;;
         -- ) shift; break ;;
         * ) break ;;
     esac
@@ -100,7 +101,6 @@ EXTRAS="${EXTRAS:-""}"
 EXTRA_DEPS="${EXTRA_DEPS:-""}"
 
 echo "Installing APK Dependencies" && install_apk_deps
-echo "Installing PIP" && install_pip
 mkdir -p /app
 cd /app
 
@@ -117,6 +117,6 @@ echo "Installing ${REPO}" && install "${CONSTRAINTS}" "${EXTRAS}" "${EXTRA_DEPS}
 # end of actual build
 
 cd -
-rm -rf /install.sh /clone.sh /install_apk_deps.sh /app
+rm -rf /install.sh /clone.sh /install_apk_deps.sh /app /root/.cache/pip
 
 apk del build-dep

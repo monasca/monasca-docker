@@ -174,9 +174,9 @@ containers:
 {{ include "keystone_env" .Values.my_pod.auth | indent(6) }}
 ```
 
-[1]: https://github.com/hpcloud-mon/monasca-docker/blob/master/mysql-init/
-[2]: https://github.com/hpcloud-mon/monasca-docker/blob/master/mysql-init/Dockerfile
-[3]: https://github.com/hpcloud-mon/monasca-docker/
+[1]: https://github.com/monasca/monasca-docker/blob/master/keystone-init/
+[2]: https://github.com/monasca/monasca-docker/blob/master/keystone-init/Dockerfile
+[3]: https://github.com/monasca/monasca-docker/
 [4]: https://github.com/monasca/monasca-helm/tree/master/keystone-init
 [5]: https://github.com/monasca/monasca-docker/blob/7a7a6032c29ebba3a33e6af29566fd26243cf3ba/keystone-init/keystone_init.py#L39
 [6]: https://github.com/monasca/monasca-helm/blob/master/keystone-init/templates/_keystone_env.tpl

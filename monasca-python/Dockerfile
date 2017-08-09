@@ -1,0 +1,7 @@
+ARG PYTHON_VERSION="2"
+ARG ALPINE_VERSION="3.6"
+
+FROM python:${PYTHON_VERSION}-alpine${ALPINE_VERSION}
+
+COPY build.sh /
+RUN chmod +x /build.sh

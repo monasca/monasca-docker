@@ -2,7 +2,7 @@ FROM python:2-alpine3.6
 
 COPY requirements.txt stack-fix.c /
 
-RUN apk add --no-cache ca-certificates && \
+RUN apk add --no-cache ca-certificates tini && \
     apk add --no-cache --virtual build-dep \
         musl-dev linux-headers git make g++ && \
     gcc -shared -fPIC /stack-fix.c -o /stack-fix.so && \
@@ -13,4 +13,5 @@ RUN apk add --no-cache ca-certificates && \
 
 COPY keystone_init.py kubernetes.py preload.yml start.sh /
 
+ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["/start.sh"]

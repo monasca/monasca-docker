@@ -1,8 +1,10 @@
-FROM monasca/python:2
+ARG PYTHON_VERSION="2"
+ARG TIMESTAMP_SLUG=20170808-155214
+FROM monasca/python:${PYTHON_VERSION}-${TIMESTAMP_SLUG}
 
 ARG AGENT_REPO=https://git.openstack.org/openstack/monasca-agent
 ARG AGENT_BRANCH="master"
-ARG UPPER_CONSTRAINTS=https://raw.githubusercontent.com/openstack/requirements/master/upper-constraints.txt
+ARG CONSTRAINTS_BRANCH=${CONSTRAINTS_BRANCH:-$AGENT_BRANCH}
 ARG AGENT_USER="mon-agent"
 
 # To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
@@ -21,7 +23,7 @@ ENV CONFIG_TEMPLATE=true \
   HOSTNAME_FROM_KUBERNETES=false
 
 COPY apk_install.sh /apk.sh
-RUN /build.sh -r ${AGENT_REPO} -b ${AGENT_BRANCH} -c ${UPPER_CONSTRAINTS}  \
+RUN /build.sh -r ${AGENT_REPO} -b ${AGENT_BRANCH} -q ${CONSTRAINTS_BRANCH}  \
   -d "prometheus_client docker-py" && \
   rm -rf /build.sh
 

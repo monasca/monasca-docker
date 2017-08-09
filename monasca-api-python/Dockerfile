@@ -1,8 +1,10 @@
-FROM monasca/python:2
+ARG PYTHON_VERSION="2"
+ARG TIMESTAMP_SLUG=20170808-155214
+FROM monasca/python:${PYTHON_VERSION}-${TIMESTAMP_SLUG}
 
 ARG API_REPO=https://github.com/openstack/monasca-api.git
 ARG API_BRANCH=master
-ARG API_CONSTRAINTS_BRANCH=${API_CONSTRAINTS_BRANCH:-$API_BRANCH}
+ARG CONSTRAINTS_BRANCH=${CONSTRAINTS_BRANCH:-$API_BRANCH}
 
 # To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
 # `docker build`
@@ -37,7 +39,7 @@ ENV CONFIG_TEMPLATE=true \
 
 COPY apk_install.sh /apk.sh
 RUN /build.sh -r ${API_REPO} -b ${API_BRANCH} \
-  -q ${API_CONSTRAINTS_BRANCH} -d "gunicorn influxdb python-memcached" && \
+  -q ${CONSTRAINTS_BRANCH} -d "gunicorn influxdb python-memcached" && \
   rm -rf /build.sh
 
 COPY api-* /etc/monasca/

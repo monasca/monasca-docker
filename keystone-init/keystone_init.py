@@ -57,6 +57,8 @@ _domain_cache = []
 _project_cache = defaultdict(lambda: [])
 _role_cache = defaultdict(lambda: [])
 
+_kubernetes_client = None
+
 
 def first(condition, seq):
     try:
@@ -103,6 +105,16 @@ def get_current_namespace():
     logger.warn('Not running in cluster and $NAMESPACE is not set, assuming '
                 '\'default\'!')
     return 'default'
+
+
+def get_kubernetes_client():
+    global _kubernetes_client
+
+    if _kubernetes_client is None:
+        _kubernetes_client = KubernetesAPIClient()
+        _kubernetes_client.load_auto_config()
+
+    return _kubernetes_client
 
 
 def generate_password(length=16):
@@ -388,13 +400,11 @@ def parse_secret(secret):
     return secret['namespace'], secret['name']
 
 
-def load_domains(ks, k8s, domains):
+def load_domains(ks, domains):
     """
 
     :param ks:
     :type ks: keystoneclient.v3.client.Client
-    :param k8s:
-    :type k8s: kubernetes.KubernetesAPIClient
     :param domains:
     :type domains: dict[str, dict[str, list]]
     :return:
@@ -439,16 +449,27 @@ def load_domains(ks, k8s, domains):
 
                 if 'secret' in user_cfg:
                     s_namespace, s_name = parse_secret(user_cfg['secret'])
+
+                    k8s = get_kubernetes_client()
                     secret = get_kubernetes_secret(k8s, s_name, s_namespace)
                     if secret:
                         # TODO use password from secret instead? overwrite?
                         pass
                     else:
-                        # TODO add more vars? auth url?
-                        create_kubernetes_secret(k8s, {
+                        fields = {
                             'OS_USERNAME': username,
-                            'OS_PASSWORD': password
-                        }, s_name, s_namespace)
+                            'OS_PASSWORD': password,
+                            'OS_AUTH_URL': ks.session.auth.auth_url,
+                            'OS_USER_DOMAIN_NAME': domain.name
+                        }
+
+                        if project:
+                            fields.update({
+                                'OS_PROJECT_NAME': project.name,
+                                'OS_PROJECT_DOMAIN_NAME': domain.name,
+                            })
+
+                        create_kubernetes_secret(k8s, fields, s_name, s_namespace)
                         logging.info('created kubernetes secret: %s/%s',
                                      s_name, s_namespace)
 
@@ -478,7 +499,7 @@ def load_domains(ks, k8s, domains):
     logging.info('all domains initialized successfully')
 
 
-def load_endpoints(ks, k8s, endpoints):
+def load_endpoints(ks, endpoints):
     for name, options in endpoints.iteritems():
         # TODO
         pass
@@ -487,17 +508,14 @@ def load_endpoints(ks, k8s, endpoints):
 def main():
     ks = get_keystone_client()
 
-    k8s = KubernetesAPIClient()
-    k8s.load_auto_config()
-
     with open(PRELOAD_PATH, 'r') as f:
         preload = yaml.safe_load(f)
 
         if 'domains' in preload:
-            load_domains(ks, k8s, preload['domains'])
+            load_domains(ks, preload['domains'])
 
         if 'endpoints' in preload:
-            load_endpoints(ks, k8s, preload['endpoints'])
+            load_endpoints(ks, preload['endpoints'])
 
 
 if __name__ == '__main__':

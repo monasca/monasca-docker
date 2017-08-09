@@ -1,6 +1,7 @@
-ARG PYTHON_VERSION="2"
-ARG TIMESTAMP_SLUG=20170808-155214
-FROM monasca/python:${PYTHON_VERSION}-${TIMESTAMP_SLUG}
+ARG TIMESTAMP_SLUG
+# note(kornicameiter) running monasca-agent with Python3 is not possible
+# at the moment, enforce Python2 variant of monasca/python
+FROM monasca/python:2-${TIMESTAMP_SLUG}
 
 ARG AGENT_REPO=https://git.openstack.org/openstack/monasca-agent
 ARG AGENT_BRANCH="master"

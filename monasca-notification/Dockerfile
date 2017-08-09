@@ -1,6 +1,7 @@
 ARG PYTHON_VERSION=2
-
-FROM monasca/python:${PYTHON_VERSION}
+ARG PYTHON_VERSION="2"
+ARG TIMESTAMP_SLUG=20170808-155214
+FROM monasca/python:${PYTHON_VERSION}-${TIMESTAMP_SLUG}
 
 ARG NOTIFICATION_REPO=https://git.openstack.org/openstack/monasca-notification
 ARG NOTIFICATION_BRANCH=master

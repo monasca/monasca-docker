@@ -27,7 +27,7 @@ ENV CONFIG_TEMPLATE=true \
   INFLUX_DB=mon
 
 RUN /build.sh -r ${PERSISTER_REPO} -b ${PERSISTER_BRANCH} \
-  -q ${CONSTRAINTS_BRANCH} -d "influxdb" && \
+  -q ${CONSTRAINTS_BRANCH} -d "influxdb Jinja2" && \
   rm -rf /build.sh
 
 COPY persister.conf.j2 /etc/monasca-persister/

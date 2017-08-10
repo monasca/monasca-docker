@@ -38,6 +38,11 @@ services:
       CADVISOR: "true"
       CADVISOR_URL: "http://cadvisor:8080/"
 
+  influxdb-init:
+    image: monasca/influxdb-init:latest
+    depends_on:
+      - influxdb
+
   alarms:
     image: monasca/alarms:${MON_ALARMS_VERSION}
 

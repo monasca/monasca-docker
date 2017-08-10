@@ -9,6 +9,7 @@ variants:
       CLIENT_BRANCH: 1.7.0
       PYTHON_VERSION: '2'
       TIMESTAMP_SLUG: 20170809-155207
+      CONSTRAINTS_BRANCH: master
 
   - tag: 1.6.0
     aliases:
@@ -17,6 +18,7 @@ variants:
       CLIENT_BRANCH: 1.6.0
       PYTHON_VERSION: '2'
       TIMESTAMP_SLUG: 20170809-155207
+      CONSTRAINTS_BRANCH: master
 
   - tag: master
     aliases:
@@ -25,3 +27,4 @@ variants:
       CLIENT_BRANCH: master
       PYTHON_VERSION: '2'
       TIMESTAMP_SLUG: 20170809-155207
+      CONSTRAINTS_BRANCH: master

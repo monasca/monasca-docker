@@ -1,7 +1,7 @@
-ARG PYTHON_VERSION=2
-ARG PYTHON_VERSION="2"
-ARG TIMESTAMP_SLUG=20170808-155214
-FROM monasca/python:${PYTHON_VERSION}-${TIMESTAMP_SLUG}
+ARG TIMESTAMP_SLUG
+FROM monasca/python:2-${TIMESTAMP_SLUG}
+# note(kornicameister) there's no full Python3 support for
+# monasca-notification at the moment, enforcing Python 2
 
 ARG NOTIFICATION_REPO=https://git.openstack.org/openstack/monasca-notification
 ARG NOTIFICATION_BRANCH=master

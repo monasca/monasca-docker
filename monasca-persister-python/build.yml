@@ -30,6 +30,7 @@ variants:
       PERSISTER_BRANCH: stable/ocata
       PYTHON_VERSION: '2'
       TIMESTAMP_SLUG: 20170809-155207
+      CONSTRAINTS_BRANCH: stable/ocata
 
   - tag: master
     aliases:
@@ -39,3 +40,4 @@ variants:
       PERSISTER_BRANCH: master
       PYTHON_VERSION: '2'
       TIMESTAMP_SLUG: 20170809-155207
+      CONSTRAINTS_BRANCH: master

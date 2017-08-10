@@ -3,8 +3,8 @@ ARG TIMESTAMP_SLUG
 FROM monasca/python:${PYTHON_VERSION}-${TIMESTAMP_SLUG}
 
 ARG CLIENT_REPO=https://git.openstack.org/openstack/python-monascaclient
-ARG CLIENT_BRANCH="master"
-ARG CONSTRAINTS_BRANCH=${CONSTRAINTS_BRANCH:-$CLIENT_BRANCH}
+ARG CLIENT_BRANCH=master
+ARG CONSTRAINTS_BRANCH=master
 
 # To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
 # `docker build`

@@ -4,4 +4,4 @@ variants:
     aliases:
       - :master-{date}-{time}
     args:
-      TIMESTAMP_SLUG: 20170808-155214
+      TIMESTAMP_SLUG: 20170809-155207

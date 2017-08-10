@@ -5,4 +5,5 @@ variants:
       - :master-{date}-{time}
     args:
       API_BRANCH: refs/changes/63/417163/10
+      CONSTRAINTS_BRANCH: master
       TIMESTAMP_SLUG: 20170809-155207

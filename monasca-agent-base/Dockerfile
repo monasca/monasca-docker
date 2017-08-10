@@ -25,7 +25,7 @@ ENV CONFIG_TEMPLATE=true \
 
 COPY apk_install.sh /apk.sh
 RUN /build.sh -r ${AGENT_REPO} -b ${AGENT_BRANCH} -q ${CONSTRAINTS_BRANCH}  \
-  -d "prometheus_client docker-py" && \
+  -d "Jinja2 prometheus_client docker-py" && \
   rm -rf /build.sh
 
 COPY agent.yaml.j2 /etc/monasca/agent/agent.yaml.j2

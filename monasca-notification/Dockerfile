@@ -22,7 +22,7 @@ ENV CONFIG_TEMPLATE=true \
 
 COPY apk_install.sh /apk.sh
 RUN /build.sh -r ${NOTIFICATION_REPO} -b ${NOTIFICATION_BRANCH} \
-  -q ${CONSTRAINTS_BRANCH} -d "PyMySQL"
+  -q ${CONSTRAINTS_BRANCH} -d "PyMySQL Jinja2 netaddr gevent greenlet"
 
 COPY notification.yaml.j2 /config/notification.yaml.j2
 COPY template.py kafka_wait_for_topics.py start.sh /

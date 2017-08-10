@@ -5,7 +5,7 @@ FROM monasca/python:2-${TIMESTAMP_SLUG}
 
 ARG API_REPO=https://github.com/openstack/monasca-api.git
 ARG API_BRANCH=master
-ARG CONSTRAINTS_BRANCH=${CONSTRAINTS_BRANCH:-$API_BRANCH}
+ARG CONSTRAINTS_BRANCH=master
 
 # To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
 # `docker build`

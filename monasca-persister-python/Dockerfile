@@ -3,8 +3,8 @@ ARG TIMESTAMP_SLUG
 FROM monasca/python:${PYTHON_VERSION}-${TIMESTAMP_SLUG}
 
 ARG PERSISTER_REPO=https://github.com/openstack/monasca-persister.git
-ARG PERSISTER_BRANCH="master"
-ARG CONSTRAINTS_BRANCH=${CONSTRAINTS_BRANCH:-$PERSISTER_BRANCH}
+ARG PERSISTER_BRANCH=master
+ARG CONSTRAINTS_BRANCH=master
 
 # To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
 # `docker build`

@@ -451,7 +451,7 @@ def run_tempest_tests():
                          'KEYSTONE_PORT=5000', '--net', 'monascadocker_default',
                          'monasca/smoke-tests:latest']
 
-    p = subprocess.Popen(smoke_tests_run, stdin=subprocess.PIPE)
+    p = subprocess.Popen(tempest_tests_run, stdin=subprocess.PIPE)
 
     def kill(signal, frame):
         p.kill()

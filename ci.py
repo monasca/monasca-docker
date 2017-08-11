@@ -337,7 +337,7 @@ def get_docker_id(init_job):
 def wait_for_init_jobs():
     init_status_dict = {"mysql-init": False,
                         "influxdb-init": False,
-                        "kafka-init", False}
+                        "kafka-init": False}
     docker_id_dict = {"mysql-init": "",
                       "influxdb-init": "",
                       "kafka-init": ""}

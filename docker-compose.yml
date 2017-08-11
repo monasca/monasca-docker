@@ -34,7 +34,7 @@ services:
       CADVISOR_URL: "http://cadvisor:8080/"
 
   influxdb-init:
-    image: monasca/influxdb-init:latest
+    image: monasca/influxdb-init:1.0.0
     depends_on:
       - influxdb
 
@@ -49,7 +49,7 @@ services:
     depends_on:
       - zookeeper
   kafka-init:
-    image: monasca/kafka-init:latest
+    image: monasca/kafka-init:0.0.1
     environment:
       KAFKA_TOPIC_CONFIG: segment.ms=900000 # 15m
       KAFKA_CREATE_TOPICS: "\

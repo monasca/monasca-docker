@@ -449,7 +449,7 @@ def run_smoke_tests():
 def run_tempest_tests():
     tempest_tests_run = ['docker', 'run', '-e', 'KEYSTONE_SERVER=keystone', '-e',
                          'KEYSTONE_PORT=5000', '--net', 'monascadocker_default',
-                         'monasca/smoke-tests:latest']
+                         'monasca/tempest-tests:latest']
 
     p = subprocess.Popen(tempest_tests_run, stdin=subprocess.PIPE)
 

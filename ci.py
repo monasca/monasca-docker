@@ -254,6 +254,7 @@ def handle_pull_request(files, modules, tags):
     run_docker_compose()
     wait_for_init_jobs()
     run_smoke_tests()
+    run_tempest_tests()
 
 
 def get_current_init_status(docker_id):
@@ -439,6 +440,28 @@ def run_smoke_tests():
     signal.signal(signal.SIGINT, kill)
     if p.wait() != 0:
         print('Smoke-tests failed, listing containers/logs.')
+        output_docker_logs()
+        output_docker_ps()
+        print('Exiting!')
+        sys.exit(p.returncode)
+
+
+def run_tempest_tests():
+    tempest_tests_run = ['docker', 'run', '-e', 'KEYSTONE_SERVER=keystone', '-e',
+                         'KEYSTONE_PORT=5000', '--net', 'monascadocker_default',
+                         'monasca/tempest-tests:latest']
+
+    p = subprocess.Popen(tempest_tests_run, stdin=subprocess.PIPE)
+
+    def kill(signal, frame):
+        p.kill()
+        print()
+        print('killed!')
+        sys.exit(1)
+
+    signal.signal(signal.SIGINT, kill)
+    if p.wait() != 0:
+        print('Tempest-tests failed, listing containers/logs.')
         output_docker_logs()
         output_docker_ps()
         print('Exiting!')

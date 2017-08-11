@@ -39,7 +39,7 @@ services:
       - influxdb
 
   alarms:
-    image: monasca/alarms:1.1.0
+    image: monasca/alarms:latest
 
   zookeeper:
     image: zookeeper:3.4

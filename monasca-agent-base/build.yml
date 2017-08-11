@@ -3,3 +3,15 @@ variants:
   - tag: master
     aliases:
       - :master-{date}-{time}
+    args:
+      TIMESTAMP_SLUG: 20170809-155207
+      AGENT_BRANCH: master
+      CONSTRAINTS_BRANCH: master
+
+  - tag: ocata
+    aliases:
+      - :ocata-{date}-{time}
+    args:
+      TIMESTAMP_SLUG: 20170809-155207
+      AGENT_BRANCH: stable/ocata
+      CONSTRAINTS_BRANCH: stable/ocata

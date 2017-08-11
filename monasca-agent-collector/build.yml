@@ -3,3 +3,11 @@ variants:
   - tag: master
     aliases:
       - :master-{date}-{time}
+    args:
+      MON_AGENT_BASE_VERSION: master-20170706-222054
+
+  - tag: ocata
+    aliases:
+      - :ocata-{date}-{time}
+    args:
+      MON_AGENT_BASE_VERSION: ocata-20170706-222054

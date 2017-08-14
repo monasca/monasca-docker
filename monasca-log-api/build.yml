@@ -44,11 +44,3 @@ variants:
       CONSTRAINTS_BRANCH: stable/ocata
       PYTHON_VERSION: '2'
       TIMESTAMP_SLUG: 20170809-155207
-  - tag: 1.4.1
-    aliases:
-      - :1.4
-      - :1
-    args:
-      LOG_API_BRANCH: 1.4.1
-      CONSTRAINTS_BRANCH: stable/ocata
-

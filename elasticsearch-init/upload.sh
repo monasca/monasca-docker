@@ -12,10 +12,11 @@ if [ ! -d $TPL_DIR ]; then
     echo "No templates mounted"
     exit 0
 else
-    TPLS=(ls $TPL_DIR)
+    TPLS=$(ls $TPL_DIR)
 fi
 
 for template in $TPLS; do
+
     echo "Handling template file $template"
     tpl_name=`_get_tpl_name_from_file $template`
 

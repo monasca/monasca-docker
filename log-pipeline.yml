@@ -34,13 +34,13 @@ services:
     ports:
       - 9200:9200
       - 9300:9300
-    depends_on:
-      - elasticsearch-init
 
   elasticsearch-init:
     image: monasca/elasticsearch-init
     volumes:
       - ./elasticsearch-templates/logs.template:/templates/logs.json
+    depends_on:
+      - elasticsearch
 
   kafka-log-init:
     image: monasca/kafka-init:0.0.1

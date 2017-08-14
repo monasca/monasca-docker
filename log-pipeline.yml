@@ -41,6 +41,18 @@ services:
     image: monasca/elasticsearch-init
     volumes:
       - ./elasticsearch-templates/logs.template:/templates/logs.json
+    depends_on:
+      - elasticsearch
+
+  kafka-log-init:
+    image: monasca/kafka-init:0.0.1
+    environment:
+      KAFKA_TOPIC_CONFIG: segment.ms=900000 # 15m
+      KAFKA_CREATE_TOPICS: "\
+        log:4:1,\
+        log-transformed:4:1"
+    depends_on:
+      - kafka
 
   kibana:
     image: monasca/kibana:4

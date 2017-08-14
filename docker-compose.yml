@@ -58,9 +58,7 @@ services:
         alarm-notifications:12:1,\
         retry-notifications:3:1,\
         events:12:1,\
-        60-seconds-notifications:3:1,\
-        log:4:1,\
-        log-transformed:4:1"
+        60-seconds-notifications:3:1"
     depends_on:
       - kafka
 

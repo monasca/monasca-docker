@@ -173,6 +173,26 @@ def get_or_create_domain(client, name=None):
     return domain
 
 
+def get_keystone_admin_url(client, domain):
+    """
+    :type client: keystoneclient.v3.client.Client
+    :type domain: keystoneclient.v3.domains.Domain
+    :return: str or None
+    """
+    if 'OS_ADMIN_URL' in os.environ:
+        return os.environ['OS_ADMIN_URL']
+
+    try:
+        keystone_service = client.services.list(type='identity')[0]
+        endpoints = client.endpoints.list(domain=domain,
+                                          service=keystone_service,
+                                          interface='admin')
+        return endpoints[0].url
+    except IndexError:
+        logging.warn('failed to detect keystone admin URL!', exc_info=True)
+        return None
+
+
 @retry()
 def get_or_create_project(client, domain, name):
     """
@@ -412,6 +432,7 @@ def load_domains(ks, domains):
 
     for name, options in domains.iteritems():
         domain = get_or_create_domain(ks, None if name == 'default' else name)
+        admin_url = get_keystone_admin_url(ks, domain)
 
         logging.info('creating projects...')
         for project in options.get('projects', []):
@@ -462,6 +483,9 @@ def load_domains(ks, domains):
                             'OS_AUTH_URL': ks.session.auth.auth_url,
                             'OS_USER_DOMAIN_NAME': domain.name
                         }
+
+                        if admin_url:
+                            fields.update({'OS_ADMIN_URL': admin_url})
 
                         if project:
                             fields.update({

@@ -35,7 +35,7 @@ ARG REBUILD_CONFIG=1
 COPY log-api* /etc/monasca/
 COPY template.py start.sh health-check.sh kafka_wait_for_topics.py /
 
-EXPOSE 5607
+EXPOSE ${MONASCA_CONTAINER_LOG_API_PORT}
 
 HEALTHCHECK --interval=10s --timeout=5s \
   CMD /health-check.sh \

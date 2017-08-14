@@ -1,4 +1,4 @@
-bind = '0.0.0.0:{{ LOG_API_PORT }}'
+bind = '0.0.0.0:{{ MONASCA_CONTAINER_LOG_API_PORT }}'
 proc_name = 'monasca-log-api'
 
 backlog = {{ GUNICORN_BACKLOG|int }}

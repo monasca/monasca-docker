@@ -6,4 +6,4 @@ ENV ELASTICSEARCH_URI=elasticsearch:9200 \
 COPY wait-for.sh upload.sh /
 RUN chmod +x /wait-for.sh /upload.sh
 
-ENTRYPOINT /wait-for ${ELASTICSEARCH_URI} && /upload.sh
+ENTRYPOINT /wait-for.sh ${ELASTICSEARCH_URI} && /upload.sh

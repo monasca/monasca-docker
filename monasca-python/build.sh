@@ -7,7 +7,9 @@ if [ -e /apk.sh ]; then
     source /apk.sh
 else
     echo "Using default apk dependencies install function"
-    install_apk_deps() { }
+    install_apk_deps() {
+        echo "No APK dependencies by default"
+    }
 fi
 
 if [ -e /install.sh ]; then

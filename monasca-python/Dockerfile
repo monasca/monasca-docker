@@ -11,4 +11,4 @@ RUN apk add --no-cache ca-certificates tini && \
   gcc -shared -fPIC /stack-fix.c -o /stack-fix.so && \
   apk del build-dep
 
-ENTRYPOINT ["/sbin/tini", "--"]
+ENTRYPOINT ["LD_PRELOAD=/stack-fix.so", "/sbin/tini", "--"]

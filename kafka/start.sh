@@ -94,9 +94,6 @@ if [ "$KAFKA_JMX" = "true" ]; then
   fi
 fi
 
-echo "Creating topics..."
-python /create_topics.py &
-
 if [ "$GC_LOG_ENABLED" != "true" ]; then
   # This turns off the GC logging in /kafka/bin/kafka-server-start.sh
   # It is a hack, but I could not find another way to do it

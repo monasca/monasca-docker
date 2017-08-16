@@ -32,6 +32,7 @@ MODULE_TO_COMPOSE_SERVICE = {
     'zookeeper': 'zookeeper',
     'influxdb': 'influxdb',
     'kafka': 'kafka',
+    'kafka-init': 'kafka-init',
     'monasca-thresh': 'thresh',
     'monasca-persister-python': 'monasca-persister',
     'mysql-init': 'mysql-init',
@@ -254,6 +255,7 @@ def handle_pull_request(files, modules, tags):
     run_docker_compose()
     wait_for_init_jobs()
     run_smoke_tests()
+    run_tempest_tests()
 
 
 def get_current_init_status(docker_id):
@@ -334,9 +336,11 @@ def get_docker_id(init_job):
 
 def wait_for_init_jobs():
     init_status_dict = {"mysql-init": False,
-                        "influxdb-init": False}
+                        "influxdb-init": False,
+                        "kafka-init": False}
     docker_id_dict = {"mysql-init": "",
-                      "influxdb-init": ""}
+                      "influxdb-init": "",
+                      "kafka-init": ""}
     amount_succeeded = 0
     for attempt in range(40):
         time.sleep(30)
@@ -439,6 +443,28 @@ def run_smoke_tests():
     signal.signal(signal.SIGINT, kill)
     if p.wait() != 0:
         print('Smoke-tests failed, listing containers/logs.')
+        output_docker_logs()
+        output_docker_ps()
+        print('Exiting!')
+        sys.exit(p.returncode)
+
+
+def run_tempest_tests():
+    tempest_tests_run = ['docker', 'run', '-e', 'KEYSTONE_SERVER=keystone', '-e',
+                         'KEYSTONE_PORT=5000', '--net', 'monascadocker_default',
+                         'monasca/tempest-tests:latest']
+
+    p = subprocess.Popen(tempest_tests_run, stdin=subprocess.PIPE)
+
+    def kill(signal, frame):
+        p.kill()
+        print()
+        print('killed!')
+        sys.exit(1)
+
+    signal.signal(signal.SIGINT, kill)
+    if p.wait() != 0:
+        print('Tempest-tests failed, listing containers/logs.')
         output_docker_logs()
         output_docker_ps()
         print('Exiting!')

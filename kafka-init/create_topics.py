@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
+# Copyright 2017 Fujitsu LIMITED
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -25,14 +26,9 @@ from itertools import chain
 
 SCRIPT_PATH = os.environ.get('KAFKA_CREATE_TOPICS_SCRIPT',
                              '/kafka/bin/kafka-topics.sh')
-
 TOPIC_STRING = os.environ.get('KAFKA_CREATE_TOPICS', '')
 CONFIG_STRING = os.environ.get('KAFKA_TOPIC_CONFIG', '')
-
 ZOOKEEPER_CONNECTION_STRING = os.environ.get('ZOOKEEPER_CONNECTION_STRING')
-KAFKA_LISTEN_PORT = os.environ.get('KAFKA_LISTEN_PORT', '9092')
-KAFKA_WAIT_DELAY = os.environ.get('KAFKA_WAIT_DELAY', '5')
-KAFKA_WAIT_RETRIES = os.environ.get('KAFKA_WAIT_RETRIES', '24')
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -58,26 +54,6 @@ class CaptureException(Exception):
             self.stdout,
             self.stderr
         )
-
-
-def is_kafka_running():
-    p = subprocess.Popen(['netstat', '-nlt'],
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE,
-                         env=subprocess_env)
-
-    out, err = p.communicate()
-    if p.returncode != 0:
-        raise CaptureException(p.returncode, out, err)
-
-    lines = out.splitlines()[2:]
-    for line in lines:
-        tokens = line.split()
-        address = tokens[3]
-        if address.endswith(':%s' % KAFKA_LISTEN_PORT):
-            return True
-
-    return False
 
 
 def kafka_topics(verb, args=None):
@@ -194,25 +170,6 @@ def create_topics(default_config, existing_topics):
 
 
 def main():
-    retries = int(KAFKA_WAIT_RETRIES)
-    delay = float(KAFKA_WAIT_DELAY)
-
-    logging.info('Waiting for Kafka to start...')
-    ready = False
-    for i in range(retries):
-        if is_kafka_running():
-            logger.info('Kafka has started, continuing...')
-            ready = True
-            break
-        else:
-            logger.info('Kafka is not ready yet (attempt %d of %d)',
-                        i + 1, retries)
-            time.sleep(delay)
-
-    if not ready:
-        logger.error('Kafka did not become ready in time, giving up!')
-        sys.exit(1)
-
     default_config = get_default_config()
     logger.info('Default topic config: %r', default_config)
 

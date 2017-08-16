@@ -7,10 +7,7 @@ if [ -e /apk.sh ]; then
     source /apk.sh
 else
     echo "Using default apk dependencies install function"
-    install_apk_deps() {
-        apk add --no-cache curl
-        apk add --no-cache --virtual build-dep git make g++ linux-headers
-    }
+    install_apk_deps() { }
 fi
 
 if [ -e /install.sh ]; then

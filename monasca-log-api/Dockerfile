@@ -5,6 +5,7 @@ FROM monasca/python:${PYTHON_VERSION}-${TIMESTAMP_SLUG}
 ARG LOG_API_REPO=https://github.com/openstack/monasca-log-api.git
 ARG LOG_API_BRANCH=master
 ARG CONSTRAINTS_BRANCH=master
+ARG EXTRA_DEPENDENCIES="gunicorn python-memcached"
 
 # To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
 # `docker build`
@@ -17,6 +18,7 @@ ENV CONFIG_TEMPLATE=true \
   MONASCA_CONTAINER_LOG_API_PORT=5607 \
   KAFKA_URI=kafka:9092 \
   KAFKA_WAIT_FOR_TOPICS=log \
+  MEMCACHED_URI=memcached:11211 \
   KEYSTONE_IDENTITY_URI=http://keystone:35357 \
   KEYSTONE_AUTH_URI=http://keystone:5000 \
   KEYSTONE_ADMIN_USER=admin \
@@ -28,7 +30,11 @@ ENV CONFIG_TEMPLATE=true \
   ACCESS_LOG_FIELDS='%(h)s %(l)s %(u)s %(t)s %(r)s %(s)s %(b)s "%(f)s" "%(a)s" %(L)s'
 
 ARG REBUILD_PROJECT=1
-RUN /build.sh -r ${LOG_API_REPO} -b ${LOG_API_BRANCH} -q ${CONSTRAINTS_BRANCH} -d "gunicorn" && \
+RUN /build.sh \
+  -r "${LOG_API_REPO}" \
+  -b "${LOG_API_BRANCH}" \
+  -q "${CONSTRAINTS_BRANCH}" \
+  -d "${EXTRA_DEPENDENCIES}" && \
   rm -rf /usr/local/etc/monasca
 
 ARG REBUILD_CONFIG=1

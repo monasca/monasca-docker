@@ -69,5 +69,6 @@ services:
       - keystone
       - zookeeper
       - kafka
+      - memcached
     ports:
       - "5607:5607"

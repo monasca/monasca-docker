@@ -50,6 +50,7 @@ A number of environment variables can be passed to the container:
 | `KEYSTONE_ADMIN_PASSWORD`        | `secretadmin` | Keystone admin account password  |
 | `KEYSTONE_ADMIN_TENANT`          | `admin`       | Keystone admin account tenant    |
 | `KEYSTONE_ADMIN_DOMAIN`          | `default`     | Keystone admin domain            |
+| `MEMCACHED_URI`                  | `memcached:11211` | A list of URIs pointing at memcached |
 | `AUTHORIZED_ROLES`               | `admin, domainuser, domainadmin, monasca-user`   | Roles for admin Users |
 | `AGENT_AUTHORIZED_ROLES`         | `monasca-agent` | Roles for metric write only users |
 | `GUNICORN_WORKERS`               | `9`           | number of API worker processes   |

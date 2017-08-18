@@ -14,9 +14,7 @@ ENV MONASCA_WAIT_FOR_API=true \
   OS_USERNAME=mini-mon \
   OS_USER_DOMAIN_NAME=Default
 
-RUN apk add --no-cache py2-netaddr py2-yaml py2-jinja2 && \
-  apk add --no-cache --virtual build-dep && \
-  apk del build-dep
+RUN apk add --no-cache py2-netaddr py2-yaml py2-jinja2
 
 COPY definitions.yml.j2 /config/definitions.yml.j2
 COPY monasca_alarm_definition.py template.py start.sh /

@@ -241,6 +241,9 @@ def get_or_create_role(client, domain, name):
         # `domain_id=` must be used explicitly
         cache.extend(client.roles.list(domain_id=domain.id))
 
+        # also include _member_ role in the cache for domain_id=None
+        cache.extend(client.roles.list(domain_id=None, name='_member_'))
+
     role = first(lambda r: r.name == name, cache)
     if role:
         logging.info('found existing role: %s', role.name)

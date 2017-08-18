@@ -236,13 +236,15 @@ def get_or_create_role(client, domain, name):
     """
     cache = _role_cache[domain.id]
     if not cache:
+        # two special roles can exist in the None domain, so use them when
+        # they exist
+        cache.extend(client.roles.list(domain_id=None, name='admin'))
+        cache.extend(client.roles.list(domain_id=None, name='_member_'))
+
         # NOTE: client.roles.list() does NOT function like
         # client.projects.list()! passing `domain=` does not work,
         # `domain_id=` must be used explicitly
         cache.extend(client.roles.list(domain_id=domain.id))
-
-        # also include _member_ role in the cache for domain_id=None
-        cache.extend(client.roles.list(domain_id=None, name='_member_'))
 
     role = first(lambda r: r.name == name, cache)
     if role:

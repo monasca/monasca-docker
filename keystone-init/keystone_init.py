@@ -177,7 +177,7 @@ def get_keystone_admin_url(client, domain):
     """
     :type client: keystoneclient.v3.client.Client
     :type domain: keystoneclient.v3.domains.Domain
-    :return: str or None
+    :rtype: str or None
     """
     if 'OS_ADMIN_URL' in os.environ:
         return os.environ['OS_ADMIN_URL']
@@ -240,6 +240,9 @@ def get_or_create_role(client, domain, name):
         # client.projects.list()! passing `domain=` does not work,
         # `domain_id=` must be used explicitly
         cache.extend(client.roles.list(domain_id=domain.id))
+
+        # also include _member_ role in the cache for domain_id=None
+        cache.extend(client.roles.list(domain_id=None, name='_member_'))
 
     role = first(lambda r: r.name == name, cache)
     if role:
@@ -507,6 +510,7 @@ def load_domains(ks, domains):
             current_ids = set(map(lambda a: a.role['id'], current_roles))
 
             desired_role_names = user_cfg.get('roles', [])
+            desired_role_names.append('_member_')
             desired_roles = map(lambda n: get_or_create_role(ks, domain, n),
                                 desired_role_names)
             desired_ids = set(map(lambda r: r.id, desired_roles))

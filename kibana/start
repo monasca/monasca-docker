@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+sed -e "
+    s|monasca-kibana-plugin.enabled:\sFalse|monasca-kibana-plugin.enabled: ${MONASCA_PLUGIN_ENABLED}|g;
+" -i /opt/kibana/config/kibana.yml
+
+if [ $MONASCA_PLUGIN_ENABLED == True ]; then
+    /wait-for $KEYSTONE_URI -- kibana
+else
+    kibana
+fi

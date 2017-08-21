@@ -54,6 +54,7 @@ logging.basicConfig(level=LOG_LEVEL)
 logger = logging.getLogger(__name__)
 
 _domain_cache = []
+_global_role_cache = []
 _project_cache = defaultdict(lambda: [])
 _role_cache = defaultdict(lambda: [])
 
@@ -163,12 +164,12 @@ def get_or_create_domain(client, name=None):
 
     domain = first(lambda d: d.name == name, _domain_cache)
     if domain:
-        logging.info('found existing domain: %s', domain.name)
+        logger.info('found existing domain: %s', domain.name)
     else:
-        logging.info('creating domain: %s', name)
+        logger.info('creating domain: %s', name)
         domain = client.domains.create(name)
         _domain_cache.append(domain)
-        logging.debug('created domain: %s', domain.name)
+        logger.debug('created domain: %s', domain.name)
 
     return domain
 
@@ -177,7 +178,7 @@ def get_keystone_admin_url(client, domain):
     """
     :type client: keystoneclient.v3.client.Client
     :type domain: keystoneclient.v3.domains.Domain
-    :return: str or None
+    :rtype: str or None
     """
     if 'OS_ADMIN_URL' in os.environ:
         return os.environ['OS_ADMIN_URL']
@@ -189,7 +190,7 @@ def get_keystone_admin_url(client, domain):
                                           interface='admin')
         return endpoints[0].url
     except IndexError:
-        logging.warn('failed to detect keystone admin URL!', exc_info=True)
+        logger.warn('failed to detect keystone admin URL!', exc_info=True)
         return None
 
 
@@ -212,14 +213,37 @@ def get_or_create_project(client, domain, name):
 
     project = first(lambda p: p.name == name, cache)
     if project:
-        logging.info('found existing project: %s', project.name)
+        logger.info('found existing project: %s', project.name)
     else:
-        logging.info('creating project: %s', name)
+        logger.info('creating project: %s', name)
         project = client.projects.create(name, domain)
         cache.append(project)
-        logging.debug('created project: %r', project)
+        logger.debug('created project: %r', project)
 
     return project
+
+
+@retry()
+def get_or_create_global_role(client, name):
+    """
+
+    :type client: keystoneclient.v3.client.Client
+    :type name: str
+    :rtype: keystoneclient.v3.roles.Role
+    """
+    if not _global_role_cache:
+        _global_role_cache.extend(client.roles.list())
+
+    role = first(lambda r: r.name == name, _global_role_cache)
+    if role:
+        logger.info('found existing global role: %s', role.name)
+    else:
+        logger.info('creating new global role: %s', name)
+        role = client.roles.create(name)
+        _global_role_cache.append(role)
+        logger.debug('created new global role: %r', role)
+
+    return role
 
 
 @retry()
@@ -231,9 +255,18 @@ def get_or_create_role(client, domain, name):
     :param domain: domain when creating a role, None if global
     :type domain: keystoneclient.v3.domains.Domain
     :param name:
+    :type name: str
     :return:
     :rtype: keystoneclient.v3.roles.Role
     """
+    if not _global_role_cache:
+        _global_role_cache.extend(client.roles.list())
+
+    global_role = first(lambda r: r.name == name, _global_role_cache)
+    if global_role:
+        logger.info('found existing global role: name=%s id=%s', global_role.name, global_role.id)
+        return global_role
+
     cache = _role_cache[domain.id]
     if not cache:
         # NOTE: client.roles.list() does NOT function like
@@ -243,12 +276,13 @@ def get_or_create_role(client, domain, name):
 
     role = first(lambda r: r.name == name, cache)
     if role:
-        logging.info('found existing role: %s', role.name)
+        logger.info('found existing domain-scoped role: role=%s domain=',
+                     role.name, domain.name)
     else:
-        logging.info('creating role: %s', name)
+        logger.info('creating new domain-scoped role: %s', name)
         role = client.roles.create(name, domain)
         cache.append(role)
-        logging.debug('created role: %r', role)
+        logger.debug('created domain-scoped role: %r', role)
 
     return role
 
@@ -278,7 +312,7 @@ def create_user(client, username, **kwargs):
     :rtype: keystoneclient.v3.users.User
     """
     user = client.users.create(username, **kwargs)
-    logging.info("created user %s", username)
+    logger.info("created user %s", username)
 
     return user
 
@@ -294,7 +328,7 @@ def update_user(client, user, **kwargs):
     :return:
     """
     user = client.users.update(user, **kwargs)
-    logging.info('updated user %s', user.name)
+    logger.info('updated user %s', user.name)
 
 
 @retry()
@@ -341,7 +375,7 @@ def ensure_kubernetes_namespace(client, namespace):
         client.get('/api/v1/namespaces/{}', namespace)
     except HTTPError as e:
         if e.response.status_code == 404:
-            logging.info('creating namespace: %s', namespace)
+            logger.info('creating namespace: %s', namespace)
             client.post('/api/v1/namespaces', json={
                 'apiVersion': 'v1',
                 'kind': 'Namespace',
@@ -404,7 +438,7 @@ def create_kubernetes_secret(client, fields, name, namespace=None):
         'data': encoded
     }
 
-    logging.info('creating secret "%s" in namespace "%s"', name, namespace)
+    logger.info('creating secret "%s" in namespace "%s"', name, namespace)
     return client.post('/api/v1/namespaces/{}/secrets',
                        namespace, json=secret)
 
@@ -418,6 +452,17 @@ def parse_secret(secret):
             return None, secret
 
     return secret['namespace'], secret['name']
+
+
+def load_global_roles(ks, global_roles):
+    """
+
+    :type ks: keystoneclient.v3.client.Client
+    :type global_roles: list[str]
+    """
+    logger.info('loading global roles...')
+    for role_name in global_roles:
+        get_or_create_global_role(ks, role_name)
 
 
 def load_domains(ks, domains):
@@ -434,15 +479,15 @@ def load_domains(ks, domains):
         domain = get_or_create_domain(ks, None if name == 'default' else name)
         admin_url = get_keystone_admin_url(ks, domain)
 
-        logging.info('creating projects...')
+        logger.info('creating projects...')
         for project in options.get('projects', []):
             get_or_create_project(ks, domain, project)
 
-        logging.info('creating roles...')
+        logger.info('creating roles...')
         for role in options.get('roles', []):
             get_or_create_role(ks, domain, role)
 
-        logging.info('creating users...')
+        logger.info('creating users...')
         for user_cfg in options.get('users', []):
             assert isinstance(user_cfg, dict)
 
@@ -494,7 +539,7 @@ def load_domains(ks, domains):
                             })
 
                         create_kubernetes_secret(k8s, fields, s_name, s_namespace)
-                        logging.info('created kubernetes secret: %s/%s',
+                        logger.info('created kubernetes secret: %s/%s',
                                      s_name, s_namespace)
 
                 # project is supposedly deprecated in favor of default_project
@@ -507,6 +552,7 @@ def load_domains(ks, domains):
             current_ids = set(map(lambda a: a.role['id'], current_roles))
 
             desired_role_names = user_cfg.get('roles', [])
+            desired_role_names.append('_member_')
             desired_roles = map(lambda n: get_or_create_role(ks, domain, n),
                                 desired_role_names)
             desired_ids = set(map(lambda r: r.id, desired_roles))
@@ -514,13 +560,13 @@ def load_domains(ks, domains):
             # TODO should we remove roles that aren't in the list?
 
             roles_to_grant = desired_ids - current_ids
-            logging.info('granting roles to user: %r', roles_to_grant)
+            logger.info('granting roles to user: %r', roles_to_grant)
             for role_id in roles_to_grant:
                 grant_role(ks, role_id, user, project)
 
-        logging.info('finished initializing domain %s', name)
+        logger.info('finished initializing domain %s', name)
 
-    logging.info('all domains initialized successfully')
+    logger.info('all domains initialized successfully')
 
 
 def load_endpoints(ks, endpoints):
@@ -534,6 +580,9 @@ def main():
 
     with open(PRELOAD_PATH, 'r') as f:
         preload = yaml.safe_load(f)
+
+        if 'global_roles' in preload:
+            load_global_roles(ks, preload['global_roles'])
 
         if 'domains' in preload:
             load_domains(ks, preload['domains'])

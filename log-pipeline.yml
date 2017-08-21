@@ -1,0 +1,74 @@
+version: '3'
+services:
+
+  log-metrics:
+    image: monasca/log-metrics:latest
+    depends_on:
+      - kafka
+      - zookeeper
+      - log-transformer
+
+  log-persister:
+    image: monasca/log-persister:latest
+    depends_on:
+      - kafka
+      - zookeeper
+      - elasticsearch
+      - log-transformer
+
+  log-transformer:
+    image: monasca/log-transformer:latest
+    depends_on:
+      - kafka
+      - zookeeper
+      - log-api
+
+  elasticsearch:
+    image: elasticsearch:2-alpine
+    environment:
+      - cluster.name=monasca
+      - http.host=0.0.0.0
+      - transport.host=127.0.0.1
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    ports:
+      - 9200:9200
+      - 9300:9300
+
+  elasticsearch-init:
+    image: monasca/elasticsearch-init
+    volumes:
+      - ./elasticsearch-templates/logs.template:/templates/logs.json
+    depends_on:
+      - elasticsearch
+
+  kafka-log-init:
+    image: monasca/kafka-init:0.0.1
+    environment:
+      KAFKA_TOPIC_CONFIG: segment.ms=900000 # 15m
+      KAFKA_CREATE_TOPICS: "\
+        log:4:1,\
+        log-transformed:4:1"
+    depends_on:
+      - kafka
+
+  kibana:
+    image: monasca/kibana:4
+    environment:
+      SERVER_NAME: kibana
+      ELASTICSEARCH_PINGTIMEOUT: 1000
+    depends_on:
+      - elasticsearch
+      - keystone
+    ports:
+      - 5601:5601
+
+  log-api:
+    image: monasca/log-api:master
+    depends_on:
+      - keystone
+      - zookeeper
+      - kafka
+      - memcached
+    ports:
+      - "5607:5607"

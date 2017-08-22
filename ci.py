@@ -426,6 +426,9 @@ def run_docker_compose():
         print('docker compose failed, exiting!')
         sys.exit(p.returncode)
 
+    # print out running images for debugging purposes
+    output_docker_ps()
+
 
 def run_smoke_tests():
     smoke_tests_run = ['docker', 'run', '-e', 'MONASCA_URL=http://monasca:8070', '-e',

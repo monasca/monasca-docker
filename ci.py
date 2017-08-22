@@ -370,7 +370,7 @@ def output_docker_ps():
 def output_compose_details():
     print('Running docker-compose -f ', CI_COMPOSE_FILE)
     print('All services that are about to start: ',
-          load_yml(CI_COMPOSE_FILE).keys())
+          load_yml(CI_COMPOSE_FILE)['services'].keys())
 
 
 def get_docker_id(init_job):

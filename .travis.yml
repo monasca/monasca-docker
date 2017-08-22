@@ -21,4 +21,4 @@ jobs:
     - stage: metrics-pipeline
       script: python ci.py metrics
     - stage: logs-pipeline
-      script: python ci.py logs
+      script: python ci.py logs False

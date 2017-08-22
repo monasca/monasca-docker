@@ -82,6 +82,18 @@ class FileWriteException(Exception):
     pass
 
 
+class InitJobFailedException(Exception):
+    pass
+
+
+class TempestTestFailedException(Exception):
+    pass
+
+
+class SmokeTestFailedException(Exception):
+    pass
+
+
 def get_changed_files():
     commit_range = os.environ.get('TRAVIS_COMMIT_RANGE', None)
     if not commit_range:
@@ -355,6 +367,12 @@ def output_docker_ps():
         print('Error running docker ps')
 
 
+def output_compose_details():
+    print('Running docker-compose -f ', CI_COMPOSE_FILE)
+    print('All services that are about to start: ',
+          load_yml(CI_COMPOSE_FILE).keys())
+
+
 def get_docker_id(init_job):
     docker_id = ['docker-compose', 'ps', '-q', init_job]
 
@@ -404,8 +422,7 @@ def wait_for_init_jobs(pipeline):
         print("Init-jobs did not succeed, printing docker ps and logs")
         output_docker_ps()
         output_docker_logs()
-        print('Exiting!')
-        sys.exit(1)
+        raise InitJobFailedException()
 
     # Sleep in case jobs just succeeded
     time.sleep(60)
@@ -450,6 +467,7 @@ def handle_push(files, modules, tags, pipeline):
 
 
 def run_docker_compose():
+    output_compose_details()
     docker_compose_command = ['docker-compose',
                               '-f', CI_COMPOSE_FILE,
                               'up', '-d']
@@ -489,8 +507,7 @@ def run_smoke_tests():
         print('Smoke-tests failed, listing containers/logs.')
         output_docker_logs()
         output_docker_ps()
-        print('Exiting!')
-        sys.exit(p.returncode)
+        raise SmokeTestFailedException()
 
 
 def run_tempest_tests():
@@ -511,8 +528,7 @@ def run_tempest_tests():
         print('Tempest-tests failed, listing containers/logs.')
         output_docker_logs()
         output_docker_ps()
-        print('Exiting!')
-        sys.exit(p.returncode)
+        raise TempestTestFailedException()
 
 
 def handle_other(files, modules, tags):
@@ -520,7 +536,7 @@ def handle_other(files, modules, tags):
         os.environ.get('TRAVS_EVENT_TYPE')))
 
 
-def print_env(pipeline):
+def print_env(pipeline, voting):
     print('Environment details:')
     print('TRAVIS_COMMIT=', os.environ.get('TRAVIS_COMMIT'))
     print('TRAVIS_COMMIT_RANGE=', os.environ.get('TRAVIS_COMMIT_RANGE'))
@@ -537,12 +553,14 @@ def print_env(pipeline):
     print('TRAVIS_TAG=', os.environ.get('TRAVIS_TAG'))
     print('TRAVIS_COMMIT_MESSAGE=', os.environ.get('TRAVIS_COMMIT_MESSAGE'))
 
-    print('PIPELINE=', pipeline)
+    print('CI_PIPELINE=', pipeline)
+    print('CI_VOTING=', voting)
 
 
 def main():
     args = sys.argv[1:]
-    pipeline = args[0] if len(args) == 1 else None
+    pipeline = args[0] if len(args) >= 1 else None
+    voting = bool(args[1]) if len(args) == 2 else True
 
     if os.environ.get('TRAVIS_BRANCH', None) != 'master':
         print('Not master branch, skipping tests.')
@@ -551,7 +569,7 @@ def main():
         print('Unkown pipeline=', pipeline)
         return
 
-    print_env(pipeline)
+    print_env(pipeline, voting)
 
     files = get_changed_files()
     modules = get_dirty_modules(files)
@@ -569,7 +587,17 @@ def main():
         'push': handle_push
     }.get(os.environ.get('TRAVIS_EVENT_TYPE', None), handle_other)
 
-    func(files, modules, tags, pipeline)
+    try:
+        func(files, modules, tags, pipeline)
+    except (FileReadException, FileWriteException):
+        # those error must terminate the CI
+        raise
+    except (InitJobFailedException, SmokeTestFailedException,
+            TempestTestFailedException):
+        if voting:
+            raise
+        else:
+            print('%s is not voting, skipping failure' % pipeline)
 
 
 if __name__ == '__main__':

@@ -315,7 +315,7 @@ def handle_pull_request(files, modules, tags, pipeline):
         print('No modules to build.')
 
     update_docker_compose(modules, pipeline)
-    run_docker_compose()
+    run_docker_compose(pipeline)
     wait_for_init_jobs(pipeline)
     run_smoke_tests()
     run_tempest_tests()
@@ -376,10 +376,13 @@ def output_docker_ps():
         print('Error running docker ps')
 
 
-def output_compose_details():
+def output_compose_details(pipeline):
     print('Running docker-compose -f ', CI_COMPOSE_FILE)
-    print('All services that are about to start: ',
-          load_yml(CI_COMPOSE_FILE)['services'].keys())
+    if pipeline == 'metrics':
+        services = METRIC_PIPELINE_SERVICES
+    else:
+        services = LOG_PIPELINE_SERVICES
+    print('All services that are about to start: ', services)
 
 
 def get_docker_id(init_job):
@@ -475,11 +478,17 @@ def handle_push(files, modules, tags, pipeline):
         print('No READMEs to update.')
 
 
-def run_docker_compose():
-    output_compose_details()
+def run_docker_compose(pipeline):
+    output_compose_details(pipeline)
+
+    if pipeline == 'metrics':
+        services = METRIC_PIPELINE_SERVICES
+    else:
+        services = LOG_PIPELINE_SERVICES
+
     docker_compose_command = ['docker-compose',
                               '-f', CI_COMPOSE_FILE,
-                              'up', '-d']
+                              'up', '-d'] + services
 
     p = subprocess.Popen(docker_compose_command, stdin=subprocess.PIPE)
 

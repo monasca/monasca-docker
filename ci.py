@@ -65,7 +65,7 @@ INIT_JOBS = {
 METRIC_PIPELINE_SERVICES = METRIC_PIPELINE_MODULE_TO_COMPOSE_SERVICES.values()
 """Explicit list of services for docker compose 
 to launch for metrics pipeline"""
-LOG_PIPELINE_SERVICES = (['zookeeper', 'kafka', 'keystone', 'keystone-init'] +
+LOG_PIPELINE_SERVICES = (['zookeeper', 'kafka', 'keystone'] +
                          LOGS_PIPELINE_MODULE_TO_COMPOSE_SERVICES.values())
 """Explicit list of services for docker compose 
 to launch for logs pipeline"""

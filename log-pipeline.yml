@@ -53,7 +53,7 @@ services:
       - kafka
 
   kibana:
-    image: monasca/kibana:4
+    image: monasca/kibana:4-master
     environment:
       SERVER_NAME: kibana
       ELASTICSEARCH_PINGTIMEOUT: 1000

@@ -55,12 +55,20 @@ LOGS_PIPELINE_MODULE_TO_COMPOSE_SERVICES = {
     'monasca-log-api': 'log-api',
 }
 
-METRIC_PIPELINE_INIT_JOBS = ['influxdb-init', 'kafka-init', 'mysql-init']
-LOG_PIPELINE_INIT_JOBS = ['elasticsearch-init', 'kafka-log-init']
+METRIC_PIPELINE_INIT_JOBS = ('influxdb-init', 'kafka-init', 'mysql-init')
+LOG_PIPELINE_INIT_JOBS = ('elasticsearch-init', 'kafka-log-init')
 INIT_JOBS = {
     'metrics': METRIC_PIPELINE_INIT_JOBS,
     'logs': LOG_PIPELINE_INIT_JOBS
 }
+
+METRIC_PIPELINE_SERVICES = METRIC_PIPELINE_MODULE_TO_COMPOSE_SERVICES.values()
+"""Explicit list of services for docker compose 
+to launch for metrics pipeline"""
+LOG_PIPELINE_SERVICES = (['zookeeper', 'kafka', 'keystone', 'keystone-init'] +
+                         LOGS_PIPELINE_MODULE_TO_COMPOSE_SERVICES.values())
+"""Explicit list of services for docker compose 
+to launch for logs pipeline"""
 
 PIPELINE_TO_YAML_COMPOSE = {
     'metrics': 'docker-compose.yml',
@@ -248,7 +256,8 @@ def update_docker_compose(modules, pipeline):
 
     if pipeline == 'logs':
         print('\'logs\' pipeline is enabled, including in CI run')
-        compose_dict.update(load_yml(PIPELINE_TO_YAML_COMPOSE['logs']))
+        log_compose = load_yml(PIPELINE_TO_YAML_COMPOSE['logs'])
+        compose_dict['services'].update(log_compose['services'])
         services_to_changes.update(
             LOGS_PIPELINE_MODULE_TO_COMPOSE_SERVICES.copy()
         )

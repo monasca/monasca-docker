@@ -68,4 +68,4 @@ done
 
 template $AGENT_CONF/agent.yaml.j2 $AGENT_CONF/agent.yaml
 
-/usr/bin/monasca-collector foreground
+/usr/local/bin/monasca-collector foreground

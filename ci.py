@@ -27,6 +27,9 @@ import yaml
 
 TAG_REGEX = re.compile(r'^!(\w+)(?:\s+([\w-]+))?$')
 
+METRIC_PIPELINE_MARKER = 'metrics'
+LOG_PIPELINE_MARKER = 'logs'
+
 METRIC_PIPELINE_MODULE_TO_COMPOSE_SERVICES = {
     'monasca-agent-forwarder': 'agent-forwarder',
     'zookeeper': 'zookeeper',
@@ -58,8 +61,8 @@ LOGS_PIPELINE_MODULE_TO_COMPOSE_SERVICES = {
 METRIC_PIPELINE_INIT_JOBS = ('influxdb-init', 'kafka-init', 'mysql-init')
 LOG_PIPELINE_INIT_JOBS = ('elasticsearch-init', 'kafka-log-init')
 INIT_JOBS = {
-    'metrics': METRIC_PIPELINE_INIT_JOBS,
-    'logs': LOG_PIPELINE_INIT_JOBS
+    METRIC_PIPELINE_MARKER: METRIC_PIPELINE_INIT_JOBS,
+    LOG_PIPELINE_MARKER: LOG_PIPELINE_INIT_JOBS
 }
 
 METRIC_PIPELINE_SERVICES = METRIC_PIPELINE_MODULE_TO_COMPOSE_SERVICES.values()
@@ -71,8 +74,8 @@ LOG_PIPELINE_SERVICES = (['kafka', 'keystone'] +
 to launch for logs pipeline"""
 
 PIPELINE_TO_YAML_COMPOSE = {
-    'metrics': 'docker-compose.yml',
-    'logs': 'log-pipeline.yml'
+    METRIC_PIPELINE_MARKER: 'docker-compose.yml',
+    LOG_PIPELINE_MARKER: 'log-pipeline.yml'
 }
 
 CI_COMPOSE_FILE = 'ci-compose.yml'
@@ -317,8 +320,20 @@ def handle_pull_request(files, modules, tags, pipeline):
     update_docker_compose(modules, pipeline)
     run_docker_compose(pipeline)
     wait_for_init_jobs(pipeline)
-    run_smoke_tests()
-    run_tempest_tests()
+
+    cool_test_mapper = {
+        'smoke': {
+            METRIC_PIPELINE_MARKER: run_smoke_tests_metrics,
+            LOG_PIPELINE_MARKER: lambda : print('No smoke tests for logs')
+        },
+        'tempest': {
+            METRIC_PIPELINE_MARKER: run_tempest_tests_metrics,
+            LOG_PIPELINE_MARKER: lambda : print('No tempest tests for logs')
+        }
+    }
+
+    cool_test_mapper['smoke'][pipeline]()
+    cool_test_mapper['tempest'][pipeline]()
 
 
 def get_current_init_status(docker_id):
@@ -386,7 +401,10 @@ def output_compose_details(pipeline):
 
 
 def get_docker_id(init_job):
-    docker_id = ['docker-compose', 'ps', '-q', init_job]
+    docker_id = ['docker-compose',
+                 '-f', CI_COMPOSE_FILE,
+                 'ps',
+                 '-q', init_job]
 
     p = subprocess.Popen(docker_id, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
@@ -507,7 +525,7 @@ def run_docker_compose(pipeline):
     output_docker_ps()
 
 
-def run_smoke_tests():
+def run_smoke_tests_metrics():
     smoke_tests_run = ['docker', 'run', '-e', 'MONASCA_URL=http://monasca:8070', '-e',
                        'METRIC_NAME_TO_CHECK=monasca.thread_count', '--net', 'monascadocker_default', '-p',
                        '0.0.0.0:8080:8080', 'monasca/smoke-tests:latest']
@@ -528,7 +546,7 @@ def run_smoke_tests():
         raise SmokeTestFailedException()
 
 
-def run_tempest_tests():
+def run_tempest_tests_metrics():
     tempest_tests_run = ['docker', 'run', '-e', 'KEYSTONE_SERVER=keystone', '-e',
                          'KEYSTONE_PORT=5000', '--net', 'monascadocker_default',
                          'monasca/tempest-tests:latest']

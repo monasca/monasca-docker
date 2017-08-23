@@ -50,7 +50,7 @@ LOGS_PIPELINE_MODULE_TO_COMPOSE_SERVICES = {
     'monasca-log-persister': 'log-persister',
     'monasca-log-transformer': 'log-transformer',
     'elasticsearch-init': 'elasticsearch-init',
-    'kafka-log-init': 'kafka-init',
+    'kafka-init': 'kafka-log-init',
     'kibana': 'kibana',
     'monasca-log-api': 'log-api',
 }
@@ -65,7 +65,7 @@ INIT_JOBS = {
 METRIC_PIPELINE_SERVICES = METRIC_PIPELINE_MODULE_TO_COMPOSE_SERVICES.values()
 """Explicit list of services for docker compose 
 to launch for metrics pipeline"""
-LOG_PIPELINE_SERVICES = (['zookeeper', 'kafka', 'keystone'] +
+LOG_PIPELINE_SERVICES = (['kafka', 'keystone'] +
                          LOGS_PIPELINE_MODULE_TO_COMPOSE_SERVICES.values())
 """Explicit list of services for docker compose 
 to launch for logs pipeline"""

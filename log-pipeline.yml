@@ -2,14 +2,14 @@ version: '3'
 services:
 
   log-metrics:
-    image: monasca/log-metrics:latest
+    image: monasca/log-metrics:${MON_LOG_METRICS_VERSION}
     depends_on:
       - kafka
       - zookeeper
       - log-transformer
 
   log-persister:
-    image: monasca/log-persister:latest
+    image: monasca/log-persister:${MON_LOG_PERSISTER_VERSION}
     depends_on:
       - kafka
       - zookeeper
@@ -17,14 +17,14 @@ services:
       - log-transformer
 
   log-transformer:
-    image: monasca/log-transformer:latest
+    image: monasca/log-transformer:${MON_LOG_TRANSFORMER_VERSION}
     depends_on:
       - kafka
       - zookeeper
       - log-api
 
   elasticsearch:
-    image: elasticsearch:2-alpine
+    image: elasticsearch:${ELASTICSEARCH_VERSION}
     environment:
       - cluster.name=monasca
       - http.host=0.0.0.0
@@ -36,14 +36,14 @@ services:
       - 9300:9300
 
   elasticsearch-init:
-    image: monasca/elasticsearch-init
+    image: monasca/elasticsearch-init:${MON_ELASTICSEARCH_INIT_VERSION}
     volumes:
       - ./elasticsearch-templates/logs.template:/templates/logs.json
     depends_on:
       - elasticsearch
 
   kafka-log-init:
-    image: monasca/kafka-init:0.0.1
+    image: monasca/kafka-init:${MON_KAFKA_INIT_VERSION}
     environment:
       KAFKA_TOPIC_CONFIG: segment.ms=900000 # 15m
       KAFKA_CREATE_TOPICS: "\
@@ -53,7 +53,7 @@ services:
       - kafka
 
   kibana:
-    image: monasca/kibana:4
+    image: monasca/kibana:${MON_KIBANA_VERSION}
     environment:
       SERVER_NAME: kibana
       ELASTICSEARCH_PINGTIMEOUT: 1000
@@ -64,7 +64,7 @@ services:
       - 5601:5601
 
   log-api:
-    image: monasca/log-api:master
+    image: monasca/log-api:${MON_LOG_API_VERSION}
     depends_on:
       - keystone
       - zookeeper

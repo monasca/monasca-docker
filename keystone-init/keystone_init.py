@@ -131,7 +131,7 @@ def keystone_args_from_env():
     return ret
 
 
-@retry()
+@retry(retries=24, delay=5)
 def get_keystone_client():
     auth = Password(**keystone_args_from_env())
     session = Session(auth=auth,

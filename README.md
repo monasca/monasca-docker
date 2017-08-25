@@ -179,6 +179,18 @@ environment:
   KEYSTONE_ADMIN_PASSWORD: secretadmin
 ```
 
+Synchronizing containers time with host time
+--------------------------------------------
+
+If you want to synchronize containers time with host time they are running on,
+you need to add to every service following volumes:
+
+```yaml
+volumes:
+  - "/etc/timezone:/etc/timezone:ro"
+  - "/etc/localtime:/etc/localtime:ro"
+```
+
 [1]: https://docs.docker.com/compose/
 [2]: https://github.com/hpcloud-mon/monasca-docker/blob/master/keystone/preload.yml
 [3]: https://docs.docker.com/compose/environment-variables/

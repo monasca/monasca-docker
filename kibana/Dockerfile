@@ -31,13 +31,17 @@ WORKDIR /
 
 ARG REBUILD_FILES=1
 COPY --from=0 /monasca-kibana-plugin.tar.gz .
-COPY wait-for plugin_config start /
-RUN chmod +x /wait-for /plugin_config /start
+COPY wait-for.sh start.sh template.py kibana.yml.j2 /
+
+ARG REBUILD_DEPENDENCIES=1
+RUN apt-get update -qq && \
+  apt-get install python python-jinja2 -y -qq && \
+  chmod +x /wait-for.sh /start.sh /template.py
 
 ARG REBUILD_INSTALL_PLUGIN=1
-RUN /plugin_config && \
+RUN python /template.py /kibana.yml.j2 /opt/kibana/config/kibana.yml && \
   kibana plugin -r monasca-kibana-plugin && \
   kibana plugin -i monasca-kibana-plugin -u file:///monasca-kibana-plugin.tar.gz && \
   rm -rf /monasca-kibana-plugin.tar.gz
 
-CMD /start
+CMD /start.sh

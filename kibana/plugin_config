@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-echo "#monasca-kibana-plugin
-monasca-kibana-plugin.auth_uri: http://${KEYSTONE_URI}
-monasca-kibana-plugin.enabled: False
-monasca-kibana-plugin.cookie.isSecure: False
-" >> /opt/kibana/config/kibana.yml

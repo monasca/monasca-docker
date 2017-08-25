@@ -135,6 +135,7 @@ environment:
   OS_AUTH_URL: http://192.168.10.6/identity/v3
   OS_USERNAME: monasca-agent
   OS_PASSWORD: password
+  OS_PROJECT_NAME: mini-mon
 ```
 
 In `alarms`:
@@ -143,6 +144,7 @@ environment:
   OS_AUTH_URL: http://192.168.10.6/identity/v3
   OS_USERNAME: mini-mon
   OS_PASSWORD: password
+  OS_PROJECT_NAME: mini-mon
 ```
 
 In `monasca`:

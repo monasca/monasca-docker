@@ -120,7 +120,7 @@ secrets can be specified in multiple ways:
 
 ```yaml
 # will create in the job's namespace
-secret: some-secret  
+secret: some-secret
 
 # will create in 'some-namespace'
 secret: some-namespace/some-secret

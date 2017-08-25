@@ -1,3 +1,5 @@
+member_role: _member_
+
 domains:
   default:
     projects: []

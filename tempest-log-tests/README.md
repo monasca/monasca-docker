@@ -14,11 +14,11 @@ The images in this repository follow a few tagging conventions:
 Usage
 -----
 
-To run, this container needs to connect to a working Keystone and Monasca API.
-It can be run using following command:
+To run, this container needs to connect to a working Keystone, ElasticSearch 
+and Monasca LOG API. It can be run using following command:
 
 ```bash
-docker run monasca/tempest-log-tests
+docker run --link elasticsearch --link keystone monasca/tempest-log-tests
 ```
 
 Configuration

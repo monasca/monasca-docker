@@ -43,7 +43,7 @@ class KubernetesAPIException(Exception):
 
 def api_get(endpoint):
     if endpoint.startswith('/'):
-        endpoint = endpoints[:1]
+        endpoint = endpoint[:1]
 
     r = requests.get('{}/{}'.format(API_URL, endpoint),
                      timeout=1000,

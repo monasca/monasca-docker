@@ -164,10 +164,17 @@ environment:
 
 #### `log-pipeline.yml`
 
-In `kibana` and `log-api`:
+In `kibana`:
 ```yaml
 environment:
   KEYSTONE_URI: http://192.168.10.6/identity
+```
+
+In `log-api`:
+```yaml
+environment:
+  KEYSTONE_AUTH_URI: http://192.168.10.6/identity
+  KEYSTONE_IDENTITY_URI: http://192.168.10.6/identity
   KEYSTONE_ADMIN_USER: admin
   KEYSTONE_ADMIN_PASSWORD: secretadmin
 ```

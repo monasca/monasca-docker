@@ -42,6 +42,9 @@ class KubernetesAPIException(Exception):
 
 
 def api_get(endpoint):
+    if endpoint.startswith('/'):
+        endpoint = endpoint[1:]
+
     r = requests.get('{}/{}'.format(API_URL, endpoint),
                      timeout=1000,
                      headers={'Authorization': 'Bearer {}'.format(TOKEN)},

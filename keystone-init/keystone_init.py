@@ -26,7 +26,7 @@ from itertools import ifilter
 
 import yaml
 
-from keystoneauth1.exceptions import RetriableConnectionFailure
+from keystoneauth1.exceptions import RetriableConnectionFailure, NotFound
 from keystoneauth1.identity import Password
 from keystoneauth1.session import Session
 from keystoneclient.discover import Discover
@@ -59,6 +59,7 @@ _domain_cache = []
 _global_role_cache = []
 _project_cache = defaultdict(lambda: [])
 _role_cache = defaultdict(lambda: [])
+_group_cache = defaultdict(lambda: [])
 
 _kubernetes_client = None
 
@@ -289,6 +290,31 @@ def get_or_create_role(client, domain, name):
     return role
 
 
+def get_or_create_group(client, domain, name):
+    """
+
+    :type client: keystoneclient.v3.client.Client
+    :type domain: keystoneclient.v3.domains.Domain
+    :type name: str
+    :rtype: keystoneclient.v3.groups.Group
+    """
+    cache = _group_cache[domain.id]
+    if not cache:
+        cache.extend(client.groups.list())
+
+    group = first(lambda g: g.name == name, cache)
+    if group:
+        logger.info('found existing group %s in domain %s',
+                    group.name, domain.name)
+    else:
+        logger.info('creating new group %s in domain %s', name, domain.name)
+        group = client.groups.create(name, domain=domain)
+        cache.append(group)
+        logger.debug('created group %r', group)
+
+    return group
+
+
 @retry()
 def get_user(client, domain, name):
     """
@@ -363,6 +389,22 @@ def grant_role(client, role_id, user, project):
     :return:
     """
     client.roles.grant(role_id, user=user, project=project)
+
+
+def ensure_user_in_group(client, user, group):
+    """
+
+    :type client: keystoneclient.v3.client.Client
+    :type user: keystoneclient.v3.users.User
+    :type group: keystoneclient.v3.groups.Group
+    :return:
+    """
+    try:
+        client.users.check_in_group(user, group)
+        logger.info('user %s is already in group %s', user.name, group.name)
+    except NotFound:
+        client.users.add_to_group(user, group)
+        logger.info('added user %s to group %s', user.name, group.name)
 
 
 @retry()
@@ -629,6 +671,15 @@ def load_user(ks, domain, user_cfg, member_role_name, admin_url=None):
         logger.info('ensuring secret for user %s is valid...', username)
         ensure_kubernetes_secret(secret, fields, user_cfg['secret'])
 
+    if 'group' in user_cfg:
+        group = get_or_create_group(ks, domain, user_cfg['group'])
+        ensure_user_in_group(ks, user, group)
+
+    if 'groups' in user_cfg:
+        for group_name in user_cfg['groups']:
+            group = get_or_create_group(ks, domain, group_name)
+            ensure_user_in_group(ks, user, group)
+
     current_roles = get_role_assignments(ks, user, project)
     current_ids = set(map(lambda a: a.role['id'], current_roles))
 
@@ -665,6 +716,10 @@ def load_domains(ks, domains, member_role_name):
         logger.info('creating roles...')
         for role in options.get('roles', []):
             get_or_create_role(ks, domain, role)
+
+        logger.info('creating groups...')
+        for group in options.get('groups', []):
+            get_or_create_group(ks, domain, group)
 
         logger.info('creating users...')
         for user_cfg in options.get('users', []):

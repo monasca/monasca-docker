@@ -36,18 +36,18 @@ configure and run the job.
 Configuration
 -------------
 
-| Variable           | Default          | Description                     |
-|--------------------|------------------|---------------------------------|
-| `LOG_LEVEL`        | `INFO` | MySQL server host               |
-| `KEYSTONE_TIMEOUT` | `10`   | MySQL server port               |
-| `KEYSTONE_VERIFY`  | `true` | MySQL user w/ needed privileges |
-| `KEYSTONE_CERT`    | unset  | Password for given user         |
-| `OS_AUTH_URL`      | unset  | (**required**)    |
-| `OS_USERNAME`      | unset  | If `true`, disable remote root login  |
-| `OS_PASSWORD`            | unset | If set, reset password to given value |
-| `OS_USER_DOMAIN_NAME`    | `24` |   |
-| `OS_PROJECT_NAME`        | `5`  | Seconds to wait between retry attempts |
-| `OS_PROJECT_DOMAIN_NAME` | `5`  | Seconds to wait between retry attempts |
+| Variable           | Default          | Description                      |
+|--------------------|------------------|----------------------------------|
+| `LOG_LEVEL`        | `INFO` | Python logging level, e.g. `DEBUG`         |
+| `KEYSTONE_TIMEOUT` | `10`   | Keystone connection timeout                |
+| `KEYSTONE_VERIFY`  | `true` | If `false`, skip SSL verification          |
+| `KEYSTONE_CERT`    | unset  | Path to mounted CA bundle (if self-signed) |
+| `OS_AUTH_URL`            | unset | Keystone URL                          |
+| `OS_USERNAME`            | unset | Keystone username                     |
+| `OS_PASSWORD`            | unset | Keystone password                     |
+| `OS_USER_DOMAIN_NAME`    | unset | Keystone user domain name             |
+| `OS_PROJECT_NAME`        | unset | Keystone project name                 |
+| `OS_PROJECT_DOMAIN_NAME` | unset | Keystone project domain name          |
 
 Note that *all* `OS_` variables listed above are **required** but unset by
 default. Many other standard Keystone environment variables (`OS_`) are also
@@ -173,6 +173,20 @@ containers:
 # adjust indent() as necessary
 {{ include "keystone_env" .Values.my_pod.auth | indent(6) }}
 ```
+
+Other Notes
+-----------
+
+Users belong to a project if a special member role is applied to a particular
+(domain, user, project) combination. `keystone-init` will automatically apply
+(and if necessary, create) a global member role to users when `project:` is
+specified on a User object.
+
+By default this role is named `_member_`, but if your Keystone instance uses a
+different member role, its name can be specified using the `member_role:`
+property at the root of `preload.yml`. Note that this name should correspond to
+the value of `member_role_name` in the `[DEFAULT]` section of `keystone.conf`.
+
 
 [1]: https://github.com/monasca/monasca-docker/blob/master/keystone-init/
 [2]: https://github.com/monasca/monasca-docker/blob/master/keystone-init/Dockerfile

@@ -26,14 +26,14 @@ from itertools import ifilter
 
 import yaml
 
-from keystoneauth1.exceptions import RetriableConnectionFailure
+from keystoneauth1.exceptions import RetriableConnectionFailure, NotFound
 from keystoneauth1.identity import Password
 from keystoneauth1.session import Session
 from keystoneclient.discover import Discover
 from requests import HTTPError
 from requests import RequestException
 
-from kubernetes import KubernetesAPIClient
+from kubernetes import KubernetesAPIClient, KubernetesAPIResponse
 
 PASSWORD_CHARACTERS = string.ascii_letters + string.digits
 KEYSTONE_PASSWORD_ARGS = [
@@ -53,10 +53,13 @@ LOG_LEVEL = logging.getLevelName(os.environ.get('LOG_LEVEL', 'INFO'))
 logging.basicConfig(level=LOG_LEVEL)
 logger = logging.getLogger(__name__)
 
+DEFAULT_MEMBER_ROLE = '_member_'
+
 _domain_cache = []
 _global_role_cache = []
 _project_cache = defaultdict(lambda: [])
 _role_cache = defaultdict(lambda: [])
+_group_cache = defaultdict(lambda: [])
 
 _kubernetes_client = None
 
@@ -254,7 +257,7 @@ def get_or_create_role(client, domain, name):
     :type client: keystoneclient.v3.client.Client
     :param domain: domain when creating a role, None if global
     :type domain: keystoneclient.v3.domains.Domain
-    :param name:
+    :param name: role name
     :type name: str
     :return:
     :rtype: keystoneclient.v3.roles.Role
@@ -276,8 +279,8 @@ def get_or_create_role(client, domain, name):
 
     role = first(lambda r: r.name == name, cache)
     if role:
-        logger.info('found existing domain-scoped role: role=%s domain=',
-                     role.name, domain.name)
+        logger.info('found existing domain-scoped role: role=%s domain=%s',
+                    role.name, domain.name)
     else:
         logger.info('creating new domain-scoped role: %s', name)
         role = client.roles.create(name, domain)
@@ -285,6 +288,31 @@ def get_or_create_role(client, domain, name):
         logger.debug('created domain-scoped role: %r', role)
 
     return role
+
+
+def get_or_create_group(client, domain, name):
+    """
+
+    :type client: keystoneclient.v3.client.Client
+    :type domain: keystoneclient.v3.domains.Domain
+    :type name: str
+    :rtype: keystoneclient.v3.groups.Group
+    """
+    cache = _group_cache[domain.id]
+    if not cache:
+        cache.extend(client.groups.list())
+
+    group = first(lambda g: g.name == name, cache)
+    if group:
+        logger.info('found existing group %s in domain %s',
+                    group.name, domain.name)
+    else:
+        logger.info('creating new group %s in domain %s', name, domain.name)
+        group = client.groups.create(name, domain=domain)
+        cache.append(group)
+        logger.debug('created group %r', group)
+
+    return group
 
 
 @retry()
@@ -363,6 +391,22 @@ def grant_role(client, role_id, user, project):
     client.roles.grant(role_id, user=user, project=project)
 
 
+def ensure_user_in_group(client, user, group):
+    """
+
+    :type client: keystoneclient.v3.client.Client
+    :type user: keystoneclient.v3.users.User
+    :type group: keystoneclient.v3.groups.Group
+    :return:
+    """
+    try:
+        client.users.check_in_group(user, group)
+        logger.info('user %s is already in group %s', user.name, group.name)
+    except NotFound:
+        client.users.add_to_group(user, group)
+        logger.info('added user %s to group %s', user.name, group.name)
+
+
 @retry()
 def ensure_kubernetes_namespace(client, namespace):
     """
@@ -386,15 +430,15 @@ def ensure_kubernetes_namespace(client, namespace):
 
 
 @retry()
-def get_kubernetes_secret(client, name, namespace=None):
+def get_kubernetes_secret(name, namespace=None):
     """
 
-    :param client:
-    :type client: kubernetes.KubernetesAPIClient
     :param name:
     :param namespace: namespace, auto if None
     :return: loaded secret dict or None if it does not exist
     """
+    client = get_kubernetes_client()
+
     if namespace is None:
         namespace = get_current_namespace()
 
@@ -407,17 +451,20 @@ def get_kubernetes_secret(client, name, namespace=None):
         return None
 
 
-def create_kubernetes_secret(client, fields, name, namespace=None):
+def create_kubernetes_secret(fields, name, namespace=None, replace=False):
     """
 
-    :param client:
-    :type client: kubernetes.KubernetesAPIClient
     :param fields:
     :type fields: dict[str, str]
-    :param name:
+    :param name: name of the secret
+    :type name: str
     :param namespace: namespace, auto if None
+    :param replace: if True, replace secret (PUT); if False, create new
+    :type replace: bool
     :return:
     """
+    client = get_kubernetes_client()
+
     if namespace is None:
         namespace = get_current_namespace()
 
@@ -438,9 +485,41 @@ def create_kubernetes_secret(client, fields, name, namespace=None):
         'data': encoded
     }
 
-    logger.info('creating secret "%s" in namespace "%s"', name, namespace)
-    return client.post('/api/v1/namespaces/{}/secrets',
-                       namespace, json=secret)
+    if replace:
+        logger.info('replacing secret "%s" in namespace "%s"',
+                    name, namespace)
+        return client.request('PUT', '/api/v1/namespaces/{}/secrets/{}',
+                              namespace, name, json=secret)
+    else:
+        logger.info('creating secret "%s" in namespace "%s"', name, namespace)
+        return client.post('/api/v1/namespaces/{}/secrets',
+                           namespace, json=secret)
+
+
+def diff_kubernetes_secret(secret, desired_fields):
+    """
+    Computes a set of changed fields (either added, removed, or modified)
+    between the given existing secret and the set of desired fields.
+
+    :param secret: an existing secret as a KubernetesAPIResponse containing
+                   encoded secret data
+    :type secret: KubernetesAPIResponse
+    :param desired_fields: a dict of desired fields
+    :type desired_fields: dict[str, str]
+    :return: set[str]
+    """
+    current_keys = set(secret.data.keys())
+    desired_keys = set(desired_fields.keys())
+
+    differences = current_keys.symmetric_difference(desired_keys)
+
+    for field in current_keys.intersection(desired_keys):
+        decoded_bytes = base64.b64decode(secret.data[field])
+        decoded_str = decoded_bytes.decode('utf-8')
+        if decoded_str != desired_fields[field]:
+            differences.add(field)
+
+    return differences
 
 
 def parse_secret(secret):
@@ -454,6 +533,50 @@ def parse_secret(secret):
     return secret['namespace'], secret['name']
 
 
+def get_password(secret):
+    """
+
+    :type secret: KubernetesAPIResponse
+    :return:
+    """
+    if 'OS_PASSWORD' not in secret.data:
+        # probably not recoverable, short of deleting the existing
+        # secret and re-creating (which would be awful in its own way)
+        raise KeystoneInitException('existing secret %s is '
+                                    'invalid' % secret.metadata.name)
+
+    pass_bytes = base64.b64decode(secret.data['OS_PASSWORD'])
+    return pass_bytes.decode('utf-8')
+
+
+def ensure_kubernetes_secret(existing, fields, secret_cfg):
+    """
+    Ensures that a secret exists with the given fields and values. Existing
+    secrets will be replaced if fields have changed.
+
+    :param existing: the existing secret
+    :type existing: KubernetesAPIResponse or None
+    :param fields: map of fields+values that must be set
+    :type fields: dict[str, str]
+    :param secret_cfg: user-provided secret config from YAML
+    :type secret_cfg: dict[str, str]
+    """
+    s_namespace, s_name = parse_secret(secret_cfg)
+
+    if existing:
+        diff = diff_kubernetes_secret(existing, fields)
+        if diff:
+            logger.info('secret fields are outdated in %s/%s: %r',
+                        s_namespace, s_name, diff)
+            create_kubernetes_secret(fields, s_name, s_namespace,
+                                     replace=True)
+        else:
+            logger.info('secret is up-to-date: %s/%s', s_namespace, s_name)
+    else:
+        logger.info('creating new secret: %s/%s', s_namespace, s_name)
+        create_kubernetes_secret(fields, s_name, s_namespace)
+
+
 def load_global_roles(ks, global_roles):
     """
 
@@ -465,16 +588,123 @@ def load_global_roles(ks, global_roles):
         get_or_create_global_role(ks, role_name)
 
 
-def load_domains(ks, domains):
+def load_user(ks, domain, user_cfg, member_role_name, admin_url=None):
     """
 
-    :param ks:
     :type ks: keystoneclient.v3.client.Client
-    :param domains:
-    :type domains: dict[str, dict[str, list]]
+    :type domain: keystoneclient.v3.domains.Domain
+    :type user_cfg: dict
+    :type member_role_name: str
+    :type admin_url: str or None
     :return:
     """
+    username = user_cfg.get('username')
+    user = get_user(ks, domain, username)
 
+    reset_password = False
+
+    if 'project' in user_cfg:
+        # currently assuming all valid projects are at least
+        # referenced in `projects` block
+        project = get_or_create_project(ks, domain, user_cfg['project'])
+    else:
+        project = None
+
+    if 'secret' in user_cfg:
+        s_namespace, s_name = parse_secret(user_cfg['secret'])
+        secret = get_kubernetes_secret(s_name, s_namespace)
+        if secret:
+            # TODO consider verifying this password (i.e. attempt to log in)
+            password = get_password(secret)
+            logger.info('using existing password from secret %s for user %s',
+                        s_name, username)
+        elif user:
+            logger.warning('keystone user %s exists with missing secret '
+                           '%s (ns: %s), the password will be reset to a '
+                           'random value!', username, s_name, s_namespace)
+            password = generate_password()
+            reset_password = True
+        else:
+            logger.info('generating random password for user %s', username)
+            password = generate_password()
+    else:
+        logger.info('using static password for user %s', username)
+        password = user_cfg['password']
+        secret = None
+
+    if user:
+        if hasattr(user, 'project_id') \
+                and project is not None \
+                and project.id == user.project_id:
+            update_user(ks, user, project_id=project.id)
+            logger.info('reassigned user %s to project %s',
+                        user.name, project.name)
+
+        if reset_password:
+            update_user(ks, user, password=password)
+            logger.warning('reset password for user %s', username)
+    else:
+        email = user_cfg.get('email', None)
+
+        # project is supposedly deprecated in favor of default_project
+        # ... but we'll use it anyway
+        user = create_user(ks, username,
+                           domain=domain, password=password,
+                           email=email, project=project)
+
+    if 'secret' in user_cfg:
+        fields = {
+            'OS_USERNAME': username,
+            'OS_PASSWORD': password,
+            'OS_AUTH_URL': ks.session.auth.auth_url,
+            'OS_USER_DOMAIN_NAME': domain.name
+        }
+
+        if admin_url:
+            fields['OS_ADMIN_URL'] = admin_url
+
+        if project:
+            fields['OS_PROJECT_NAME'] = project.name
+            fields['OS_PROJECT_ID'] = project.id
+            fields['OS_PROJECT_DOMAIN_NAME'] = domain.name
+
+        logger.info('ensuring secret for user %s is valid...', username)
+        ensure_kubernetes_secret(secret, fields, user_cfg['secret'])
+
+    if 'group' in user_cfg:
+        group = get_or_create_group(ks, domain, user_cfg['group'])
+        ensure_user_in_group(ks, user, group)
+
+    if 'groups' in user_cfg:
+        for group_name in user_cfg['groups']:
+            group = get_or_create_group(ks, domain, group_name)
+            ensure_user_in_group(ks, user, group)
+
+    current_roles = get_role_assignments(ks, user, project)
+    current_ids = set(map(lambda a: a.role['id'], current_roles))
+
+    desired_role_names = user_cfg.get('roles', [])
+    desired_role_names.append(member_role_name)
+    desired_roles = map(lambda n: get_or_create_role(ks, domain, n),
+                        desired_role_names)
+    desired_ids = set(map(lambda r: r.id, desired_roles))
+
+    # TODO should we remove roles that aren't in the list?
+
+    roles_to_grant = desired_ids - current_ids
+    logger.info('granting roles to user: %r', roles_to_grant)
+    for role_id in roles_to_grant:
+        grant_role(ks, role_id, user, project)
+
+
+def load_domains(ks, domains, member_role_name):
+    """
+
+    :type ks: keystoneclient.v3.client.Client
+    :type domains: dict[str, dict[str, list]]
+    :type member_role_name: str
+    :return:
+    """
     for name, options in domains.iteritems():
         domain = get_or_create_domain(ks, None if name == 'default' else name)
         admin_url = get_keystone_admin_url(ks, domain)
@@ -487,82 +717,15 @@ def load_domains(ks, domains):
         for role in options.get('roles', []):
             get_or_create_role(ks, domain, role)
 
+        logger.info('creating groups...')
+        for group in options.get('groups', []):
+            get_or_create_group(ks, domain, group)
+
         logger.info('creating users...')
         for user_cfg in options.get('users', []):
             assert isinstance(user_cfg, dict)
 
-            username = user_cfg.get('username')
-            user = get_user(ks, domain, username)
-
-            if 'project' in user_cfg:
-                # currently assuming all valid projects are at least
-                # referenced in `projects` block
-                project = get_or_create_project(ks, domain, user_cfg['project'])
-            else:
-                project = None
-
-            if user:
-                if hasattr(user, 'project_id') \
-                        and project is not None \
-                        and project.id == user.project_id:
-                    update_user(ks, user, project_id=project.id)
-
-                    logger.info('reassigned user %s to project %s',
-                                user.name, project.name)
-            else:
-                password = user_cfg.get('password', generate_password())
-                email = user_cfg.get('email', None)
-
-                if 'secret' in user_cfg:
-                    s_namespace, s_name = parse_secret(user_cfg['secret'])
-
-                    k8s = get_kubernetes_client()
-                    secret = get_kubernetes_secret(k8s, s_name, s_namespace)
-                    if secret:
-                        # TODO use password from secret instead? overwrite?
-                        pass
-                    else:
-                        fields = {
-                            'OS_USERNAME': username,
-                            'OS_PASSWORD': password,
-                            'OS_AUTH_URL': ks.session.auth.auth_url,
-                            'OS_USER_DOMAIN_NAME': domain.name
-                        }
-
-                        if admin_url:
-                            fields.update({'OS_ADMIN_URL': admin_url})
-
-                        if project:
-                            fields.update({
-                                'OS_PROJECT_NAME': project.name,
-                                'OS_PROJECT_DOMAIN_NAME': domain.name,
-                            })
-
-                        create_kubernetes_secret(k8s, fields, s_name, s_namespace)
-                        logger.info('created kubernetes secret: %s/%s',
-                                     s_name, s_namespace)
-
-                # project is supposedly deprecated in favor of default_project
-                # ... but we'll use it anyway
-                user = create_user(ks, username,
-                                   domain=domain, password=password,
-                                   email=email, project=project)
-
-            current_roles = get_role_assignments(ks, user, project)
-            current_ids = set(map(lambda a: a.role['id'], current_roles))
-
-            desired_role_names = user_cfg.get('roles', [])
-            desired_role_names.append('_member_')
-            desired_roles = map(lambda n: get_or_create_role(ks, domain, n),
-                                desired_role_names)
-            desired_ids = set(map(lambda r: r.id, desired_roles))
-
-            # TODO should we remove roles that aren't in the list?
-
-            roles_to_grant = desired_ids - current_ids
-            logger.info('granting roles to user: %r', roles_to_grant)
-            for role_id in roles_to_grant:
-                grant_role(ks, role_id, user, project)
+            load_user(ks, domain, user_cfg, member_role_name, admin_url)
 
         logger.info('finished initializing domain %s', name)
 
@@ -581,11 +744,16 @@ def main():
     with open(PRELOAD_PATH, 'r') as f:
         preload = yaml.safe_load(f)
 
+        # if a _member_ role doesn't exist, create it globally
+        member_role_name = preload.get('member_role', DEFAULT_MEMBER_ROLE)
+        logger.info('making sure member role (%s) exists...', member_role_name)
+        get_or_create_global_role(ks, member_role_name)
+
         if 'global_roles' in preload:
             load_global_roles(ks, preload['global_roles'])
 
         if 'domains' in preload:
-            load_domains(ks, preload['domains'])
+            load_domains(ks, preload['domains'], member_role_name)
 
         if 'endpoints' in preload:
             load_endpoints(ks, preload['endpoints'])

@@ -124,29 +124,28 @@ def get_kubernetes_secret(name: str,
 
 
 def main():
-    if len(sys.argv) > 1:
-        secret_name = sys.argv[1]
-
-        if len(sys.argv) > 2:
-            secret_namespace = sys.argv[2]
-        else:
-            secret_namespace = None
-
-        # purge existing keystone vars from the environment
-        for var in keystone_env_vars().keys():
-            print('unset {};'.format(var))
-
-        secret = get_kubernetes_secret(secret_name, secret_namespace)
-        for key, val in secret.data.items():
-            val_bytes = base64.b64decode(val)
-            print('export {}="{}"'.format(key, val_bytes.decode('utf-8')))
-
-        logger.info('now using account from secret %s', secret_name)
-    else:
+    if len(sys.argv) == 1:
         logger.info('no secret name arg provided, will use default environment')
+        return
+
+    secret_name = sys.argv[1]
+
+    if len(sys.argv) > 2:
+        secret_namespace = sys.argv[2]
+    else:
+        secret_namespace = None
+
+    # purge existing keystone vars from the environment
+    for var in keystone_env_vars().keys():
+        print('unset {};'.format(var))
+
+    secret = get_kubernetes_secret(secret_name, secret_namespace)
+    for key, val in secret.data.items():
+        val_bytes = base64.b64decode(val)
+        print('export {}="{}"'.format(key, val_bytes.decode('utf-8')))
+
+    logger.info('now using account from secret %s', secret_name)
 
 
 if __name__ == '__main__':
     main()
-
-

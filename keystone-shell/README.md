@@ -30,14 +30,14 @@ Once the container starts, press enter once to start the shell. Basic usage
 information will be printed to the terminal.
 
 There are three commands available:
- - `secret <NAME>`: load keystone `OS_` variables from secret in current 
+ - `secret <NAME>`: load keystone `OS_` variables from secret in current
    namespace `NAME`
- - `shell [NAME]`: start a Python shell (using ptipython, with highlighting 
+ - `shell [NAME]`: start a Python shell (using ptipython, with highlighting
    and autocomplete) with pre-connected Keystone and Kubernetes clients -
    additional usage information will be printed on startup
-   - if specified, secret with `NAME` will be loaded first (as with 
+   - if specified, secret with `NAME` will be loaded first (as with
      `secret NAME`) and will override existing environment variables
- - `openstack ...`: the standard openstack client 
+ - `openstack ...`: the standard openstack client
 
 Direct Shell
 ------------
@@ -74,31 +74,31 @@ is available. To use, try:
         --image=monasca/keystone-shell:latest \
         --env="KEYSTONE_SECRET=keystone-example-user" \
         --attach
-        
+
 Note the absence of the `-i` and `-t` parameters. Note that `KEYSTONE_SECRET`
 must be defined in this scenario.
 
 If Keystone is available and the credentials work, the return code will be
 zero. If Keystone is not available or the credentials are invalid, the return
 code will be 1. Log information should be printed to help narrow down the
-error, or at least as much as Keystone will be willing to divulge about it. 
+error, or at least as much as Keystone will be willing to divulge about it.
 
 Configuration
 -------------
 
-| Variable           | Default          | Description                     |
-|--------------------|------------------|---------------------------------|
-| `LOG_LEVEL`        | `INFO` | MySQL server host               |
-| `KEYSTONE_TIMEOUT` | `10`   | MySQL server port               |
-| `KEYSTONE_VERIFY`  | `true` | MySQL user w/ needed privileges |
-| `KEYSTONE_CERT`    | unset  | Password for given user         |
-| `KEYSTONE_SECRET`  | unset  | Secret to auto-load on startup  |
-| `OS_AUTH_URL`            | unset | (**required**)               |
-| `OS_USERNAME`            | unset | keystone username            |
-| `OS_PASSWORD`            | unset | keystone password            |
-| `OS_USER_DOMAIN_NAME`    | unset | keystone user domain name    |
-| `OS_PROJECT_NAME`        | unset | keystone project name        |
-| `OS_PROJECT_DOMAIN_NAME` | unset | keystone project domain name |
+| Variable                 | Default | Description                            |
+|--------------------------|---------|----------------------------------------|
+| `LOG_LEVEL`              | `INFO`  | Python logging level                   |
+| `KEYSTONE_TIMEOUT`       | `10`    | Keystone connection timeout in seconds |
+| `KEYSTONE_VERIFY`        | `true`  | If `false`, don't verify SSL           |
+| `KEYSTONE_CERT`          | unset   | Path to mounted alternative CA bundle  |
+| `KEYSTONE_SECRET`        | unset   | Secret to auto-load on startup         |
+| `OS_AUTH_URL`            | unset   | (**required**)                         |
+| `OS_USERNAME`            | unset   | keystone username                      |
+| `OS_PASSWORD`            | unset   | keystone password                      |
+| `OS_USER_DOMAIN_NAME`    | unset   | keystone user domain name              |
+| `OS_PROJECT_NAME`        | unset   | keystone project name                  |
+| `OS_PROJECT_DOMAIN_NAME` | unset   | keystone project domain name           |
 
 [1]: https://github.com/monasca/monasca-docker/blob/master/keystone-shell/
 [2]: https://github.com/monasca/monasca-docker/blob/master/keystone-shell/Dockerfile

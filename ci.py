@@ -27,7 +27,10 @@ import yaml
 
 TAG_REGEX = re.compile(r'^!(\w+)(?:\s+([\w-]+))?$')
 
-MODULE_TO_COMPOSE_SERVICE = {
+METRIC_PIPELINE_MARKER = 'metrics'
+LOG_PIPELINE_MARKER = 'logs'
+
+METRIC_PIPELINE_MODULE_TO_COMPOSE_SERVICES = {
     'monasca-agent-forwarder': 'agent-forwarder',
     'zookeeper': 'zookeeper',
     'influxdb': 'influxdb',
@@ -45,6 +48,37 @@ MODULE_TO_COMPOSE_SERVICE = {
     'monasca-notification': 'monasca-notification',
     'grafana-init': 'grafana-init'
 }
+LOGS_PIPELINE_MODULE_TO_COMPOSE_SERVICES = {
+    'monasca-log-metrics': 'log-metrics',
+    'monasca-log-persister': 'log-persister',
+    'monasca-log-transformer': 'log-transformer',
+    'elasticsearch-init': 'elasticsearch-init',
+    'kafka-init': 'kafka-log-init',
+    'kibana': 'kibana',
+    'monasca-log-api': 'log-api',
+}
+
+METRIC_PIPELINE_INIT_JOBS = ('influxdb-init', 'kafka-init', 'mysql-init')
+LOG_PIPELINE_INIT_JOBS = ('elasticsearch-init', 'kafka-log-init')
+INIT_JOBS = {
+    METRIC_PIPELINE_MARKER: METRIC_PIPELINE_INIT_JOBS,
+    LOG_PIPELINE_MARKER: LOG_PIPELINE_INIT_JOBS
+}
+
+METRIC_PIPELINE_SERVICES = METRIC_PIPELINE_MODULE_TO_COMPOSE_SERVICES.values()
+"""Explicit list of services for docker compose 
+to launch for metrics pipeline"""
+LOG_PIPELINE_SERVICES = (['kafka', 'keystone'] +
+                         LOGS_PIPELINE_MODULE_TO_COMPOSE_SERVICES.values())
+"""Explicit list of services for docker compose 
+to launch for logs pipeline"""
+
+PIPELINE_TO_YAML_COMPOSE = {
+    METRIC_PIPELINE_MARKER: 'docker-compose.yml',
+    LOG_PIPELINE_MARKER: 'log-pipeline.yml'
+}
+
+CI_COMPOSE_FILE = 'ci-compose.yml'
 
 
 class SubprocessException(Exception):
@@ -56,6 +90,18 @@ class FileReadException(Exception):
 
 
 class FileWriteException(Exception):
+    pass
+
+
+class InitJobFailedException(Exception):
+    pass
+
+
+class TempestTestFailedException(Exception):
+    pass
+
+
+class SmokeTestFailedException(Exception):
     pass
 
 
@@ -206,35 +252,55 @@ def run_readme(modules):
         sys.exit(p.returncode)
 
 
-def update_docker_compose(modules):
-    try:
-        with open("docker-compose.yml") as compose_file:
-            compose_dict = yaml.load(compose_file)
-    except:
-        raise FileReadException('Error reading docker-compose.yml')
+def update_docker_compose(modules, pipeline):
+
+    compose_dict = load_yml(PIPELINE_TO_YAML_COMPOSE['metrics'])
+    services_to_changes = METRIC_PIPELINE_MODULE_TO_COMPOSE_SERVICES.copy()
+
+    if pipeline == 'logs':
+        print('\'logs\' pipeline is enabled, including in CI run')
+        log_compose = load_yml(PIPELINE_TO_YAML_COMPOSE['logs'])
+        compose_dict['services'].update(log_compose['services'])
+        services_to_changes.update(
+            LOGS_PIPELINE_MODULE_TO_COMPOSE_SERVICES.copy()
+        )
+
     if modules:
         compose_services = compose_dict['services']
         for module in modules:
             # Not all modules are included in docker compose
-            if module not in MODULE_TO_COMPOSE_SERVICE:
+            if module not in services_to_changes:
                 continue
-            service_name = MODULE_TO_COMPOSE_SERVICE[module]
+            service_name = services_to_changes[module]
             services_to_update = service_name.split(',')
             for service in services_to_update:
                 image = compose_services[service]['image']
                 image = image.split(':')[0]
                 image += ":ci-cd"
                 compose_services[service]['image'] = image
+
     # Update compose version
     compose_dict['version'] = '2'
+
     try:
-        with open('docker-compose.yml', 'w') as docker_compose:
+        with open(CI_COMPOSE_FILE, 'w') as docker_compose:
             yaml.dump(compose_dict, docker_compose, default_flow_style=False)
     except:
-        raise FileWriteException('Error writing modified dictionary to docker-compose.yml')
+        raise FileWriteException(
+            'Error writing CI dictionary to %s' % CI_COMPOSE_FILE
+        )
 
 
-def handle_pull_request(files, modules, tags):
+def load_yml(yml_path):
+    try:
+        with open(yml_path) as compose_file:
+            compose_dict = yaml.safe_load(compose_file)
+            return compose_dict
+    except:
+        raise FileReadException('Failed to read %s', yml_path)
+
+
+def handle_pull_request(files, modules, tags, pipeline):
     modules_to_build = modules[:]
 
     for tag, arg in tags:
@@ -251,11 +317,23 @@ def handle_pull_request(files, modules, tags):
     else:
         print('No modules to build.')
 
-    update_docker_compose(modules)
-    run_docker_compose()
-    wait_for_init_jobs()
-    run_smoke_tests()
-    run_tempest_tests()
+    update_docker_compose(modules, pipeline)
+    run_docker_compose(pipeline)
+    wait_for_init_jobs(pipeline)
+
+    cool_test_mapper = {
+        'smoke': {
+            METRIC_PIPELINE_MARKER: run_smoke_tests_metrics,
+            LOG_PIPELINE_MARKER: lambda : print('No smoke tests for logs')
+        },
+        'tempest': {
+            METRIC_PIPELINE_MARKER: run_tempest_tests_metrics,
+            LOG_PIPELINE_MARKER: lambda : print('No tempest tests for logs')
+        }
+    }
+
+    cool_test_mapper['smoke'][pipeline]()
+    cool_test_mapper['tempest'][pipeline]()
 
 
 def get_current_init_status(docker_id):
@@ -313,8 +391,20 @@ def output_docker_ps():
         print('Error running docker ps')
 
 
+def output_compose_details(pipeline):
+    print('Running docker-compose -f ', CI_COMPOSE_FILE)
+    if pipeline == 'metrics':
+        services = METRIC_PIPELINE_SERVICES
+    else:
+        services = LOG_PIPELINE_SERVICES
+    print('All services that are about to start: ', services)
+
+
 def get_docker_id(init_job):
-    docker_id = ['docker-compose', 'ps', '-q', init_job]
+    docker_id = ['docker-compose',
+                 '-f', CI_COMPOSE_FILE,
+                 'ps',
+                 '-q', init_job]
 
     p = subprocess.Popen(docker_id, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
@@ -334,18 +424,15 @@ def get_docker_id(init_job):
     return output.rstrip()
 
 
-def wait_for_init_jobs():
-    init_status_dict = {"mysql-init": False,
-                        "influxdb-init": False,
-                        "kafka-init": False}
-    docker_id_dict = {"mysql-init": "",
-                      "influxdb-init": "",
-                      "kafka-init": ""}
+def wait_for_init_jobs(pipeline):
+    init_status_dict = {job: False for job in INIT_JOBS[pipeline]}
+    docker_id_dict = {job: "" for job in INIT_JOBS[pipeline]}
+
     amount_succeeded = 0
     for attempt in range(40):
         time.sleep(30)
         amount_succeeded = 0
-        for init_job, status in init_status_dict.iteritems():
+        for init_job, status in init_status_dict.items():
             if docker_id_dict[init_job] == "":
                 docker_id_dict[init_job] = get_docker_id(init_job)
             if status:
@@ -365,14 +452,13 @@ def wait_for_init_jobs():
         print("Init-jobs did not succeed, printing docker ps and logs")
         output_docker_ps()
         output_docker_logs()
-        print('Exiting!')
-        sys.exit(1)
+        raise InitJobFailedException()
 
     # Sleep in case jobs just succeeded
     time.sleep(60)
 
 
-def handle_push(files, modules, tags):
+def handle_push(files, modules, tags, pipeline):
     modules_to_push = []
     modules_to_readme = []
 
@@ -410,8 +496,17 @@ def handle_push(files, modules, tags):
         print('No READMEs to update.')
 
 
-def run_docker_compose():
-    docker_compose_command = ['docker-compose', 'up', '-d']
+def run_docker_compose(pipeline):
+    output_compose_details(pipeline)
+
+    if pipeline == 'metrics':
+        services = METRIC_PIPELINE_SERVICES
+    else:
+        services = LOG_PIPELINE_SERVICES
+
+    docker_compose_command = ['docker-compose',
+                              '-f', CI_COMPOSE_FILE,
+                              'up', '-d'] + services
 
     p = subprocess.Popen(docker_compose_command, stdin=subprocess.PIPE)
 
@@ -430,7 +525,7 @@ def run_docker_compose():
     output_docker_ps()
 
 
-def run_smoke_tests():
+def run_smoke_tests_metrics():
     smoke_tests_run = ['docker', 'run', '-e', 'MONASCA_URL=http://monasca:8070', '-e',
                        'METRIC_NAME_TO_CHECK=monasca.thread_count', '--net', 'monascadocker_default', '-p',
                        '0.0.0.0:8080:8080', 'monasca/smoke-tests:latest']
@@ -448,11 +543,10 @@ def run_smoke_tests():
         print('Smoke-tests failed, listing containers/logs.')
         output_docker_logs()
         output_docker_ps()
-        print('Exiting!')
-        sys.exit(p.returncode)
+        raise SmokeTestFailedException()
 
 
-def run_tempest_tests():
+def run_tempest_tests_metrics():
     tempest_tests_run = ['docker', 'run', '-e', 'KEYSTONE_SERVER=keystone', '-e',
                          'KEYSTONE_PORT=5000', '--net', 'monascadocker_default',
                          'monasca/tempest-tests:latest']
@@ -470,8 +564,7 @@ def run_tempest_tests():
         print('Tempest-tests failed, listing containers/logs.')
         output_docker_logs()
         output_docker_ps()
-        print('Exiting!')
-        sys.exit(p.returncode)
+        raise TempestTestFailedException()
 
 
 def handle_other(files, modules, tags):
@@ -479,7 +572,7 @@ def handle_other(files, modules, tags):
         os.environ.get('TRAVS_EVENT_TYPE')))
 
 
-def main():
+def print_env(pipeline, voting):
     print('Environment details:')
     print('TRAVIS_COMMIT=', os.environ.get('TRAVIS_COMMIT'))
     print('TRAVIS_COMMIT_RANGE=', os.environ.get('TRAVIS_COMMIT_RANGE'))
@@ -496,9 +589,23 @@ def main():
     print('TRAVIS_TAG=', os.environ.get('TRAVIS_TAG'))
     print('TRAVIS_COMMIT_MESSAGE=', os.environ.get('TRAVIS_COMMIT_MESSAGE'))
 
+    print('CI_PIPELINE=', pipeline)
+    print('CI_VOTING=', voting)
+
+
+def main():
+    args = sys.argv[1:]
+    pipeline = args[0] if len(args) >= 1 else None
+    voting = bool(args[1]) if len(args) == 2 else True
+
     if os.environ.get('TRAVIS_BRANCH', None) != 'master':
         print('Not master branch, skipping tests.')
         return
+    if not pipeline or pipeline not in ('logs', 'metrics'):
+        print('Unkown pipeline=', pipeline)
+        return
+
+    print_env(pipeline, voting)
 
     files = get_changed_files()
     modules = get_dirty_modules(files)
@@ -516,7 +623,17 @@ def main():
         'push': handle_push
     }.get(os.environ.get('TRAVIS_EVENT_TYPE', None), handle_other)
 
-    func(files, modules, tags)
+    try:
+        func(files, modules, tags, pipeline)
+    except (FileReadException, FileWriteException):
+        # those error must terminate the CI
+        raise
+    except (InitJobFailedException, SmokeTestFailedException,
+            TempestTestFailedException):
+        if voting:
+            raise
+        else:
+            print('%s is not voting, skipping failure' % pipeline)
 
 
 if __name__ == '__main__':

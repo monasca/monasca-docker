@@ -1,8 +1,6 @@
 #!/bin/sh
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 
-set -x
-
 MYSQL_INIT_HOST=${MYSQL_INIT_HOST:-"mysql"}
 MYSQL_INIT_PORT=${MYSQL_INIT_PORT:-"3306"}
 MYSQL_INIT_USERNAME=${MYSQL_INIT_USERNAME:-"root"}

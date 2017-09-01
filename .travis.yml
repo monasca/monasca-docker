@@ -3,6 +3,13 @@ services:
   - docker
 language: python
 
+addons:
+  apt:
+    sources:
+    - debian-sid    # Grab shellcheck from the Debian repo (o_O)
+    packages:
+    - shellcheck
+
 env:
   - IGNORE_DOCKER_VERSION=true
 
@@ -13,11 +20,20 @@ before_install:
   - sudo apt-get -y install docker-ce
   - pip install pip --upgrade
   - pip install git+https://github.com/timothyb89/dbuild.git
+  - pip install flake8 flake8-blind-except flake8-builtins flake8-pep3101 flake8-coding pylint
+  - flake8 --version
+  - pylint --version
   - docker --version
   - docker-compose --version
 
 jobs:
   include:
+    - stage: linting-flake8
+      script: flake8
+    - stage: linting-pylint
+      script: pylint
+    - stage: lint-shellcheck
+      script: bash -c 'shopt -s globstar; shellcheck **/*.{sh,bash}'
     - stage: metrics-pipeline
       script: python ci.py metrics
     - stage: logs-pipeline

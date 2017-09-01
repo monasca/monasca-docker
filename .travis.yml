@@ -28,12 +28,12 @@ before_install:
 
 jobs:
   include:
+    - stage: lint-shellcheck
+      script: bash -c 'shopt -s globstar; shellcheck **/*.{sh,bash}'
     - stage: linting-flake8
       script: flake8
     - stage: linting-pylint
       script: pylint
-    - stage: lint-shellcheck
-      script: bash -c 'shopt -s globstar; shellcheck **/*.{sh,bash}'
     - stage: metrics-pipeline
       script: python ci.py metrics
     - stage: logs-pipeline

@@ -52,6 +52,7 @@ run mkdir -p /var/lib/grafana && \
   rm -rf /go/pkg
 
 copy grafana.ini /etc/grafana/grafana.ini
+copy drilldown.js /var/lib/grafana/public/dashboards/drilldown.js
 expose 3000
 
 healthcheck --interval=10s --timeout=5s \

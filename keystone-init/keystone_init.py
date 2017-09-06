@@ -316,6 +316,74 @@ def get_or_create_group(client, domain, name):
 
 
 @retry()
+def get_or_create_service(client, name, service_type, description):
+    """Get service or create it if doesn't exist.
+
+    :type client: keystoneclient.v3.client.Client
+    :type name: str
+    :type service_type: str
+    :type description: str
+    :return:
+    :rtype: keystoneclient.v3.services.Service
+    """
+    services = client.services.list()
+    service_names = {service.name: service for service in services}
+
+    if name in service_names.keys():
+        return service_names[name]
+    else:
+        logger.info('creating new service %s of %s type', name, service_type)
+        service = client.services.create(
+            name=name,
+            type=service_type,
+            description=description,
+        )
+        logger.debug('created service %r', service)
+
+    return service
+
+
+@retry()
+def get_or_create_endpoint(client, service, url, interface, region):
+    """Get endpoint or create it if doesn't exist.
+
+    :type client: keystoneclient.v3.client.Client
+    :type service: keystoneclient.v3.services.Service
+    :type url: str
+    :type interface: dict[str, str]
+    :type region: str
+    :return:
+    :rtype: keystoneclient.v3.endpoints.Endpoint
+    """
+    endpoints = client.endpoints.list()
+
+    for endpoint in endpoints:
+        logger.debug('existing endpoint %r', endpoint)
+        if endpoint.service_id == service.id:
+            if endpoint.url == url:
+                if endpoint.interface == interface['name']:
+                    return endpoint
+            else:
+                client.endpoints.delete(endpoint)
+
+    logger.info(
+        'creating new %s endpoint %s with url: %s on %s region',
+        interface['name'], service.name, url, region
+    )
+
+    interface_url = interface['url'] if 'url' in interface else url
+    endpoint = client.endpoints.create(
+        service=service,
+        url=interface_url,
+        interface=interface['name'],
+        region=region,
+    )
+    logger.debug('created endpoint %r', endpoint)
+
+    return endpoint
+
+
+@retry()
 def get_user(client, domain, name):
     """
 
@@ -733,9 +801,35 @@ def load_domains(ks, domains, member_role_name):
 
 
 def load_endpoints(ks, endpoints):
-    for name, options in endpoints.iteritems():
-        # TODO
-        pass
+    """Load endpoints into Keystone.
+
+    :type ks: keystoneclient.v3.client.Client
+    :param endpoints: dict[str, dict[str, list]]
+    :return:
+    """
+    for name, options in endpoints.viewitems():
+        logger.debug('%r', options)
+        logger.info('creating service...')
+        service = get_or_create_service(
+            client=ks,
+            name=name,
+            service_type=options.get('type'),
+            description=options.get('description')
+        )
+
+        logger.info('creating endpoint...')
+        for interface in options.get('interfaces', []):
+            assert isinstance(interface, dict)
+
+            get_or_create_endpoint(
+                client=ks,
+                service=service,
+                url=options.get('url', ''),
+                interface=interface,
+                region=options.get('region', '')
+            )
+
+    logger.info('all endpoints initialized successfully')
 
 
 def main():

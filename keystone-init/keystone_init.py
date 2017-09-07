@@ -60,6 +60,8 @@ _global_role_cache = []
 _project_cache = defaultdict(lambda: [])
 _role_cache = defaultdict(lambda: [])
 _group_cache = defaultdict(lambda: [])
+_service_cache = []
+_endpoint_cache = []
 
 _kubernetes_client = None
 
@@ -326,11 +328,12 @@ def get_or_create_service(client, name, service_type, description):
     :return:
     :rtype: keystoneclient.v3.services.Service
     """
-    services = client.services.list()
-    service_names = {service.name: service for service in services}
+    if not _service_cache:
+        _service_cache.extend(client.services.list())
 
-    if name in service_names.keys():
-        return service_names[name]
+    service = first(lambda s: s.name == name, _service_cache)
+    if service:
+        logger.info('found existing service: %s', service.name)
     else:
         logger.info('creating new service %s of %s type', name, service_type)
         service = client.services.create(
@@ -338,6 +341,7 @@ def get_or_create_service(client, name, service_type, description):
             type=service_type,
             description=description,
         )
+        _service_cache.append(service)
         logger.debug('created service %r', service)
 
     return service
@@ -355,29 +359,51 @@ def get_or_create_endpoint(client, service, url, interface, region):
     :return:
     :rtype: keystoneclient.v3.endpoints.Endpoint
     """
-    endpoints = client.endpoints.list()
+    global _endpoint_cache
+    if not _endpoint_cache:
+        _endpoint_cache.extend(client.endpoints.list())
 
-    for endpoint in endpoints:
-        logger.debug('existing endpoint %r', endpoint)
-        if endpoint.service_id == service.id:
-            if endpoint.url == url:
-                if endpoint.interface == interface['name']:
+    logger.debug('existing endpoints %r', _endpoint_cache)
+    all_endpoints = client.endpoints.list()
+    # endpoints = filter(lambda ep: ep.service_id == service.id, _endpoint_cache)
+    endpoints = filter(lambda ep: ep.service_id == service.id, all_endpoints)
+    logger.debug('filtered endpoints %r', endpoints)
+
+    interface_url = interface['url'] if 'url' in interface else url
+
+    for e in endpoints:
+        if e.service_id == service.id:
+            if e.interface == interface['name']:
+                if e.url == interface_url:
+                    logger.debug('endpoint already exists %r', e)
+                    return e
+                else:
+                    logger.info('updating endpoint %r', e)
+                    endpoint = client.endpoints.update(
+                        endpoint=e.id,
+                        service=service,
+                        url=interface_url,
+                        interface=interface['name'],
+                        region=region,
+                    )
+                    _endpoint_cache = [endpoint
+                                       if e.id == endpoint.id else x
+                                       for x in _endpoint_cache]
+                    logger.debug('updated endpoint %r', endpoint)
                     return endpoint
-            else:
-                client.endpoints.delete(endpoint)
 
     logger.info(
         'creating new %s endpoint %s with url: %s on %s region',
-        interface['name'], service.name, url, region
+        interface['name'], service.name, interface_url, region
     )
 
-    interface_url = interface['url'] if 'url' in interface else url
     endpoint = client.endpoints.create(
         service=service,
         url=interface_url,
         interface=interface['name'],
         region=region,
     )
+    _endpoint_cache.append(endpoint)
     logger.debug('created endpoint %r', endpoint)
 
     return endpoint
@@ -804,7 +830,7 @@ def load_endpoints(ks, endpoints):
     """Load endpoints into Keystone.
 
     :type ks: keystoneclient.v3.client.Client
-    :param endpoints: dict[str, dict[str, list]]
+    :type endpoints: dict[str, dict[str, list]]
     :return:
     """
     for name, options in endpoints.viewitems():
@@ -814,10 +840,10 @@ def load_endpoints(ks, endpoints):
             client=ks,
             name=name,
             service_type=options.get('type'),
-            description=options.get('description')
+            description=options.get('description', None)
         )
 
-        logger.info('creating endpoint...')
+        logger.info('creating %s endpoint interfaces...', name)
         for interface in options.get('interfaces', []):
             assert isinstance(interface, dict)
 

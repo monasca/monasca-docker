@@ -54,6 +54,9 @@ Configuration
 | `MYSQL_INIT_SET_PASSWORD`        | unset | If set, reset password to given value |
 | `MYSQL_INIT_WAIT_RETRIES`        | `24` | Number of connection attempts to make  |
 | `MYSQL_INIT_WAIT_DELAY`          | `5`  | Seconds to wait between retry attempts |
+| `KEYSTONE_DB_ENABLED` | `true`    | Setup Keystone Database. Use `false` with an external Keystone |
+| `CREATE_MON_USERS`    | `true`    | Create the Database users for Monasca |
+| `GRAFANA_DB_ENABLED`  | `true`    | Setup Grafana Database                |
 
 While this image requires access (probably `root`-level) to a MySQL instance at
 startup, `MYSQL_INIT_DISABLE_REMOTE_LOGIN`, `MYSQL_INIT_RANDOM_PASSWORD`, and

@@ -1,3 +1,4 @@
+{% if GRAFANA_DB_ENABLED | default ('true') | lower == 'true' -%}
 {% set grafana_user = GRAFANA_USERNAME | default('grafana') %}
 {% set grafana_password = GRAFANA_PASSWORD | default('password') %}
 
@@ -14,3 +15,4 @@ CREATE TABLE `session` (
 
 GRANT ALL ON grafana.* TO '{{ grafana_user }}'@'%' IDENTIFIED BY '{{ grafana_password }}';
 GRANT ALL ON grafana.* TO '{{ grafana_user }}'@'localhost' IDENTIFIED BY '{{ grafana_password }}';
+{%- endif %}

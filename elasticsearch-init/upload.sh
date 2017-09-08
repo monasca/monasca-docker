@@ -4,7 +4,8 @@ TPL_DIR=/templates
 
 _get_tpl_name_from_file() {
     local tpl=$1
-    local tpl_name=$(basename $tpl)
+    local tpl_name
+    tpl_name=$(basename $tpl)
     echo $tpl_name
 }
 
@@ -23,5 +24,3 @@ for template in $TPLS; do
     curl -XPUT --retry 2 --retry-delay 2 $ELASTICSEARCH_URI/_template/${tpl_name} -d @$TPL_DIR/$template
 
 done
-
-

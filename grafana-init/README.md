@@ -40,8 +40,7 @@ Configuration
 |--------------------|------------------------|---------------------------------|
 | `LOG_LEVEL`        | `INFO`                 | Logging level, e.g. `DEBUG`     |
 | `GRAFANA_URL`      | `http://grafana:3000`  | Location of Grafana server      |
-| `GRAFANA_USERNAME` | `mini-mon`             | Agent Keystone username         |
-| `GRAFANA_PASSWORD` | `password`             | Agent Keystone password         |
+| `GRAFANA_USERS`    | `unset`                | Agent Keystone username, e.g. `"[{'user': 'user1', 'password': 'password1', 'emai': ''}, {'user': 'user2', 'password': 'password2', 'email': ''}]"`. If this environment variable isn't set, GRAFANA user is set as name: mini-mon, password: password and email: '' |
 | `DATASOURCE_TYPE`  | `monasca`              | Agent Keystone user domain      |
 | `DATASOURCE_URL`   | `http://monasca:8070/` | Agent Keystone project name     |
 | `DATASOURCE_ACCESS_MODE` | `proxy`          | Grafana access mode string      |

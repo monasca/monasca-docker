@@ -28,15 +28,13 @@ logging.basicConfig(level=LOG_LEVEL)
 logger = logging.getLogger(__name__)
 
 GRAFANA_URL = os.environ.get('GRAFANA_URL', 'http://grafana:3000')
-GRAFANA_USERNAME = os.environ.get('GRAFANA_USERNAME', 'mini-mon')
-GRAFANA_PASSWORD = os.environ.get('GRAFANA_PASSWORD', 'password')
+MINI_MON_USER = {'user': 'mini-mon', 'password': 'password', 'email': ''}
 
 DATASOURCE_NAME = os.environ.get('DATASOURCE_NAME', 'monasca')
 DATASOURCE_URL = os.environ.get('DATASOURCE_URL', 'http://monasca:8070/')
 DATASOURCE_ACCESS_MODE = os.environ.get('DATASOURCE_ACCESS_MODE', 'proxy')
 
 DASHBOARDS_DIR = os.environ.get('DASHBOARDS_DIR', '/dashboards.d')
-
 
 def retry(retries=5, delay=2.0, exc_types=(RequestException,)):
     def decorator(func):
@@ -58,19 +56,22 @@ def retry(retries=5, delay=2.0, exc_types=(RequestException,)):
         return f_retry
     return decorator
 
-
 def create_login_payload():
-    return {
-        'user': GRAFANA_USERNAME,
-        'password': GRAFANA_PASSWORD,
-        'email': ''
-    }
-
+    if os.environ.get('GRAFANA_USERS'):
+        try:
+            json.loads(os.environ.get('GRAFANA_USERS'))
+        except ValueError:
+            print("Invalid type GRAFANA_USERS")
+            raise
+        grafana_users = json.loads(os.environ.get('GRAFANA_USERS'))
+    else:
+        grafana_users = [MINI_MON_USER]
+    return grafana_users
 
 @retry(retries=24, delay=5.0)
-def login(session):
+def login(session, user):
     r = session.post('{url}/login'.format(url=GRAFANA_URL),
-                     json=create_login_payload(),
+                     json=user,
                      timeout=5)
     r.raise_for_status()
 
@@ -121,31 +122,32 @@ def create_dashboard_payload(json_path):
 
 
 def main():
-    logging.info('Opening a Grafana session...')
-    session = Session()
-    login(session)
+    for user in create_login_payload():
+        logging.info('Opening a Grafana session...')
+        session = Session()
+        login(session, user)
 
-    if check_initialized(session):
-        logging.info('Grafana has already been initialized, skipping!')
-        return
+        if check_initialized(session):
+            logging.info('Grafana has already been initialized, skipping!')
+            return
 
-    logging.info('Attempting to add configured datasource...')
-    r = session.post('{url}/api/datasources'.format(url=GRAFANA_URL),
-                     json=create_datasource_payload())
-    logging.debug('Response: %r', r.json())
-    r.raise_for_status()
-
-    for path in sorted(glob.glob('{dir}/*.json'.format(dir=DASHBOARDS_DIR))):
-        logging.info('Creating dashboard from file: {path}'.format(path=path))
-        r = session.post('{url}/api/dashboards/db'.format(url=GRAFANA_URL),
-                         json=create_dashboard_payload(path))
+        logging.info('Attempting to add configured datasource...')
+        r = session.post('{url}/api/datasources'.format(url=GRAFANA_URL),
+                         json=create_datasource_payload())
         logging.debug('Response: %r', r.json())
         r.raise_for_status()
 
-    logging.info('Ending session...')
-    session.get('{url}/logout'.format(url=GRAFANA_URL))
+        for path in sorted(glob.glob('{dir}/*.json'.format(dir=DASHBOARDS_DIR))):
+            logging.info('Creating dashboard from file: {path}'.format(path=path))
+            r = session.post('{url}/api/dashboards/db'.format(url=GRAFANA_URL),
+                             json=create_dashboard_payload(path))
+            logging.debug('Response: %r', r.json())
+            r.raise_for_status()
 
-    logging.info('Finished successfully.')
+        logging.info('Ending session...')
+        session.get('{url}/logout'.format(url=GRAFANA_URL))
+
+        logging.info('Finished successfully.')
 
 if __name__ == '__main__':
     main()

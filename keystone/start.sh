@@ -11,7 +11,7 @@ if [[ "$KEYSTONE_DATABASE_BACKEND" =  "mysql" ]]; then
 
     echo "Waiting for mysql to become available..."
     success="false"
-    for i in $(seq $retries); do
+    for i in $(seq "$retries"); do
         mysqladmin status \
             --host="$mysql_host" \
             --user="$mysql_user" \
@@ -40,7 +40,7 @@ if [[ "$KEYSTONE_DATABASE_BACKEND" =  "mysql" ]]; then
         /etc/keystone/keystone.conf
 
     # check to see if table exists already and skip init if so
-    mysql -h ${mysql_host} -u ${mysql_user} -p${mysql_pass} -e "desc ${mysql_db}.migrate_version" &> /dev/null
+    mysql -h "${mysql_host}" -u "${mysql_user}" -p"${mysql_pass}" -e "desc ${mysql_db}.migrate_version" &> /dev/null
     if [[ $? -eq 0 ]]; then
         echo "MySQL database has already been initialized, skipping..."
     else

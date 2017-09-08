@@ -60,7 +60,7 @@ python template.py \
   /etc/tempest/tempest.conf.j2 \
   /etc/tempest/tempest.conf
 
-cd /monasca-api
+cd /monasca-api || exit
 export OS_TEST_PATH=./monasca_tempest_tests/tests/api
 
 if [ ! -r .testrepository ]; then

@@ -101,7 +101,7 @@ EXTRA_DEPS="${EXTRA_DEPS:-""}"
 
 echo "Installing APK Dependencies" && install_apk_deps
 mkdir -p /app
-cd /app
+cd /app || exit
 
 # actual build happens here
 cat << EOF
@@ -115,7 +115,7 @@ echo "Cloning ${REPO}@${BRANCH}" && clone "${REPO}" "${BRANCH}"
 echo "Installing ${REPO}" && install "${CONSTRAINTS}" "${EXTRAS}" "${EXTRA_DEPS}"
 # end of actual build
 
-cd -
+cd - || exit
 rm -rf /install.sh /clone.sh /install_apk_deps.sh /app /root/.cache/pip
 
 apk del build-dep

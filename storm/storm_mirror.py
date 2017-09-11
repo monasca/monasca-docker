@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 #
@@ -35,14 +36,15 @@ def main():
     mirror = MIRROR
 
     if not DIRECT:
-        r = requests.get(MIRROR, params={
+        req = requests.get(MIRROR, params={
             'path': 'apache-storm-{0}.tar.gz'.format(version),
             'as_json': '1'
         })
-        r.raise_for_status()
-        mirror = r.json()['preferred']
+        req.raise_for_status()
+        mirror = req.json()['preferred']
 
     print(PATH.format(mirror=mirror, version=version))
+
 
 if __name__ == '__main__':
     main()

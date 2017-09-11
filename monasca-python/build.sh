@@ -24,7 +24,7 @@ else
 
         if [ "z$extra_deps" != "z" ]; then
             for extra in $extra_deps; do
-                pip install --no-cache-dir $extra -c $constraints
+                pip install --no-cache-dir "$extra" -c "$constraints"
             done
         else
             echo "No extra dependencies"
@@ -32,13 +32,13 @@ else
 
         if [ "z$extras" != "z" ]; then
             for extra in $extras; do
-                pip install --no-cache-dir .[${extra}] -c $constraints
+                pip install --no-cache-dir .["${extra}"] -c "$constraints"
             done
         else
             echo "No extras"
         fi
 
-        pip install --no-cache-dir -r requirements.txt -c $constraints
+        pip install --no-cache-dir -r requirements.txt -c "$constraints"
         python setup.py install
     }
 fi

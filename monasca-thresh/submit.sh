@@ -10,7 +10,7 @@ KAFKA_WAIT_DELAY=${KAFKA_WAIT_DELAY:-"5"}
 
 echo "Waiting for MySQL to become available..."
 success="false"
-for i in $(seq $MYSQL_WAIT_RETRIES); do
+for i in $(seq "$MYSQL_WAIT_RETRIES"); do
   mysqladmin status \
       --host="$MYSQL_DB_HOST" \
       --port="$MYSQL_DB_PORT" \
@@ -37,7 +37,7 @@ if [ -n "$KAFKA_WAIT_FOR_TOPICS" ]; then
   echo "Waiting for Kafka topics to become available..."
   success="false"
 
-  for i in $(seq $KAFKA_WAIT_RETRIES); do
+  for i in $(seq "$KAFKA_WAIT_RETRIES"); do
     python /kafka_wait_for_topics.py
     if [ $? -eq 0 ]; then
       success="true"
@@ -58,16 +58,16 @@ fi
 if ${NO_STORM_CLUSTER} = "true"; then
   echo "Using Thresh Config file /storm/conf/thresh-config.yml. Contents:"
   cat /storm/conf/thresh-config.yml | grep -vi password
-  JAVAOPTS="-Xmx$(python /heap.py $WORKER_MAX_HEAP_MB)"
+  JAVAOPTS="-Xmx$(python /heap.py "$WORKER_MAX_HEAP_MB")"
   echo "Submitting storm topology as local cluster using JAVAOPTS of $JAVAOPTS"
-  java $JAVAOPTS -classpath "/monasca-thresh.jar:/storm/lib/*" monasca.thresh.ThresholdingEngine /storm/conf/thresh-config.yml thresh-cluster local
+  java "$JAVAOPTS" -classpath "/monasca-thresh.jar:/storm/lib/*" monasca.thresh.ThresholdingEngine /storm/conf/thresh-config.yml thresh-cluster local
   exit $?
 fi
 
 echo "Waiting for storm to become available..."
 success="false"
-for i in $(seq $STORM_WAIT_RETRIES); do
-  timeout -t $STORM_WAIT_TIMEOUT storm list
+for i in $(seq "$STORM_WAIT_RETRIES"); do
+  timeout -t "$STORM_WAIT_TIMEOUT" storm list
   if [ $? -eq 0 ]; then
     echo "Storm is available, continuing..."
     success="true"

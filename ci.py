@@ -138,7 +138,7 @@ def upload_log_files(type_name, log_dir):
             file_path = log_dir + '/' + type_name + '/' + file
             print ('Uploading {} to monasca-ci-logs bucket in GCP'.format(file_path))
             blob = bucket.blob(file_path)
-            blob.upload_from_filename(log_dir[1:] + '/' + file)
+            blob.upload_from_filename(log_dir + '/' + file)
             url = blob.public_url
 
             if isinstance(url, six.binary_type):
@@ -149,7 +149,7 @@ def upload_log_files(type_name, log_dir):
 
 def get_log_dir():
     time_str = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    log_dir = '/' + time_str + '_monasca_logs'
+    log_dir = time_str + '_monasca_logs'
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
     return log_dir

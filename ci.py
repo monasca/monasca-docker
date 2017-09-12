@@ -26,6 +26,11 @@ import sys
 import time
 import yaml
 
+import six
+from google.oauth2 import service_account
+from google.cloud import storage
+
+
 TAG_REGEX = re.compile(r'^!(\w+)(?:\s+([\w-]+))?$')
 
 METRIC_PIPELINE_MARKER = 'metrics'
@@ -106,9 +111,44 @@ class SmokeTestFailedException(Exception):
     pass
 
 
+def get_client():
+    encoded_cred_dict = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS', None)
+    if not encoded_cred_dict:
+        return None
+    # DECODE DICT
+    cred_dict = {}
+    try:
+        credentials = service_account.Credentials.from_service_account_info(cred_dict)
+        client = storage.Client(credentials=credentials)
+    except Exception as e:
+        print 'Unexpected error getting GCP credentials: {}'.format(e)
+        return None
+
+
+def upload_log_files(type_name, log_dir):
+    client = get_client()
+    if not client:
+        print 'Could not upload logs to GCP'
+        return
+
+    bucket = client.bucket('monasca-ci-logs')
+    for f in os.listdir(log_dir):
+        if os.path.isfile(log_dir + '/' + f):
+            file_path = log_dir + '/' + type_name + '/' + file
+            print 'Uploading {} to monasca-ci-logs bucket in GCP'.format(file_path)
+            blob = bucket.blob(file_path)
+            blob.upload_from_filename(log_dir + '/' + file)
+            url = blob.public_url
+
+            if isinstance(url, six.binary_type):
+                url = url.decode('utf-8')
+
+            print 'Public url for log: {}'.format(url)
+
+
 def get_log_dir():
     time_str = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    log_dir = time_str + '_monasca_logs'
+    log_dir = '/' + time_str + '_monasca_logs'
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
     return log_dir
@@ -201,6 +241,7 @@ def run_build(modules):
     if p.wait() != 0:
         print('build failed, exiting!')
         sys.exit(p.returncode)
+    upload_log_files('build', log_dir)
 
 
 def run_push(modules):
@@ -238,6 +279,7 @@ def run_push(modules):
     if p.wait() != 0:
         print('build failed, exiting!')
         sys.exit(p.returncode)
+    upload_log_files('build', log_dir)
 
 
 def run_readme(modules):
@@ -262,6 +304,7 @@ def run_readme(modules):
     if p.wait() != 0:
         print('build failed, exiting!')
         sys.exit(p.returncode)
+    upload_log_files('build', log_dir)
 
 
 def update_docker_compose(modules, pipeline):

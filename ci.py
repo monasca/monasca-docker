@@ -18,6 +18,7 @@
 from __future__ import print_function
 
 import datetime
+import json
 import os
 import re
 import signal
@@ -112,14 +113,14 @@ class SmokeTestFailedException(Exception):
 
 
 def get_client():
-    encoded_cred_dict = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS', None)
-    if not encoded_cred_dict:
+    cred_dict_str = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS', None)
+    if not cred_dict_str:
         return None
-    # DECODE DICT
-    cred_dict = {}
+
+    cred_dict = json.loads(encoded_cred_dict_str)
     try:
         credentials = service_account.Credentials.from_service_account_info(cred_dict)
-        client = storage.Client(credentials=credentials)
+        return storage.Client(credentials=credentials)
     except Exception as e:
         print 'Unexpected error getting GCP credentials: {}'.format(e)
         return None
@@ -137,7 +138,7 @@ def upload_log_files(type_name, log_dir):
             file_path = log_dir + '/' + type_name + '/' + file
             print 'Uploading {} to monasca-ci-logs bucket in GCP'.format(file_path)
             blob = bucket.blob(file_path)
-            blob.upload_from_filename(log_dir + '/' + file)
+            blob.upload_from_filename(log_dir[1:] + '/' + file)
             url = blob.public_url
 
             if isinstance(url, six.binary_type):

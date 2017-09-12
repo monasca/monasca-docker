@@ -135,10 +135,10 @@ def upload_log_files(type_name, log_dir):
     bucket = client.bucket('monasca-ci-logs')
     for f in os.listdir(log_dir):
         if os.path.isfile(log_dir + '/' + f):
-            file_path = log_dir + '/' + type_name + '/' + file
+            file_path = log_dir + '/' + type_name + '/' + f
             print ('Uploading {} to monasca-ci-logs bucket in GCP'.format(file_path))
             blob = bucket.blob(file_path)
-            blob.upload_from_filename(log_dir + '/' + file)
+            blob.upload_from_filename(log_dir + '/' + f)
 
             url = blob.public_url
             if isinstance(url, six.binary_type):

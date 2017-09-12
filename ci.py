@@ -80,8 +80,6 @@ PIPELINE_TO_YAML_COMPOSE = {
 
 CI_COMPOSE_FILE = 'ci-compose.yml'
 
-LOG_DIR = ''
-
 
 class SubprocessException(Exception):
     pass
@@ -107,14 +105,12 @@ class SmokeTestFailedException(Exception):
     pass
 
 
-def set_log_dir():
-    if LOG_DIR:
-        return
-
+def get_log_dir():
     time_str = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    LOG_DIR = time_str + '_monasca_logs'
-    if not os.path.exists(LOG_DIR):
-        os.makedirs(LOG_DIR)
+    log_dir = time_str + '_monasca_logs'
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+    return log_dir
 
 
 def get_changed_files():
@@ -188,7 +184,8 @@ def get_dirty_for_module(files, module=None):
 
 
 def run_build(modules):
-    build_args = ['dbuild', '-sd', '--build-log-dir', LOG_DIR, 'build', 'all', '+', ':ci-cd'] + modules
+    log_dir = get_log_dir()
+    build_args = ['dbuild', '-sd', '--build-log-dir', log_dir, 'build', 'all', '+', ':ci-cd'] + modules
     print('build command:', build_args)
 
     p = subprocess.Popen(build_args, stdin=subprocess.PIPE)
@@ -224,7 +221,8 @@ def run_push(modules):
             print('Docker registry login failed, cannot push!')
             sys.exit(1)
 
-    push_args = ['dbuild', '-sd', '--build-log-dir', LOG_DIR, 'build', 'push', 'all'] + modules
+    log_dir = get_log_dir()
+    push_args = ['dbuild', '-sd', '--build-log-dir', log_dir, 'build', 'push', 'all'] + modules
     print('push command:', push_args)
 
     p = subprocess.Popen(push_args, stdin=subprocess.PIPE)
@@ -247,7 +245,8 @@ def run_readme(modules):
         print('Not updating READMEs: %r' % modules)
         return
 
-    readme_args = ['dbuild', '-sd', '--build-log-dir', LOG_DIR, 'readme'] + modules
+    log_dir = get_log_dir()
+    readme_args = ['dbuild', '-sd', '--build-log-dir', log_dir, 'readme'] + modules
     print('readme command:', readme_args)
 
     p = subprocess.Popen(readme_args, stdin=subprocess.PIPE)
@@ -618,7 +617,6 @@ def main():
         return
 
     print_env(pipeline, voting)
-    set_log_dir()
 
     files = get_changed_files()
     modules = get_dirty_modules(files)

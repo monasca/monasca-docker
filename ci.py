@@ -139,8 +139,8 @@ def upload_log_files(type_name, log_dir):
             print ('Uploading {} to monasca-ci-logs bucket in GCP'.format(file_path))
             blob = bucket.blob(file_path)
             blob.upload_from_filename(log_dir + '/' + file)
-            url = blob.public_url
 
+            url = blob.public_url
             if isinstance(url, six.binary_type):
                 url = url.decode('utf-8')
 

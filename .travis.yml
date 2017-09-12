@@ -13,6 +13,7 @@ before_install:
   - sudo apt-get -y install docker-ce
   - pip install pip --upgrade
   - pip install git+https://github.com/timothyb89/dbuild.git
+  - pip install google-cloud-storage
   - docker --version
   - docker-compose --version
 

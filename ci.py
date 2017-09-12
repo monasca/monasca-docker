@@ -120,7 +120,7 @@ def get_client():
     cred_dict = json.loads(encoded_cred_dict_str)
     try:
         credentials = service_account.Credentials.from_service_account_info(cred_dict)
-        return storage.Client(credentials=credentials)
+        return storage.Client(credentials=credentials, project='monasca-ci-logs')
     except Exception as e:
         print 'Unexpected error getting GCP credentials: {}'.format(e)
         return None

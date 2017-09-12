@@ -108,7 +108,7 @@ class SmokeTestFailedException(Exception):
 
 def get_log_dir():
     time_str = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    log_dir = time_str + '_monasca_logs'
+    log_dir = '/' + time_str + '_monasca_logs'
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
     return log_dir

@@ -122,21 +122,21 @@ def get_client():
         credentials = service_account.Credentials.from_service_account_info(cred_dict)
         return storage.Client(credentials=credentials, project='monasca-ci-logs')
     except Exception as e:
-        print 'Unexpected error getting GCP credentials: {}'.format(e)
+        print ('Unexpected error getting GCP credentials: {}'.format(e))
         return None
 
 
 def upload_log_files(type_name, log_dir):
     client = get_client()
     if not client:
-        print 'Could not upload logs to GCP'
+        print ('Could not upload logs to GCP')
         return
 
     bucket = client.bucket('monasca-ci-logs')
     for f in os.listdir(log_dir):
         if os.path.isfile(log_dir + '/' + f):
             file_path = log_dir + '/' + type_name + '/' + file
-            print 'Uploading {} to monasca-ci-logs bucket in GCP'.format(file_path)
+            print ('Uploading {} to monasca-ci-logs bucket in GCP'.format(file_path))
             blob = bucket.blob(file_path)
             blob.upload_from_filename(log_dir[1:] + '/' + file)
             url = blob.public_url
@@ -144,7 +144,7 @@ def upload_log_files(type_name, log_dir):
             if isinstance(url, six.binary_type):
                 url = url.decode('utf-8')
 
-            print 'Public url for log: {}'.format(url)
+            print ('Public url for log: {}'.format(url))
 
 
 def get_log_dir():

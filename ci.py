@@ -117,7 +117,7 @@ def get_client():
     if not cred_dict_str:
         return None
 
-    cred_dict = json.loads(encoded_cred_dict_str)
+    cred_dict = json.loads(cred_dict_str)
     try:
         credentials = service_account.Credentials.from_service_account_info(cred_dict)
         return storage.Client(credentials=credentials, project='monasca-ci-logs')

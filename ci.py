@@ -87,7 +87,7 @@ PIPELINE_TO_YAML_COMPOSE = {
 
 CI_COMPOSE_FILE = 'ci-compose.yml'
 
-LOG_DIR = ''
+LOG_DIR = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S') + '_monasca_logs'
 
 
 class SubprocessException(Exception):
@@ -188,10 +188,6 @@ def upload_file(bucket, remote_file_path, local_file_path, file_str=None):
 
 
 def set_log_dir():
-    if LOG_DIR:
-        return
-    time_str = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    LOG_DIR = time_str + '_monasca_logs'
     if not os.path.exists(LOG_DIR):
         os.makedirs(LOG_DIR)
     if not os.path.exists(LOG_DIR + '/build'):

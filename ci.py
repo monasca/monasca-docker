@@ -144,6 +144,11 @@ def upload_log_files():
     log_dir = LOG_DIR + '/run'
     uploaded_files.update(upload_files(log_dir, bucket)) 
 
+    for f in os.listdir('.'):
+        if 'travis_wait' in f:
+            upload_file(bucket, 'monasca-docker/' + LOG_DIR, f)
+            uploaded_files.update(f) 
+
     return uploaded_files
 
 
@@ -283,7 +288,7 @@ def run_build(modules):
     build_args = ['dbuild', '-sd', '--build-log-dir', log_dir, 'build', 'all', '+', ':ci-cd'] + modules
     print('build command:', build_args)
 
-    p = subprocess.Popen(build_args, stdin=subprocess.PIPE)
+    p = subprocess.Popen(build_args)
 
     def kill(signal, frame):
         p.kill()
@@ -320,7 +325,7 @@ def run_push(modules):
     push_args = ['dbuild', '-sd', '--build-log-dir', log_dir, 'build', 'push', 'all'] + modules
     print('push command:', push_args)
 
-    p = subprocess.Popen(push_args, stdin=subprocess.PIPE)
+    p = subprocess.Popen(push_args)
 
     def kill(signal, frame):
         p.kill()
@@ -344,7 +349,7 @@ def run_readme(modules):
     readme_args = ['dbuild', '-sd', '--build-log-dir', log_dir, 'readme'] + modules
     print('readme command:', readme_args)
 
-    p = subprocess.Popen(readme_args, stdin=subprocess.PIPE)
+    p = subprocess.Popen(readme_args)
 
     def kill(signal, frame):
         p.kill()
@@ -468,7 +473,7 @@ def get_current_init_status(docker_id):
 def output_docker_logs():
     docker_logs = ['docker-compose', 'logs']
 
-    docker_logs_process = subprocess.Popen(docker_logs, stdin=subprocess.PIPE)
+    docker_logs_process = subprocess.Popen(docker_logs)
 
     def kill(signal, frame):
         docker_logs_process.kill()
@@ -484,7 +489,7 @@ def output_docker_logs():
 def output_docker_ps():
     docker_ps = ['docker', 'ps', '-a']
 
-    docker_ps_process = subprocess.Popen(docker_ps, stdin=subprocess.PIPE)
+    docker_ps_process = subprocess.Popen(docker_ps)
 
     def kill(signal, frame):
         docker_ps_process.kill()
@@ -512,7 +517,7 @@ def get_docker_id(init_job):
                  'ps',
                  '-q', init_job]
 
-    p = subprocess.Popen(docker_id, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen(docker_id, stdout=subprocess.PIPE)
 
     def kill(signal, frame):
         p.kill()
@@ -615,7 +620,7 @@ def run_docker_compose(pipeline):
                               'up', '-d'] + services
 
     with open(LOG_DIR + '/run/docker_compose.log', 'wb') as out:
-        p = subprocess.Popen(docker_compose_command, stdin=subprocess.PIPE, stdout=out)
+        p = subprocess.Popen(docker_compose_command, stdout=out)
 
     def kill(signal, frame):
         p.kill()
@@ -637,7 +642,7 @@ def run_smoke_tests_metrics():
                        'METRIC_NAME_TO_CHECK=monasca.thread_count', '--net', 'monascadocker_default', '-p',
                        '0.0.0.0:8080:8080', 'monasca/smoke-tests:latest']
 
-    p = subprocess.Popen(smoke_tests_run, stdin=subprocess.PIPE)
+    p = subprocess.Popen(smoke_tests_run)
 
     def kill(signal, frame):
         p.kill()
@@ -658,9 +663,8 @@ def run_tempest_tests_metrics():
                          'KEYSTONE_PORT=5000', '--net', 'monascadocker_default',
                          'monasca/tempest-tests:latest']
 
-#    with open(LOG_DIR + '/tempest_tests.txt', 'wb') as out:
-#        p = subprocess.Popen(tempest_tests_run, stdin=subprocess.PIPE, stdout=out)
-    p = subprocess.Popen(tempest_tests_run, stdin=subprocess.PIPE)
+    with open(LOG_DIR + '/tempest_tests.txt', 'wb') as out:
+        p = subprocess.Popen(tempest_tests_run, stdout=out)
 
     def kill(signal, frame):
         p.kill()

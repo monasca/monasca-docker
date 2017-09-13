@@ -652,7 +652,7 @@ def run_tempest_tests_metrics():
                          'KEYSTONE_PORT=5000', '--net', 'monascadocker_default',
                          'monasca/tempest-tests:latest']
 
-    with open(LOG_DIR + 'tempest_tests.txt', 'wb') as out:
+    with open(LOG_DIR + '/tempest_tests.txt', 'wb') as out:
         p = subprocess.Popen(tempest_tests_run, stdin=subprocess.PIPE, stdout=out)
 
     def kill(signal, frame):

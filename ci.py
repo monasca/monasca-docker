@@ -141,6 +141,7 @@ def upload_log_files(type_name, log_dir):
             upload_file(bucket, remote_file_path, local_file_path)
             uploaded_files.add(remote_file_path)
 
+    manifest_str = print_env(to_print=False)
     manifest_str = '\n'.join(uploaded_files)
     remote_file_path = log_dir + '/' + 'manifest.txt'
     upload_file(bucket, remote_file_path, None, manifest_str)
@@ -148,19 +149,23 @@ def upload_log_files(type_name, log_dir):
 
 def upload_file(bucket, remote_file_path, local_file_path, file_str=None):
     print ('Uploading {} to monasca-ci-logs bucket in GCP'.format(remote_file_path))
-    blob = bucket.blob(remote_file_path)
-    blob.make_public()
+    try:
+        blob = bucket.blob(remote_file_path)
+        blob.make_public()
 
-    if file_str:
-        blob.upload_from_str(manifest_str)
-    else:
-        blob.upload_from_filename(local_file_path)
+        if file_str:
+            blob.upload_from_str(manifest_str)
+        else:
+            blob.upload_from_filename(local_file_path)
 
-    url = blob.public_url
-    if isinstance(url, six.binary_type):
-        url = url.decode('utf-8')
+        url = blob.public_url
+        if isinstance(url, six.binary_type):
+            url = url.decode('utf-8')
 
-    print ('Public url for log: {}'.format(url))
+        print ('Public url for log: {}'.format(url))
+    except Exception as e:
+        print ('Unexpected error uploading log files to {}'
+               'Skipping upload. Got: {}'.format(remote_file_path, e))
 
 
 def get_log_dir():
@@ -644,25 +649,30 @@ def handle_other(files, modules, tags):
         os.environ.get('TRAVS_EVENT_TYPE')))
 
 
-def print_env(pipeline, voting):
-    print('Environment details:')
-    print('TRAVIS_COMMIT=', os.environ.get('TRAVIS_COMMIT'))
-    print('TRAVIS_COMMIT_RANGE=', os.environ.get('TRAVIS_COMMIT_RANGE'))
-    print('TRAVIS_PULL_REQUEST=', os.environ.get('TRAVIS_PULL_REQUEST'))
-    print('TRAVIS_PULL_REQUEST_SHA=',
-          os.environ.get('TRAVIS_PULL_REQUEST_SHA'))
-    print('TRAVIS_PULL_REQUEST_SLUG=',
-          os.environ.get('TRAVIS_PULL_REQUEST_SLUG'))
-    print('TRAVIS_SECURE_ENV_VARS=', os.environ.get('TRAVIS_SECURE_ENV_VARS'))
-    print('TRAVIS_EVENT_TYPE=', os.environ.get('TRAVIS_EVENT_TYPE'))
-    print('TRAVIS_BRANCH=', os.environ.get('TRAVIS_BRANCH'))
-    print('TRAVIS_PULL_REQUEST_BRANCH=',
-          os.environ.get('TRAVIS_PULL_REQUEST_BRANCH'))
-    print('TRAVIS_TAG=', os.environ.get('TRAVIS_TAG'))
-    print('TRAVIS_COMMIT_MESSAGE=', os.environ.get('TRAVIS_COMMIT_MESSAGE'))
+def print_env(pipeline='', voting='', to_print=True):
+    environ_string = ('Environment details:\n'
+        'TRAVIS_COMMIT=' + os.environ.get('TRAVIS_COMMIT') + '\n'
+        'TRAVIS_COMMIT_RANGE=' + os.environ.get('TRAVIS_COMMIT_RANGE') + '\n'
+        'TRAVIS_PULL_REQUEST=' + os.environ.get('TRAVIS_PULL_REQUEST') + '\n'
+        'TRAVIS_PULL_REQUEST_SHA=' +
+            os.environ.get('TRAVIS_PULL_REQUEST_SHA') + '\n'
+        'TRAVIS_PULL_REQUEST_SLUG=' +
+            os.environ.get('TRAVIS_PULL_REQUEST_SLUG') + '\n'
+        'TRAVIS_SECURE_ENV_VARS='+  os.environ.get('TRAVIS_SECURE_ENV_VARS') + '\n'
+        'TRAVIS_EVENT_TYPE=' + os.environ.get('TRAVIS_EVENT_TYPE') + '\n'
+        'TRAVIS_BRANCH=' + os.environ.get('TRAVIS_BRANCH') + '\n'
+        'TRAVIS_PULL_REQUEST_BRANCH=' +
+            os.environ.get('TRAVIS_PULL_REQUEST_BRANCH') + '\n'
+        'TRAVIS_TAG=' + os.environ.get('TRAVIS_TAG') + '\n'
+        'TRAVIS_COMMIT_MESSAGE=' + os.environ.get('TRAVIS_COMMIT_MESSAGE'))
 
-    print('CI_PIPELINE=', pipeline)
-    print('CI_VOTING=', voting)
+    if pipeline:
+        environ_string += '\n' + 'CI_PIPELINE=' + pipeline
+    if voting:
+        environ_string += '\n' + 'CI_VOTING=' + voting
+    if to_print:
+        print environ_string
+    return environ_string
 
 
 def main():

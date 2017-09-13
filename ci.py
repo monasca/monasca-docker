@@ -669,7 +669,7 @@ def print_env(pipeline='', voting='', to_print=True):
     if pipeline:
         environ_string += '\n' + 'CI_PIPELINE=' + pipeline
     if voting:
-        environ_string += '\n' + 'CI_VOTING=' + sry(voting)
+        environ_string += '\n' + 'CI_VOTING=' + str(voting)
     if to_print:
         print (environ_string)
     return environ_string

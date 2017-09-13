@@ -163,7 +163,6 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
 
 def upload_files(log_dir, bucket):
     blob = bucket.blob('monasca-docker/' + log_dir)
-    blob.make_public()
     for f in os.listdir(log_dir):
         local_file_path = log_dir + '/' + f
         if os.path.isfile(local_file_path):
@@ -597,7 +596,6 @@ def handle_push(files, modules, tags, pipeline):
 
 
 def run_docker_compose(pipeline):
-    print ("Running docker compose")
     output_compose_details(pipeline)
 
     if pipeline == 'metrics':
@@ -624,7 +622,6 @@ def run_docker_compose(pipeline):
         sys.exit(p.returncode)
 
     # print out running images for debugging purposes
-    print("docker compose succeeded")
     output_docker_ps()
 
 
@@ -650,7 +647,6 @@ def run_smoke_tests_metrics():
 
 
 def run_tempest_tests_metrics():
-    print ("Running Tempest-tests")
     tempest_tests_run = ['docker', 'run', '-e', 'KEYSTONE_SERVER=keystone', '-e',
                          'KEYSTONE_PORT=5000', '--net', 'monascadocker_default',
                          'monasca/tempest-tests:latest']
@@ -670,7 +666,6 @@ def run_tempest_tests_metrics():
         output_docker_logs()
         output_docker_ps()
         raise TempestTestFailedException()
-    print ("Tempest-tests succeeded")
 
 
 def handle_other(files, modules, tags):

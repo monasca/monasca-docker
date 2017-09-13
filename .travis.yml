@@ -20,6 +20,6 @@ before_install:
 jobs:
   include:
     - stage: metrics-pipeline
-      script: travis_wait python ci.py metrics
+      script: python ci.py metrics
     - stage: logs-pipeline
       script: python ci.py logs False

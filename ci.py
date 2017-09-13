@@ -673,11 +673,26 @@ def run_tempest_tests_metrics():
         sys.exit(1)
 
     signal.signal(signal.SIGINT, kill)
-    if p.wait() != 0:
-        print('Tempest-tests failed, listing containers/logs.')
-        output_docker_logs()
-        output_docker_ps()
-        raise TempestTestFailedException()
+    time_delta = 0    
+    while(True):
+        poll = p.poll()
+        if poll is None:
+            if time_delta == 1500:
+                print ('Tempest-tests timed out at 25 min')
+                output_docker_logs()
+                output_docker_ps()
+                raise TempestTestFailedException()
+            if time_delta % 30 == 0:
+                print ('Still running tempest-tests')
+            time_delta += 1
+            time.sleep(1)
+        elif poll != 0:
+            print('Tempest-tests failed, listing containers/logs.')
+            output_docker_logs()
+            output_docker_ps()
+            raise TempestTestFailedException()
+        else:
+            break
 
 
 def handle_other(files, modules, tags):

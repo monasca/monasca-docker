@@ -136,22 +136,16 @@ def upload_log_files():
 
     uploaded_files = set()
     bucket = client.bucket('monasca-ci-logs')
+    uploaded_files.update(upload_files(LOG_DIR, bucket))
+
     log_dir = LOG_DIR + '/build'
-    for f in os.listdir(log_dir):
-        local_file_path = log_dir + '/' + f
-        if os.path.isfile(local_file_path):
-            remote_file_path = 'monasca-docker/' + log_dir  + '/' + f
-            upload_file(bucket, remote_file_path, local_file_path)
-            uploaded_files.add(remote_file_path)
+    uploaded_files.update(upload_files(log_dir, bucket)) 
 
     log_dir = LOG_DIR + '/run'
-    for f in os.listdir(log_dir):
-        local_file_path = log_dir + '/' + f
-        if os.path.isfile(local_file_path):
-            remote_file_path = 'monasca-docker/' + log_dir  + '/' + f
-            upload_file(bucket, remote_file_path, local_file_path)
-            uploaded_files.add(remote_file_path)
+    uploaded_files.update(upload_files(log_dir, bucket)) 
+
     return uploaded_files
+
 
 def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags):
     manifest_str = print_env(pipeline, voting, to_print=False)
@@ -165,6 +159,18 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
     manifest_str += '\n'.join(tags)
     remote_file_path = 'monasca-docker/' + LOG_DIR + '/' + 'manifest.txt'
     upload_file(bucket, remote_file_path, None, manifest_str)
+
+
+def upload_files(log_dir, bucket):
+    blob = bucket.blob('monasca-docker/' + log_dir)
+    blob.make_public()
+    for f in os.listdir(log_dir):
+        local_file_path = log_dir + '/' + f
+        if os.path.isfile(local_file_path):
+            remote_file_path = 'monasca-docker/' + log_dir  + '/' + f
+            upload_file(bucket, remote_file_path, local_file_path)
+            uploaded_files.add(remote_file_path)
+    return uploaded_files
 
 
 def upload_file(bucket, remote_file_path, local_file_path, file_str=None):
@@ -591,6 +597,7 @@ def handle_push(files, modules, tags, pipeline):
 
 
 def run_docker_compose(pipeline):
+    print ("Running docker compose")
     output_compose_details(pipeline)
 
     if pipeline == 'metrics':
@@ -602,7 +609,8 @@ def run_docker_compose(pipeline):
                               '-f', CI_COMPOSE_FILE,
                               'up', '-d'] + services
 
-    p = subprocess.Popen(docker_compose_command, stdin=subprocess.PIPE)
+    with open(LOG_DIR + '/run/docker_compose.log', 'wb') as out:
+        p = subprocess.Popen(docker_compose_command, stdin=subprocess.PIPE. stdout=out)
 
     def kill(signal, frame):
         p.kill()
@@ -616,6 +624,7 @@ def run_docker_compose(pipeline):
         sys.exit(p.returncode)
 
     # print out running images for debugging purposes
+    print("docker compose succeeded")
     output_docker_ps()
 
 
@@ -641,11 +650,13 @@ def run_smoke_tests_metrics():
 
 
 def run_tempest_tests_metrics():
+    print ("Running Tempest-tests")
     tempest_tests_run = ['docker', 'run', '-e', 'KEYSTONE_SERVER=keystone', '-e',
                          'KEYSTONE_PORT=5000', '--net', 'monascadocker_default',
                          'monasca/tempest-tests:latest']
 
-    p = subprocess.Popen(tempest_tests_run, stdin=subprocess.PIPE)
+    with open(LOG_DIR + 'tempest_tests.txt', 'wb') as out:
+        p = subprocess.Popen(tempest_tests_run, stdin=subprocess.PIPE, stdout=out)
 
     def kill(signal, frame):
         p.kill()
@@ -659,6 +670,7 @@ def run_tempest_tests_metrics():
         output_docker_logs()
         output_docker_ps()
         raise TempestTestFailedException()
+    print ("Tempest-tests succeeded")
 
 
 def handle_other(files, modules, tags):
@@ -667,7 +679,7 @@ def handle_other(files, modules, tags):
 
 
 def print_env(pipeline, voting, to_print=True):
-    environ_string = ('Environment details:\n'
+    environ_string = str('Environment details:\n'
         'TRAVIS_COMMIT=' + os.environ.get('TRAVIS_COMMIT') + '\n'
         'TRAVIS_COMMIT_RANGE=' + os.environ.get('TRAVIS_COMMIT_RANGE') + '\n'
         'TRAVIS_PULL_REQUEST=' + os.environ.get('TRAVIS_PULL_REQUEST') + '\n'

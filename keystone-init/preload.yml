@@ -5,3 +5,11 @@ domains:
     projects: []
     roles: []
     users: []
+
+endpoints:
+  example:
+    type:
+    region:
+    url:
+    description:
+    interfaces: []

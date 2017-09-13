@@ -71,10 +71,10 @@ domains:
 
 endpoints:
   example:
-    description:
     type:
     region:
     url:
+    description:
     interfaces: []
 ```
 
@@ -186,10 +186,10 @@ Endpoints are created by their unique name:
 ```yaml
 endpoints:
   example:
-    description:
     type:
     region:
     url:
+    description:
     interfaces: []
 ```
 In this case service with `example` name will be created first and then

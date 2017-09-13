@@ -610,7 +610,7 @@ def run_docker_compose(pipeline):
                               'up', '-d'] + services
 
     with open(LOG_DIR + '/run/docker_compose.log', 'wb') as out:
-        p = subprocess.Popen(docker_compose_command, stdin=subprocess.PIPE. stdout=out)
+        p = subprocess.Popen(docker_compose_command, stdin=subprocess.PIPE, stdout=out)
 
     def kill(signal, frame):
         p.kill()

@@ -184,7 +184,7 @@ def upload_file(bucket, remote_file_path, local_file_path, file_str=None):
     try:
         blob = bucket.blob(remote_file_path)
         if file_str:
-            blob.upload_from_string(manifest_str)
+            blob.upload_from_string(file_str)
         else:
             blob.upload_from_filename(local_file_path, content_type='text/plain')
         blob.make_public()

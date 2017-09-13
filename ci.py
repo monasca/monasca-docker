@@ -141,8 +141,8 @@ def upload_log_files(type_name, log_dir):
             upload_file(bucket, remote_file_path, local_file_path)
             uploaded_files.add(remote_file_path)
 
-    manifest_str = print_env(to_print=False)
-    manifest_str = '\n'.join(uploaded_files)
+    manifest_str = print_env(to_print=False) + '\n'
+    manifest_str += '\n'.join(uploaded_files)
     remote_file_path = log_dir + '/' + 'manifest.txt'
     upload_file(bucket, remote_file_path, None, manifest_str)
 
@@ -669,7 +669,7 @@ def print_env(pipeline='', voting='', to_print=True):
     if pipeline:
         environ_string += '\n' + 'CI_PIPELINE=' + pipeline
     if voting:
-        environ_string += '\n' + 'CI_VOTING=' + voting
+        environ_string += '\n' + 'CI_VOTING=' + sry(voting)
     if to_print:
         print (environ_string)
     return environ_string

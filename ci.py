@@ -87,6 +87,8 @@ PIPELINE_TO_YAML_COMPOSE = {
 
 CI_COMPOSE_FILE = 'ci-compose.yml'
 
+LOG_DIR = ''
+
 
 class SubprocessException(Exception):
     pass
@@ -126,7 +128,7 @@ def get_client():
         return None
 
 
-def upload_log_files(type_name, log_dir):
+def upload_log_files():
     client = get_client()
     if not client:
         print ('Could not upload logs to GCP')
@@ -134,16 +136,34 @@ def upload_log_files(type_name, log_dir):
 
     uploaded_files = set()
     bucket = client.bucket('monasca-ci-logs')
+    log_dir = LOG_DIR + '/build'
     for f in os.listdir(log_dir):
         local_file_path = log_dir + '/' + f
         if os.path.isfile(local_file_path):
-            remote_file_path = log_dir + '/' + type_name + '/' + f
+            remote_file_path = 'monasca-docker/' + log_dir  + '/' + f
             upload_file(bucket, remote_file_path, local_file_path)
             uploaded_files.add(remote_file_path)
 
-    manifest_str = print_env(to_print=False) + '\n'
+    log_dir = LOG_DIR + '/run'
+    for f in + os.listdir(log_dir):
+        local_file_path = log_dir + '/' + f
+        if os.path.isfile(local_file_path):
+            remote_file_path = 'monasca-docker/' + log_dir  + '/' + f
+            upload_file(bucket, remote_file_path, local_file_path)
+            uploaded_files.add(remote_file_path)
+    return uploaded_files
+
+def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags):
+    manifest_str = print_env(pipeline, voting, to_print=False)
+    manifest_str += '\nUploaded Log Files\n'
     manifest_str += '\n'.join(uploaded_files)
-    remote_file_path = log_dir + '/' + 'manifest.txt'
+    manifest_str += '\nDirty Modules:\n'
+    manifest_str += '\n'.join(dirty_modules)
+    manifest_str += '\nDirty Files:\n'
+    manifest_str += '\n'.join(files)
+    manifest_str += '\nTags:\n'
+    manifest_str += '\n'.join(tags)
+    remote_file_path = 'monasca-docker/' + LOG_DIR + '/' + 'manifest.txt'
     upload_file(bucket, remote_file_path, None, manifest_str)
 
 
@@ -151,12 +171,11 @@ def upload_file(bucket, remote_file_path, local_file_path, file_str=None):
     print ('Uploading {} to monasca-ci-logs bucket in GCP'.format(remote_file_path))
     try:
         blob = bucket.blob(remote_file_path)
-        blob.make_public()
-
         if file_str:
-            blob.upload_from_str(manifest_str)
+            blob.upload_from_string(manifest_str)
         else:
-            blob.upload_from_filename(local_file_path)
+            blob.upload_from_filename(local_file_path, content_type='text/plain')
+        blob.make_public()
 
         url = blob.public_url
         if isinstance(url, six.binary_type):
@@ -168,12 +187,17 @@ def upload_file(bucket, remote_file_path, local_file_path, file_str=None):
                'Skipping upload. Got: {}'.format(remote_file_path, e))
 
 
-def get_log_dir():
+def set_log_dir():
+    if LOG_DIR:
+        return
     time_str = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    log_dir = time_str + '_monasca_logs'
-    if not os.path.exists(log_dir):
-        os.makedirs(log_dir)
-    return log_dir
+    LOG_DIR = time_str + '_monasca_logs'
+    if not os.path.exists(LOG_DIR):
+        os.makedirs(LOG_DIR)
+    if not os.path.exists(LOG_DIR + '/build'):
+        os.makedirs(LOG_DIR + '/build')
+    if not os.path.exists(LOG_DIR + '/run'):
+        os.makedirs(LOG_DIR + '/run')
 
 
 def get_changed_files():
@@ -247,7 +271,7 @@ def get_dirty_for_module(files, module=None):
 
 
 def run_build(modules):
-    log_dir = get_log_dir()
+    log_dir = LOG_DIR + '/build'
     build_args = ['dbuild', '-sd', '--build-log-dir', log_dir, 'build', 'all', '+', ':ci-cd'] + modules
     print('build command:', build_args)
 
@@ -263,7 +287,6 @@ def run_build(modules):
     if p.wait() != 0:
         print('build failed, exiting!')
         sys.exit(p.returncode)
-    upload_log_files('build', log_dir)
 
 
 def run_push(modules):
@@ -285,7 +308,7 @@ def run_push(modules):
             print('Docker registry login failed, cannot push!')
             sys.exit(1)
 
-    log_dir = get_log_dir()
+    log_dir = LOG_DIR + '/build'
     push_args = ['dbuild', '-sd', '--build-log-dir', log_dir, 'build', 'push', 'all'] + modules
     print('push command:', push_args)
 
@@ -301,7 +324,6 @@ def run_push(modules):
     if p.wait() != 0:
         print('build failed, exiting!')
         sys.exit(p.returncode)
-    upload_log_files('build', log_dir)
 
 
 def run_readme(modules):
@@ -310,7 +332,7 @@ def run_readme(modules):
         print('Not updating READMEs: %r' % modules)
         return
 
-    log_dir = get_log_dir()
+    log_dir = LOG_DIR + '/build'
     readme_args = ['dbuild', '-sd', '--build-log-dir', log_dir, 'readme'] + modules
     print('readme command:', readme_args)
 
@@ -326,7 +348,6 @@ def run_readme(modules):
     if p.wait() != 0:
         print('build failed, exiting!')
         sys.exit(p.returncode)
-    upload_log_files('build', log_dir)
 
 
 def update_docker_compose(modules, pipeline):
@@ -649,7 +670,7 @@ def handle_other(files, modules, tags):
         os.environ.get('TRAVS_EVENT_TYPE')))
 
 
-def print_env(pipeline='', voting='', to_print=True):
+def print_env(pipeline, voting, to_print=True):
     environ_string = ('Environment details:\n'
         'TRAVIS_COMMIT=' + os.environ.get('TRAVIS_COMMIT') + '\n'
         'TRAVIS_COMMIT_RANGE=' + os.environ.get('TRAVIS_COMMIT_RANGE') + '\n'
@@ -664,12 +685,11 @@ def print_env(pipeline='', voting='', to_print=True):
         'TRAVIS_PULL_REQUEST_BRANCH=' +
             os.environ.get('TRAVIS_PULL_REQUEST_BRANCH') + '\n'
         'TRAVIS_TAG=' + os.environ.get('TRAVIS_TAG') + '\n'
-        'TRAVIS_COMMIT_MESSAGE=' + os.environ.get('TRAVIS_COMMIT_MESSAGE'))
+        'TRAVIS_COMMIT_MESSAGE=' + os.environ.get('TRAVIS_COMMIT_MESSAGE') + '\n'
 
-    if pipeline:
-        environ_string += '\n' + 'CI_PIPELINE=' + pipeline
-    if voting:
-        environ_string += '\n' + 'CI_VOTING=' + str(voting)
+        'CI_PIPELINE=', pipeline + '\n'
+        'CI_VOTING=', str(voting))
+
     if to_print:
         print (environ_string)
     return environ_string
@@ -688,6 +708,7 @@ def main():
         return
 
     print_env(pipeline, voting)
+    set_log_dir()
 
     files = get_changed_files()
     modules = get_dirty_modules(files)
@@ -716,6 +737,8 @@ def main():
             raise
         else:
             print('%s is not voting, skipping failure' % pipeline)
+    uploaded_files = upload_log_files()
+    upload_manifest(pipeline, voting, uploaded_files, modules, files, tags)
 
 
 if __name__ == '__main__':

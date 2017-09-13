@@ -695,8 +695,8 @@ def print_env(pipeline, voting, to_print=True):
         'TRAVIS_TAG=' + os.environ.get('TRAVIS_TAG') + '\n'
         'TRAVIS_COMMIT_MESSAGE=' + os.environ.get('TRAVIS_COMMIT_MESSAGE') + '\n'
 
-        'CI_PIPELINE=', pipeline + '\n'
-        'CI_VOTING=', str(voting))
+        'CI_PIPELINE=' + pipeline + '\n'
+        'CI_VOTING=' + str(voting))
 
     if to_print:
         print (environ_string)

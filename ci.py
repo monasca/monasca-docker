@@ -671,7 +671,7 @@ def print_env(pipeline='', voting='', to_print=True):
     if voting:
         environ_string += '\n' + 'CI_VOTING=' + voting
     if to_print:
-        print environ_string
+        print (environ_string)
     return environ_string
 
 

@@ -160,13 +160,13 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
     bucket = client.bucket('monasca-ci-logs')
 
     manifest_str = print_env(pipeline, voting, to_print=False)
-    manifest_str += '\nUploaded Log Files\n'
+    manifest_str += '\n  Uploaded Log Files:\n'
     manifest_str += '\n'.join(uploaded_files)
-    manifest_str += '\nDirty Modules:\n'
+    manifest_str += '\n  Dirty Modules:\n'
     manifest_str += '\n'.join(dirty_modules)
-    manifest_str += '\nDirty Files:\n'
+    manifest_str += '\n  Dirty Files:\n'
     manifest_str += '\n'.join(files)
-    manifest_str += '\nTags:\n'
+    manifest_str += '\n  Tags:\n'
     manifest_str += '\n'.join(tags)
     remote_file_path = 'monasca-docker/' + LOG_DIR + '/' + 'manifest.txt'
     upload_file(bucket, remote_file_path, None, manifest_str)

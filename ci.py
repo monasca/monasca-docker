@@ -659,7 +659,8 @@ def run_tempest_tests_metrics():
                          'monasca/tempest-tests:latest']
 
 #    with open(LOG_DIR + '/tempest_tests.txt', 'wb') as out:
-    p = subprocess.Popen(tempest_tests_run, stdin=subprocess.PIPE, stdout=out)
+#        p = subprocess.Popen(tempest_tests_run, stdin=subprocess.PIPE, stdout=out)
+    p = subprocess.Popen(tempest_tests_run, stdin=subprocess.PIPE)
 
     def kill(signal, frame):
         p.kill()

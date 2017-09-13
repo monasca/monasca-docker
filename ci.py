@@ -162,6 +162,7 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
 
 
 def upload_files(log_dir, bucket):
+    uploaded_files = set()
     blob = bucket.blob('monasca-docker/' + log_dir)
     for f in os.listdir(log_dir):
         local_file_path = log_dir + '/' + f

@@ -145,7 +145,7 @@ def upload_log_files():
             uploaded_files.add(remote_file_path)
 
     log_dir = LOG_DIR + '/run'
-    for f in + os.listdir(log_dir):
+    for f in os.listdir(log_dir):
         local_file_path = log_dir + '/' + f
         if os.path.isfile(local_file_path):
             remote_file_path = 'monasca-docker/' + log_dir  + '/' + f

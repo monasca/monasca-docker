@@ -132,19 +132,35 @@ def upload_log_files(type_name, log_dir):
         print ('Could not upload logs to GCP')
         return
 
+    uploaded_files = set()
     bucket = client.bucket('monasca-ci-logs')
     for f in os.listdir(log_dir):
-        if os.path.isfile(log_dir + '/' + f):
-            file_path = log_dir + '/' + type_name + '/' + f
-            print ('Uploading {} to monasca-ci-logs bucket in GCP'.format(file_path))
-            blob = bucket.blob(file_path)
-            blob.upload_from_filename(log_dir + '/' + f)
+        local_file_path = log_dir + '/' + f
+        if os.path.isfile(local_file_path):
+            remote_file_path = log_dir + '/' + type_name + '/' + f
+            upload_file(bucket, remote_file_path, local_file_path)
+            uploaded_files.add(remote_file_path)
 
-            url = blob.public_url
-            if isinstance(url, six.binary_type):
-                url = url.decode('utf-8')
+    manifest_str = '\n'.join(uploaded_files)
+    remote_file_path = log_dir + '/' + 'manifest.txt'
+    upload_file(bucket, remote_file_path, None, manifest_str)
 
-            print ('Public url for log: {}'.format(url))
+
+def upload_file(bucket, remote_file_path, local_file_path, file_str=None):
+    print ('Uploading {} to monasca-ci-logs bucket in GCP'.format(remote_file_path))
+    blob = bucket.blob(remote_file_path)
+    blob.make_public()
+
+    if file_str:
+        blob.upload_from_str(manifest_str)
+    else:
+        blob.upload_from_filename(local_file_path)
+
+    url = blob.public_url
+    if isinstance(url, six.binary_type):
+        url = url.decode('utf-8')
+
+    print ('Public url for log: {}'.format(url))
 
 
 def get_log_dir():

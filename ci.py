@@ -161,21 +161,21 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
     bucket = client.bucket('monasca-ci-logs')
 
     manifest_dict = print_env(pipeline, voting, to_print=False)
-    manifest_dict['Dirty_Modules'] = {}
+    manifest_dict['modules'] = {}
     for module in dirty_modules:
-        manifest_dict['Dirty_Modules'][module] =  {'Dirty_Files': []}
+        manifest_dict['modules'][module] =  {'files': []}
         for f in files:
             if module in f:
                 if 'init' not in module and 'init' not in f or 'init' in module and 'init' in f:
-                    manifest_dict['Dirty_Modules'][module]['Dirty_Files'].append(f)
+                    manifest_dict['modules'][module]['files'].append(f)
 
-        manifest_dict['Dirty_Modules'][module]['Uploaded_Log_File'] = {}
+        manifest_dict['modules'][module]['uploaded_log_file'] = {}
         for f, url in uploaded_files.iteritems():
             if module in f:
                 if 'init' not in module and 'init' not in f or 'init' in module and 'init' in f:
-                    manifest_dict['Dirty_Modules'][module]['Uploaded_Log_File'][f] =  url
+                    manifest_dict['modules'][module]['uploaded_log_file'][f] =  url
 
-    manifest_dict['Tags'] = tags
+    manifest_dict['tags'] = tags
 
     remote_file_path = LOG_DIR + 'manifest.log'
     upload_file(bucket, remote_file_path, None, json.dumps(manifest_dict, indent=2))
@@ -480,7 +480,7 @@ def get_current_init_status(docker_id):
 
 
 def output_docker_logs():
-    docker_names = ['docker', 'ps', '-a', '--format', '"table {{.Names}}"']
+    docker_names = ['docker', 'ps', '-a', '--format', '"{{.Names}}"']
 
     p = subprocess.Popen(docker_names, stdout=subprocess.PIPE)
 
@@ -496,8 +496,10 @@ def output_docker_logs():
     names = output.replace('"', '').split('\n')
 
     for name in names:
-        docker_logs = ['docker', 'logs', name]
+        if not name:
+            continue
 
+        docker_logs = ['docker', 'logs', name]
         with open(RUN_LOG_DIR + 'docker_' + name + '.log', 'wb') as out:
             p = subprocess.Popen(docker_logs, stdout=out)
 
@@ -717,7 +719,7 @@ def handle_other(files, modules, tags):
 
 
 def print_env(pipeline, voting, to_print=True):
-    environ_vars = {'Environment details': {
+    environ_vars = {'environment_details': {
         'TRAVIS_COMMIT': os.environ.get('TRAVIS_COMMIT'),
         'TRAVIS_COMMIT_RANGE': os.environ.get('TRAVIS_COMMIT_RANGE'),
         'TRAVIS_PULL_REQUEST': os.environ.get('TRAVIS_PULL_REQUEST'),

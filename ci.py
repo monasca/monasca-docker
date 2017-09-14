@@ -163,7 +163,7 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
     manifest_dict = print_env(pipeline, voting, to_print=False)
     manifest_dict['Dirty_Modules'] = {}
     for module in dirty_modules:
-        manifest_dict['Dirty_Modules'][module] =  {'Dirty_Files': []}}
+        manifest_dict['Dirty_Modules'][module] =  {'Dirty_Files': []}
         for f in files:
             if module in f:
                 if 'init' not in module and 'init' not in f or 'init' in module and 'init' in f:
@@ -171,7 +171,6 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
 
         manifest_dict['Dirty_Modules'][module]['Uploaded_Log_File'] = {}
         for f, url in uploaded_files.iteritems():
-            manifest_dict['Dirty_Modules'][module]['Uploaded_Log_File'] = {}
             if module in f:
                 if 'init' not in module and 'init' not in f or 'init' in module and 'init' in f:
                     manifest_dict['Dirty_Modules'][module]['Uploaded_Log_File'][f] =  url
@@ -480,20 +479,34 @@ def get_current_init_status(docker_id):
     return exit_code == "0" and status == "exited"
 
 
-def output_docker_logs():
-    docker_logs = ['docker-compose', 'logs']
+def output_docker_logs(on_error=True):
+    docker_names = ['docker', 'ps', '-a', '--format', '"table {{.Names}}"']
 
-    docker_logs_process = subprocess.Popen(docker_logs)
+    p = subprocess.Popen(docker_names, stdout=subprocess.PIPE)
 
     def kill(signal, frame):
-        docker_logs_process.kill()
+        p.kill()
         print()
         print('killed!')
         sys.exit(1)
 
     signal.signal(signal.SIGINT, kill)
-    if docker_logs_process.wait() != 0:
-        print('Error listing logs')
+
+    output, err = p.communicate()
+    names = output.replace('"', '').split('\n')
+
+    for name in names:
+        docker_logs = ['docker', 'logs', name]
+
+        if on_error:
+            p = subprocess.Popen(docker_logs)
+
+        else:
+            with open(RUN_LOG_DIR + 'docker_' + name + '.log', 'wb') as out:
+                p = subprocess.Popen(docker_logs, stdout=out)
+        signal.signal(signal.SIGINT, kill)
+        if p.wait() != 0:
+            print('Error running docker log for {}'.format(name))
 
 
 def output_docker_ps():
@@ -778,6 +791,8 @@ def main():
             raise
         else:
             print('%s is not voting, skipping failure' % pipeline)
+    output_docker_ps()
+    output_docker_logs()
     uploaded_files = upload_log_files()
     upload_manifest(pipeline, voting, uploaded_files, modules, files, tags)
 

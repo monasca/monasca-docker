@@ -161,13 +161,15 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
     bucket = client.bucket('monasca-ci-logs')
 
     manifest_dict = print_env(pipeline, voting, to_print=False)
+    manifest_dict['Dirty_Modules'] = {}
     for module in dirty_modules:
-        manifest_dict['Dirty_Modules'] = {module: {'Dirty_Files': []}}
+        manifest_dict['Dirty_Modules'][module] =  {'Dirty_Files': []}}
         for f in files:
             if module in f:
                 if 'init' not in module and 'init' not in f or 'init' in module and 'init' in f:
                     manifest_dict['Dirty_Modules'][module]['Dirty_Files'].append(f)
 
+        manifest_dict['Dirty_Modules'][module]['Uploaded_Log_File'] = {}
         for f, url in uploaded_files.iteritems():
             manifest_dict['Dirty_Modules'][module]['Uploaded_Log_File'] = {}
             if module in f:

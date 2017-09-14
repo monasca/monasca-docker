@@ -453,7 +453,7 @@ def handle_pull_request(files, modules, tags, pipeline):
     }
 
     cool_test_mapper['smoke'][pipeline]()
-#    cool_test_mapper['tempest'][pipeline]()
+    cool_test_mapper['tempest'][pipeline]()
 
 
 def get_current_init_status(docker_id):
@@ -499,12 +499,10 @@ def output_docker_logs():
         if not name:
             continue
 
-        print ('Getting {} logs'.format(name))
         docker_logs = ['docker', 'logs', name]
-        std_log_name = RUN_LOG_DIR + 'docker_log_' + name + '.log'
-        err_log_name = RUN_LOG_DIR + 'docker_err_' + name + '.log'
-        with open(std_log_name, 'w') as out, open(err_log_name, 'w') as err:
-            p = subprocess.Popen(docker_logs, stdout=out, stderr=err)
+        log_name = RUN_LOG_DIR + 'docker_log_' + name + '.log'
+        with open(log_name, 'w') as out:
+            p = subprocess.Popen(docker_logs, stdout=out, stderr=out)
 
         signal.signal(signal.SIGINT, kill)
         if p.wait() != 0:

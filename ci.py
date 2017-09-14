@@ -169,14 +169,15 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
                     manifest_dict['Dirty_Modules'][module]['Dirty_Files'].append(f)
 
         for f, url in uploaded_files.iteritems():
+            manifest_dict['Dirty_Modules'][module]['Uploaded_Log_File'] = {}
             if module in f:
                 if 'init' not in module and 'init' not in f or 'init' in module and 'init' in f:
-                    manifest_dict['Dirty_Modules'][module]['Uploaded_Log_File'] = {f, url}
+                    manifest_dict['Dirty_Modules'][module]['Uploaded_Log_File'][f] =  url
 
     manifest_dict['Tags'] = tags
 
     remote_file_path = LOG_DIR + 'manifest.log'
-    upload_file(bucket, remote_file_path, None, json.dumps(manifest_dict), indent=2)
+    upload_file(bucket, remote_file_path, None, json.dumps(manifest_dict, indent=2))
 
 
 def upload_files(log_dir, bucket):
@@ -729,7 +730,7 @@ def print_env(pipeline, voting, to_print=True):
         'CI_VOTING': voting }}
 
     if to_print:
-        print (json.dumps(environ_vars), indent=2)
+        print (json.dumps(environ_vars, indent=2))
     return environ_vars
 
 

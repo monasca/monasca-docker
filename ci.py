@@ -92,6 +92,7 @@ LOG_DIR = 'monasca-docker/' + \
           '_monasca_logs/'
 BUILD_LOG_DIR = LOG_DIR + 'build/'
 RUN_LOG_DIR = LOG_DIR + 'run/'
+LOG_DIRS = [LOG_DIR, BUILD_LOG_DIR, RUN_LOG_DIR]
 
 
 class SubprocessException(Exception):
@@ -139,15 +140,15 @@ def upload_log_files():
         return
     bucket = client.bucket('monasca-ci-logs')
 
-    uploaded_files = set()
-    uploaded_files.update(upload_files(LOG_DIR, bucket))
-    uploaded_files.update(upload_files(BUILD_LOG_DIR, bucket)) 
-    uploaded_files.update(upload_files(RUN_LOG_DIR, bucket)) 
+    uploaded_files = {}
+    for log_dir in LOG_DIRS:
+        uploaded_files.update(upload_files(log_dir, bucket))
 
-    for f in os.listdir('.'):  #NOTE: FIX ME
+    for f in os.listdir('.'):
         if 'travis_wait' in f:
-            upload_file(bucket, LOG_DIR + '_stdout_log.log', f)
-            uploaded_files.update(f) 
+            remote_file_path = LOG_DIR + '_stdout_log.log'
+            url = upload_file(bucket, remote_file_path, f)
+            uploaded_files[remote_file_path] = url
 
     return uploaded_files
 
@@ -160,16 +161,17 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
     bucket = client.bucket('monasca-ci-logs')
 
     manifest_dict = print_env(pipeline, voting, to_print=False)
-    manifest_dict['Dirty_Modules'] = dirty_modules
     for module in dirty_modules:
-        manifest_dict['Dirty_Modules'][module]['Dirty_Files'] =  []
+        manifest_dict['Dirty_Modules'] = {module: {'Dirty_Files': []}}
         for f in files:
             if module in f:
-                manifest_dict['Dirty_Modules'][module]['Dirty_Files'].append(f)
+                if 'init' not in module and 'init' not in f or 'init' in module and 'init' in f:
+                    manifest_dict['Dirty_Modules'][module]['Dirty_Files'].append(f)
 
-        for f in uploaded_files:
+        for f, url in uploaded_files.iteritems():
             if module in f:
-                manifest_dict['Dirty_Modules'][module]['Uploaded_Log_File'] = f
+                if 'init' not in module and 'init' not in f or 'init' in module and 'init' in f:
+                    manifest_dict['Dirty_Modules'][module]['Uploaded_Log_File'] = {f, url}
 
     manifest_dict['Tags'] = tags
 
@@ -178,19 +180,18 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
 
 
 def upload_files(log_dir, bucket):
-    uploaded_files = set()
+    uploaded_files = {}
     blob = bucket.blob(log_dir)
     for f in os.listdir(log_dir):
         local_file_path = log_dir + f
         if os.path.isfile(local_file_path):
-            remote_file_path = log_dir  + '/' + f
-            upload_file(bucket, remote_file_path, local_file_path)
-            uploaded_files.add(remote_file_path)
+            remote_file_path = log_dir + f
+            url = upload_file(bucket, remote_file_path, local_file_path)
+            uploaded_files[remote_file_path] = url
     return uploaded_files
 
 
 def upload_file(bucket, remote_file_path, local_file_path, file_str=None):
-    print ('Uploading {} to monasca-ci-logs bucket in GCP'.format(remote_file_path))
     try:
         blob = bucket.blob(remote_file_path)
         if file_str:
@@ -204,6 +205,7 @@ def upload_file(bucket, remote_file_path, local_file_path, file_str=None):
             url = url.decode('utf-8')
 
         print ('Public url for log: {}'.format(url))
+        return url
     except Exception as e:
         print ('Unexpected error uploading log files to {}'
                'Skipping upload. Got: {}'.format(remote_file_path, e))

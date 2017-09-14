@@ -177,8 +177,8 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
 
     manifest_dict['tags'] = tags
 
-    remote_file_path = LOG_DIR + 'manifest.log'
-    upload_file(bucket, remote_file_path, None, json.dumps(manifest_dict, indent=2))
+    remote_file_path = LOG_DIR + 'manifest.json'
+    upload_file(bucket, remote_file_path, None, json.dumps(manifest_dict, indent=2), content_type='application/json')
 
 
 def upload_files(log_dir, bucket):
@@ -193,13 +193,13 @@ def upload_files(log_dir, bucket):
     return uploaded_files
 
 
-def upload_file(bucket, remote_file_path, local_file_path, file_str=None):
+def upload_file(bucket, remote_file_path, local_file_path, file_str=None, content_type='text/plain'):
     try:
         blob = bucket.blob(remote_file_path)
         if file_str:
-            blob.upload_from_string(file_str)
+            blob.upload_from_string(file_str, content_type=content_type)
         else:
-            blob.upload_from_filename(local_file_path, content_type='text/plain')
+            blob.upload_from_filename(local_file_path, content_type=content_type)
         blob.make_public()
 
         url = blob.public_url
@@ -453,7 +453,7 @@ def handle_pull_request(files, modules, tags, pipeline):
     }
 
     cool_test_mapper['smoke'][pipeline]()
-    cool_test_mapper['tempest'][pipeline]()
+#    cool_test_mapper['tempest'][pipeline]()
 
 
 def get_current_init_status(docker_id):
@@ -499,6 +499,7 @@ def output_docker_logs():
         if not name:
             continue
 
+        print ('Getting {} logs'.format(name))
         docker_logs = ['docker', 'logs', name]
         with open(RUN_LOG_DIR + 'docker_' + name + '.log', 'wb') as out:
             p = subprocess.Popen(docker_logs, stdout=out)

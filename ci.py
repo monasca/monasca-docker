@@ -183,7 +183,6 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
 def upload_files(log_dir, bucket):
     uploaded_files = {}
     blob = bucket.blob(log_dir)
-    print ('log_dir: {}'.format(log_dir))
     for f in os.listdir(log_dir):
         file_path = log_dir + f
         if os.path.isfile(file_path):

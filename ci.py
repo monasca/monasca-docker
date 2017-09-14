@@ -87,7 +87,11 @@ PIPELINE_TO_YAML_COMPOSE = {
 
 CI_COMPOSE_FILE = 'ci-compose.yml'
 
-LOG_DIR = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S') + '_monasca_logs'
+LOG_DIR = 'monasca-docker/' + \
+          datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S') + \
+          '_monasca_logs/'
+BUILD_LOG_DIR = LOG_DIR + 'build/'
+RUN_LOG_DIR = LOG_DIR + 'run/'
 
 
 class SubprocessException(Exception):
@@ -133,20 +137,16 @@ def upload_log_files():
     if not client:
         print ('Could not upload logs to GCP')
         return
+    bucket = client.bucket('monasca-ci-logs')
 
     uploaded_files = set()
-    bucket = client.bucket('monasca-ci-logs')
     uploaded_files.update(upload_files(LOG_DIR, bucket))
+    uploaded_files.update(upload_files(BUILD_LOG_DIR, bucket)) 
+    uploaded_files.update(upload_files(RUN_LOG_DIR, bucket)) 
 
-    log_dir = LOG_DIR + '/build'
-    uploaded_files.update(upload_files(log_dir, bucket)) 
-
-    log_dir = LOG_DIR + '/run'
-    uploaded_files.update(upload_files(log_dir, bucket)) 
-
-    for f in os.listdir('.'):
+    for f in os.listdir('.'):  #NOTE: FIX ME
         if 'travis_wait' in f:
-            upload_file(bucket, 'monasca-docker/' + LOG_DIR, f)
+            upload_file(bucket, LOG_DIR + '_stdout_log.log', f)
             uploaded_files.update(f) 
 
     return uploaded_files
@@ -159,26 +159,31 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
         return
     bucket = client.bucket('monasca-ci-logs')
 
-    manifest_str = print_env(pipeline, voting, to_print=False)
-    manifest_str += '\n  Uploaded Log Files:\n'
-    manifest_str += '\n'.join(uploaded_files)
-    manifest_str += '\n  Dirty Modules:\n'
-    manifest_str += '\n'.join(dirty_modules)
-    manifest_str += '\n  Dirty Files:\n'
-    manifest_str += '\n'.join(files)
-    manifest_str += '\n  Tags:\n'
-    manifest_str += '\n'.join(tags)
-    remote_file_path = 'monasca-docker/' + LOG_DIR + '/' + 'manifest.txt'
-    upload_file(bucket, remote_file_path, None, manifest_str)
+    manifest_dict = print_env(pipeline, voting, to_print=False)
+    manifest_dict['Dirty_Modules'] = dirty_modules
+    for module in dirty_modules:
+        manifest_dict['Dirty_Modules'][module]['Dirty_Files'] =  []
+        for f in files:
+            if module in f:
+                manifest_dict['Dirty_Modules'][module]['Dirty_Files'].append(f)
+
+        for f in uploaded_files:
+            if module in f
+                manifest_dict['Dirty_Modules'][module]['Uploaded_Log_File'] = f
+
+    manifest_dict['Tags'] = tags
+
+    remote_file_path = LOG_DIR + 'manifest.log'
+    upload_file(bucket, remote_file_path, None, json.dumps(manifest_dict))
 
 
 def upload_files(log_dir, bucket):
     uploaded_files = set()
-    blob = bucket.blob('monasca-docker/' + log_dir)
+    blob = bucket.blob(log_dir)
     for f in os.listdir(log_dir):
-        local_file_path = log_dir + '/' + f
+        local_file_path = log_dir + f
         if os.path.isfile(local_file_path):
-            remote_file_path = 'monasca-docker/' + log_dir  + '/' + f
+            remote_file_path = log_dir  + '/' + f
             upload_file(bucket, remote_file_path, local_file_path)
             uploaded_files.add(remote_file_path)
     return uploaded_files
@@ -207,10 +212,10 @@ def upload_file(bucket, remote_file_path, local_file_path, file_str=None):
 def set_log_dir():
     if not os.path.exists(LOG_DIR):
         os.makedirs(LOG_DIR)
-    if not os.path.exists(LOG_DIR + '/build'):
-        os.makedirs(LOG_DIR + '/build')
-    if not os.path.exists(LOG_DIR + '/run'):
-        os.makedirs(LOG_DIR + '/run')
+    if not os.path.exists(BUILD_LOG_DIR):
+        os.makedirs(BUILD_LOG_DIR)
+    if not os.path.exists(RUN_LOG_DIR):
+        os.makedirs(RUN_LOG_DIR)
 
 
 def get_changed_files():
@@ -284,7 +289,7 @@ def get_dirty_for_module(files, module=None):
 
 
 def run_build(modules):
-    log_dir = LOG_DIR + '/build'
+    log_dir = BUILD_LOG_DIR
     build_args = ['dbuild', '-sd', '--build-log-dir', log_dir, 'build', 'all', '+', ':ci-cd'] + modules
     print('build command:', build_args)
 
@@ -321,7 +326,7 @@ def run_push(modules):
             print('Docker registry login failed, cannot push!')
             sys.exit(1)
 
-    log_dir = LOG_DIR + '/build'
+    log_dir = BUILD_LOG_DIR
     push_args = ['dbuild', '-sd', '--build-log-dir', log_dir, 'build', 'push', 'all'] + modules
     print('push command:', push_args)
 
@@ -345,7 +350,7 @@ def run_readme(modules):
         print('Not updating READMEs: %r' % modules)
         return
 
-    log_dir = LOG_DIR + '/build'
+    log_dir = BUILD_LOG_DIR
     readme_args = ['dbuild', '-sd', '--build-log-dir', log_dir, 'readme'] + modules
     print('readme command:', readme_args)
 
@@ -608,6 +613,7 @@ def handle_push(files, modules, tags, pipeline):
 
 
 def run_docker_compose(pipeline):
+    print('Running docker compose')
     output_compose_details(pipeline)
 
     if pipeline == 'metrics':
@@ -619,7 +625,7 @@ def run_docker_compose(pipeline):
                               '-f', CI_COMPOSE_FILE,
                               'up', '-d'] + services
 
-    with open(LOG_DIR + '/run/docker_compose.log', 'wb') as out:
+    with open(RUN_LOG_DIR + 'docker_compose.log', 'wb') as out:
         p = subprocess.Popen(docker_compose_command, stdout=out)
 
     def kill(signal, frame):
@@ -634,6 +640,7 @@ def run_docker_compose(pipeline):
         sys.exit(p.returncode)
 
     # print out running images for debugging purposes
+    print('docker compose succeeded')
     output_docker_ps()
 
 
@@ -659,11 +666,12 @@ def run_smoke_tests_metrics():
 
 
 def run_tempest_tests_metrics():
+    print ('Running Tempest-tests')
     tempest_tests_run = ['docker', 'run', '-e', 'KEYSTONE_SERVER=keystone', '-e',
                          'KEYSTONE_PORT=5000', '--net', 'monascadocker_default',
                          'monasca/tempest-tests:latest']
 
-    with open(LOG_DIR + '/tempest_tests.txt', 'wb') as out:
+    with open(LOG_DIR + 'tempest_tests.log', 'wb') as out:
         p = subprocess.Popen(tempest_tests_run, stdout=out)
 
     def kill(signal, frame):
@@ -693,6 +701,7 @@ def run_tempest_tests_metrics():
             raise TempestTestFailedException()
         else:
             break
+    print('Tempest-tests succeeded')
 
 
 def handle_other(files, modules, tags):
@@ -701,28 +710,25 @@ def handle_other(files, modules, tags):
 
 
 def print_env(pipeline, voting, to_print=True):
-    environ_string = str('Environment details:\n'
-        'TRAVIS_COMMIT=' + os.environ.get('TRAVIS_COMMIT') + '\n'
-        'TRAVIS_COMMIT_RANGE=' + os.environ.get('TRAVIS_COMMIT_RANGE') + '\n'
-        'TRAVIS_PULL_REQUEST=' + os.environ.get('TRAVIS_PULL_REQUEST') + '\n'
-        'TRAVIS_PULL_REQUEST_SHA=' +
-            os.environ.get('TRAVIS_PULL_REQUEST_SHA') + '\n'
-        'TRAVIS_PULL_REQUEST_SLUG=' +
-            os.environ.get('TRAVIS_PULL_REQUEST_SLUG') + '\n'
-        'TRAVIS_SECURE_ENV_VARS='+  os.environ.get('TRAVIS_SECURE_ENV_VARS') + '\n'
-        'TRAVIS_EVENT_TYPE=' + os.environ.get('TRAVIS_EVENT_TYPE') + '\n'
-        'TRAVIS_BRANCH=' + os.environ.get('TRAVIS_BRANCH') + '\n'
-        'TRAVIS_PULL_REQUEST_BRANCH=' +
-            os.environ.get('TRAVIS_PULL_REQUEST_BRANCH') + '\n'
-        'TRAVIS_TAG=' + os.environ.get('TRAVIS_TAG') + '\n'
-        'TRAVIS_COMMIT_MESSAGE=' + os.environ.get('TRAVIS_COMMIT_MESSAGE') + '\n'
+    environ_vars = {'Environment details': {
+        'TRAVIS_COMMIT': os.environ.get('TRAVIS_COMMIT'),
+        'TRAVIS_COMMIT_RANGE': os.environ.get('TRAVIS_COMMIT_RANGE'),
+        'TRAVIS_PULL_REQUEST': os.environ.get('TRAVIS_PULL_REQUEST'),
+        'TRAVIS_PULL_REQUEST_SHA': os.environ.get('TRAVIS_PULL_REQUEST_SHA'),
+        'TRAVIS_PULL_REQUEST_SLUG': os.environ.get('TRAVIS_PULL_REQUEST_SLUG'),
+        'TRAVIS_SECURE_ENV_VARS':  os.environ.get('TRAVIS_SECURE_ENV_VARS'),
+        'TRAVIS_EVENT_TYPE': os.environ.get('TRAVIS_EVENT_TYPE'),
+        'TRAVIS_BRANCH': os.environ.get('TRAVIS_BRANCH'),
+        'TRAVIS_PULL_REQUEST_BRANCH': os.environ.get('TRAVIS_PULL_REQUEST_BRANCH'),
+        'TRAVIS_TAG': os.environ.get('TRAVIS_TAG'),
+        'TRAVIS_COMMIT_MESSAGE': os.environ.get('TRAVIS_COMMIT_MESSAGE'),
 
-        'CI_PIPELINE=' + pipeline + '\n'
-        'CI_VOTING=' + str(voting))
+        'CI_PIPELINE': pipeline,
+        'CI_VOTING': voting }}
 
     if to_print:
-        print (environ_string)
-    return environ_string
+        print (json.dumps(environ_vars))
+    return environ_vars
 
 
 def main():

@@ -479,7 +479,7 @@ def get_current_init_status(docker_id):
     return exit_code == "0" and status == "exited"
 
 
-def output_docker_logs(on_error=True):
+def output_docker_logs():
     docker_names = ['docker', 'ps', '-a', '--format', '"table {{.Names}}"']
 
     p = subprocess.Popen(docker_names, stdout=subprocess.PIPE)
@@ -498,12 +498,9 @@ def output_docker_logs(on_error=True):
     for name in names:
         docker_logs = ['docker', 'logs', name]
 
-        if on_error:
-            p = subprocess.Popen(docker_logs)
+        with open(RUN_LOG_DIR + 'docker_' + name + '.log', 'wb') as out:
+            p = subprocess.Popen(docker_logs, stdout=out)
 
-        else:
-            with open(RUN_LOG_DIR + 'docker_' + name + '.log', 'wb') as out:
-                p = subprocess.Popen(docker_logs, stdout=out)
         signal.signal(signal.SIGINT, kill)
         if p.wait() != 0:
             print('Error running docker log for {}'.format(name))
@@ -584,8 +581,6 @@ def wait_for_init_jobs(pipeline):
 
     if amount_succeeded != len(docker_id_dict):
         print("Init-jobs did not succeed, printing docker ps and logs")
-        output_docker_ps()
-        output_docker_logs()
         raise InitJobFailedException()
 
     # Sleep in case jobs just succeeded
@@ -678,8 +673,6 @@ def run_smoke_tests_metrics():
     signal.signal(signal.SIGINT, kill)
     if p.wait() != 0:
         print('Smoke-tests failed, listing containers/logs.')
-        output_docker_logs()
-        output_docker_ps()
         raise SmokeTestFailedException()
 
 
@@ -705,8 +698,6 @@ def run_tempest_tests_metrics():
         if poll is None:
             if time_delta == 1500:
                 print ('Tempest-tests timed out at 25 min')
-                output_docker_logs()
-                output_docker_ps()
                 raise TempestTestFailedException()
             if time_delta % 30 == 0:
                 print ('Still running tempest-tests')
@@ -714,8 +705,6 @@ def run_tempest_tests_metrics():
             time.sleep(1)
         elif poll != 0:
             print('Tempest-tests failed, listing containers/logs.')
-            output_docker_logs()
-            output_docker_ps()
             raise TempestTestFailedException()
         else:
             break
@@ -791,10 +780,11 @@ def main():
             raise
         else:
             print('%s is not voting, skipping failure' % pipeline)
-    output_docker_ps()
-    output_docker_logs(on_error=False)
-    uploaded_files = upload_log_files()
-    upload_manifest(pipeline, voting, uploaded_files, modules, files, tags)
+    finally:
+        output_docker_ps()
+        output_docker_logs()
+        uploaded_files = upload_log_files()
+        upload_manifest(pipeline, voting, uploaded_files, modules, files, tags)
 
 
 if __name__ == '__main__':

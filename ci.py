@@ -502,8 +502,8 @@ def output_docker_logs():
         docker_logs = ['docker', 'logs', name]
         log_name = RUN_LOG_DIR + 'docker_log_' + name + '.log'
         with open(log_name, 'w') as out:
-            p = subprocess.Popen(docker_logs, stdout=out, stderr=out)
-
+            p = subprocess.Popen(docker_logs, stdout=out,
+                                 stderr=subprocess.STDOUT)
         signal.signal(signal.SIGINT, kill)
         if p.wait() != 0:
             print('Error running docker log for {}'.format(name))

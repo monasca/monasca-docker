@@ -168,7 +168,7 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
                 manifest_dict['Dirty_Modules'][module]['Dirty_Files'].append(f)
 
         for f in uploaded_files:
-            if module in f
+            if module in f:
                 manifest_dict['Dirty_Modules'][module]['Uploaded_Log_File'] = f
 
     manifest_dict['Tags'] = tags

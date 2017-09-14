@@ -185,7 +185,6 @@ def upload_files(log_dir, bucket):
     blob = bucket.blob(log_dir)
     print ('log_dir: {}'.format(log_dir))
     for f in os.listdir(log_dir):
-        print ('f: {}'.format(f))
         file_path = log_dir + f
         if os.path.isfile(file_path):
             url = upload_file(bucket, file_path)
@@ -194,7 +193,6 @@ def upload_files(log_dir, bucket):
 
 
 def upload_file(bucket, file_path, file_str=None, content_type='text/plain'):
-    print ('Uploading {}'.format(file_path))
     try:
         blob = bucket.blob(file_path)
         if file_str:
@@ -454,7 +452,7 @@ def handle_pull_request(files, modules, tags, pipeline):
     }
 
     cool_test_mapper['smoke'][pipeline]()
-#    cool_test_mapper['tempest'][pipeline]()
+    cool_test_mapper['tempest'][pipeline]()
 
 
 def get_current_init_status(docker_id):

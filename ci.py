@@ -176,7 +176,7 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
     manifest_dict['Tags'] = tags
 
     remote_file_path = LOG_DIR + 'manifest.log'
-    upload_file(bucket, remote_file_path, None, json.dumps(manifest_dict))
+    upload_file(bucket, remote_file_path, None, json.dumps(manifest_dict), indent=2)
 
 
 def upload_files(log_dir, bucket):
@@ -729,7 +729,7 @@ def print_env(pipeline, voting, to_print=True):
         'CI_VOTING': voting }}
 
     if to_print:
-        print (json.dumps(environ_vars))
+        print (json.dumps(environ_vars), indent=2)
     return environ_vars
 
 

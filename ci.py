@@ -144,12 +144,6 @@ def upload_log_files():
     for log_dir in LOG_DIRS:
         uploaded_files.update(upload_files(log_dir, bucket))
 
-    for f in os.listdir('.'):
-        if 'travis_wait' in f:
-            remote_file_path = LOG_DIR + '_stdout_log.log'
-            url = upload_file(bucket, remote_file_path, f)
-            uploaded_files[remote_file_path] = url
-
     return uploaded_files
 
 
@@ -177,29 +171,29 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
 
     manifest_dict['tags'] = tags
 
-    remote_file_path = LOG_DIR + 'manifest.json'
-    upload_file(bucket, remote_file_path, None, json.dumps(manifest_dict, indent=2), content_type='application/json')
+    file_path = LOG_DIR + 'manifest.json'
+    upload_file(bucket, file_path, file_str=json.dumps(manifest_dict, indent=2),
+                content_type='application/json')
 
 
 def upload_files(log_dir, bucket):
     uploaded_files = {}
     blob = bucket.blob(log_dir)
     for f in os.listdir(log_dir):
-        local_file_path = log_dir + f
-        if os.path.isfile(local_file_path):
-            remote_file_path = log_dir + f
-            url = upload_file(bucket, remote_file_path, local_file_path)
-            uploaded_files[remote_file_path] = url
+        if os.path.isfile(f):
+            file_path = log_dir + f
+            url = upload_file(bucket, file_path)
+            uploaded_files[file_path] = url
     return uploaded_files
 
 
-def upload_file(bucket, remote_file_path, local_file_path, file_str=None, content_type='text/plain'):
+def upload_file(bucket, file_path, file_str=None, content_type='text/plain'):
     try:
-        blob = bucket.blob(remote_file_path)
+        blob = bucket.blob(file_path)
         if file_str:
             blob.upload_from_string(file_str, content_type=content_type)
         else:
-            blob.upload_from_filename(local_file_path, content_type=content_type)
+            blob.upload_from_filename(file_path, content_type=content_type)
         blob.make_public()
 
         url = blob.public_url
@@ -210,7 +204,7 @@ def upload_file(bucket, remote_file_path, local_file_path, file_str=None, conten
         return url
     except Exception as e:
         print ('Unexpected error uploading log files to {}'
-               'Skipping upload. Got: {}'.format(remote_file_path, e))
+               'Skipping upload. Got: {}'.format(file_path, e))
 
 
 def set_log_dir():

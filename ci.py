@@ -192,6 +192,7 @@ def upload_files(log_dir, bucket):
 
 
 def upload_file(bucket, file_path, file_str=None, content_type='text/plain'):
+    print ('Uploading {}'.format(file_path))
     try:
         blob = bucket.blob(file_path)
         if file_str:
@@ -731,6 +732,8 @@ def print_env(pipeline, voting, to_print=True):
         'TRAVIS_PULL_REQUEST_BRANCH': os.environ.get('TRAVIS_PULL_REQUEST_BRANCH'),
         'TRAVIS_TAG': os.environ.get('TRAVIS_TAG'),
         'TRAVIS_COMMIT_MESSAGE': os.environ.get('TRAVIS_COMMIT_MESSAGE'),
+        'TRAVIS_BUILD_ID': os.environ.get('TRAVIS_BUILD_ID'),
+        'TRAVIS_JOB_NUMBER': os.environ.get('TRAVIS_JOB_NUMBER'),
 
         'CI_PIPELINE': pipeline,
         'CI_VOTING': voting }}

@@ -792,7 +792,7 @@ def main():
         else:
             print('%s is not voting, skipping failure' % pipeline)
     output_docker_ps()
-    output_docker_logs()
+    output_docker_logs(on_error=False)
     uploaded_files = upload_log_files()
     upload_manifest(pipeline, voting, uploaded_files, modules, files, tags)
 

@@ -501,8 +501,10 @@ def output_docker_logs():
 
         print ('Getting {} logs'.format(name))
         docker_logs = ['docker', 'logs', name]
-        with open(RUN_LOG_DIR + 'docker_' + name + '.log', 'wb') as out:
-            p = subprocess.Popen(docker_logs, stdout=out)
+        std_log_name = RUN_LOG_DIR + 'docker_log_' + name + '.log'
+        err_log_name = RUN_LOG_DIR + 'docker_err_' + name + '.log'
+        with open(std_log_name, 'w') as out, open(err_log_name, 'w') as err:
+            p = subprocess.Popen(docker_logs, stdout=out, stderr=err)
 
         signal.signal(signal.SIGINT, kill)
         if p.wait() != 0:
@@ -641,7 +643,7 @@ def run_docker_compose(pipeline):
                               '-f', CI_COMPOSE_FILE,
                               'up', '-d'] + services
 
-    with open(RUN_LOG_DIR + 'docker_compose.log', 'wb') as out:
+    with open(RUN_LOG_DIR + 'docker_compose.log', 'w') as out:
         p = subprocess.Popen(docker_compose_command, stdout=out)
 
     def kill(signal, frame):
@@ -685,7 +687,7 @@ def run_tempest_tests_metrics():
                          'KEYSTONE_PORT=5000', '--net', 'monascadocker_default',
                          'monasca/tempest-tests:latest']
 
-    with open(LOG_DIR + 'tempest_tests.log', 'wb') as out:
+    with open(LOG_DIR + 'tempest_tests.log', 'w') as out:
         p = subprocess.Popen(tempest_tests_run, stdout=out)
 
     def kill(signal, frame):

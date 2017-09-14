@@ -498,7 +498,6 @@ def output_docker_logs():
         if not name:
             continue
 
-        print ('Getting {} log'.format(name))
         docker_logs = ['docker', 'logs', name]
         log_name = RUN_LOG_DIR + 'docker_log_' + name + '.log'
         with open(log_name, 'w') as out:

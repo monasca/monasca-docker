@@ -169,6 +169,10 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
                 if 'init' not in module and 'init' not in f or 'init' in module and 'init' in f:
                     manifest_dict['modules'][module]['uploaded_log_file'][f] =  url
 
+    manifest_dict['run_logs'] = {}
+    for f, url in uploaded_files.iteritems():
+        if 'run' in f:
+            manifest_dict['run_logs'][f] = url
     manifest_dict['tags'] = tags
 
     file_path = LOG_DIR + 'manifest.json'
@@ -447,7 +451,7 @@ def handle_pull_request(files, modules, tags, pipeline):
     }
 
     cool_test_mapper['smoke'][pipeline]()
-    cool_test_mapper['tempest'][pipeline]()
+#    cool_test_mapper['tempest'][pipeline]()
 
 
 def get_current_init_status(docker_id):
@@ -493,6 +497,7 @@ def output_docker_logs():
         if not name:
             continue
 
+        print ('Getting {} log'.format(name))
         docker_logs = ['docker', 'logs', name]
         log_name = RUN_LOG_DIR + 'docker_log_' + name + '.log'
         with open(log_name, 'w') as out:

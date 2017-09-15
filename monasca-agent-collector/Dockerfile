@@ -1,4 +1,4 @@
-FROM monasca/agent-base:master-20170811-213513
+FROM monasca/agent-base:master-20170901-210328
 
 ARG AGENT_USER="mon-agent"
 

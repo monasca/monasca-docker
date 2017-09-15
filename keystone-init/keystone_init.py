@@ -364,9 +364,8 @@ def get_or_create_endpoint(client, service, url, interface, region):
         _endpoint_cache.extend(client.endpoints.list())
 
     logger.debug('existing endpoints %r', _endpoint_cache)
-    all_endpoints = client.endpoints.list()
-    # endpoints = filter(lambda ep: ep.service_id == service.id, _endpoint_cache)
-    endpoints = filter(lambda ep: ep.service_id == service.id, all_endpoints)
+
+    endpoints = filter(lambda ep: ep.service_id == service.id, _endpoint_cache)
     logger.debug('filtered endpoints %r', endpoints)
 
     interface_url = interface['url'] if 'url' in interface else url
@@ -387,9 +386,8 @@ def get_or_create_endpoint(client, service, url, interface, region):
                         region=region,
                     )
                     _endpoint_cache = [endpoint
-                                       if e.id == endpoint.id else x
+                                       if x.id == endpoint.id else x
                                        for x in _endpoint_cache]
-                    logger.debug('updated endpoint %r', endpoint)
                     return endpoint
 
     logger.info(

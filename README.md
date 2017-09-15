@@ -169,7 +169,7 @@ environment:
 In `kibana`:
 ```yaml
 environment:
-  KEYSTONE_URI: http://192.168.10.6/identity
+  KEYSTONE_URI: 192.168.10.6/identity
 ```
 
 In `log-api`:

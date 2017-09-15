@@ -56,6 +56,7 @@ run mkdir -p /var/lib/grafana && \
 
 copy grafana.ini.j2 /etc/grafana/grafana.ini.j2
 copy template.py start.sh /
+copy drilldown.js /var/lib/grafana/public/dashboards/drilldown.js
 run chmod +x /template.py /start.sh
 expose 3000
 

@@ -25,7 +25,9 @@ RUN git clone $KIBANA_PLUGIN_REPO --depth 1 --branch $KIBANA_PLUGIN_BRANCH monas
 FROM kibana:${KIBANA_VERSION}
 
 ENV KEYSTONE_URI=keystone:5000 \
-    MONASCA_PLUGIN_ENABLED=False
+    MONASCA_PLUGIN_ENABLED=False \
+    ELASTIC_SEARCH_URL=elasticsearch:9200 \
+    BASE_PATH=""
 
 WORKDIR /
 

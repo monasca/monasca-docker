@@ -24,7 +24,7 @@ else
 
         if [ "z$extra_deps" != "z" ]; then
             for extra in $extra_deps; do
-                pip install --no-cache-dir $extra -c $constraints
+                pip install --no-cache-dir "$extra" -c "$constraints"
             done
         else
             echo "No extra dependencies"
@@ -32,13 +32,13 @@ else
 
         if [ "z$extras" != "z" ]; then
             for extra in $extras; do
-                pip install --no-cache-dir .[${extra}] -c $constraints
+                pip install --no-cache-dir .["${extra}"] -c "$constraints"
             done
         else
             echo "No extras"
         fi
 
-        pip install --no-cache-dir -r requirements.txt -c $constraints
+        pip install --no-cache-dir -r requirements.txt -c "$constraints"
         python setup.py install
     }
 fi
@@ -101,7 +101,7 @@ EXTRA_DEPS="${EXTRA_DEPS:-""}"
 
 echo "Installing APK Dependencies" && install_apk_deps
 mkdir -p /app
-cd /app
+cd /app || exit
 
 # actual build happens here
 cat << EOF
@@ -115,7 +115,7 @@ echo "Cloning ${REPO}@${BRANCH}" && clone "${REPO}" "${BRANCH}"
 echo "Installing ${REPO}" && install "${CONSTRAINTS}" "${EXTRAS}" "${EXTRA_DEPS}"
 # end of actual build
 
-cd -
+cd - || exit
 rm -rf /install.sh /clone.sh /install_apk_deps.sh /app /root/.cache/pip
 
 apk del build-dep

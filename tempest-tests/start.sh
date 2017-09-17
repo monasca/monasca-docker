@@ -36,7 +36,7 @@ if [ "$MONASCA_WAIT_FOR_API" = "true" ]; then
   echo "Waiting for Monasca API to become available..."
   success="false"
 
-  for i in $(seq $MONASCA_API_WAIT_RETRIES); do
+  for i in $(seq "$MONASCA_API_WAIT_RETRIES"); do
     monasca --os-user-domain-name "${OS_DOMAIN_NAME}" --os-project-name "${OS_TENANT_NAME}" \
        --os-auth-url "${AUTH_URI_V3}" --os-username "${OS_USERNAME}" \
        --os-password "${OS_PASSWORD}" alarm-list --limit 1
@@ -60,7 +60,7 @@ python template.py \
   /etc/tempest/tempest.conf.j2 \
   /etc/tempest/tempest.conf
 
-cd /monasca-api
+cd /monasca-api || exit
 export OS_TEST_PATH=./monasca_tempest_tests/tests/api
 
 if [ ! -r .testrepository ]; then

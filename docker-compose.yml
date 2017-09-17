@@ -31,6 +31,7 @@ services:
 
   agent-collector:
     image: monasca/agent-collector:${MON_AGENT_COLLECTOR_VERSION}
+    restart: on-failure
     environment:
       AGENT_HOSTNAME: "docker-host"
       FORWARDER_URL: "http://agent-forwarder:17123"

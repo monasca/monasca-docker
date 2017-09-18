@@ -11,13 +11,16 @@ arg MONASCA_APP_BRANCH=master
 # `docker build`
 arg REBUILD=1
 
-env GOPATH=/go GOBIN=/go/bin
+env GOPATH=/go GOBIN=/go/bin \
+    GRAFANA_ADMIN_USER=admin \
+    GRAFANA_ADMIN_PASSWORD=admin
 
 run mkdir -p /var/lib/grafana && \
   mkdir -p $GOPATH/src/github.com/grafana/grafana && \
   cd $GOPATH/src/github.com/grafana/grafana/ && \
   apk add --no-cache --virtual build-dep \
-    nodejs go git musl-dev python make g++ && \
+    nodejs go git musl-dev make g++ && \
+  apk add --no-cache python py-jinja2 && \
   git init && \
   git remote add origin $GRAFANA_REPO && \
   git fetch origin $GRAFANA_BRANCH && \
@@ -51,10 +54,13 @@ run mkdir -p /var/lib/grafana && \
   rm -f /go/bin/govendor && \
   rm -rf /go/pkg
 
-copy grafana.ini /etc/grafana/grafana.ini
+copy grafana.ini.j2 /etc/grafana/grafana.ini.j2
+copy template.py start.sh /
+copy drilldown.js /var/lib/grafana/public/dashboards/drilldown.js
+run chmod +x /template.py /start.sh
 expose 3000
 
 healthcheck --interval=10s --timeout=5s \
   cmd wget -q http://localhost:3000 -O - > /dev/null
 
-cmd ["/go/bin/grafana-server", "-config", "/etc/grafana/grafana.ini", "-homepath", "/var/lib/grafana"]
+cmd ["/start.sh"]

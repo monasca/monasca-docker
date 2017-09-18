@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 #
@@ -26,14 +27,16 @@ from itertools import ifilter
 
 import yaml
 
-from keystoneauth1.exceptions import RetriableConnectionFailure, NotFound
+from keystoneauth1.exceptions import NotFound
+from keystoneauth1.exceptions import RetriableConnectionFailure
 from keystoneauth1.identity import Password
 from keystoneauth1.session import Session
 from keystoneclient.discover import Discover
 from requests import HTTPError
 from requests import RequestException
 
-from kubernetes import KubernetesAPIClient, KubernetesAPIResponse
+from kubernetes import KubernetesAPIClient
+from kubernetes import KubernetesAPIResponse
 
 PASSWORD_CHARACTERS = string.ascii_letters + string.digits
 KEYSTONE_PASSWORD_ARGS = [
@@ -267,7 +270,8 @@ def get_or_create_role(client, domain, name):
 
     global_role = first(lambda r: r.name == name, _global_role_cache)
     if global_role:
-        logger.info('found existing global role: name=%s id=%s', global_role.name, global_role.id)
+        logger.info('found existing global role: name=%s id=%s',
+                    global_role.name, global_role.id)
         return global_role
 
     cache = _role_cache[domain.id]
@@ -444,8 +448,8 @@ def get_kubernetes_secret(name, namespace=None):
 
     try:
         return client.get('/api/v1/namespaces/{}/secrets/{}', namespace, name)
-    except HTTPError as e:
-        if e.response.status_code != 404:
+    except HTTPError as err:
+        if err.response.status_code != 404:
             raise
 
         return None
@@ -490,10 +494,10 @@ def create_kubernetes_secret(fields, name, namespace=None, replace=False):
                     name, namespace)
         return client.request('PUT', '/api/v1/namespaces/{}/secrets/{}',
                               namespace, name, json=secret)
-    else:
-        logger.info('creating secret "%s" in namespace "%s"', name, namespace)
-        return client.post('/api/v1/namespaces/{}/secrets',
-                           namespace, json=secret)
+
+    logger.info('creating secret "%s" in namespace "%s"', name, namespace)
+    return client.post('/api/v1/namespaces/{}/secrets',
+                       namespace, json=secret)
 
 
 def diff_kubernetes_secret(secret, desired_fields):
@@ -527,8 +531,8 @@ def parse_secret(secret):
         if '/' in secret:
             namespace, name = secret.split('/', 1)
             return namespace, name
-        else:
-            return None, secret
+
+        return None, secret
 
     return secret['namespace'], secret['name']
 
@@ -542,8 +546,8 @@ def get_password(secret):
     if 'OS_PASSWORD' not in secret.data:
         # probably not recoverable, short of deleting the existing
         # secret and re-creating (which would be awful in its own way)
-        raise KeystoneInitException('existing secret %s is '
-                                    'invalid' % secret.metadata.name)
+        raise KeystoneInitException('existing secret {} is '
+                                    'invalid'.format(secret.metadata.name))
 
     pass_bytes = base64.b64decode(secret.data['OS_PASSWORD'])
     return pass_bytes.decode('utf-8')

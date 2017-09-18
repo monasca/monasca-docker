@@ -3,3 +3,4 @@ variants:
   - tag: 1.1.2
     aliases:
       - :latest
+  - tag: 1.1.1

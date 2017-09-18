@@ -18,9 +18,11 @@
 from __future__ import print_function
 
 import datetime
+import gzip
 import json
 import os
 import re
+import shutil
 import signal
 import subprocess
 import sys
@@ -93,6 +95,7 @@ LOG_DIR = 'monasca-docker/' + \
 BUILD_LOG_DIR = LOG_DIR + 'build/'
 RUN_LOG_DIR = LOG_DIR + 'run/'
 LOG_DIRS = [LOG_DIR, BUILD_LOG_DIR, RUN_LOG_DIR]
+MAX_RAW_LOG_SIZE = 1024L  # 1KiB
 
 
 class SubprocessException(Exception):
@@ -186,7 +189,13 @@ def upload_files(log_dir, bucket):
     for f in os.listdir(log_dir):
         file_path = log_dir + f
         if os.path.isfile(file_path):
-            url = upload_file(bucket, file_path)
+            if os.stat(file_path).st_size > MAX_RAW_LOG_SIZE:
+                with gzip.open(log_path + '.gz', 'wb')as f_out, open(file_path, 'rb') as f_in:
+                    shutil.copyfileobj(f_in, f_out)
+                log_path += '.gz'
+                url = upload_file(bucket, file_path, content_type='application/gzip')
+            else:
+                url = upload_file(bucket, file_path)
             uploaded_files[file_path] = url
     return uploaded_files
 
@@ -405,7 +414,7 @@ def update_docker_compose(modules, pipeline):
     compose_dict['version'] = '2'
 
     try:
-        with open(CI_COMPOSE_FILE, 'w') as docker_compose:
+        with open(CI_COMPOSE_FILE, 'wb') as docker_compose:
             yaml.dump(compose_dict, docker_compose, default_flow_style=False)
     except:
         raise FileWriteException(
@@ -501,9 +510,9 @@ def output_docker_logs():
         if not name:
             continue
 
-        docker_logs = ['docker', 'logs', name]
+        docker_logs = ['docker', 'logs', '-t', name]
         log_name = RUN_LOG_DIR + 'docker_log_' + name + '.log'
-        with open(log_name, 'w') as out:
+        with open(log_name, 'wb') as out:
             p = subprocess.Popen(docker_logs, stdout=out,
                                  stderr=subprocess.STDOUT)
         signal.signal(signal.SIGINT, kill)
@@ -643,7 +652,7 @@ def run_docker_compose(pipeline):
                               '-f', CI_COMPOSE_FILE,
                               'up', '-d'] + services
 
-    with open(RUN_LOG_DIR + 'docker_compose.log', 'w') as out:
+    with open(RUN_LOG_DIR + 'docker_compose.log', 'wb') as out:
         p = subprocess.Popen(docker_compose_command, stdout=out)
 
     def kill(signal, frame):
@@ -687,7 +696,7 @@ def run_tempest_tests_metrics():
                          'KEYSTONE_PORT=5000', '--net', 'monascadocker_default',
                          'monasca/tempest-tests:latest']
 
-    with open(LOG_DIR + 'tempest_tests.log', 'w') as out:
+    with open(LOG_DIR + 'tempest_tests.log', 'wb') as out:
         p = subprocess.Popen(tempest_tests_run, stdout=out)
 
     def kill(signal, frame):

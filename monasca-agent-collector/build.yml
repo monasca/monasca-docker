@@ -4,4 +4,4 @@ variants:
     aliases:
       - :master-{date}-{time}
     args:
-      MON_AGENT_BASE_VERSION: master-20170901-210328
+      MON_AGENT_BASE_VERSION: master-20170918-171757

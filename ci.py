@@ -190,9 +190,9 @@ def upload_files(log_dir, bucket):
         file_path = log_dir + f
         if os.path.isfile(file_path):
             if os.stat(file_path).st_size > MAX_RAW_LOG_SIZE:
-                with gzip.open(log_path + '.gz', 'wb')as f_out, open(file_path, 'rb') as f_in:
+                with gzip.open(file_path + '.gz', 'wb')as f_out, open(file_path, 'rb') as f_in:
                     shutil.copyfileobj(f_in, f_out)
-                log_path += '.gz'
+                file_path += '.gz'
                 url = upload_file(bucket, file_path, content_type='application/gzip')
             else:
                 url = upload_file(bucket, file_path)

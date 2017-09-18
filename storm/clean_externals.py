@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 #
@@ -34,17 +35,18 @@ def main():
 
     invalid = keep.difference(externals)
     if not keep.issubset(externals):
-        print('Invalid values for KEEP_EXTERNALS: %r' % invalid,
-              file=sys.stderr)
+        print('Invalid values for KEEP_EXTERNALS: {!r}'
+              .format(invalid, file=sys.stderr))
         sys.exit(1)
 
     externals.difference_update()
 
     remove = externals.difference(keep)
     for ext in remove:
-        p = os.path.join(EXTERNAL_PATH, ext)
-        print('Removing: %s' % p)
-        shutil.rmtree(p, ignore_errors=True)
+        ext_path = os.path.join(EXTERNAL_PATH, ext)
+        print('Removing: {}'.format(ext_path))
+        shutil.rmtree(ext_path, ignore_errors=True)
+
 
 if __name__ == '__main__':
     main()

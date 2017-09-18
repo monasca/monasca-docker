@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding=utf-8
 
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 #
@@ -32,12 +31,8 @@ def main():
     out_path = sys.argv[2]
 
     with open(in_path, 'r') as in_file, open(out_path, 'w') as out_file:
-        tmle = Template(in_file.read(),
-                        keep_trailing_newline=True,
-                        lstrip_blocks=True,
-                        trim_blocks=True)
-        out_file.write(tmle.render(os.environ))
-
+        t = Template(in_file.read())
+        out_file.write(t.render(os.environ))
 
 if __name__ == '__main__':
     main()

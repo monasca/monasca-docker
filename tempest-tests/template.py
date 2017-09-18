@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 #
@@ -13,6 +14,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+
 from __future__ import print_function
 
 import os
@@ -30,8 +32,9 @@ def main():
     out_path = sys.argv[2]
 
     with open(in_path, 'r') as in_file, open(out_path, 'w') as out_file:
-        t = Template(in_file.read())
-        out_file.write(t.render(os.environ))
+        tmt = Template(in_file.read())
+        out_file.write(tmt.render(os.environ))
+
 
 if __name__ == '__main__':
     main()

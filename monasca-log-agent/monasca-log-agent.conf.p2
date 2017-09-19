@@ -1,0 +1,22 @@
+input {
+  gelf {}
+}
+
+output {
+  monasca_log_api {
+    ### Keystone settings
+    keystone_api_url => "http://{{ KEYSTONE_HOST }}:35357/v3"
+    project_name => "mini-mon"
+    username => "monasca-agent"
+    password => "password"
+    user_domain_name => "default"
+    project_domain_name => "default"
+    ### Monasca settings
+    monasca_log_api_url => "http://log-api:5607/v3.0"
+    num_of_logs => 125
+    delay => 10
+    elapsed_time_sec => 30
+    max_data_size_kb => 5120
+    dimensions => ["service:monitoring"]
+  }
+}

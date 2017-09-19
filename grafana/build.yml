@@ -2,7 +2,7 @@ repository: monasca/grafana
 variants:
   - tag: latest
     aliases:
-      - :4.0.0-1.1.1
+      - :4.0.0-1.1.2
   - tag: app
     aliases:
       - :4.0.0-1.2.0-app

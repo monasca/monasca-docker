@@ -8,7 +8,7 @@ if [ -n "$MONASCA_WAIT_FOR_API" ]; then
   echo "Waiting for Monasca API to become available..."
   success="false"
 
-  for i in $(seq $MONASCA_API_WAIT_RETRIES); do
+  for i in $(seq "$MONASCA_API_WAIT_RETRIES"); do
     monasca alarm-definition-list --limit 1
     if [ $? -eq 0 ]; then
       success="true"
@@ -29,4 +29,4 @@ fi
 echo "Loading Definitions...."
 
 python /template.py /config/definitions.yml.j2 /config/definitions.yml
-python monasca_alarm_definition.py --verbose --definitions-file /config/definitions.yml 
+python monasca_alarm_definition.py --verbose --definitions-file /config/definitions.yml

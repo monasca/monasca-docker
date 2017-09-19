@@ -14,7 +14,7 @@ KAFKA_WAIT_DELAY=${KAFKA_WAIT_DELAY:-"5"}
 if [ "$MYSQL_WAIT_RETRIES" != "0" ]; then
   echo "Waiting for MySQL to become available..."
   success="false"
-  for i in $(seq $MYSQL_WAIT_RETRIES); do
+  for i in $(seq "$MYSQL_WAIT_RETRIES"); do
     mysqladmin status \
         --host="$MYSQL_HOST" \
         --user="$MYSQL_USER" \
@@ -41,7 +41,7 @@ if [ -n "$KAFKA_WAIT_FOR_TOPICS" ]; then
   echo "Waiting for Kafka topics to become available..."
   success="false"
 
-  for i in $(seq $KAFKA_WAIT_RETRIES); do
+  for i in $(seq "$KAFKA_WAIT_RETRIES"); do
     python /kafka_wait_for_topics.py
     if [ $? -eq 0 ]; then
       success="true"
@@ -89,7 +89,7 @@ gunicorn --capture-output \
   -n monasca-api \
   --worker-class="$GUNICORN_WORKER_CLASS" \
   --worker-connections="$GUNICORN_WORKER_CONNECTIONS" \
-  --backlog=$GUNICORN_BACKLOG \
+  --backlog="$GUNICORN_BACKLOG" \
   $access_arg \
   --access-logformat "$ACCESS_LOG_FIELDS" \
   --paste /etc/monasca/api-config.ini \

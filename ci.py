@@ -75,11 +75,11 @@ INIT_JOBS = {
 }
 
 METRIC_PIPELINE_SERVICES = METRIC_PIPELINE_MODULE_TO_COMPOSE_SERVICES.values()
-"""Explicit list of services for docker compose 
+"""Explicit list of services for docker compose
 to launch for metrics pipeline"""
 LOG_PIPELINE_SERVICES = (['kafka', 'keystone'] +
                          LOGS_PIPELINE_MODULE_TO_COMPOSE_SERVICES.values())
-"""Explicit list of services for docker compose 
+"""Explicit list of services for docker compose
 to launch for logs pipeline"""
 
 PIPELINE_TO_YAML_COMPOSE = {
@@ -446,12 +446,17 @@ def handle_pull_request(files, modules, tags, pipeline):
 
             modules_to_build.append(arg)
 
-    if modules:
-        run_build(modules_to_build)
+    # note(kornicameister) check if module belong to the pipeline
+    # if not, there's no point of building that as it will be build
+    # for the given pipeline
+    pipeline_modules = pick_modules_for_pipeline(modules_to_build, pipeline)
+
+    if pipeline_modules:
+        run_build(pipeline_modules)
     else:
         print('No modules to build.')
 
-    update_docker_compose(modules, pipeline)
+    update_docker_compose(pipeline_modules, pipeline)
     run_docker_compose(pipeline)
     wait_for_init_jobs(pipeline)
 
@@ -468,6 +473,27 @@ def handle_pull_request(files, modules, tags, pipeline):
 
     cool_test_mapper['smoke'][pipeline]()
     cool_test_mapper['tempest'][pipeline]()
+
+
+def pick_modules_for_pipeline(modules, pipeline):
+    if not modules:
+        return []
+
+    modules_for_pipeline = {
+        LOG_PIPELINE_MARKER: LOGS_PIPELINE_MODULE_TO_COMPOSE_SERVICES.keys(),
+        METRIC_PIPELINE_MARKER: METRIC_PIPELINE_MODULE_TO_COMPOSE_SERVICES.keys()
+    }
+    common_modules = ('kafka-init', 'keystone-init')
+
+    pipeline_modules = modules_for_pipeline[pipeline]
+    for m in pipeline_modules:
+        if m not in modules or m not in common_modules:
+            print('Module %s belongs neither to %s nor %s pipeline' % (
+                m, LOG_PIPELINE_MARKER, METRIC_PIPELINE_MARKER
+            ))
+            modules.remove(m)
+
+    return modules
 
 
 def get_current_init_status(docker_id):

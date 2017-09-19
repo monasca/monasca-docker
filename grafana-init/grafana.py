@@ -28,7 +28,9 @@ logging.basicConfig(level=LOG_LEVEL)
 logger = logging.getLogger(__name__)
 
 GRAFANA_URL = os.environ.get('GRAFANA_URL', 'http://grafana:3000')
-MINI_MON_USER = {'user': 'mini-mon', 'password': 'password', 'email': ''}
+GRAFANA_USERNAME = os.environ.get('GRAFANA_USERNAME', 'mini-mon')
+GRAFANA_PASSWORD = os.environ.get('GRAFANA_PASSWORD', 'password')
+GRAFANA_USERS = [{'user': GRAFANA_USERNAME, 'password': GRAFANA_PASSWORD, 'email': ''}]
 
 DATASOURCE_NAME = os.environ.get('DATASOURCE_NAME', 'monasca')
 DATASOURCE_URL = os.environ.get('DATASOURCE_URL', 'http://monasca:8070/')
@@ -65,7 +67,7 @@ def create_login_payload():
             raise
         grafana_users = json.loads(os.environ.get('GRAFANA_USERS'))
     else:
-        grafana_users = [MINI_MON_USER]
+        grafana_users = GRAFANA_USERS
     return grafana_users
 
 @retry(retries=24, delay=5.0)
@@ -144,10 +146,10 @@ def main():
             logging.debug('Response: %r', r.json())
             r.raise_for_status()
 
-        logging.info('Ending session...')
+        logging.info('Ending %r session...', user.get('user'))
         session.get('{url}/logout'.format(url=GRAFANA_URL))
 
-        logging.info('Finished successfully.')
+    logging.info('Finished successfully.')
 
 if __name__ == '__main__':
     main()

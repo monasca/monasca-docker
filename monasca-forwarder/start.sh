@@ -8,7 +8,7 @@ if [ -n "$KAFKA_WAIT_FOR_TOPICS" ]; then
   echo "Waiting for Kafka topics to become available..."
   success="false"
 
-  for i in $(seq $KAFKA_WAIT_RETRIES); do
+  for i in $(seq "$KAFKA_WAIT_RETRIES"); do
     python /kafka_wait_for_topics.py
     if [ $? -eq 0 ]; then
       success="true"

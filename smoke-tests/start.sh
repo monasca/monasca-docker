@@ -10,6 +10,7 @@ export OS_DOMAIN_NAME=${OS_DOMAIN_NAME:-"Default"}
 export OS_AUTH_URL=${OS_AUTH_URL:-"http://keystone:35357/v3"}
 export MONASCA_URL=${MONASCA_URL:-"http://monasca-api:8070"}
 
-export WEBHOOK_IP=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
+export WEBHOOK_IP
+WEBHOOK_IP=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
 
 /smoke-test

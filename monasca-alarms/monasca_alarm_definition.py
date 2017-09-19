@@ -1,5 +1,6 @@
 #!/usr/bin/python
-#
+# coding=utf-8
+
 # (c) Copyright 2017 Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -14,10 +15,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
+
 from __future__ import print_function
 '''
-Loads Notifications and Alarm Definitions into Monasca. These are configured via a yaml file which contains two
-sections: notifications and alarm_definitions. Within the sections are the notifications and alarm definitions to be
+Loads Notifications and Alarm Definitions into Monasca. These are configured
+via a yaml file which contains two sections:
+notifications and alarm_definitions.
+Within the sections are the notifications and alarm definitions to be
 created, updated or deleted.
 
 For the possible arguments, see the argument parser definition.
@@ -152,8 +156,9 @@ except ImportError:
 else:
     monascaclient_found = True
 
+
 class MonascaLoadDefinitions(object):
-    """ Loads Notifications and Alarm Definitions into Monasca
+    """Loads Notifications and Alarm Definitions into Monasca
     """
     def __init__(self, args):
         self._args = args
@@ -162,13 +167,13 @@ class MonascaLoadDefinitions(object):
         self._verbose = args['verbose']
 
     def _keystone_auth(self):
-        """ Authenticate to Keystone and set self._token and self._api_url
+        """Authenticate to Keystone and set self._token and self._api_url
         """
         if not self._args['keystone_token']:
             try:
                 ks = ksclient.KSClient(**self._args)
-            except Exception, e:
-                raise Exception('Keystone KSClient Exception: %s' % e)
+            except Exception as err:
+                raise Exception('Keystone KSClient Exception: {}'.format(err))
 
             self._token = ks.token
             if not self._args['monasca_api_url']:
@@ -177,7 +182,8 @@ class MonascaLoadDefinitions(object):
                 self._api_url = self._args['monasca_api_url']
         else:
             if self._args['monasca_api_url'] is None:
-                raise Exception('Error: When specifying keystone_token, monasca_api_url is required')
+                raise Exception('Error: When specifying keystone_token, '
+                                'monasca_api_url is required')
             self._token = self._args['keystone_token']
             self._api_url = self._args['monasca_api_url']
 
@@ -195,7 +201,8 @@ class MonascaLoadDefinitions(object):
             with open(data_file) as f:
                 yaml_text = f.read()
         except IOError:
-            raise Exception('Unable to open yaml alarm definitions: %s' % data_file)
+            raise Exception('Unable to open yaml alarm definitions: {}'
+                            .format(data_file))
 
         yaml_data = yaml.safe_load(yaml_text)
 
@@ -203,17 +210,21 @@ class MonascaLoadDefinitions(object):
         self._monasca = client.Client(self._args['api_version'], self._api_url, token=self._token)
         self._print_message('Using Monasca at {}'.format(self._api_url))
         if 'notifications' not in yaml_data:
-            raise Exception('No notifications section in %s' % data_file)
+            raise Exception('No notifications section in {}'.format(data_file))
 
         (processed, changed, notification_ids) = self._do_notifications(yaml_data['notifications'])
-        self._print_message('%d Notifications Processed %d Notifications Changed' % (processed, changed))
+        self._print_message(
+            '{:d} Notifications Processed {:d} Notifications Changed'
+            .format(processed, changed))
 
         if 'alarm_definitions' not in yaml_data:
-            raise Exception('No alarm_definitions section in %s' % data_file)
+            raise Exception('No alarm_definitions section in {}'
+                            .format(data_file))
 
         (processed, changed) = self.do_alarm_definitions(yaml_data['alarm_definitions'], notification_ids)
-        self._print_message('%d Alarm Definitions Processed %d Alarm Definitions Changed' % (processed, changed))
-
+        self._print_message(
+            '{:d} Alarm Definitions Processed {:d} Alarm Definitions Changed'
+            .format(processed, changed))
 
     def _do_notifications(self, notifications):
         processed = 0
@@ -321,13 +332,13 @@ class MonascaLoadDefinitions(object):
             else:
                 raise Exception(str(resp.status_code) + resp.text)
         else:  # Only other option is state=present
-            
+
             alarm_actions = self._map_notifications(definition.get('alarm_actions', []), notification_ids)
             ok_actions = self._map_notifications(definition.get('ok_actions', []), notification_ids)
             undetermined_actions = self._map_notifications(definition.get('undetermined_actions', []), notification_ids)
             def_kwargs = {'name': name, 'description': definition.get('description', ''), 'expression': expression,
                           'match_by': definition.get('match_by', []), 'severity': definition.get('severity', 'LOW').upper(),
-                          'alarm_actions': alarm_actions,'ok_actions': ok_actions,
+                          'alarm_actions': alarm_actions, 'ok_actions': ok_actions,
                           'undetermined_actions': undetermined_actions}
 
             if name in definitions.keys():
@@ -359,10 +370,11 @@ class MonascaLoadDefinitions(object):
             else:
                 raise Exception(body)
 
+
 def _get_parser():
     parser = argparse.ArgumentParser(
         prog='monasca_alarm_definition',
-        #description=__doc__.strip(),
+        # description=__doc__.strip(),
         add_help=False,
         # formatter_class=HelpFormatter,
         formatter_class=lambda prog: argparse.HelpFormatter(
@@ -514,17 +526,19 @@ def _get_parser():
 
     return parser
 
+
 def _env(*vars, **kwargs):
     """Search for the first defined of possibly many env vars
 
     Returns the first environment variable defined in vars, or
     returns the default defined in kwargs.
     """
-    for v in vars:
-        value = os.environ.get(v)
+    for var in vars:
+        value = os.environ.get(var)
         if value:
             return value
     return kwargs.get('default', '')
+
 
 def main(args=None):
     if args is None:
@@ -539,15 +553,15 @@ def main(args=None):
 
     if not args.os_username and not args.os_auth_token:
         raise Exception("You must provide a username via"
-                               " either --os-username or env[OS_USERNAME]"
-                               " or a token via --os-auth-token or"
-                               " env[OS_AUTH_TOKEN]")
+                        " either --os-username or env[OS_USERNAME]"
+                        " or a token via --os-auth-token or"
+                        " env[OS_AUTH_TOKEN]")
 
     if not args.os_password and not args.os_auth_token:
         raise Exception("You must provide a password via"
-                               " either --os-password or env[OS_PASSWORD]"
-                               " or a token via --os-auth-token or"
-                               " env[OS_AUTH_TOKEN]")
+                        " either --os-password or env[OS_PASSWORD]"
+                        " or a token via --os-auth-token or"
+                        " env[OS_AUTH_TOKEN]")
 
     kwargs = {
         'username': args.os_username,
@@ -577,6 +591,7 @@ def main(args=None):
     definition = MonascaLoadDefinitions(kwargs)
 
     definition.run(args.definitions_file)
+
 
 if __name__ == "__main__":
     main()

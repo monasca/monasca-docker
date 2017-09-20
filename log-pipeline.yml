@@ -72,3 +72,15 @@ services:
       - memcached
     ports:
       - "5607:5607"
+
+  log-agent:
+    image: monasca/log-agent:${MON_LOG_AGENT_VERSION}
+    depends_on:
+      - log-api
+      - keystone
+    ports:
+      - "5610:5610"
+  logspout:
+    image: monasca/logspout:${MON_LOGSPOUT_VERSION}
+    depends_on:
+        - log-agent

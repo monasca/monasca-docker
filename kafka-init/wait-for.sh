@@ -54,12 +54,12 @@ wait_for_wrapper()
 {
     # In order to support SIGINT during timeout: http://unix.stackexchange.com/a/57692
     if [[ $QUIET -eq 1 ]]; then
-        timeout "$BUSYTIMEFLAG" "$TIMEOUT" $0 --quiet" --child --host="$HOST" --port="$PORT" --timeout="$TIMEOUT" &
+        timeout "$BUSYTIMEFLAG" "$TIMEOUT" "$0" --quiet --child --host="$HOST" --port="$PORT" --timeout="$TIMEOUT" &
     else
-        timeout "$BUSYTIMEFLAG" "$TIMEOUT" $0 --child --host="$HOST" --port="$PORT" --timeout="$TIMEOUT" &
+        timeout "$BUSYTIMEFLAG" "$TIMEOUT" "$0" --child --host="$HOST" --port="$PORT" --timeout="$TIMEOUT" &
     fi
     PID=$!
-    trap "kill -INT -$PID" INT
+    trap 'kill -INT -$PID' INT
     wait $PID
     RESULT=$?
     if [[ $RESULT -ne 0 ]]; then
@@ -144,7 +144,7 @@ QUIET=${QUIET:-0}
 
 # check to see if timeout is from busybox?
 # check to see if timeout is from busybox?
-TIMEOUT_PATH=$(realpath $(which timeout))
+TIMEOUT_PATH=$(realpath "$(which timeout)")
 if [[ $TIMEOUT_PATH =~ "busybox" ]]; then
         ISBUSY=1
         BUSYTIMEFLAG="-t"

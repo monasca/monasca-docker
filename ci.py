@@ -483,13 +483,17 @@ def pick_modules_for_pipeline(modules, pipeline):
         LOG_PIPELINE_MARKER: LOGS_PIPELINE_MODULE_TO_COMPOSE_SERVICES.keys(),
         METRIC_PIPELINE_MARKER: METRIC_PIPELINE_MODULE_TO_COMPOSE_SERVICES.keys()
     }
-    common_modules = ('kafka-init', 'keystone-init')
 
     pipeline_modules = modules_for_pipeline[pipeline]
-    for m in pipeline_modules:
-        if m not in modules or m not in common_modules:
-            print('Module %s belongs neither to %s nor %s pipeline' % (
-                m, LOG_PIPELINE_MARKER, METRIC_PIPELINE_MARKER
+    print('modules: %s \n pipeline_modules: %s' % (modules, pipeline_modules))
+
+    # iterate over copy of all modules that are planned for the build
+    # if one of them does not belong to active pipeline
+    # remove from current run
+    for m in modules[::]:
+        if m not in pipeline_modules:
+            print('Module %s does not belong to %s, skipping' % (
+                m, pipeline
             ))
             modules.remove(m)
 
@@ -735,7 +739,7 @@ def run_tempest_tests_metrics():
         sys.exit(1)
 
     signal.signal(signal.SIGINT, kill)
-    time_delta = 0    
+    time_delta = 0
     while(True):
         poll = p.poll()
         if poll is None:

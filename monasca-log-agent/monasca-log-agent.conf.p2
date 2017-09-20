@@ -1,18 +1,29 @@
 input {
-  gelf {}
+  udp {
+      port => {{ LOGSTASH_INPUT_PORT }}
+      codec => {{ LOGSTASH_INPUT_CODEC }}
+  }
+  tcp {
+      port => {{ LOGSTASH_INPUT_PORT }}
+      codec => {{ LOGSTASH_INPUT_CODEC }}
+  }
 }
 
 output {
+  # TODO(matrixik): remove debug
+  stdout {
+    codec => rubydebug
+  }
   monasca_log_api {
     ### Keystone settings
-    keystone_api_url => "http://{{ KEYSTONE_HOST }}:35357/v3"
-    project_name => "mini-mon"
-    username => "monasca-agent"
-    password => "password"
-    user_domain_name => "default"
-    project_domain_name => "default"
+    keystone_api_url => "{{ OS_AUTH_URL }}"
+    username => "{{ OS_USERNAME }}"
+    password => "{{ OS_PASSWORD }}"
+    user_domain_name => "{{ OS_USER_DOMAIN_NAME }}"
+    project_name => "{{ OS_PROJECT_NAME }}"
+    project_domain_name => "{{ OS_PROJECT_DOMAIN_NAME }}"
     ### Monasca settings
-    monasca_log_api_url => "http://log-api:5607/v3.0"
+    monasca_log_api_url => "{{ MONASCA_LOG_API_URL }}"
     num_of_logs => 125
     delay => 10
     elapsed_time_sec => 30

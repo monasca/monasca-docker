@@ -27,6 +27,32 @@ if [ "$success" != "true" ]; then
   exit 1
 fi
 
+KEYSTONE_WAIT_RETRIES=${KEYSTONE_WAIT_RETRIES:-"24"}
+KEYSTONE_WAIT_DELAY=${KEYSTONE_WAIT_DELAY:-"5"}
+
+if [ -n "$MONASCA_WAIT_FOR_KEYSTONE" ]; then
+  echo "Waiting for Keystone to become available..."
+  success="false"
+
+  for i in $(seq "$KEYSTONE_WAIT_RETRIES"); do
+    curl --silent --show-error --output - \
+      $OS_AUTH_URL 2>&1
+    if [ $? -eq 0 ]; then
+      success="true"
+      break
+    else
+      echo "Keystone not yet ready (attempt $i of $KEYSTONE_WAIT_RETRIES)"
+      sleep "$KEYSTONE_WAIT_DELAY"
+    fi
+  done
+fi
+
+if [ "$success" != "true" ]; then
+  echo "Keystone failed to become ready, exiting..."
+  sleep 1
+  exit 1
+fi
+
 /p2 -t /monasca-log-agent.conf.p2 > /monasca-log-agent.conf
 
 logstash -f /monasca-log-agent.conf

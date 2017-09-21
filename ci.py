@@ -122,6 +122,16 @@ class SmokeTestFailedException(Exception):
     pass
 
 
+def print_logs():
+    for log_dir in LOG_DIRS:
+        for f in os.listdir(log_dir):
+            file_path = log_dir + f
+            if os.path.isfile(file_path):
+                with open(file_path, 'r') as f:
+                    log_contents = f.read()
+                    print(log_contents)
+
+
 def get_client():
     cred_dict_str = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS', None)
     if not cred_dict_str:
@@ -140,7 +150,7 @@ def upload_log_files():
     client = get_client()
     if not client:
         print ('Could not upload logs to GCP')
-        return
+        return print_logs()
     bucket = client.bucket('monasca-ci-logs')
 
     uploaded_files = {}
@@ -190,7 +200,7 @@ def upload_files(log_dir, bucket):
         file_path = log_dir + f
         if os.path.isfile(file_path):
             if os.stat(file_path).st_size > MAX_RAW_LOG_SIZE:
-                with gzip.open(file_path + '.gz', 'w') as f_out, open(file_path, 'rb') as f_in:
+                with gzip.open(file_path + '.gz', 'w') as f_out, open(file_path, 'r') as f_in:
                     shutil.copyfileobj(f_in, f_out)
                 file_path += '.gz'
                 url = upload_file(bucket, file_path, content_encoding='gzip')
@@ -221,6 +231,12 @@ def upload_file(bucket, file_path, file_str=None, content_type='text/plain',
     except Exception as e:
         print ('Unexpected error uploading log files to {}'
                'Skipping upload. Got: {}'.format(file_path, e))
+        if content_encoding == 'gzip'
+            f = gzip.open(file_path, 'r')
+        else:
+            f = open(file_path, 'r')
+        log_contents = f.read()
+        print(log_contents)
 
 
 def set_log_dir():

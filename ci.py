@@ -231,7 +231,7 @@ def upload_file(bucket, file_path, file_str=None, content_type='text/plain',
     except Exception as e:
         print ('Unexpected error uploading log files to {}'
                'Skipping upload. Got: {}'.format(file_path, e))
-        if content_encoding == 'gzip'
+        if content_encoding == 'gzip':
             f = gzip.open(file_path, 'r')
         else:
             f = open(file_path, 'r')

@@ -39,7 +39,7 @@ KEYSTONE_TOKEN=$(curl --include --silent --show-error --output - --header "Conte
             }'
     ) && \
 curl --include --silent --show-error --output - --header "X-Auth-Token:${KEYSTONE_TOKEN}" \
-    http://localhost:${MONASCA_CONTAINER_API_PORT} 2>&1 | \
+    http://localhost:"${MONASCA_CONTAINER_API_PORT}" 2>&1 | \
     awk '
         BEGIN {status_code="0"; body=""; output=""}
         $1 ~ /^HTTP\// {status_line=$0; status_code=$2}

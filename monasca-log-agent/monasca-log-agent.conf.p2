@@ -10,10 +10,6 @@ input {
 }
 
 output {
-  # TODO(matrixik): remove debug
-  stdout {
-    codec => rubydebug
-  }
   monasca_log_api {
     ### Keystone settings
     keystone_api_url => "{{ OS_AUTH_URL }}"

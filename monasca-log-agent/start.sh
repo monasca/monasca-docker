@@ -12,6 +12,7 @@ if [ -n "$MONASCA_WAIT_FOR_LOG_API" ]; then
     curl --silent --show-error --output - \
       http://log-api:"${MONASCA_CONTAINER_LOG_API_PORT}"/healthcheck 2>&1
     if [ $? -eq 0 ]; then
+      echo
       success="true"
       break
     else
@@ -35,9 +36,24 @@ if [ -n "$MONASCA_WAIT_FOR_KEYSTONE" ]; then
   success="false"
 
   for i in $(seq "$KEYSTONE_WAIT_RETRIES"); do
-    curl --silent --show-error --output - \
-      $OS_AUTH_URL 2>&1
+    curl --fail --silent --show-error --output - \
+      -H "Content-Type: application/json" \
+      -d '
+      { "auth": {
+          "identity": {
+            "methods": ["password"],
+            "password": {
+              "user": {
+                "name": "'$OS_USERNAME'",
+                "domain": { "id": "'$OS_USER_DOMAIN_NAME'" },
+                "password": "'$OS_PASSWORD'"
+              }
+            }
+          }
+        }
+      }' $OS_AUTH_URL/auth/tokens 2>&1
     if [ $? -eq 0 ]; then
+      echo
       success="true"
       break
     else
@@ -55,4 +71,5 @@ fi
 
 /p2 -t /monasca-log-agent.conf.p2 > /monasca-log-agent.conf
 
+echo "Starting Monasca log agent"
 logstash -f /monasca-log-agent.conf

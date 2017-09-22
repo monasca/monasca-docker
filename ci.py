@@ -237,6 +237,7 @@ def upload_file(bucket, file_path, file_str=None, content_type='text/plain',
             f = open(file_path, 'r')
         log_contents = f.read()
         print(log_contents)
+        f.close()
 
 
 def set_log_dir():

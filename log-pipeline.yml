@@ -75,6 +75,8 @@ services:
 
   log-agent:
     image: monasca/log-agent:${MON_LOG_AGENT_VERSION}
+    environment:
+      LOGSPOUT: ignore
     depends_on:
       - log-api
       - keystone
@@ -82,5 +84,7 @@ services:
       - "5610:5610"
   logspout:
     image: monasca/logspout:${MON_LOGSPOUT_VERSION}
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
     depends_on:
         - log-agent

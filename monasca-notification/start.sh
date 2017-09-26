@@ -9,7 +9,7 @@ KAFKA_WAIT_DELAY=${KAFKA_WAIT_DELAY:-"5"}
 
 echo "Waiting for MySQL to become available..."
 success="false"
-for i in $(seq $MYSQL_WAIT_RETRIES); do
+for i in $(seq "$MYSQL_WAIT_RETRIES"); do
   mysqladmin status \
       --host="$MYSQL_DB_HOST" \
       --port="$MYSQL_DB_PORT" \
@@ -36,7 +36,7 @@ if [ -n "$KAFKA_WAIT_FOR_TOPICS" ]; then
   echo "Waiting for Kafka topics to become available..."
   success="false"
 
-  for i in $(seq $KAFKA_WAIT_RETRIES); do
+  for i in $(seq "$KAFKA_WAIT_RETRIES"); do
     python /kafka_wait_for_topics.py
     if [ $? -eq 0 ]; then
       success="true"

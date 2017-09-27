@@ -1,3 +1,4 @@
+{% if KEYSTONE_DB_ENABLED | default ('true') | lower == 'true' -%}
 /*
  * (C) Copyright 2017 Hewlett Packard Enterprise Development LP
  *
@@ -20,3 +21,4 @@ CREATE DATABASE IF NOT EXISTS `keystone`;
 {% set keystone_pw = KEYSTONE_PASSWORD | default('keystone') %}
 
 GRANT ALL ON `keystone`.* TO '{{ keystone_user }}'@'%' IDENTIFIED BY '{{ keystone_pw }}';
+{%- endif %}

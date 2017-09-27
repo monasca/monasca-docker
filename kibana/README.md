@@ -24,6 +24,8 @@ Configuration
 |--------------------------------|-----------------|-----------------------------------|
 | `KEYSTONE_URI`                 | `keystone:5000` | An URI to Keystone Admin Endpoint |
 | `MONASCA_PLUGIN_ENABLED`       | `False`         | Should the plugin be enabled or disabled |
+| `ELASTIC_SEARCH_URL`           | `elasticsearch:9200` | An URL to Elasticsearch container |
+| `BASE_PATH`                    | `unset`              | Path to mount Kibana at if you are running behind a proxy |
 
 Usage
 -----

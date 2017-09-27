@@ -1,6 +1,8 @@
 Dockerfiles for Monasca
 =======================
 
+[![Build Status](https://travis-ci.org/monasca/monasca-docker.svg?branch=master)](https://travis-ci.org/monasca/monasca-docker)
+
 This repository contains resources for building and deploying a full Monasca
 stack in Docker and Kubernetes environments.
 
@@ -167,7 +169,7 @@ environment:
 In `kibana`:
 ```yaml
 environment:
-  KEYSTONE_URI: http://192.168.10.6/identity
+  KEYSTONE_URI: 192.168.10.6/identity
 ```
 
 In `log-api`:
@@ -177,6 +179,18 @@ environment:
   KEYSTONE_IDENTITY_URI: http://192.168.10.6/identity
   KEYSTONE_ADMIN_USER: admin
   KEYSTONE_ADMIN_PASSWORD: secretadmin
+```
+
+Synchronizing containers time with host time
+--------------------------------------------
+
+If you want to synchronize containers time with host time they are running on,
+you need to add to every service following volumes:
+
+```yaml
+volumes:
+  - "/etc/timezone:/etc/timezone:ro"
+  - "/etc/localtime:/etc/localtime:ro"
 ```
 
 [1]: https://docs.docker.com/compose/

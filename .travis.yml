@@ -4,7 +4,7 @@ services:
 language: python
 
 env:
-  - IGNORE_DOCKER_VERSION=true
+  - IGNORE_DOCKER_VERSION=true PYTHONUNBUFFERED=true
 
 before_install:
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -13,7 +13,13 @@ before_install:
   - sudo apt-get -y install docker-ce
   - pip install pip --upgrade
   - pip install git+https://github.com/timothyb89/dbuild.git
-
-script:
+  - pip install google-cloud-storage
   - docker --version
-  - python ci.py
+  - docker-compose --version
+
+jobs:
+  include:
+    - stage: metrics-pipeline
+      script: python ci.py metrics
+    - stage: logs-pipeline
+      script: python ci.py logs False

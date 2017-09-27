@@ -17,13 +17,22 @@
 
 from __future__ import print_function
 
+import datetime
+import gzip
+import json
 import os
 import re
+import shutil
 import signal
 import subprocess
 import sys
 import time
 import yaml
+
+import six
+from google.oauth2 import service_account
+from google.cloud import storage
+
 
 TAG_REGEX = re.compile(r'^!(\w+)(?:\s+([\w-]+))?$')
 
@@ -66,11 +75,11 @@ INIT_JOBS = {
 }
 
 METRIC_PIPELINE_SERVICES = METRIC_PIPELINE_MODULE_TO_COMPOSE_SERVICES.values()
-"""Explicit list of services for docker compose 
+"""Explicit list of services for docker compose
 to launch for metrics pipeline"""
 LOG_PIPELINE_SERVICES = (['kafka', 'keystone'] +
                          LOGS_PIPELINE_MODULE_TO_COMPOSE_SERVICES.values())
-"""Explicit list of services for docker compose 
+"""Explicit list of services for docker compose
 to launch for logs pipeline"""
 
 PIPELINE_TO_YAML_COMPOSE = {
@@ -79,6 +88,14 @@ PIPELINE_TO_YAML_COMPOSE = {
 }
 
 CI_COMPOSE_FILE = 'ci-compose.yml'
+
+LOG_DIR = 'monasca-docker/' + \
+          datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S') + \
+          '_monasca_logs/'
+BUILD_LOG_DIR = LOG_DIR + 'build/'
+RUN_LOG_DIR = LOG_DIR + 'run/'
+LOG_DIRS = [LOG_DIR, BUILD_LOG_DIR, RUN_LOG_DIR]
+MAX_RAW_LOG_SIZE = 1024L  # 1KiB
 
 
 class SubprocessException(Exception):
@@ -103,6 +120,133 @@ class TempestTestFailedException(Exception):
 
 class SmokeTestFailedException(Exception):
     pass
+
+
+def print_logs():
+    for log_dir in LOG_DIRS:
+        for f in os.listdir(log_dir):
+            file_path = log_dir + f
+            if os.path.isfile(file_path):
+                with open(file_path, 'r') as f:
+                    log_contents = f.read()
+                    print(log_contents)
+
+
+def get_client():
+    cred_dict_str = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS', None)
+    if not cred_dict_str:
+        return None
+
+    cred_dict = json.loads(cred_dict_str)
+    try:
+        credentials = service_account.Credentials.from_service_account_info(cred_dict)
+        return storage.Client(credentials=credentials, project='monasca-ci-logs')
+    except Exception as e:
+        print ('Unexpected error getting GCP credentials: {}'.format(e))
+        return None
+
+
+def upload_log_files():
+    client = get_client()
+    if not client:
+        print ('Could not upload logs to GCP')
+        return print_logs()
+    bucket = client.bucket('monasca-ci-logs')
+
+    uploaded_files = {}
+    for log_dir in LOG_DIRS:
+        uploaded_files.update(upload_files(log_dir, bucket))
+
+    return uploaded_files
+
+
+def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags):
+    client = get_client()
+    if not client:
+        print ('Could not upload logs to GCP')
+        return
+    bucket = client.bucket('monasca-ci-logs')
+
+    manifest_dict = print_env(pipeline, voting, to_print=False)
+    manifest_dict['modules'] = {}
+    for module in dirty_modules:
+        manifest_dict['modules'][module] =  {'files': []}
+        for f in files:
+            if module in f:
+                if 'init' not in module and 'init' not in f or 'init' in module and 'init' in f:
+                    manifest_dict['modules'][module]['files'].append(f)
+
+        manifest_dict['modules'][module]['uploaded_log_file'] = {}
+        for f, url in uploaded_files.iteritems():
+            if module in f:
+                if 'init' not in module and 'init' not in f or 'init' in module and 'init' in f:
+                    manifest_dict['modules'][module]['uploaded_log_file'][f] =  url
+
+    manifest_dict['run_logs'] = {}
+    for f, url in uploaded_files.iteritems():
+        if 'run' in f:
+            manifest_dict['run_logs'][f] = url
+    manifest_dict['tags'] = tags
+
+    file_path = LOG_DIR + 'manifest.json'
+    upload_file(bucket, file_path, file_str=json.dumps(manifest_dict, indent=2),
+                content_type='application/json')
+
+
+def upload_files(log_dir, bucket):
+    uploaded_files = {}
+    blob = bucket.blob(log_dir)
+    for f in os.listdir(log_dir):
+        file_path = log_dir + f
+        if os.path.isfile(file_path):
+            if os.stat(file_path).st_size > MAX_RAW_LOG_SIZE:
+                with gzip.open(file_path + '.gz', 'w') as f_out, open(file_path, 'r') as f_in:
+                    shutil.copyfileobj(f_in, f_out)
+                file_path += '.gz'
+                url = upload_file(bucket, file_path, content_encoding='gzip')
+            else:
+                url = upload_file(bucket, file_path)
+            uploaded_files[file_path] = url
+    return uploaded_files
+
+
+def upload_file(bucket, file_path, file_str=None, content_type='text/plain',
+                content_encoding=None):
+    try:
+        blob = bucket.blob(file_path)
+        if content_encoding:
+            blob.content_encoding = content_encoding
+        if file_str:
+            blob.upload_from_string(file_str, content_type=content_type)
+        else:
+            blob.upload_from_filename(file_path, content_type=content_type)
+        blob.make_public()
+
+        url = blob.public_url
+        if isinstance(url, six.binary_type):
+            url = url.decode('utf-8')
+
+        print ('Public url for log: {}'.format(url))
+        return url
+    except Exception as e:
+        print ('Unexpected error uploading log files to {}'
+               'Skipping upload. Got: {}'.format(file_path, e))
+        if content_encoding == 'gzip':
+            f = gzip.open(file_path, 'r')
+        else:
+            f = open(file_path, 'r')
+        log_contents = f.read()
+        print(log_contents)
+        f.close()
+
+
+def set_log_dir():
+    if not os.path.exists(LOG_DIR):
+        os.makedirs(LOG_DIR)
+    if not os.path.exists(BUILD_LOG_DIR):
+        os.makedirs(BUILD_LOG_DIR)
+    if not os.path.exists(RUN_LOG_DIR):
+        os.makedirs(RUN_LOG_DIR)
 
 
 def get_changed_files():
@@ -180,10 +324,11 @@ def get_dirty_for_module(files, module=None):
 
 
 def run_build(modules):
-    build_args = ['dbuild', '-sd', 'build', 'all', '+', ':ci-cd'] + modules
+    log_dir = BUILD_LOG_DIR
+    build_args = ['dbuild', '-sd', '--build-log-dir', log_dir, 'build', 'all', '+', ':ci-cd'] + modules
     print('build command:', build_args)
 
-    p = subprocess.Popen(build_args, stdin=subprocess.PIPE)
+    p = subprocess.Popen(build_args)
 
     def kill(signal, frame):
         p.kill()
@@ -216,10 +361,11 @@ def run_push(modules):
             print('Docker registry login failed, cannot push!')
             sys.exit(1)
 
-    push_args = ['dbuild', '-sd', 'build', 'push', 'all'] + modules
+    log_dir = BUILD_LOG_DIR
+    push_args = ['dbuild', '-sd', '--build-log-dir', log_dir, 'build', 'push', 'all'] + modules
     print('push command:', push_args)
 
-    p = subprocess.Popen(push_args, stdin=subprocess.PIPE)
+    p = subprocess.Popen(push_args)
 
     def kill(signal, frame):
         p.kill()
@@ -239,10 +385,11 @@ def run_readme(modules):
         print('Not updating READMEs: %r' % modules)
         return
 
-    readme_args = ['dbuild', '-sd', 'readme'] + modules
+    log_dir = BUILD_LOG_DIR
+    readme_args = ['dbuild', '-sd', '--build-log-dir', log_dir, 'readme'] + modules
     print('readme command:', readme_args)
 
-    p = subprocess.Popen(readme_args, stdin=subprocess.PIPE)
+    p = subprocess.Popen(readme_args)
 
     def kill(signal, frame):
         p.kill()
@@ -316,12 +463,17 @@ def handle_pull_request(files, modules, tags, pipeline):
 
             modules_to_build.append(arg)
 
-    if modules:
-        run_build(modules_to_build)
+    # note(kornicameister) check if module belong to the pipeline
+    # if not, there's no point of building that as it will be build
+    # for the given pipeline
+    pipeline_modules = pick_modules_for_pipeline(modules_to_build, pipeline)
+
+    if pipeline_modules:
+        run_build(pipeline_modules)
     else:
         print('No modules to build.')
 
-    update_docker_compose(modules, pipeline)
+    update_docker_compose(pipeline_modules, pipeline)
     run_docker_compose(pipeline)
     wait_for_init_jobs(pipeline)
 
@@ -338,6 +490,31 @@ def handle_pull_request(files, modules, tags, pipeline):
 
     cool_test_mapper['smoke'][pipeline]()
     cool_test_mapper['tempest'][pipeline]()
+
+
+def pick_modules_for_pipeline(modules, pipeline):
+    if not modules:
+        return []
+
+    modules_for_pipeline = {
+        LOG_PIPELINE_MARKER: LOGS_PIPELINE_MODULE_TO_COMPOSE_SERVICES.keys(),
+        METRIC_PIPELINE_MARKER: METRIC_PIPELINE_MODULE_TO_COMPOSE_SERVICES.keys()
+    }
+
+    pipeline_modules = modules_for_pipeline[pipeline]
+    print('modules: %s \n pipeline_modules: %s' % (modules, pipeline_modules))
+
+    # iterate over copy of all modules that are planned for the build
+    # if one of them does not belong to active pipeline
+    # remove from current run
+    for m in modules[::]:
+        if m not in pipeline_modules:
+            print('Module %s does not belong to %s, skipping' % (
+                m, pipeline
+            ))
+            modules.remove(m)
+
+    return modules
 
 
 def get_current_init_status(docker_id):
@@ -364,25 +541,39 @@ def get_current_init_status(docker_id):
 
 
 def output_docker_logs():
-    docker_logs = ['docker-compose', 'logs']
+    docker_names = ['docker', 'ps', '-a', '--format', '"{{.Names}}"']
 
-    docker_logs_process = subprocess.Popen(docker_logs, stdin=subprocess.PIPE)
+    p = subprocess.Popen(docker_names, stdout=subprocess.PIPE)
 
     def kill(signal, frame):
-        docker_logs_process.kill()
+        p.kill()
         print()
         print('killed!')
         sys.exit(1)
 
     signal.signal(signal.SIGINT, kill)
-    if docker_logs_process.wait() != 0:
-        print('Error listing logs')
+
+    output, err = p.communicate()
+    names = output.replace('"', '').split('\n')
+
+    for name in names:
+        if not name:
+            continue
+
+        docker_logs = ['docker', 'logs', '-t', name]
+        log_name = RUN_LOG_DIR + 'docker_log_' + name + '.log'
+        with open(log_name, 'w') as out:
+            p = subprocess.Popen(docker_logs, stdout=out,
+                                 stderr=subprocess.STDOUT)
+        signal.signal(signal.SIGINT, kill)
+        if p.wait() != 0:
+            print('Error running docker log for {}'.format(name))
 
 
 def output_docker_ps():
     docker_ps = ['docker', 'ps', '-a']
 
-    docker_ps_process = subprocess.Popen(docker_ps, stdin=subprocess.PIPE)
+    docker_ps_process = subprocess.Popen(docker_ps)
 
     def kill(signal, frame):
         docker_ps_process.kill()
@@ -410,7 +601,7 @@ def get_docker_id(init_job):
                  'ps',
                  '-q', init_job]
 
-    p = subprocess.Popen(docker_id, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen(docker_id, stdout=subprocess.PIPE)
 
     def kill(signal, frame):
         p.kill()
@@ -454,8 +645,6 @@ def wait_for_init_jobs(pipeline):
 
     if amount_succeeded != len(docker_id_dict):
         print("Init-jobs did not succeed, printing docker ps and logs")
-        output_docker_ps()
-        output_docker_logs()
         raise InitJobFailedException()
 
     # Sleep in case jobs just succeeded
@@ -501,6 +690,7 @@ def handle_push(files, modules, tags, pipeline):
 
 
 def run_docker_compose(pipeline):
+    print('Running docker compose')
     output_compose_details(pipeline)
 
     if pipeline == 'metrics':
@@ -512,7 +702,8 @@ def run_docker_compose(pipeline):
                               '-f', CI_COMPOSE_FILE,
                               'up', '-d'] + services
 
-    p = subprocess.Popen(docker_compose_command, stdin=subprocess.PIPE)
+    with open(RUN_LOG_DIR + 'docker_compose.log', 'w') as out:
+        p = subprocess.Popen(docker_compose_command, stdout=out)
 
     def kill(signal, frame):
         p.kill()
@@ -526,6 +717,7 @@ def run_docker_compose(pipeline):
         sys.exit(p.returncode)
 
     # print out running images for debugging purposes
+    print('docker compose succeeded')
     output_docker_ps()
 
 
@@ -534,7 +726,7 @@ def run_smoke_tests_metrics():
                        'METRIC_NAME_TO_CHECK=monasca.thread_count', '--net', 'monascadocker_default', '-p',
                        '0.0.0.0:8080:8080', 'monasca/smoke-tests:latest']
 
-    p = subprocess.Popen(smoke_tests_run, stdin=subprocess.PIPE)
+    p = subprocess.Popen(smoke_tests_run)
 
     def kill(signal, frame):
         p.kill()
@@ -545,17 +737,17 @@ def run_smoke_tests_metrics():
     signal.signal(signal.SIGINT, kill)
     if p.wait() != 0:
         print('Smoke-tests failed, listing containers/logs.')
-        output_docker_logs()
-        output_docker_ps()
         raise SmokeTestFailedException()
 
 
 def run_tempest_tests_metrics():
+    print ('Running Tempest-tests')
     tempest_tests_run = ['docker', 'run', '-e', 'KEYSTONE_SERVER=keystone', '-e',
                          'KEYSTONE_PORT=5000', '--net', 'monascadocker_default',
                          'monasca/tempest-tests:latest']
 
-    p = subprocess.Popen(tempest_tests_run, stdin=subprocess.PIPE)
+    with open(LOG_DIR + 'tempest_tests.log', 'w') as out:
+        p = subprocess.Popen(tempest_tests_run, stdout=out)
 
     def kill(signal, frame):
         p.kill()
@@ -564,11 +756,23 @@ def run_tempest_tests_metrics():
         sys.exit(1)
 
     signal.signal(signal.SIGINT, kill)
-    if p.wait() != 0:
-        print('Tempest-tests failed, listing containers/logs.')
-        output_docker_logs()
-        output_docker_ps()
-        raise TempestTestFailedException()
+    time_delta = 0
+    while(True):
+        poll = p.poll()
+        if poll is None:
+            if time_delta == 1500:
+                print ('Tempest-tests timed out at 25 min')
+                raise TempestTestFailedException()
+            if time_delta % 30 == 0:
+                print ('Still running tempest-tests')
+            time_delta += 1
+            time.sleep(1)
+        elif poll != 0:
+            print('Tempest-tests failed, listing containers/logs.')
+            raise TempestTestFailedException()
+        else:
+            break
+    print('Tempest-tests succeeded')
 
 
 def handle_other(files, modules, tags):
@@ -576,25 +780,28 @@ def handle_other(files, modules, tags):
         os.environ.get('TRAVS_EVENT_TYPE')))
 
 
-def print_env(pipeline, voting):
-    print('Environment details:')
-    print('TRAVIS_COMMIT=', os.environ.get('TRAVIS_COMMIT'))
-    print('TRAVIS_COMMIT_RANGE=', os.environ.get('TRAVIS_COMMIT_RANGE'))
-    print('TRAVIS_PULL_REQUEST=', os.environ.get('TRAVIS_PULL_REQUEST'))
-    print('TRAVIS_PULL_REQUEST_SHA=',
-          os.environ.get('TRAVIS_PULL_REQUEST_SHA'))
-    print('TRAVIS_PULL_REQUEST_SLUG=',
-          os.environ.get('TRAVIS_PULL_REQUEST_SLUG'))
-    print('TRAVIS_SECURE_ENV_VARS=', os.environ.get('TRAVIS_SECURE_ENV_VARS'))
-    print('TRAVIS_EVENT_TYPE=', os.environ.get('TRAVIS_EVENT_TYPE'))
-    print('TRAVIS_BRANCH=', os.environ.get('TRAVIS_BRANCH'))
-    print('TRAVIS_PULL_REQUEST_BRANCH=',
-          os.environ.get('TRAVIS_PULL_REQUEST_BRANCH'))
-    print('TRAVIS_TAG=', os.environ.get('TRAVIS_TAG'))
-    print('TRAVIS_COMMIT_MESSAGE=', os.environ.get('TRAVIS_COMMIT_MESSAGE'))
+def print_env(pipeline, voting, to_print=True):
+    environ_vars = {'environment_details': {
+        'TRAVIS_COMMIT': os.environ.get('TRAVIS_COMMIT'),
+        'TRAVIS_COMMIT_RANGE': os.environ.get('TRAVIS_COMMIT_RANGE'),
+        'TRAVIS_PULL_REQUEST': os.environ.get('TRAVIS_PULL_REQUEST'),
+        'TRAVIS_PULL_REQUEST_SHA': os.environ.get('TRAVIS_PULL_REQUEST_SHA'),
+        'TRAVIS_PULL_REQUEST_SLUG': os.environ.get('TRAVIS_PULL_REQUEST_SLUG'),
+        'TRAVIS_SECURE_ENV_VARS':  os.environ.get('TRAVIS_SECURE_ENV_VARS'),
+        'TRAVIS_EVENT_TYPE': os.environ.get('TRAVIS_EVENT_TYPE'),
+        'TRAVIS_BRANCH': os.environ.get('TRAVIS_BRANCH'),
+        'TRAVIS_PULL_REQUEST_BRANCH': os.environ.get('TRAVIS_PULL_REQUEST_BRANCH'),
+        'TRAVIS_TAG': os.environ.get('TRAVIS_TAG'),
+        'TRAVIS_COMMIT_MESSAGE': os.environ.get('TRAVIS_COMMIT_MESSAGE'),
+        'TRAVIS_BUILD_ID': os.environ.get('TRAVIS_BUILD_ID'),
+        'TRAVIS_JOB_NUMBER': os.environ.get('TRAVIS_JOB_NUMBER'),
 
-    print('CI_PIPELINE=', pipeline)
-    print('CI_VOTING=', voting)
+        'CI_PIPELINE': pipeline,
+        'CI_VOTING': voting }}
+
+    if to_print:
+        print (json.dumps(environ_vars, indent=2))
+    return environ_vars
 
 
 def main():
@@ -610,6 +817,7 @@ def main():
         return
 
     print_env(pipeline, voting)
+    set_log_dir()
 
     files = get_changed_files()
     modules = get_dirty_modules(files)
@@ -638,6 +846,11 @@ def main():
             raise
         else:
             print('%s is not voting, skipping failure' % pipeline)
+    finally:
+        output_docker_ps()
+        output_docker_logs()
+        uploaded_files = upload_log_files()
+        upload_manifest(pipeline, voting, uploaded_files, modules, files, tags)
 
 
 if __name__ == '__main__':

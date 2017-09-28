@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# DO NOT REMOVE, file used by Logspout build process
+
 apk add --update go build-base git mercurial ca-certificates
 mkdir -p /go/src/github.com/gliderlabs
 cp -r /src /go/src/github.com/gliderlabs/logspout

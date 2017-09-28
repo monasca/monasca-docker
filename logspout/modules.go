@@ -1,3 +1,5 @@
+// DO NOT REMOVE, file used by Logspout build process
+
 package main
 
 import (

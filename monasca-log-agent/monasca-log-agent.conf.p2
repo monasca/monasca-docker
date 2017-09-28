@@ -9,6 +9,16 @@ input {
   }
 }
 
+filter {
+    json_encode {
+        source => "docker"
+        target => "dimensions"
+    }
+    mutate {
+        remove_field => ["docker"]
+    }
+}
+
 output {
   stdout { codec => rubydebug }
   monasca_log_api {
@@ -25,6 +35,6 @@ output {
     delay => 10
     elapsed_time_sec => 30
     max_data_size_kb => 5120
-    dimensions => ["service:monitoring"]
+    dimensions => ["service:monasca-docker"]
   }
 }

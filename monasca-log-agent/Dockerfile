@@ -1,4 +1,17 @@
-FROM logstash:2.3.4
+FROM jruby:9.1-alpine as builder
+
+ARG LOGSTASH_PLUGIN_REPO=https://github.com/logstash-plugins/logstash-output-monasca_log_api.git
+ARG LOGSTASH_PLUGIN_BRANCH=master
+
+WORKDIR /lomla
+
+ARG REBUILD_LOGSTASH_PLUGIN=1
+RUN apk add --no-cache git && \
+    git clone ${LOGSTASH_PLUGIN_REPO} -b ${LOGSTASH_PLUGIN_BRANCH} --single-branch --depth 1 . && \
+    bundle install && \
+    gem build logstash-output-monasca_log_api.gemspec
+
+FROM logstash:2.4-alpine
 
 ENV MONASCA_WAIT_FOR_LOG_API=true \
     MONASCA_WAIT_FOR_KEYSTONE=true \
@@ -13,15 +26,18 @@ ENV MONASCA_WAIT_FOR_LOG_API=true \
     LOGSTASH_INPUT_PORT=5610 \
     LOGSTASH_INPUT_CODEC=json
 
-COPY monasca-log-agent.conf.p2 start.sh /
-
-RUN curl -s https://api.github.com/repos/wrouesnel/p2cli/releases/latest | \
-    grep browser_download_url | \
-    cut -d '"' -f 4 | \
-    wget -qi - -O /p2 && \
+ARG REBUILD_P2CLI=1
+RUN apk add --no-cache wget ca-certificates && \
+    wget -q -O /p2 https://github.com/wrouesnel/p2cli/releases/download/r5/p2 && \
     chmod +x /p2
 
-RUN logstash-plugin install logstash-output-monasca_log_api
+COPY --from=builder /lomla/logstash-output-monasca_log_api-*.gem /
+
+ARG REBUILD_INSTALL_LOGSTASH_PLUGINS=1
+RUN logstash-plugin install logstash-output-monasca_log_api-*.gem && \
+    logstash-plugin install logstash-filter-json_encode
+
+COPY monasca-log-agent.conf.p2 start.sh /
 
 EXPOSE ${LOGSTASH_INPUT_PORT}
 

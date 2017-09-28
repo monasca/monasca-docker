@@ -25,4 +25,4 @@ RUN logstash-plugin install logstash-output-monasca_log_api
 
 EXPOSE ${LOGSTASH_INPUT_PORT}
 
-ENTRYPOINT ["/start.sh"]
+CMD ["/start.sh"]

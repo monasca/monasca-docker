@@ -1,5 +1,6 @@
 repository: monasca/log-agent
 variants:
-  - tag: 0.0.1
+  - tag: master
     aliases:
       - :latest
+      - :master-{date}-{time}

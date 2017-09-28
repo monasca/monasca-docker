@@ -12,7 +12,7 @@ Tags
 
 Images in this repository are tagged as follows:
 
-* `0.0.1`: standard [SemVer][3].
+* `3.2.3`: Follow the version of Logspout releases.
 * `latest`: the latest version recommended for use with other Monasca components.
 
 Usage
@@ -36,5 +36,5 @@ with needed plugin.
 
 [1]: https://github.com/gliderlabs/logspout
 [2]: https://github.com/looplab/logspout-logstash
-[3]: http://semver.org/
+[3]: https://github.com/gliderlabs/logspout/releases
 [4]: https://github.com/monasca/monasca-docker/tree/master/monasca-log-agent

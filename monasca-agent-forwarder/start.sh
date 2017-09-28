@@ -33,4 +33,4 @@ fi
 
 template $AGENT_CONF/agent.yaml.j2 $AGENT_CONF/agent.yaml
 
-/usr/bin/monasca-forwarder
+monasca-forwarder

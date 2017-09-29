@@ -137,7 +137,7 @@ import yaml
 
 try:
     from monascaclient import client
-    from monascaclient import ksclient
+    import keystoneclient
 except ImportError:
     paths = ["/opt/stack/service/monascaclient/venv", "/opt/monasca"]
     for path in paths:
@@ -147,7 +147,7 @@ except ImportError:
         try:
             execfile(activate_this, dict(__file__=activate_this))
             from monascaclient import client
-            from monascaclient import ksclient
+            import keystoneclient
         except ImportError:
             monascaclient_found = False
         else:
@@ -171,11 +171,18 @@ class MonascaLoadDefinitions(object):
         """
         if not self._args['keystone_token']:
             try:
-                ks = ksclient.KSClient(**self._args)
+                if self._args['auth_type'] and self._args['auth_type'] == 'v2password':
+                    ks = keystone.v2_0.client.Client(**self._args)
+                    print ks
+                else:
+                    ks = keystone.v3.client.Client(**self._args)
+                    print ks
             except Exception as err:
                 raise Exception('Keystone KSClient Exception: {}'.format(err))
 
-            self._token = ks.token
+            self._token = ks.auth_ref
+            print 'TOKEN:'
+            print self._token
             if not self._args['monasca_api_url']:
                 self._api_url = ks.monasca_url
             else:
@@ -440,6 +447,14 @@ def _get_parser():
                         default=_env('OS_PROJECT_ID'),
                         help='Defaults to env[OS_PROJECT_ID].')
 
+    parser.add_argument('--os-tenant-name',
+                        default=_env('OS_TENANT_NAME'),
+                        help='Defaults to env[OS_TENANT_NAME].')
+
+    parser.add_argument('--os-auth-type',
+                        default=_env('OS_AUTH_TYPE'),
+                        help='Defaults to env[OS_AUTH_TYPE].')
+
     parser.add_argument('--os_project_id',
                         help=argparse.SUPPRESS)
 
@@ -571,18 +586,22 @@ def main(args=None):
         'service_type': args.os_service_type,
         'endpoint_type': args.os_endpoint_type,
         'os_cacert': args.os_cacert,
-        'project_id': args.os_project_id,
-        'project_name': args.os_project_name,
-        'domain_id': args.os_domain_id,
-        'domain_name': args.os_domain_name,
         'insecure': args.insecure,
         'monasca_api_url': args.monasca_api_url,
         'api_version': args.monasca_api_version,
         'verbose': args.verbose
     }
+    if args.os_tenant_name:
+        kwargs['tenant_name'] = args.os_tenant_name
+        kwargs['auth_type'] = args.os_auth_type
+    else:
+        kwargs['project_id'] = args.os_project_id
+        kwargs['project_name'] = args.os_project_name
+        kwargs['domain_id' = args.os_domain_id
+        kwargs['domain_name'] = args.os_domain_name
 
     if not monascaclient_found:
-        print("python-monascaclient >= 1.0.9 is required", file=sys.stderr)
+        print("python-monascaclient and python-keystoneclient are required", file=sys.stderr)
         sys.exit(1)
 
     if not args.definitions_file:

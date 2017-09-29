@@ -25,12 +25,12 @@ ENV MONASCA_WAIT_FOR_LOG_API=true \
     OS_USER_DOMAIN_NAME=default \
     OS_PROJECT_NAME=mini-mon \
     OS_PROJECT_DOMAIN_NAME=default \
-    MONASCA_LOG_API_URL=http://log-api:5607/v3.0 \
+    MONASCA_LOG_API_URL=http://log-api:${MONASCA_CONTAINER_LOG_API_PORT}/v3.0 \
     LOGSTASH_INPUT_PORT=5610 \
     LOGSTASH_INPUT_CODEC=json
 
 ARG REBUILD_P2CLI=1
-RUN apk add --no-cache wget ca-certificates && \
+RUN apk add --no-cache wget ca-certificates curl && \
     wget -q -O /p2 https://github.com/wrouesnel/p2cli/releases/download/r5/p2 && \
     chmod +x /p2
 

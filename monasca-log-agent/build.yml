@@ -1,6 +1,17 @@
 repository: monasca/log-agent
 variants:
-  - tag: master
+  - tag: 0.0.1
     aliases:
       - :latest
+    args:
+      LOGSTASH_PLUGIN_BRANCH: v1.0.1
+      JRUBY_VERSION: 9.1-alpine
+      LOGSTASH_VERSION: 2.4-alpine
+
+  - tag: master
+    aliases:
       - :master-{date}-{time}
+    args:
+      LOGSTASH_PLUGIN_BRANCH: master
+      JRUBY_VERSION: 9.1-alpine
+      LOGSTASH_VERSION: 2.4-alpine

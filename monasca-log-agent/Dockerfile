@@ -1,7 +1,10 @@
-FROM jruby:9.1-alpine as builder
+ARG JRUBY_VERSION
+ARG LOGSTASH_VERSION
+
+FROM jruby:${JRUBY_VERSION} as builder
 
 ARG LOGSTASH_PLUGIN_REPO=https://github.com/logstash-plugins/logstash-output-monasca_log_api.git
-ARG LOGSTASH_PLUGIN_BRANCH=master
+ARG LOGSTASH_PLUGIN_BRANCH
 
 WORKDIR /lomla
 
@@ -11,7 +14,7 @@ RUN apk add --no-cache git && \
     bundle install && \
     gem build logstash-output-monasca_log_api.gemspec
 
-FROM logstash:2.4-alpine
+FROM logstash:${LOGSTASH_VERSION}
 
 ENV MONASCA_WAIT_FOR_LOG_API=true \
     MONASCA_WAIT_FOR_KEYSTONE=true \

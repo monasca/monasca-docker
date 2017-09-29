@@ -4,7 +4,7 @@
 MONASCA_LOG_API_WAIT_RETRIES=${MONASCA_LOG_API_WAIT_RETRIES:-"24"}
 MONASCA_LOG_API_WAIT_DELAY=${MONASCA_LOG_API_WAIT_DELAY:-"5"}
 
-if [ -n "$MONASCA_WAIT_FOR_LOG_API" ]; then
+if [ "$MONASCA_WAIT_FOR_LOG_API" = "true" ]; then
   echo "Waiting for Monasca Log API to become available..."
   success="false"
 
@@ -20,18 +20,18 @@ if [ -n "$MONASCA_WAIT_FOR_LOG_API" ]; then
       sleep "$MONASCA_LOG_API_WAIT_DELAY"
     fi
   done
-fi
 
-if [ "$success" != "true" ]; then
-  echo "Monasca Log API failed to become ready, exiting..."
-  sleep 1
-  exit 1
+  if [ "$success" != "true" ]; then
+    echo "Monasca Log API failed to become ready, exiting..."
+    sleep 1
+    exit 1
+  fi
 fi
 
 KEYSTONE_WAIT_RETRIES=${KEYSTONE_WAIT_RETRIES:-"24"}
 KEYSTONE_WAIT_DELAY=${KEYSTONE_WAIT_DELAY:-"5"}
 
-if [ -n "$MONASCA_WAIT_FOR_KEYSTONE" ]; then
+if [ "$MONASCA_WAIT_FOR_KEYSTONE" = "true" ]; then
   echo "Waiting for Keystone to become available..."
   success="false"
 
@@ -61,12 +61,12 @@ if [ -n "$MONASCA_WAIT_FOR_KEYSTONE" ]; then
       sleep "$KEYSTONE_WAIT_DELAY"
     fi
   done
-fi
 
-if [ "$success" != "true" ]; then
-  echo "Keystone failed to become ready, exiting..."
-  sleep 1
-  exit 1
+  if [ "$success" != "true" ]; then
+    echo "Keystone failed to become ready, exiting..."
+    sleep 1
+    exit 1
+  fi
 fi
 
 /p2 -t /monasca-log-agent.conf.p2 > /monasca-log-agent.conf

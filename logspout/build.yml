@@ -1,5 +1,7 @@
 repository: monasca/logspout
 variants:
-  - tag: 3.2.3
+  - tag: 0.0.1
     aliases:
       - :latest
+    args:
+      LOGSPOUT_VERSION: v3.2.3

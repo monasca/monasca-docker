@@ -1,4 +1,5 @@
-FROM gliderlabs/logspout:v3.2.3
+ARG LOGSPOUT_VERSION
+FROM gliderlabs/logspout:${LOGSPOUT_VERSION}
 
 ENV ROUTE_URIS=logstash+tcp://log-agent:5610
 

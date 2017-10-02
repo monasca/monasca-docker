@@ -74,7 +74,7 @@ services:
       - "5607:5607"
 
   log-agent:
-    image: monasca/log-agent:${MON_LOG_AGENT_VERSION}
+    image: monasca/log-agent:latest
     environment:
       LOGSPOUT: ignore
     depends_on:
@@ -83,7 +83,7 @@ services:
     ports:
       - "5610:5610"
   logspout:
-    image: monasca/logspout:${MON_LOGSPOUT_VERSION}
+    image: monasca/logspout:latest
     environment:
       LOGSPOUT: ignore
     volumes:

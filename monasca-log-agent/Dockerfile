@@ -44,6 +44,6 @@ COPY monasca-log-agent.conf.p2 start.sh /
 EXPOSE ${LOGSTASH_INPUT_PORT}
 
 RUN apk add --no-cache tini
-ENTRYPOINT ["/sbin/tini", "--"]
 
+ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["/start.sh"]

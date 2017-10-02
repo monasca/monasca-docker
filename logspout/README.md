@@ -23,9 +23,10 @@ Logspout requires running instance of [Monasca Log Agent][4].
 Configuration
 -------------
 
-|   Variable   |             Default             |        Description         |
-|--------------|---------------------------------|----------------------------|
-| `ROUTE_URIS` | `logstash+tcp://log-agent:5610` | Logstash connection string |
+|        Variable         |             Default             |             Description             |
+|-------------------------|---------------------------------|-------------------------------------|
+| `MONASCA_LOG_AGENT_URI` | `log-agent:5610`                | Monasca Log Agent connection string |
+| `ROUTE_URIS`            | `logstash+tcp://log-agent:5610` | Logstash connection string          |
 
 Additional files
 ----------------

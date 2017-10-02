@@ -20,21 +20,25 @@ Usage
 Monasca Log Agent requires running instance of [Monasca Log API][4]
 and Keystone.
 
+When started Logstash will be listening on port configured with
+`LOGSTASH_INPUT_PORT` variable (default to `5610`). It will accept all logs
+send to this port in format specified in `LOGSTASH_INPUT_CODEC` (default
+to `json`) coming on both TCP and UDP protocols.
+
 Configuration
 -------------
 
-|             Variable             |           Default           |                       Description                       |
-|----------------------------------|-----------------------------|---------------------------------------------------------|
-| `MONASCA_CONTAINER_LOG_API_PORT` | `5607`                      | The Log API's HTTP port                                 |
-| `OS_AUTH_URL`                    | `http://keystone:35357/v3/` | Versioned Keystone URL                                  |
-| `OS_USERNAME`                    | `monasca-agent`             | Agent Keystone username                                 |
-| `OS_PASSWORD`                    | `password`                  | Agent Keystone password                                 |
-| `OS_USER_DOMAIN_NAME`            | `Default`                   | Agent Keystone user domain                              |
-| `OS_PROJECT_NAME`                | `mini-mon`                  | Agent Keystone project name                             |
-| `OS_PROJECT_DOMAIN_NAME`         | `Default`                   | Agent Keystone project domain                           |
-| `MONASCA_LOG_API_URL`            | `http://log-api:5607/v3.0`  | Versioned Monasca Log API URL                           |
-| `LOGSTASH_INPUT_PORT`            | `5610`                      | Logstash listen on this port (tcp and udp) for new logs |
-| `LOGSTASH_INPUT_CODEC`           | `json`                      | Logstash expect logs in this format                     |
+|         Variable         |           Default           |                       Description                       |
+|--------------------------|-----------------------------|---------------------------------------------------------|
+| `MONASCA_LOG_API_URL`    | `http://log-api:5607/v3.0`  | Versioned Monasca Log API URL                           |
+| `OS_AUTH_URL`            | `http://keystone:35357/v3/` | Versioned Keystone URL                                  |
+| `OS_USERNAME`            | `monasca-agent`             | Agent Keystone username                                 |
+| `OS_PASSWORD`            | `password`                  | Agent Keystone password                                 |
+| `OS_USER_DOMAIN_NAME`    | `Default`                   | Agent Keystone user domain                              |
+| `OS_PROJECT_NAME`        | `mini-mon`                  | Agent Keystone project name                             |
+| `OS_PROJECT_DOMAIN_NAME` | `Default`                   | Agent Keystone project domain                           |
+| `LOGSTASH_INPUT_PORT`    | `5610`                      | Logstash listen on this port (tcp and udp) for new logs |
+| `LOGSTASH_INPUT_CODEC`   | `json`                      | Logstash expect logs in this format                     |
 
 [1]: https://www.elastic.co/products/logstash
 [2]: https://github.com/logstash-plugins/logstash-output-monasca_log_api

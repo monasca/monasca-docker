@@ -18,14 +18,13 @@ FROM logstash:${LOGSTASH_VERSION}
 
 ENV MONASCA_WAIT_FOR_LOG_API=true \
     MONASCA_WAIT_FOR_KEYSTONE=true \
-    MONASCA_CONTAINER_LOG_API_PORT=5607 \
+    MONASCA_LOG_API_URL=http://log-api:5607/v3.0 \
     OS_AUTH_URL=http://keystone:35357/v3 \
     OS_USERNAME=monasca-agent \
     OS_PASSWORD=password \
     OS_USER_DOMAIN_NAME=default \
     OS_PROJECT_NAME=mini-mon \
     OS_PROJECT_DOMAIN_NAME=default \
-    MONASCA_LOG_API_URL=http://log-api:${MONASCA_CONTAINER_LOG_API_PORT}/v3.0 \
     LOGSTASH_INPUT_PORT=5610 \
     LOGSTASH_INPUT_CODEC=json
 

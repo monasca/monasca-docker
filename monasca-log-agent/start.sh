@@ -1,10 +1,12 @@
 #!/bin/sh
 # (C) Copyright 2017 FUJITSU LIMITED
 
-wait_for_log_api() {
-  MONASCA_LOG_API_WAIT_RETRIES=${MONASCA_LOG_API_WAIT_RETRIES:-"24"}
-  MONASCA_LOG_API_WAIT_DELAY=${MONASCA_LOG_API_WAIT_DELAY:-"5"}
+MONASCA_LOG_API_WAIT_RETRIES=${MONASCA_LOG_API_WAIT_RETRIES:-"24"}
+MONASCA_LOG_API_WAIT_DELAY=${MONASCA_LOG_API_WAIT_DELAY:-"5"}
+KEYSTONE_WAIT_RETRIES=${KEYSTONE_WAIT_RETRIES:-"24"}
+KEYSTONE_WAIT_DELAY=${KEYSTONE_WAIT_DELAY:-"5"}
 
+wait_for_log_api() {
   if [ "$1" = "true" ]; then
     echo "Waiting for Monasca Log API to become available..."
 
@@ -22,9 +24,6 @@ wait_for_log_api() {
 }
 
 wait_for_keystone() {
-  KEYSTONE_WAIT_RETRIES=${KEYSTONE_WAIT_RETRIES:-"24"}
-  KEYSTONE_WAIT_DELAY=${KEYSTONE_WAIT_DELAY:-"5"}
-
   if [ "$1" = "true" ]; then
     echo "Waiting for Keystone to become available..."
 

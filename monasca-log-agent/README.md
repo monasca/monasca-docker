@@ -25,6 +25,9 @@ When started Logstash will be listening on port configured with
 send to this port in format specified in `LOGSTASH_INPUT_CODEC` (default
 to `json`) coming on both TCP and UDP protocols.
 
+To enable debug output from Logstash set `DEBUG` environment variable
+to `True`.
+
 Configuration
 -------------
 

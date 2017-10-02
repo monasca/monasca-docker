@@ -16,7 +16,8 @@ RUN apk add --no-cache git && \
 
 FROM logstash:${LOGSTASH_VERSION}
 
-ENV MONASCA_WAIT_FOR_LOG_API=true \
+ENV DEBUG=false \
+    MONASCA_WAIT_FOR_LOG_API=true \
     MONASCA_WAIT_FOR_KEYSTONE=true \
     MONASCA_LOG_API_URL=http://log-api:5607/v3.0 \
     OS_AUTH_URL=http://keystone:35357/v3 \

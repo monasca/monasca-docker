@@ -10,6 +10,14 @@ input {
 }
 
 filter {
+    ruby {
+        code => "
+            event['docker'].each do |key, value|
+                event['docker'][key].nil? && event['docker'].delete(key)
+            end
+        "
+    }
+
     json_encode {
         source => "docker"
         target => "dimensions"

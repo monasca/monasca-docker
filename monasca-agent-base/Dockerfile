@@ -13,12 +13,7 @@ ARG AGENT_USER=mon-agent
 ARG REBUILD=1
 
 ENV CONFIG_TEMPLATE=true \
-  OS_AUTH_URL=http://keystone:35357/v3/ \
-  OS_USERNAME=monasca-agent \
-  OS_PASSWORD=password \
-  OS_USER_DOMAIN_NAME=Default \
-  OS_PROJECT_NAME=mini-mon \
-  OS_PROJECT_DOMAIN_NAME=Default \
+  KEYSTONE_DEFAULTS_ENABLED=true \
   MONASCA_URL=http://monasca:8070/v2.0 \
   LOG_LEVEL=WARN \
   HOSTNAME_FROM_KUBERNETES=false

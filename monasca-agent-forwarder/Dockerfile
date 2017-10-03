@@ -7,4 +7,4 @@ ARG REBUILD=1
 
 COPY start.sh /
 
-CMD ["/start.sh", "%AGENT_USER"]
+CMD ["/start.sh"]

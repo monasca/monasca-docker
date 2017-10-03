@@ -35,18 +35,19 @@ can be minimally run like so:
 Configuration
 -------------
 
-| Variable                 | Default          | Description                         |
-|--------------------------|------------------|-------------------------------------|
-| `LOG_LEVEL`              | `WARN`           | Python logging level                |
-| `OS_AUTH_URL`            | `http://keystone:35357/v3/` | Versioned Keystone URL   |
-| `OS_USERNAME`            | `monasca-agent`  | Agent Keystone username             |
-| `OS_PASSWORD`            | `password`       | Agent Keystone password             |
-| `OS_USER_DOMAIN_NAME`    | `Default`        | Agent Keystone user domain          |
-| `OS_PROJECT_NAME`        | `mini-mon`       | Agent Keystone project name         |
-| `OS_PROJECT_DOMAIN_NAME` | `Default`        | Agent Keystone project domain       |
-| `MONASCA_URL`            | `http://monasca:8070/v2.0` | Versioned Monasca API URL |
-| `HOSTNAME_FROM_KUBERNETES` | `false` | If true, determine node hostname from Kubernetes  |
-| 'NON_LOCAL_TRAFFIC'        | `false` | If true, forwarder listens on all addresses |
+| Variable                    | Default          | Description                         |
+|-----------------------------|------------------|-------------------------------------|
+| `LOG_LEVEL`                 | `WARN`           | Python logging level                |
+| `KEYSTONE_DEFAULTS_ENABLED` | `true`           | Sets all OS defaults                |
+| `OS_AUTH_URL`               | `http://keystone:35357/v3/` | Versioned Keystone URL   |
+| `OS_USERNAME`               | `monasca-agent`  | Agent Keystone username             |
+| `OS_PASSWORD`               | `password`       | Agent Keystone password             |
+| `OS_USER_DOMAIN_NAME`       | `Default`        | Agent Keystone user domain          |
+| `OS_PROJECT_NAME`           | `mini-mon`       | Agent Keystone project name         |
+| `OS_PROJECT_DOMAIN_NAME`    | `Default`        | Agent Keystone project domain       |
+| `MONASCA_URL`               | `http://monasca:8070/v2.0` | Versioned Monasca API URL |
+| `HOSTNAME_FROM_KUBERNETES`  | `false` | If true, determine node hostname from Kubernetes  |
+| `NON_LOCAL_TRAFFIC`         | `false` | If true, forwarder listens on all addresses |
 
 Note that additional variables can be specified as well, see the
 [config template][8] for a definitive list.

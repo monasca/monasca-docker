@@ -71,7 +71,7 @@ kafka:
     - zookeeper
 ```
 
-It ```depends_on`` on [Zookeeper][3]. That means that either:
+It ```depends_on``` on [Zookeeper][3]. That means that either:
 
 * [Zookeeper][3] needs to be launched with ```docker-compose```
 * [Zookeeper][3] should be provided externally and referenced with

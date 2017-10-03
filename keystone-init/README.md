@@ -69,13 +69,13 @@ domains:
     roles: []
     users: []
 
-endpoints:
+services:
   example:
     type:
     region:
     url:
     description:
-    interfaces: []
+    endpoints: []
 ```
 
 Domains are created by their unique name *except* for `default`, which
@@ -182,36 +182,36 @@ containers:
 {{ include "keystone_env" .Values.my_pod.auth | indent(6) }}
 ```
 
-Endpoints are created by their unique name:
+Services are created by their unique name:
 ```yaml
-endpoints:
+services:
   example:
     type:
     region:
     url:
     description:
-    interfaces: []
+    endpoints: []
 ```
 In this case service with `example` name will be created first and then
-endpoint will be added to it with provided interfaces.
+endpoint will be added to it with provided endpoints.
 `description` is optional.
 
-The `interfaces` block accepts a list of objects. As an example:
+The `endpoints` block accepts a list of objects. As an example:
 ```yaml
-endpoints:
+services:
   example:
     # ...
     url: http://top-url:8070/v2.0
-    interfaces:
+    endpoints:
       - name: internal
         url: http://int-url:8070/v2.0
       - name: admin
 ```
-If `url` is not provided for interface then `url` from endpoint is used.
-In this example for the second interface with `admin` name
+If `url` is not provided for endpoint then `url` from endpoint is used.
+In this example for the second endpoint with `admin` name
 `http://top-url:8070/v2.0` will be used as `url`.
 
-In case when interface on same service and with same name is already specified
+In case when endpoint on same service and with same name is already specified
 in Keystone but `url` is different it will be updated with new `url`.
 
 Other Notes

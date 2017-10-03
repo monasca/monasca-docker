@@ -6,10 +6,10 @@ domains:
     roles: []
     users: []
 
-endpoints:
+services:
   example:
     type:
     region:
     url:
     description:
-    interfaces: []
+    endpoints: []

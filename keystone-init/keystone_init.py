@@ -824,14 +824,14 @@ def load_domains(ks, domains, member_role_name):
     logger.info('all domains initialized successfully')
 
 
-def load_endpoints(ks, endpoints):
-    """Load endpoints into Keystone.
+def load_services(ks, services):
+    """Load services into Keystone.
 
     :type ks: keystoneclient.v3.client.Client
-    :type endpoints: dict[str, dict[str, list]]
+    :type services: dict[str, dict[str, list]]
     :return:
     """
-    for name, options in endpoints.viewitems():
+    for name, options in services.viewitems():
         logger.debug('%r', options)
         logger.info('creating service...')
         service = get_or_create_service(
@@ -841,8 +841,8 @@ def load_endpoints(ks, endpoints):
             description=options.get('description', None)
         )
 
-        logger.info('creating %s endpoint interfaces...', name)
-        for interface in options.get('interfaces', []):
+        logger.info('creating %s endpoints...', name)
+        for interface in options.get('endpoints', []):
             assert isinstance(interface, dict)
 
             get_or_create_endpoint(
@@ -853,7 +853,7 @@ def load_endpoints(ks, endpoints):
                 region=options.get('region', '')
             )
 
-    logger.info('all endpoints initialized successfully')
+    logger.info('all services initialized successfully')
 
 
 def main():
@@ -873,8 +873,8 @@ def main():
         if 'domains' in preload:
             load_domains(ks, preload['domains'], member_role_name)
 
-        if 'endpoints' in preload:
-            load_endpoints(ks, preload['endpoints'])
+        if 'services' in preload:
+            load_services(ks, preload['services'])
 
 
 if __name__ == '__main__':

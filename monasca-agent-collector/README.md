@@ -207,8 +207,6 @@ To build the container from scratch using just docker commands, run:
 
 A few build argument can be set:
 
- * `AGENT_USER`: the user to run the agent as. The same user must be specified
-   as the user specified when the agent-base image was built.
  * `REBULID`: a simple method to invalidate the Docker image cache. Set to
    `--build-arg REBUILD="$(date)"` to force a full image rebuild.
  * `HTTP_PROXY` and `HTTPS_PROXY` should be set as needed for your environment

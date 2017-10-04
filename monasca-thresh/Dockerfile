@@ -24,9 +24,9 @@ ARG SKIP_COMMON_TESTS=false
 ARG SKIP_THRESH_TESTS=false
 
 RUN apk add --no-cache --virtual build-dep maven git py2-pip python-dev git openjdk8 make g++ && \
-  apk add --no-cache python mysql-client && \
+  apk add --no-cache python mysql-client ca-certificates&& \
   mkdir /root/.m2 && \
-  pip install pykafka && \
+  pip install pykafka urllib3 ipaddress && \
   python /template.py settings.xml.j2 /root/.m2/settings.xml && \
   mkdir /repo && \
   set -x && mkdir /monasca-common && cd /monasca-common && \

@@ -137,7 +137,8 @@ import yaml
 
 try:
     from monascaclient import client
-    import keystoneclient
+    from keystoneclient import discover
+    import keystoneauth1
 except ImportError:
     paths = ["/opt/stack/service/monascaclient/venv", "/opt/monasca"]
     for path in paths:
@@ -147,7 +148,8 @@ except ImportError:
         try:
             execfile(activate_this, dict(__file__=activate_this))
             from monascaclient import client
-            import keystoneclient
+            from keystoneclient import discover
+            import keystoneauth1
         except ImportError:
             monascaclient_found = False
         else:
@@ -162,6 +164,7 @@ class MonascaLoadDefinitions(object):
     """
     def __init__(self, args):
         self._args = args
+        print(args)
         self._existing_notifications = None
         self._existing_alarm_definitions = None
         self._verbose = args['verbose']
@@ -170,19 +173,23 @@ class MonascaLoadDefinitions(object):
         """Authenticate to Keystone and set self._token and self._api_url
         """
         if not self._args['keystone_token']:
-            try:
-                if self._args['auth_type'] and self._args['auth_type'] == 'v2password':
-                    ks = keystone.v2_0.client.Client(**self._args)
-                    print ks
-                else:
-                    ks = keystone.v3.client.Client(**self._args)
-                    print ks
-            except Exception as err:
-                raise Exception('Keystone KSClient Exception: {}'.format(err))
+#            try:
+            auth = keystoneauth1.identity.Password(**self._args['keystone_kwargs'])
+            sess = keystoneauth1.session.Session(auth=auth)
+            dis = discover.Discover(session=sess)
+            ks = disc.create_client()
+            token_dict = ks.auth_ref
+            if not token_dict:
+                raise Exception('Authentication failed at {}'
+                                .format(self._args['auth_url']))
+#            except Exception as err:
+#                raise Exception('Keystone KSClient Exception: {}'.format(err))
 
-            self._token = ks.auth_ref
-            print 'TOKEN:'
-            print self._token
+            token_dict = ks.auth_ref
+            if not token_dict:
+                raise Exception('Authentication failed at {}'
+                                .format(self._args['auth_url']))
+            self._token = token_dict['token']['id']
             if not self._args['monasca_api_url']:
                 self._api_url = ks.monasca_url
             else:
@@ -214,7 +221,7 @@ class MonascaLoadDefinitions(object):
         yaml_data = yaml.safe_load(yaml_text)
 
         self._keystone_auth()
-        self._monasca = client.Client(self._args['api_version'], self._api_url, token=self._token)
+        self._monasca = client.Client(self._args['api_version'], self._api_url, token=self._token, **self._args['keystone_kwargs'])
         self._print_message('Using Monasca at {}'.format(self._api_url))
         if 'notifications' not in yaml_data:
             raise Exception('No notifications section in {}'.format(data_file))
@@ -451,10 +458,6 @@ def _get_parser():
                         default=_env('OS_TENANT_NAME'),
                         help='Defaults to env[OS_TENANT_NAME].')
 
-    parser.add_argument('--os-auth-type',
-                        default=_env('OS_AUTH_TYPE'),
-                        help='Defaults to env[OS_AUTH_TYPE].')
-
     parser.add_argument('--os_project_id',
                         help=argparse.SUPPRESS)
 
@@ -479,12 +482,17 @@ def _get_parser():
     parser.add_argument('--os_domain_name',
                         help=argparse.SUPPRESS)
 
+    parser.add_argument('--os-project-domain-name',
+                        default=_env('OS_PROJECT_DOMAIN_NAME'),
+                        help='Defaults to env[OS_PROJECT_DOMAIN_NAME].')
+
+    parser.add_argument('--os-user-domain-name',
+                        default=_env('OS_USER_DOMAIN_NAME'),
+                        help='Defaults to env[OS_USER_DOMAIN_NAME].')
+
     parser.add_argument('--os-auth-url',
                         default=_env('OS_AUTH_URL'),
                         help='Defaults to env[OS_AUTH_URL].')
-
-    parser.add_argument('--os_auth_url',
-                        help=argparse.SUPPRESS)
 
     parser.add_argument('--os-region-name',
                         default=_env('OS_REGION_NAME'),
@@ -578,27 +586,30 @@ def main(args=None):
                         " or a token via --os-auth-token or"
                         " env[OS_AUTH_TOKEN]")
 
-    kwargs = {
+    keystone_kwargs = {
+        'auth_url': args.os_auth_url,
         'username': args.os_username,
         'password': args.os_password,
+        'tenant_name': args.os_tenant_name,
+        'project_id': args.os_project_id,
+        'project_name': args.os_project_name,
+        'project_domain_name': args.os_project_domain_name,
+        'user_domain_name': args.os_user_domain_name,
+        'domain_id': args.os_domain_id,
+        'domain_name': args.os_domain_name
+    }
+
+    kwargs = {
+        'keystone_kwargs': keystone_kwargs,
         'keystone_token': args.os_auth_token,
-        'auth_url': args.os_auth_url,
-        'service_type': args.os_service_type,
         'endpoint_type': args.os_endpoint_type,
         'os_cacert': args.os_cacert,
+        'service_type': args.os_service_type,
         'insecure': args.insecure,
         'monasca_api_url': args.monasca_api_url,
         'api_version': args.monasca_api_version,
         'verbose': args.verbose
     }
-    if args.os_tenant_name:
-        kwargs['tenant_name'] = args.os_tenant_name
-        kwargs['auth_type'] = args.os_auth_type
-    else:
-        kwargs['project_id'] = args.os_project_id
-        kwargs['project_name'] = args.os_project_name
-        kwargs['domain_id' = args.os_domain_id
-        kwargs['domain_name'] = args.os_domain_name
 
     if not monascaclient_found:
         print("python-monascaclient and python-keystoneclient are required", file=sys.stderr)

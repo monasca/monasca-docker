@@ -1,4 +1,5 @@
-FROM monasca/storm:1.0.3
+ARG USE_SSL_ENABLED
+FROM aadams/monasca-storm:thresh_ssl.1.2
 
 ENV MAVEN_HOME /usr/share/maven
 

@@ -7,4 +7,4 @@ stack in Docker and Kubernetes environments.
 
 # Documentation
 
-Full documentation is available [here](docs/index.md).
+Full documentation is available [here](docs/README.md).

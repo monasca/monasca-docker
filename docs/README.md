@@ -19,7 +19,7 @@ $ docker-compose -f log-pipeline.yml -f docker-compose.yml up
 ```
 
 For more details about the services that are available after
-either of aforementioned commands can be found
+either of the aforementioned commands can be found
 [here](./pipelines.md).
 
 ## Content

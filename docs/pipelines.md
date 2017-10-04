@@ -5,7 +5,7 @@ for processing **logs**. Each pipeline requires a set of services to be complete
 
 ## Metric pipeline
 
-**Metrics** pipeline requires following services to be launched or available
+**Metrics** pipeline requires the following services to be launched or available
 (providing they are hosted externally):
 
 * `agent-forwarder` - launches [monasca-agent-forwarder][1]
@@ -24,7 +24,7 @@ for processing **logs**. Each pipeline requires a set of services to be complete
 * `grafana` - launches [Grafana][14]
 * `cadvisor` - launched [cadvisor][15]
 
-Some of the services require initialization prior to launching, hence following
+Some of the services require initialization prior to launching, hence the following
 are available:
 
 * [mysql-init][16] for `mysql`
@@ -39,7 +39,7 @@ There is also:
 
 ## Log pipeline
 
-**Logs** pipeline requires following services to be launched or available
+**Logs** pipeline requires the following services to be launched or available
 (providing they are hosted externally):
 
 * `log-metrics` - launches [monasca-log-metrics][23]
@@ -49,7 +49,7 @@ There is also:
 * `log-transformer` - launches [monasca-log-transformer][27]
 * `elasticsearch` - launches [ElasticSearch][28]
 
-Some of the services require initialization prior to launching, hence following
+Some of the services require initialization prior to launching, hence the following
 are available:
 
 * [elasticsearch-init][22] for `elasticsearch`
@@ -57,12 +57,13 @@ are available:
 
 ## Dependencies
 
-Pretty much each service that is part of **monasca-docker** requires another one (or multiple)
-to run. The best way to know what is the dependency for a service is to open
+The majority of services that are part of **monasca-docker** require one
+or more additional services. The way to find out what dependencies a service has, is to open
 [docker-compose.yml](../docker-compose.yml) or [log-pipeline.yml](../log-pipeline.yml)
-(depends on the service) and check if it its definition contains ```depends_on```. For example:
+(depends on the service) and check if its definition contains ```depends_on```.
+For example:
 
-[Kafka][5] definition is:
+[Kafka][5] from [docker-compose.yml](../docker-compose.yml) definition is:
 
 ```yml
 kafka:
@@ -76,6 +77,10 @@ It ```depends_on``` on [Zookeeper][3]. That means that either:
 * [Zookeeper][3] needs to be launched with ```docker-compose```
 * [Zookeeper][3] should be provided externally and referenced with
    ```ZOOKEEPER_CONNECTION_STRING``` environmental variable
+
+    If the components are hosted externally, you should remove depends_on.
+    Otherwise docker-compose will try to launch the required
+    services.
 
 [1]: ../monasca-agent-collector/README.md
 [2]: ../monasca-agent-forwarder/README.md

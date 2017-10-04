@@ -3,7 +3,7 @@
 **monasca-docker** leverages the [environmental variable handling][2] of
 [docker-compose][1]. The latest release, a.k.a. versions of the images that
 are used for *master* branch is controlled with the help of [.env](../.env)
-file. In overall the file contains all the images' versions and resembles the
+file. Basically, the file contains all the images' versions and resembles the
 following code snippet:
 
 ```sh
@@ -49,8 +49,8 @@ export MON_AGENT_COLLECTOR_VERSION=ocata
 ```
 
 That file, called ```.ocata.env```, differs from [.env](../.env), as it
-contains ```export``` instructions. That is mandatory approach, as sourced
-variables takes precedence over aforementioned environmental file.
+contains ```export``` instructions. That is the mandatory approach, as sourced
+variables take precedence over aforementioned environmental file.
 
     Alternative approach, that achieves the same result, is to override values
     of certain variables directly in ```.env``` file.

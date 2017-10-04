@@ -1,7 +1,7 @@
 # External components
 
-By default, plain ```docker-compose up```, regardless of the
-pipeline will start containers for following services:
+By default, plain ```docker-compose up```, assuming both pipelines are included,
+will start containers for following services:
 
 * MySQL
 * Keystone
@@ -9,20 +9,20 @@ pipeline will start containers for following services:
 * Zookeeper
 * Kafka
 
-However each of them is treated, in the same time, as the
-dependency for *Monasca* hence can be externalized with the help
+However, each of them is treated, at the same time as the
+dependency for *Monasca*, hence can be externalized with the help
 of appropriate *environmental variables*.
 
-Following guide presents how to achieve that.
+The following guide presents how to achieve that.
 
 ## Using external OpenStack Keystone
 
-By default `monasca-docker` is using Keystone stored in separate
-container. But if you want to use external Keystone you need to
+By default `monasca-docker` uses Keystone stored in separate
+container. But if you want to use an external Keystone you need to
 overwrite some environment variables in specific containers.
 
-Remove `keystone` image initialization and all references to this
-image from `depends_on` from other images from
+Remove the `keystone` image initialization and all references to this
+image from `depends_on`, from other services, from
 `docker-compose.yml` and `log-pipeline.yml` files.
 
 Example configuration taking into account usage of Keystone

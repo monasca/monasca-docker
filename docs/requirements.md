@@ -5,6 +5,6 @@
 * at least 4 GiB of RAM
 * 2 CPUs (cores) or more recommended
 
-Following presents basic requirements for the **metric pipeline**.
+Following presents the basic requirements for the **metric pipeline**.
 Launching **log pipeline** increases requirements for **RAM** and
 **CPUs**.

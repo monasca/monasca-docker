@@ -367,12 +367,10 @@ def get_or_create_endpoint(client, service, url, endpoint):
     endpoints = filter(lambda ep: ep.service_id == service.id, _endpoint_cache)
     logger.debug('filtered endpoints %r', endpoints)
 
-    endpoint_url = endpoint['url'] if 'url' in endpoint else url
-
     for e in endpoints:
         if e.service_id == service.id:
             if e.interface == endpoint['interface']:
-                if e.url == endpoint_url:
+                if e.url == endpoint['url']:
                     logger.debug('endpoint already exists %r', e)
                     return e
 
@@ -380,7 +378,7 @@ def get_or_create_endpoint(client, service, url, endpoint):
                 endpoint = client.endpoints.update(
                     endpoint=e.id,
                     service=service,
-                    url=endpoint_url,
+                    url=endpoint['url'],
                     interface=endpoint['interface'],
                     region=endpoint['region'],
                 )
@@ -391,12 +389,13 @@ def get_or_create_endpoint(client, service, url, endpoint):
 
     logger.info(
         'creating new %s endpoint %s with url: %s on %s region',
-        endpoint['interface'], service.name, endpoint_url, endpoint['region']
+        endpoint['interface'], service.name,
+        endpoint['url'], endpoint['region']
     )
 
     endpoint = client.endpoints.create(
         service=service,
-        url=endpoint_url,
+        url=endpoint['url'],
         interface=endpoint['interface'],
         region=endpoint['region'],
     )

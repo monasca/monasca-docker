@@ -72,7 +72,6 @@ domains:
 services:
   example:
     type:
-    url:
     description:
     endpoints: []
 ```
@@ -186,7 +185,6 @@ Services are created by their unique name:
 services:
   example:
     type:
-    url:
     description:
     endpoints: []
 ```
@@ -199,18 +197,14 @@ The `endpoints` block accepts a list of objects. As an example:
 services:
   example:
     # ...
-    url: http://top-url:8070/v2.0
     endpoints:
-      - interface: internal
-        url: http://int-url:8070/v2.0
+      - url: http://int-url:8070/v2.0
+        interface: internal
         region: some_region
-      - interface: admin
+      - url: http://other-url:8070/v2.0
+        interface: admin
         region: other_region
 ```
-If `url` is not provided for endpoint then `url` from service is used.
-In this example for the second endpoint with `admin` interface
-`http://top-url:8070/v2.0` will be used as `url`.
-
 In case when endpoint on same service and with same interface is already
 specified in Keystone but `url` is different it will be updated with new `url`.
 

@@ -4,4 +4,4 @@ variants:
     aliases:
       - :latest
     args:
-      MON_CLIENT_VERSION="1.6.0"
+      MON_CLIENT_VERSION: "1.6.0"

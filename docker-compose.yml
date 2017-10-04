@@ -40,6 +40,16 @@ services:
 
   alarms:
     image: monasca/alarms:${MON_ALARMS_VERSION}
+    environment:
+      OS_PASSWORD: password
+      OS_PROJECT_DOMAIN_NAME: Default
+      OS_AUTH_URL: http://keystone:35357/v3/
+      OS_PROJECT_NAME: mini-mon
+      OS_USERNAME: mini-mon
+      OS_USER_DOMAIN_NAME: Default
+    depends_on:
+      - keystone
+      - monasca
 
   zookeeper:
     image: zookeeper:${ZOOKEEPER_VERSION}

@@ -72,7 +72,6 @@ domains:
 services:
   example:
     type:
-    region:
     url:
     description:
     endpoints: []
@@ -187,7 +186,6 @@ Services are created by their unique name:
 services:
   example:
     type:
-    region:
     url:
     description:
     endpoints: []
@@ -203,16 +201,21 @@ services:
     # ...
     url: http://top-url:8070/v2.0
     endpoints:
-      - name: internal
+      - interface: internal
         url: http://int-url:8070/v2.0
-      - name: admin
+        region: some_region
+      - interface: admin
+        region: other_region
 ```
-If `url` is not provided for endpoint then `url` from endpoint is used.
-In this example for the second endpoint with `admin` name
+If `url` is not provided for endpoint then `url` from service is used.
+In this example for the second endpoint with `admin` interface
 `http://top-url:8070/v2.0` will be used as `url`.
 
-In case when endpoint on same service and with same name is already specified
-in Keystone but `url` is different it will be updated with new `url`.
+In case when endpoint on same service and with same interface is already
+specified in Keystone but `url` is different it will be updated with new `url`.
+
+Keystone support following endpoint interface types:
+`public`, `admin`, `internal`.
 
 Other Notes
 -----------

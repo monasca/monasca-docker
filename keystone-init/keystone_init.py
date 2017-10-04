@@ -348,14 +348,13 @@ def get_or_create_service(client, name, service_type, description):
 
 
 @retry()
-def get_or_create_endpoint(client, service, url, interface, region):
+def get_or_create_endpoint(client, service, url, endpoint):
     """Get endpoint or create it if doesn't exist.
 
     :type client: keystoneclient.v3.client.Client
     :type service: keystoneclient.v3.services.Service
     :type url: str
-    :type interface: dict[str, str]
-    :type region: str
+    :type endpoint: dict[str, str]
     :return:
     :rtype: keystoneclient.v3.endpoints.Endpoint
     """
@@ -368,38 +367,38 @@ def get_or_create_endpoint(client, service, url, interface, region):
     endpoints = filter(lambda ep: ep.service_id == service.id, _endpoint_cache)
     logger.debug('filtered endpoints %r', endpoints)
 
-    interface_url = interface['url'] if 'url' in interface else url
+    endpoint_url = endpoint['url'] if 'url' in endpoint else url
 
     for e in endpoints:
         if e.service_id == service.id:
-            if e.interface == interface['name']:
-                if e.url == interface_url:
+            if e.interface == endpoint['interface']:
+                if e.url == endpoint_url:
                     logger.debug('endpoint already exists %r', e)
                     return e
-                else:
-                    logger.info('updating endpoint %r', e)
-                    endpoint = client.endpoints.update(
-                        endpoint=e.id,
-                        service=service,
-                        url=interface_url,
-                        interface=interface['name'],
-                        region=region,
-                    )
-                    _endpoint_cache = [endpoint
-                                       if x.id == endpoint.id else x
-                                       for x in _endpoint_cache]
-                    return endpoint
+
+                logger.info('updating endpoint %r', e)
+                endpoint = client.endpoints.update(
+                    endpoint=e.id,
+                    service=service,
+                    url=endpoint_url,
+                    interface=endpoint['interface'],
+                    region=endpoint['region'],
+                )
+                _endpoint_cache = [endpoint
+                                   if x.id == endpoint.id else x
+                                   for x in _endpoint_cache]
+                return endpoint
 
     logger.info(
         'creating new %s endpoint %s with url: %s on %s region',
-        interface['name'], service.name, interface_url, region
+        endpoint['interface'], service.name, endpoint_url, endpoint['region']
     )
 
     endpoint = client.endpoints.create(
         service=service,
-        url=interface_url,
-        interface=interface['name'],
-        region=region,
+        url=endpoint_url,
+        interface=endpoint['interface'],
+        region=endpoint['region'],
     )
     _endpoint_cache.append(endpoint)
     logger.debug('created endpoint %r', endpoint)
@@ -842,15 +841,14 @@ def load_services(ks, services):
         )
 
         logger.info('creating %s endpoints...', name)
-        for interface in options.get('endpoints', []):
-            assert isinstance(interface, dict)
+        for endpoint in options.get('endpoints', []):
+            assert isinstance(endpoint, dict)
 
             get_or_create_endpoint(
                 client=ks,
                 service=service,
                 url=options.get('url', ''),
-                interface=interface,
-                region=options.get('region', '')
+                endpoint=endpoint
             )
 
     logger.info('all services initialized successfully')

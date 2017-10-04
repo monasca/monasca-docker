@@ -9,7 +9,6 @@ domains:
 services:
   example:
     type:
-    region:
     url:
     description:
     endpoints: []

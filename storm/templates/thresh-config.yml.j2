@@ -121,11 +121,11 @@ sporadicMetricNamespaces:
 
 database:
   driverClass: com.mysql.jdbc.Driver
-  url: "jdbc:mysql://{{ MYSQL_DB_HOST | default('mysql') }}:{{ MYSQL_DB_PORT | default('3306') }}/{{ MYSQL_DB_DATABASE | default('mon') }}?useSSL=true"
+  url: "jdbc:mysql://{{ MYSQL_DB_HOST | default('mysql') }}:{{ MYSQL_DB_PORT | default('3306') }}/{{ MYSQL_DB_DATABASE | default('mon') }}?useSSL={{ USE_SSL_ENABLED }}"
   user: "{{ MYSQL_DB_USERNAME | default('thresh') }}"
   password: "{{ MYSQL_DB_PASSWORD | default('password') }}"
   properties:
-      ssl: false
+      ssl: "{{ USE_SSL_ENABLED }}"
   # the maximum amount of time to wait on an empty pool before throwing an exception
   maxWaitForConnection: 1s
 

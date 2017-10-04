@@ -6,7 +6,6 @@ FROM monasca/python:2-${TIMESTAMP_SLUG}
 ARG AGENT_REPO=https://git.openstack.org/openstack/monasca-agent
 ARG AGENT_BRANCH=master
 ARG CONSTRAINTS_BRANCH=master
-ARG AGENT_USER=mon-agent
 
 # To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
 # `docker build`
@@ -25,7 +24,3 @@ RUN /build.sh -r ${AGENT_REPO} -b ${AGENT_BRANCH} -q ${CONSTRAINTS_BRANCH}  \
 
 COPY agent.yaml.j2 /etc/monasca/agent/agent.yaml.j2
 COPY template.py kubernetes_get_host.py /
-
-RUN adduser -S $AGENT_USER && \
-    chown $AGENT_USER /etc/monasca/agent && \
-    chown $AGENT_USER /etc/monasca/agent/*

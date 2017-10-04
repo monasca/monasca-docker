@@ -26,15 +26,16 @@ docker run -it monasca/alarms:latest
 Configuration
 -------------
 
-| Variable                 | Default                      | Description                      |
-|--------------------------|------------------------------|----------------------------------|
-| `MONASCA_WAIT_FOR_API`   | `true`                       | Ensure Monasca API is available  |
-| `OS_PASSWORD`            | `password`                   | Password for Keystone User       |
-| `OS_PROJECT_DOMAIN_NAME` | `Default`                    | User Project Domain Name         |
-| `OS_AUTH_URL`            | `http://keystone:35357/v3/`  | Keystone URL                     |
-| `OS_PROJECT_NAME`        | `mini-mon`                   | User Project Name                |
-| `OS_USERNAME`            | `mini-mon`                   | Keystone User Name               |
-| `OS_USER_DOMAIN_NAME`    | `Default`                    | Keystone User Domain Name        |
+| Variable                    | Default                      | Description                      |
+|-----------------------------|------------------------------|----------------------------------|
+| `MONASCA_WAIT_FOR_API`      | `true`                       | Ensure Monasca API is available  |
+| `KEYSTONE_DEFAULTS_ENABLED` | `true`                       | Sets all OS defaults                |
+| `OS_PASSWORD`               | `password`                   | Password for Keystone User       |
+| `OS_PROJECT_DOMAIN_NAME`    | `Default`                    | User Project Domain Name         |
+| `OS_AUTH_URL`               | `http://keystone:35357/v3/`  | Keystone URL                     |
+| `OS_PROJECT_NAME`           | `mini-mon`                   | User Project Name                |
+| `OS_USERNAME`               | `mini-mon`                   | Keystone User Name               |
+| `OS_USER_DOMAIN_NAME`       | `Default`                    | Keystone User Domain Name        |
 
 The yaml file describing the Notifications and Alarm Definitions is available
 [in the repository][2].

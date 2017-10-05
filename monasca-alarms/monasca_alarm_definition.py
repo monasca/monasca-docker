@@ -135,6 +135,7 @@ import os
 import sys
 import yaml
 
+monascaclient_found = False
 try:
     from monascaclient import client
     from keystoneclient import discover

@@ -174,23 +174,26 @@ class MonascaLoadDefinitions(object):
         """Authenticate to Keystone and set self._token and self._api_url
         """
         if not self._args['keystone_token']:
-#            try:
-            auth = keystoneauth1.identity.Password(**self._args['keystone_kwargs'])
-            sess = keystoneauth1.session.Session(auth=auth)
-            dis = discover.Discover(session=sess)
-            ks = disc.create_client()
-            token_dict = ks.auth_ref
-            if not token_dict:
-                raise Exception('Authentication failed at {}'
-                                .format(self._args['auth_url']))
-#            except Exception as err:
-#                raise Exception('Keystone KSClient Exception: {}'.format(err))
+            try:
+                auth = keystoneauth1.identity.Password(**self._args['keystone_kwargs'])
+                sess = keystoneauth1.session.Session(auth=auth)
+                disc = discover.Discover(session=sess)
+                ks = disc.create_client()
+                token_dict = ks.get_raw_token_from_identity_service(**self._args['keystone_kwargs'])
+                if not token_dict:
+                    raise Exception('Authentication failed at {}'
+                                .format(self._args['keystone_kwargs']['auth_url']))
+            except Exception as err:
+                raise Exception('Keystone KSClient Exception: {}'.format(err))
 
-            token_dict = ks.auth_ref
             if not token_dict:
                 raise Exception('Authentication failed at {}'
                                 .format(self._args['auth_url']))
-            self._token = token_dict['token']['id']
+            if 'auth_token' in token_dict: 
+                self._token = token_dict['auth_token'] 
+            else:
+                self._token = token_dict['token']['id']
+            print(self._token)
             if not self._args['monasca_api_url']:
                 self._api_url = ks.monasca_url
             else:

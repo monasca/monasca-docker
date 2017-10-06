@@ -65,6 +65,8 @@ services:
 
   log-api:
     image: monasca/log-api:${MON_LOG_API_VERSION}
+    environment:
+      LOGSPOUT: ignore
     depends_on:
       - keystone
       - zookeeper

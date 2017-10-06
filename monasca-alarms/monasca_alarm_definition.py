@@ -165,7 +165,6 @@ class MonascaLoadDefinitions(object):
     """
     def __init__(self, args):
         self._args = args
-        print(args)
         self._existing_notifications = None
         self._existing_alarm_definitions = None
         self._verbose = args['verbose']
@@ -175,35 +174,32 @@ class MonascaLoadDefinitions(object):
         """
         if not self._args['keystone_token']:
             try:
-                auth = keystoneauth1.identity.Password(**self._args['keystone_kwargs'])
+                ks_kwargs = self._args['keystone_kwargs']
+                auth = keystoneauth1.identity.Password(**ks_kwargs)
                 sess = keystoneauth1.session.Session(auth=auth)
                 disc = discover.Discover(session=sess)
                 ks = disc.create_client()
-                token_dict = ks.get_raw_token_from_identity_service(**self._args['keystone_kwargs'])
+                try:
+                    token_dict = ks.get_raw_token_from_identity_service(**ks_kwargs)
+                except Exception:
+                    ks_kwargs['auth_url'] += '/' + ks.version
+                    token_dict = ks.get_raw_token_from_identity_service(**ks_kwargs)
                 if not token_dict:
                     raise Exception('Authentication failed at {}'
-                                .format(self._args['keystone_kwargs']['auth_url']))
+                                    .format(self._args['keystone_kwargs']['auth_url']))
             except Exception as err:
                 raise Exception('Keystone KSClient Exception: {}'.format(err))
 
-            if not token_dict:
-                raise Exception('Authentication failed at {}'
-                                .format(self._args['auth_url']))
             if 'auth_token' in token_dict: 
                 self._token = token_dict['auth_token'] 
             else:
                 self._token = token_dict['token']['id']
-            print(self._token)
-            if not self._args['monasca_api_url']:
-                self._api_url = ks.monasca_url
-            else:
-                self._api_url = self._args['monasca_api_url']
         else:
-            if self._args['monasca_api_url'] is None:
-                raise Exception('Error: When specifying keystone_token, '
-                                'monasca_api_url is required')
             self._token = self._args['keystone_token']
-            self._api_url = self._args['monasca_api_url']
+        if self._args['monasca_api_url'] is None:
+            raise Exception('Error: When specifying keystone_token, '
+                            'monasca_api_url is required')
+        self._api_url = self._args['monasca_api_url']
 
     def _get_existing_notifications(self):
         if self._existing_notifications is None:
@@ -225,7 +221,10 @@ class MonascaLoadDefinitions(object):
         yaml_data = yaml.safe_load(yaml_text)
 
         self._keystone_auth()
-        self._monasca = client.Client(self._args['api_version'], self._api_url, token=self._token, **self._args['keystone_kwargs'])
+        self._monasca = client.Client(self._args['api_version'],
+                                      self._api_url,
+                                      token=self._token,
+                                      **self._args['keystone_kwargs'])
         self._print_message('Using Monasca at {}'.format(self._api_url))
         if 'notifications' not in yaml_data:
             raise Exception('No notifications section in {}'.format(data_file))
@@ -590,7 +589,7 @@ def main(args=None):
                         " or a token via --os-auth-token or"
                         " env[OS_AUTH_TOKEN]")
 
-    keystone_kwargs = {
+    all_keystone_kwargs = {
         'auth_url': args.os_auth_url,
         'username': args.os_username,
         'password': args.os_password,
@@ -602,9 +601,10 @@ def main(args=None):
         'domain_id': args.os_domain_id,
         'domain_name': args.os_domain_name
     }
+    ks_kwargs = dict((k, v) for k, v in all_keystone_kwargs.iteritems() if v)
 
     kwargs = {
-        'keystone_kwargs': keystone_kwargs,
+        'keystone_kwargs': ks_kwargs,
         'keystone_token': args.os_auth_token,
         'endpoint_type': args.os_endpoint_type,
         'os_cacert': args.os_cacert,

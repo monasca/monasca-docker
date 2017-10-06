@@ -11,16 +11,14 @@ input {
 
 filter {
     ruby {
-        code => "
-            event['docker'].each do |key, value|
-                event['docker'][key].nil? && event['docker'].delete(key)
+        code => '
+            event["dimensions"] = []
+            event["docker"].each do |key, value|
+              unless event["docker"][key].nil?
+                event["dimensions"].push([key, value].to_s)
+              end
             end
-        "
-    }
-
-    json_encode {
-        source => "docker"
-        target => "dimensions"
+        '
     }
     mutate {
         remove_field => ["docker"]

@@ -121,7 +121,7 @@ sporadicMetricNamespaces:
 
 database:
   driverClass: com.mysql.jdbc.Driver
-  url: "jdbc:mysql://{{ MYSQL_DB_HOST | default('mysql') }}:{{ MYSQL_DB_PORT | default('3306') }}/{{ MYSQL_DB_DATABASE | default('mon') }}?useSSL={{ USE_SSL_ENABLED }}"
+  url: "jdbc:mysql://{{ MYSQL_DB_HOST | default('mysql') }}:{{ MYSQL_DB_PORT | default('3306') }}/{{ MYSQL_DB_DATABASE | default('mon') }}?useSSL=true"
   user: "{{ MYSQL_DB_USERNAME | default('thresh') }}"
   password: "{{ MYSQL_DB_PASSWORD | default('password') }}"
   properties:

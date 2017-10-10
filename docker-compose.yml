@@ -40,11 +40,14 @@ services:
 
   alarms:
     image: monasca/alarms:${MON_ALARMS_VERSION}
+    depends_on:
+      - keystone
+      - monasca
 
   zookeeper:
     image: zookeeper:${ZOOKEEPER_VERSION}
     restart: on-failure
-    
+
   kafka:
     image: monasca/kafka:${MON_KAFKA_VERSION}
     restart: on-failure

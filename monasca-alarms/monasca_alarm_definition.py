@@ -165,14 +165,6 @@ class MonascaLoadDefinitions(object):
         self._existing_alarm_definitions = None
         self._verbose = args['verbose']
 
-    def _keystone_auth(self):
-        """Authenticate to Keystone and set self._token and self._api_url
-        """
-        if self._args['monasca_api_url'] is None:
-            raise Exception('Error: When specifying keystone_token, '
-                            'monasca_api_url is required')
-        self._api_url = self._args['monasca_api_url']
-
     def _get_existing_notifications(self):
         if self._existing_notifications is None:
             self._existing_notifications = self._monasca.notifications.list()
@@ -192,11 +184,15 @@ class MonascaLoadDefinitions(object):
 
         yaml_data = yaml.safe_load(yaml_text)
 
-        self._keystone_auth()
+        if self._args['monasca_api_url'] is None:
+            raise Exception('Error: When specifying keystone_token, '
+                            'monasca_api_url is required')
+        api_url = self._args['monasca_api_url']
+
         self._monasca = client.Client(self._args['api_version'],
-                                      self._api_url,
+                                      api_url,
                                       **self._args['keystone_kwargs'])
-        self._print_message('Using Monasca at {}'.format(self._api_url))
+        self._print_message('Using Monasca at {}'.format(api_url))
         if 'notifications' not in yaml_data:
             raise Exception('No notifications section in {}'.format(data_file))
 
@@ -587,7 +583,7 @@ def main(args=None):
     }
 
     if not monascaclient_found:
-        print("python-monascaclient and python-keystoneclient are required", file=sys.stderr)
+        print("python-monascaclient>=1.6.0 is required", file=sys.stderr)
         sys.exit(1)
 
     if not args.definitions_file:

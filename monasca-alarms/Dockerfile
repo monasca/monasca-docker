@@ -8,7 +8,7 @@ ARG REBUILD=1
 ENV MONASCA_WAIT_FOR_API=true \
     KEYSTONE_DEFAULTS_ENABLED=true
 
-RUN pip install Jinja2 python-keystoneclient
+RUN pip install Jinja2
 
 COPY definitions.yml.j2 /config/definitions.yml.j2
 COPY monasca_alarm_definition.py template.py start.sh /

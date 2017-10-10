@@ -138,8 +138,6 @@ import yaml
 monascaclient_found = False
 try:
     from monascaclient import client
-    from keystoneclient import discover
-    import keystoneauth1
 except ImportError:
     paths = ["/opt/stack/service/monascaclient/venv", "/opt/monasca"]
     for path in paths:
@@ -149,8 +147,6 @@ except ImportError:
         try:
             execfile(activate_this, dict(__file__=activate_this))
             from monascaclient import client
-            from keystoneclient import discover
-            import keystoneauth1
         except ImportError:
             monascaclient_found = False
         else:
@@ -172,30 +168,6 @@ class MonascaLoadDefinitions(object):
     def _keystone_auth(self):
         """Authenticate to Keystone and set self._token and self._api_url
         """
-        if not self._args['keystone_token']:
-            try:
-                ks_kwargs = self._args['keystone_kwargs']
-                auth = keystoneauth1.identity.Password(**ks_kwargs)
-                sess = keystoneauth1.session.Session(auth=auth)
-                disc = discover.Discover(session=sess)
-                ks = disc.create_client()
-                try:
-                    token_dict = ks.get_raw_token_from_identity_service(**ks_kwargs)
-                except Exception:
-                    ks_kwargs['auth_url'] += '/' + ks.version
-                    token_dict = ks.get_raw_token_from_identity_service(**ks_kwargs)
-                if not token_dict:
-                    raise Exception('Authentication failed at {}'
-                                    .format(self._args['keystone_kwargs']['auth_url']))
-            except Exception as err:
-                raise Exception('Keystone KSClient Exception: {}'.format(err))
-
-            if 'auth_token' in token_dict: 
-                self._token = token_dict['auth_token'] 
-            else:
-                self._token = token_dict['token']['id']
-        else:
-            self._token = self._args['keystone_token']
         if self._args['monasca_api_url'] is None:
             raise Exception('Error: When specifying keystone_token, '
                             'monasca_api_url is required')
@@ -223,7 +195,6 @@ class MonascaLoadDefinitions(object):
         self._keystone_auth()
         self._monasca = client.Client(self._args['api_version'],
                                       self._api_url,
-                                      token=self._token,
                                       **self._args['keystone_kwargs'])
         self._print_message('Using Monasca at {}'.format(self._api_url))
         if 'notifications' not in yaml_data:

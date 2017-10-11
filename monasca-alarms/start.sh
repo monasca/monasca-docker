@@ -13,6 +13,8 @@ if [ "$KEYSTONE_DEFAULTS_ENABLED" == "true" ]; then
   export OS_PROJECT_DOMAIN_NAME=${OS_PROJECT_DOMAIN_NAME:-"Default"}
 fi
 
+export MONASCA_API_URL=${MONASCA_API_URL:-"http://monasca:8070/v2.0"}
+
 if [ -n "$MONASCA_WAIT_FOR_API" ]; then
   echo "Waiting for Monasca API to become available..."
   success="false"

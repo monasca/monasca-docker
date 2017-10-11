@@ -5,3 +5,9 @@ domains:
     projects: []
     roles: []
     users: []
+
+services:
+  example:
+    type:
+    description:
+    endpoints: []

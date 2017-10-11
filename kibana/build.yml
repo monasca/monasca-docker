@@ -1,0 +1,10 @@
+repository: monasca/kibana
+variants:
+  - tag: latest
+    aliases:
+      - :4.6.3-master
+      - :4.6-master
+      - :4-master
+    args:
+      KIBANA_VERSION: 4.6.3
+      KIBANA_PLUGIN_BRANCH: master

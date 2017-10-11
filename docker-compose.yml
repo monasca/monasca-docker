@@ -1,19 +1,60 @@
-version: '2'
+version: '3'
 services:
+
+  memcached:
+    image: memcached:${MEMCACHED_VERSION}
+
   influxdb:
-    image: influxdb:latest
+    image: influxdb:${INFLUXDB_VERSION}
   influxdb-init:
-    image: monasca/influxdb-init:latest
+    image: monasca/influxdb-init:${INFLUXDB_INIT_VERSION}
     depends_on:
       - influxdb
 
+  # cadvisor will allow host metrics to be collected, but requires significant
+  # access to the host system
+  # if this is not desired, the following can be commented out, and the CADVISOR
+  # environment variable should be set to "false" in the `agent-collector`
+  # block - however no metrics will be collected
+  cadvisor:
+    image: google/cadvisor:${CADVISOR_VERSION}
+    volumes:
+      - "/:/rootfs:ro"
+      - "/var/run:/var/run:rw"
+      - "/sys:/sys:ro"
+      - "/var/lib/docker:/var/lib/docker:ro"
+
+  agent-forwarder:
+    image: monasca/agent-forwarder:${MON_AGENT_FORWARDER_VERSION}
+    environment:
+      NON_LOCAL_TRAFFIC: "true"
+
+  agent-collector:
+    image: monasca/agent-collector:${MON_AGENT_COLLECTOR_VERSION}
+    restart: on-failure
+    environment:
+      AGENT_HOSTNAME: "docker-host"
+      FORWARDER_URL: "http://agent-forwarder:17123"
+      CADVISOR: "true"
+      CADVISOR_URL: "http://cadvisor:8080/"
+
   alarms:
-    image: monasca/alarms:1.1.0
+    image: monasca/alarms:${MON_ALARMS_VERSION}
+    depends_on:
+      - keystone
+      - monasca
 
   zookeeper:
-    image: zookeeper:3.3
+    image: zookeeper:${ZOOKEEPER_VERSION}
+    restart: on-failure
+
   kafka:
-    image: monasca/kafka:0.9.0.1-2.11
+    image: monasca/kafka:${MON_KAFKA_VERSION}
+    restart: on-failure
+    depends_on:
+      - zookeeper
+  kafka-init:
+    image: monasca/kafka-init:${MON_KAFKA_INIT_VERSION}
     environment:
       ZOOKEEPER_CONNECTION_STRING: "zookeeper:2181"
       KAFKA_DELETE_TOPIC_ENABLE: "true"
@@ -29,17 +70,17 @@ services:
       - zookeeper
 
   mysql:
-    image: mysql:5.5
+    image: mysql:${MYSQL_VERSION}
     environment:
       MYSQL_ROOT_PASSWORD: secretmysql
   mysql-init:
-    image: monasca/mysql-init:1.5.0
+    image: monasca/mysql-init:${MYSQL_INIT_VERSION}
     environment:
       MYSQL_INIT_DISABLE_REMOTE_ROOT: "false"
       MYSQL_INIT_RANDOM_PASSWORD: "false"
 
   keystone:
-    image: monasca/keystone:1.0.7
+    image: monasca/keystone:${MON_KEYSTONE_VERSION}
     environment:
       KEYSTONE_HOST: keystone
       KEYSTONE_PASSWORD: secretadmin
@@ -48,8 +89,6 @@ services:
       KEYSTONE_MYSQL_USER: keystone
       KEYSTONE_MYSQL_PASSWORD: keystone
       KEYSTONE_MYSQL_DATABASE: keystone
-    volumes:
-      - ./keystone/preload.yml:/preload.yml
     depends_on:
       - mysql
     ports:
@@ -57,10 +96,10 @@ services:
       - "35357:35357"
 
   monasca-sidecar:
-    image: timothyb89/monasca-sidecar:1.0.0
+    image: timothyb89/monasca-sidecar:${MON_SIDECAR_VERSION}
 
   monasca:
-    image: monasca/api:master-prometheus
+    image: monasca/api:${MON_API_VERSION}
     environment:
       SIDECAR_URL: http://monasca-sidecar:4888/v1/ingest
     depends_on:
@@ -70,41 +109,32 @@ services:
       - zookeeper
       - kafka
       - monasca-sidecar
+      - memcached
     ports:
       - "8070:8070"
 
   monasca-persister:
-    image: monasca/persister:master
+    image: monasca/persister:${MON_PERSISTER_VERSION}
+    restart: on-failure
     depends_on:
       - monasca
       - influxdb
       - zookeeper
       - kafka
 
-  storm-nimbus:
-    image: monasca/storm:1.0.3
-    command: storm nimbus
+  thresh:
+    image: monasca/thresh:${MON_THRESH_VERSION}
+    environment:
+      NO_STORM_CLUSTER: "true"
+      WORKER_MAX_HEAP_MB: "256"
     depends_on:
       - zookeeper
       - kafka
-
-  storm-supervisor:
-    image: monasca/storm:1.0.3
-    command: storm supervisor
-    depends_on:
-      - storm-nimbus
-      - zookeeper
-      - kafka
-
-  thresh-init:
-    image: monasca/thresh:master
-    depends_on:
-      - zookeeper
-      - storm-nimbus
-      - storm-supervisor
 
   monasca-notification:
-    image: monasca/notification:master
+    image: monasca/notification:${MON_NOTIFICATION_VERSION}
+    environment:
+      NF_PLUGINS: "webhook"
     depends_on:
       - monasca
       - zookeeper
@@ -112,7 +142,7 @@ services:
       - mysql
 
   grafana:
-    image: monasca/grafana:4.0.0-1.1.0
+    image: monasca/grafana:${MON_GRAFANA_VERSION}
     environment:
       GF_AUTH_BASIC_ENABLED: "false"
       GF_USERS_ALLOW_SIGN_UP: "true"
@@ -128,6 +158,6 @@ services:
       - monasca
 
   grafana-init:
-    image: monasca/grafana-init:1.1.0
+    image: monasca/grafana-init:${MON_GRAFANA_INIT_VERSION}
     depends_on:
       - grafana

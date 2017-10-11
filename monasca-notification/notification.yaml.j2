@@ -59,7 +59,7 @@ notification_types:
         port: {{ NF_EMAIL_PORT | default(25) }}
         user: "{{ NF_EMAIL_USER }}"
         password: "{{ NF_EMAIL_PASSWORD }}"
-        timeout: "{{ NF_EMAIL_TIMEOUT | default(15) }}"
+        timeout: {{ NF_EMAIL_TIMEOUT | default(15) }}
         from_addr: "{{ NF_EMAIL_FROM_ADDR }}"
 {% endif -%}
 

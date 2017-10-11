@@ -15,7 +15,8 @@ ENV ZOOKEEPER_SERVERS="zookeeper" \
   NIMBUS_SEEDS="storm-nimbus" \
   NIMBUS_MAX_HEAP_MB="256" \
   UI_MAX_HEAP_MB="768" \
-  STORM_HOSTNAME_FROM_IP="true"
+  WORKER_LOGS_TO_STDOUT="false" \
+  USE_SSL_ENABLED="true"
 
 COPY storm_mirror.py clean_externals.py /
 

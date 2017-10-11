@@ -1,0 +1,7 @@
+repository: monasca/agent-base
+variants:
+  - tag: master
+    aliases:
+      - :master-{date}-{time}
+    args:
+      TIMESTAMP_SLUG: 20170809-155207

@@ -14,6 +14,14 @@ ZOOKEEPER_WAIT_TIMEOUT=${ZOOKEEPER_WAIT_TIMEOUT:-"3"}
 ZOOKEEPER_WAIT_DELAY=${ZOOKEEPER_WAIT_DELAY:-"10"}
 ZOOKEEPER_WAIT_RETRIES=${ZOOKEEPER_WAIT_RETRIES:-"20"}
 
+export SERVER_LOG_LEVEL=${SERVER_LOG_LEVEL:-"INFO"}
+export REQUEST_LOG_LEVEL=${REQUEST_LOG_LEVEL:-"WARN"}
+export CONTROLLER_LOG_LEVEL=${CONTROLLER_LOG_LEVEL:-"INFO"}
+export LOG_CLEANER_LOG_LEVEL=${LOG_CLEANER_LOG_LEVEL:-"INFO"}
+export STATE_CHANGE_LOG_LEVEL=${STATE_CHANGE_LOG_LEVEL:-"INFO"}
+export AUTHORIZER_LOG_LEVEL=${AUTHORIZER_LOG_LEVEL:-"WARN"}
+GC_LOG_ENABLED=${GC_LOG_ENABLED:-"False"}
+
 first_zk=$(echo $ZOOKEEPER_CONNECTION_STRING | cut -d, -f1)
 zk_host=$(echo $first_zk | cut -d\: -f1)
 zk_port=$(echo $first_zk | cut -d\: -f2)
@@ -64,6 +72,12 @@ for f in $CONFIG_TEMPLATES/*.properties.j2; do
   fi
 done
 
+if [ -z "$KAFKA_HEAP_OPTS" ]; then
+  max_heap=$(python /heap.py $KAFKA_MAX_HEAP_MB)
+  KAFKA_HEAP_OPTS="-Xmx${max_heap} -Xms${max_heap}"
+  export KAFKA_HEAP_OPTS
+fi
+
 if [ "$KAFKA_JMX" = "true" ]; then
   KAFKA_JMX_PORT=${KAFKA_JMX_PORT:-"7203"}
 
@@ -71,7 +85,7 @@ if [ "$KAFKA_JMX" = "true" ]; then
   # we don't export any kafka options by default so JVMs spawned on this
   # container don't always hit port conflicts
   # this should make it possible to e.g. run scripts in /kafka/bin/ on the
-  # runnign server without the JVM crashing due to the RMI port being used
+  # running server without the JVM crashing due to the RMI port being used
   export JMX_PORT=$KAFKA_JMX_PORT
 
   if [ -z "$KAFKA_JMX_OPTS" ]; then
@@ -84,8 +98,11 @@ if [ "$KAFKA_JMX" = "true" ]; then
   fi
 fi
 
-echo "Creating topics..."
-python /create_topics.py &
+if [ "$GC_LOG_ENABLED" != "true" ]; then
+  # This turns off the GC logging in /kafka/bin/kafka-server-start.sh
+  # It is a hack, but I could not find another way to do it
+  sed "-i.sv" -e "s/-loggc//" /kafka/bin/kafka-server-start.sh
+fi
 
 echo "Starting kafka..."
 exec /kafka/bin/kafka-server-start.sh "$CONFIG_DEST/server.properties"

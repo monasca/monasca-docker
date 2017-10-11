@@ -20,7 +20,7 @@ else
     internal_url=${KEYSTONE_INTERNAL_URL:-"http://localhost:5000"}
 fi
 
-if [[ -n "$KUBERNETES_RESOLVE_PUBLIC_ENDPOINTS" ]]; then
+if [[ "$KUBERNETES_RESOLVE_PUBLIC_ENDPOINTS" = "true" ]]; then
     keystone_service_name=${KEYSTONE_SERVICE_NAME:-"keystone"}
     service_url=$(python /k8s_get_service.py "${keystone_service_name}" http)
     if [[ $? -eq 0 ]]; then

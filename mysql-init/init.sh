@@ -1,8 +1,6 @@
 #!/bin/sh
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 
-set -x
-
 MYSQL_INIT_HOST=${MYSQL_INIT_HOST:-"mysql"}
 MYSQL_INIT_PORT=${MYSQL_INIT_PORT:-"3306"}
 MYSQL_INIT_USERNAME=${MYSQL_INIT_USERNAME:-"root"}
@@ -55,7 +53,8 @@ clean_install() {
   done
 
   for f in $USER_SCRIPTS/*.sql; do
-    if [ -e "$f" ]; then
+    # SQL files with zero length are ignored
+    if [ -s "$f" ]; then
       echo "Running script: $f"
       mysql --host="$MYSQL_INIT_HOST" \
           --user="$MYSQL_INIT_USERNAME" \
@@ -159,7 +158,8 @@ schema_upgrade() {
     done
 
     for f in $UPGRADE_SCRIPTS/$diff_version/*.sql; do
-      if [ -e "$f" ]; then
+      # SQL files with zero length are ignored
+      if [ -s "$f" ]; then
         echo "Running script: $f"
         set +x
         mysql --host="$MYSQL_INIT_HOST" \
@@ -196,6 +196,7 @@ schema_upgrade() {
 
 }
 
+wait_mysql
 query="select major, minor, patch from schema_version order by id desc limit 1;"
 version=$(echo "$query" | mysql \
     --host="$MYSQL_INIT_HOST" \

@@ -57,7 +57,7 @@ if [ "$ZOOKEEPER_WAIT" = "true" ]; then
   fi
 fi
 
-if [ "$STORM_HOSTNAME_FROM_IP" = "true" ]; then
+if [ -z "$STORM_LOCAL_HOSTNAME" ]; then
   # see also: http://stackoverflow.com/a/21336679
   ip=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
   echo "Using autodetected IP as advertised hostname: $ip"
@@ -112,5 +112,24 @@ template_dir() {
 
 template_dir "$CONFIG_TEMPLATES" "$CONFIG_DEST"
 template_dir "$LOG_TEMPLATES" "$LOG_DEST"
+
+if [ "$WORKER_LOGS_TO_STDOUT" = "true" ]; then
+  for PORT in `echo $SUPERVISOR_SLOTS_PORTS | sed -e "s/,/ /" `; do
+    LOGDIR="/storm/logs/workers-artifacts/thresh/$PORT"
+    mkdir -p "$LOGDIR"
+    WORKER_LOG="$LOGDIR/worker.log"
+    RECREATE="true"
+    if [ -e "$WORKER_LOG" ]; then
+      if [ -L "$WORKER_LOG" ]; then
+        RECREATE="false"
+      else
+        rm -f "$WORKER_LOG"
+      fi
+    fi
+    if [ $RECREATE = "true" ]; then
+      ln -s /proc/1/fd/1 "$WORKER_LOG"
+    fi
+  done
+fi
 
 exec "$@"

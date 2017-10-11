@@ -53,8 +53,9 @@ Several parameters can be specified using environment variables:
 | `ZOOKEEPER_WAIT`         | `true`         | If `true`, wait for ZK before startup |
 | `SUPERVISOR_SLOTS_PORTS` | `6701,6702`    | List of supervisor ports, 1 per process |
 | `NIMBUS_SEEDS`           | `storm-nimbus` | Comma-separated list of Nimbus hosts  |
-| `STORM_HOSTNAME_FROM_IP` | `true`         | If `true`, use container IP as local hostname |
+| `STORM_LOCAL_HOSTNAME`   |                | If set, use as storm hostname, if not set, use container IP |
 | `LOG_LEVEL`              | `warn`         | log4j2 console logging level          |
+| `WORKER_LOGS_TO_STDOUT`  | `false`        | if `true`, workers log to container stdout |
 
 Note that the configuration template also supports a number of less common
 environment variables. See the [`storm.yaml.j2`][5] template for a full list.
@@ -91,28 +92,29 @@ The final max heap size for each component is then the smallest of:
 Configuration for [monasca-thresh][6] is included by default and supports a
 number of additional configuration options:
 
-| Variable                      | Default      | Description                 |
-|-------------------------------|--------------|-----------------------------|
-| `METRIC_SPOUT_THREADS`        | `2`          | Metric Spout threads        |
-| `METRIC_SPOUT_TASKS`          | `2`          | Metric Spout tasks          |
-| `KAFKA_URI`                   | `kafka:9092` | Kafka host                  |
-| `MYSQL_DB_HOST`               | `mysql`      | MySQL host                  |
-| `MYSQL_DB_PORT`               | `3306`       | MySQL port                  |
-| `MYSQL_DB_DATABASE`           | `mon`        | Monasca database name       |
-| `MYSQL_DB_USERNAME`           | `thresh`     | MySQL user                  |
-| `MYSQL_DB_PASSWORD`           | `password`   | MySQL password              |
-| `EVENT_SPOUT_THREADS`         | `2`          | Event Spout Threads         |
-| `EVENT_SPOUT_TASKS`           | `2`          | Event Spout Tasks           |
-| `EVENT_BOLT_THREADS`          | `2`          | Event Bolt Threads          |
-| `EVENT_BOLT_TASKS`            | `2`          | Event Bolt Tasks            |
-| `FILTERING_BOLT_THREADS`      | `2`          | Filtering Bolt Threads      |
-| `FILTERING_BOLT_TASKS`        | `2`          | Filtering Bolt Tasks        |
-| `ALARM_CREATION_BOLT_THREADS` | `2`          | Alarm Creation Bolt Threads |
-| `ALARM_CREATION_BOLT_TASKS`   | `2`          | Alarm Creation Bolt Tasks   |
-| `AGGREGATION_BOLT_THREADS`    | `2`          | Aggregation Bolt Threads    |
-| `AGGREGATION_BOLT_TASKS`      | `2`          | Aggregation Bolt Tasks      |
-| `THRESHOLDING_BOLT_THREADS`   | `2`          | Thresholding Bolt Threads   |
-| `THRESHOLDING_BOLT_TASKS`     | `2`          | Thresholding Bolt Tasks     |
+| Variable                      | Default      | Description                   |
+|-------------------------------|--------------|-------------------------------|
+| `METRIC_SPOUT_THREADS`        | `2`          | Metric Spout threads          |
+| `METRIC_SPOUT_TASKS`          | `2`          | Metric Spout tasks            |
+| `KAFKA_URI`                   | `kafka:9092` | Kafka host                    |
+| `MYSQL_DB_HOST`               | `mysql`      | MySQL host                    |
+| `MYSQL_DB_PORT`               | `3306`       | MySQL port                    |
+| `MYSQL_DB_DATABASE`           | `mon`        | Monasca database name         |
+| `MYSQL_DB_USERNAME`           | `thresh`     | MySQL user                    |
+| `MYSQL_DB_PASSWORD`           | `password`   | MySQL password                |
+| `EVENT_SPOUT_THREADS`         | `2`          | Event Spout Threads           |
+| `EVENT_SPOUT_TASKS`           | `2`          | Event Spout Tasks             |
+| `EVENT_BOLT_THREADS`          | `2`          | Event Bolt Threads            |
+| `EVENT_BOLT_TASKS`            | `2`          | Event Bolt Tasks              |
+| `FILTERING_BOLT_THREADS`      | `2`          | Filtering Bolt Threads        |
+| `FILTERING_BOLT_TASKS`        | `2`          | Filtering Bolt Tasks          |
+| `ALARM_CREATION_BOLT_THREADS` | `2`          | Alarm Creation Bolt Threads   |
+| `ALARM_CREATION_BOLT_TASKS`   | `2`          | Alarm Creation Bolt Tasks     |
+| `AGGREGATION_BOLT_THREADS`    | `2`          | Aggregation Bolt Threads      |
+| `AGGREGATION_BOLT_TASKS`      | `2`          | Aggregation Bolt Tasks        |
+| `THRESHOLDING_BOLT_THREADS`   | `2`          | Thresholding Bolt Threads     |
+| `THRESHOLDING_BOLT_TASKS`     | `2`          | Thresholding Bolt Tasks       |
+| `USE_SSL_ENABLED`             | `true`       | Use SSL validation with MySql |
 
 Note that monasca-thresh configs can be removed by overwriting or removing
 `/templates/thresh-config.yml.j2`.

@@ -52,61 +52,31 @@ Several parameters can be specified using environment variables:
 | `KAFKA_HOSTNAME_FROM_IP`      | `true`  | If `true`, set advertised hostname to container IP  |
 | `KAFKA_ADVERTISED_HOST_NAME`  | from IP | If set, use value as advertised hostname       |
 | `KAFKA_BROKER_ID`             | `-1`    | Unique Kafka broker ID, `-1` for auto          |
-| `KAFKA_CREATE_TOPICS`         | unset   | Topics to create on startup, see below         |
-| `KAFKA_TOPIC_CONFIG`          | unset   | Default config args for created topics         |
-| `KAFKA_DELETE_TOPIC_ENABLE`   | `false` | Enable topic deletion                          |
 | `KAFKA_LISTEN_PORT`           | `9092`  | Port for Kafka to listen on                    |
 | `KAFKA_ADVERTISED_PORT`       | `$KAFKA_LISTEN_PORT` | Kafka port advertised to clients  |
 | `KAFKA_CONTROLLED_SHUTDOWN_ENABLE` | `true` | If `true`, enable [controlled shutdown][6] |
 | `KAFKA_JMX`                   | unset   | If `true`, expose JMX metrics over TCP         |
 | `KAFKA_JMX_PORT`              | `7203`  | Port to expose JMX metrics                     |
 | `KAFKA_JMX_OPTS`              | no SSL/auth, etc | Override default opts                 |
+| `SERVER_LOG_LEVEL`            | `INFO`  | Log Level for server                           |
+| `REQUEST_LOG_LEVEL`           | `WARN`  | Log Level for request logging                  |
+| `CONTROLLER_LOG_LEVEL`        | `INFO`  | Log Level for controller                       |
+| `LOG_CLEANER_LOG_LEVEL`       | `INFO`  | Log Level for log cleaner                      |
+| `STATE_CHANGE_LOG_LEVEL`      | `INFO`  | Log Level for state changes                    |
+| `AUTHORIZER_LOG_LEVEL`        | `WARN`  | Log Level for the authorizer                   |
+| `GC_LOG_ENABLED`              | `False` | If True, JVM garbage collection log enabled    |
 
-### Topic creation
+### Log Files
 
-This image will create topics automatically on first startup when
-`KAFKA_CREATE_TOPICS` is set:
-
-```
-docker run \
-    --name kafka \
-    --link zookeeper \
-    -e KAFKA_CREATE_TOPICS="topic1:64:1,topic2:16:1"
-    monasca/kafka:latest
-```
-
-The variable should be set to a comma-separated list of topic strings. These
-each look like so:
+Multiple Kafka log files are written to stdout for the container. They can be distinguished via
+the logfile attribute in each message. For example:
 
 ```
-[topic name]:partitions=[partitions]:replicas=[replicas]:[key]=[val]:[key]=[val]
+kafka_1                 | [2017-06-15 06:32:09,572] INFO logfile=server.log Loading logs. (kafka.log.LogManager)
 ```
 
-In the above, `partitions` and `replicas` are required, and tokens surrounded by
-`[brackets]` should be replaced with the desired value. All other properties
-will be translated to `--config key=val` when running `kafka-topics.sh`.
-Example:
-
-```
-my_topic_name:partitions=3:replicas=1:segment.ms=900000
-```
-
-Partitions and replicas also support an index-based shorthand, so the following
-works as well:
-
-```
-[topic name]:[partitions]:[replicas]
-```
-
-As an example, this is a valid `KAFKA_CREATE_TOPICS` string for [Monasca][8]
-installations as used in the [docker-compose][4] environment:
-
-    metrics:64:1,alarm-state-transitions:12:1,alarm-notifications:12:1,retry-notifications:3:1,events:12:1,60-seconds-notifications:3:1
-
-If desired, default config parameters can be set using `KAFKA_TOPIC_CONFIG`.
-These use `key=value,key2=value2` syntax and will be translated into
-`--config key=value` arguments as described above. If a duplicate key is passed
-in a specific topic string, it will override the value specified here.
+If `GC_LOG_ENABLED` is set to True, the JVM Garbage Collection log will be written within the
+container at /kafka/logs/kafkaServer-gc.log. It can't be redirected to stdout.
 
 [1]: http://kafka.apache.org/
 [2]: https://github.com/hpcloud-mon/monasca-docker/blob/master/kafka/
@@ -114,5 +84,3 @@ in a specific topic string, it will override the value specified here.
 [4]: https://github.com/hpcloud-mon/monasca-docker/
 [5]: https://hub.docker.com/r/library/zookeeper/
 [6]: https://kafka.apache.org/documentation/#basic_ops_restarting
-[7]: https://github.com/wurstmeister/kafka-docker
-[8]: https://hub.docker.com/r/monasca/api/

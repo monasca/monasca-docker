@@ -1,15 +1,24 @@
+[default]
+disable_existing_loggers = 0
+
 [loggers]
-keys = root, sqlalchemy, kafka
+keys = root, gunicorn.access, sqlalchemy, kafka
 
 [handlers]
-keys = console
+keys = console, console_access
 
 [formatters]
-keys = context
+keys = context, generic
 
 [logger_root]
 level = {{ LOG_LEVEL_ROOT }}
 handlers = console
+
+[logger_gunicorn.access]
+level = INFO
+handlers = console_access
+propagate = 0
+qualname = gunicorn.access
 
 [logger_sqlalchemy]
 qualname = sqlalchemy.engine
@@ -28,9 +37,20 @@ propagate = 0
 
 [handler_console]
 class = logging.StreamHandler
-args = (sys.stderr,)
+args = (sys.stdout,)
 level = {{ LOG_LEVEL_CONSOLE }}
 formatter = context
 
+[handler_console_access]
+class = logging.StreamHandler
+args = (sys.stdout,)
+level = {{ LOG_LEVEL_ACCESS }}
+formatter = generic
+
 [formatter_context]
 class = oslo_log.formatters.ContextFormatter
+
+[formatter_generic]
+format={{ ACCESS_LOG_FORMAT }}
+datefmt=%Y-%m-%d %H:%M:%S
+class=logging.Formatter

@@ -68,7 +68,8 @@ A number of environment variables can be passed to the container:
 |---------------------------|---------------|----------------------------------|
 | `LOG_LEVEL_ROOT`          | `WARN`        | The level of the root logger     |
 | `LOG_LEVEL_CONSOLE`       | `INFO`        | Minimum level for console output |
-| `API_PORT`                | `8070`        | The API's HTTP port              |
+| `LOG_LEVEL_ACCESS`        | `INFO`        | Minimum level for access output  |
+| `MONASCA_CONTAINER_API_PORT` | `8070`        | The API's HTTP port           |
 | `KAFKA_URI`               | `kafka:9092`  | The host and port for kafka      |
 | `KAFKA_WAIT_FOR_TOPICS`   | `alarm-state-transitions,metrics` | Topics to wait on at startup |
 | `KAFKA_WAIT_RETRIES`      | `24`          | # of kafka wait attempts         |
@@ -84,6 +85,7 @@ A number of environment variables can be passed to the container:
 | `MYSQL_DB`                | `mon`         | MySQL database name              |
 | `MYSQL_WAIT_RETRIES`      | `24`          | # of MySQL connection attempts   |
 | `MYSQL_WAIT_DELAY`        | `5`           | seconds to wait between attempts |
+| `API_MYSQL_DISABLED`      | unset         | if 'true' do not use a mysql database. Only metric API will work |
 | `KEYSTONE_IDENTITY_URI`   | `http://keystone:35357` | Keystone identity address |
 | `KEYSTONE_AUTH_URI`       | `http://keystone:5000`  | Keystone auth address     |
 | `KEYSTONE_ADMIN_USER`     | `admin`       | Keystone admin account user      |
@@ -97,6 +99,9 @@ A number of environment variables can be passed to the container:
 | `AGENT_AUTHORIZED_ROLES`     | `monasca-agent` | Roles for metric write only users |
 | `READ_ONLY_AUTHORIZED_ROLES` | `monasca-read-only-user` | Roles for read only users    |
 | `DELEGATE_AUTHORIZED_ROLES`  | `admin`       | Roles allow to read/write cross tenant ID |
+| `ADD_ACCESS_LOG`  | `true`       | if true, produce an access log on stderr |
+| `ACCESS_LOG_FORMAT`  | `%(asctime)s [%(process)d] gunicorn.access [%(levelname)s] %(message)s` | Log format for access log |
+| `ACCESS_LOG_FIELDS`  | `%(h)s %(l)s %(u)s %(t)s %(r)s %(s)s %(b)s "%(f)s" "%(a)s" %(L)s` | Access log fields |
 
 If additional values need to be overridden, new config files or jinja2 templates
 can be provided by mounting a replacement on top of the original template:

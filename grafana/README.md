@@ -37,8 +37,21 @@ properties:
 Note that in the [Kubernetes environment][6], the URL should instead be
 `http://monasca-api:8070/`.
 
+The dashboard for monasca-ui, which is opened by clicking on "Graph Metric"
+of the 'Alarm' tab, is available. You can use this dashboard outside of monasca-ui
+with the following link.
+`http://your-grafana-url:3000/dashboard/script/drilldown.js`
+Specify the metric name with the key "metric" and dimensions as additional
+parameters if necessary as below.
+`http://your-grafana-url:3000/dashboard/script/drilldown.js?metric=sample&dim1=val1`
+
 Configuration
 -------------
+
+| Variable                 | Default | Description                     |
+|--------------------------|---------|---------------------------------|
+| `GRAFANA_ADMIN_USER`     | `admin` | Grafana admin user name         |
+| `GRAFANA_ADMIN_PASSWORD` | `admin` | Grafana admin user password     |
 
 Grafana can be configured using [environment variables][7], though a
 configuration file can also be mounted into the image at

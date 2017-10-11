@@ -6,7 +6,7 @@ KEYSTONE_ADMIN_USER=${2:-admin}
 KEYSTONE_ADMIN_PASSWORD=${3:-secretadmin}
 KEYSTONE_ADMIN_TENANT=${4:-admin}
 KEYSTONE_ADMIN_DOMAIN=${5:-default}
-API_PORT=${6:-8070}
+MONASCA_CONTAINER_API_PORT=${6:-8070}
 
 KEYSTONE_TOKEN=$(curl --include --silent --show-error --output - --header "Content-Type:application/json" \
     --data '{ "auth": {
@@ -39,7 +39,7 @@ KEYSTONE_TOKEN=$(curl --include --silent --show-error --output - --header "Conte
             }'
     ) && \
 curl --include --silent --show-error --output - --header "X-Auth-Token:${KEYSTONE_TOKEN}" \
-    http://localhost:${API_PORT} 2>&1 | \
+    http://localhost:"${MONASCA_CONTAINER_API_PORT}" 2>&1 | \
     awk '
         BEGIN {status_code="0"; body=""; output=""}
         $1 ~ /^HTTP\// {status_line=$0; status_code=$2}

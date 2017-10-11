@@ -1,0 +1,5 @@
+repository: monasca/elasticsearch-init
+variants:
+  - tag: 0.0.1
+    aliases:
+      - :latest

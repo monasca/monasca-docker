@@ -1,0 +1,60 @@
+input {
+  kafka {
+    zk_connect => "{{ ZOOKEEPER_URI }}"
+    topic_id => "log-transformed"
+    group_id => "log-persister"
+    consumer_id => "monasca_log_persister"
+    consumer_threads => "1"
+  }
+}
+
+filter {
+    date {
+        match => ["[log][timestamp]", "UNIX"]
+        target => "@timestamp"
+    }
+
+    date {
+        match => ["creation_time", "UNIX"]
+        target => "creation_time"
+    }
+
+    grok {
+        match => {
+            "[@timestamp]" => "^(?<index_date>\d{4}-\d{2}-\d{2})"
+        }
+    }
+
+    if "dimensions" in [log] {
+        ruby {
+            code => "
+                fieldHash = event['log']['dimensions']
+                fieldHash.each do |key, value|
+                    event[key] = value
+                end
+            "
+        }
+    }
+
+    mutate {
+        add_field => {
+            message => "%{[log][message]}"
+            log_level => "%{[log][level]}"
+            tenant => "%{[meta][tenantId]}"
+            region => "%{[meta][region]}"
+        }
+        remove_field => ["@version", "host", "type", "tags" ,"_index_date", "meta", "log"]
+    }
+}
+
+output {
+    elasticsearch {
+        index => "{{ ELASTICSEARCH_INDEX }}"
+        document_type => "{{ ELASTICSEARCH_DOC_TYPE }}"
+        hosts => ["{{ ELASTICSEARCH_HOST }}"]
+        flush_size => {{ ELASTICSEARCH_FLUSH_SIZE | int }}
+        idle_flush_time => {{ ELASTICSEARCH_IDLE_FLUSH_TIME | int }}
+        sniffing => {{ ELASTICSEARCH_SNIFFING }}
+        sniffing_delay => {{ ELASTICSEARCH_SNIFFING_DELAY | int }}
+    }
+}

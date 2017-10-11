@@ -184,9 +184,8 @@ class MonascaLoadDefinitions(object):
 
         yaml_data = yaml.safe_load(yaml_text)
 
-        if self._args['monasca_api_url'] is None:
-            raise Exception('Error: When specifying keystone_token, '
-                            'monasca_api_url is required')
+        if not self._args['monasca_api_url']:
+            raise Exception('Error: monasca_api_url is required')
         api_url = self._args['monasca_api_url']
 
         self._monasca = client.Client(self._args['api_version'],

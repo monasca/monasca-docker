@@ -7,6 +7,7 @@ env GOPATH=/go
 
 run apk add --no-cache --virtual build-dep \
     git go musl-dev && \
+  apk add --no-cache ca-certificates && \
   mkdir -p $GOPATH/src/github.com/monasca/smoke-test && \
   cd $GOPATH/src/github.com/monasca/smoke-test && \
   git init && \

@@ -18,6 +18,9 @@ filter {
                 event["dimensions"].push([key, value].to_s)
               end
             end
+            if event.to_hash.has_key?("service")
+              event["dimensions"].push(["service", event["service"]].to_s)
+            end
         '
     }
     mutate {
@@ -27,7 +30,7 @@ filter {
 
 output {
 {% if DEBUG %}
-  stdout { codec => rubydebug }
+  stdout { codec => rubydebug { metadata => true } }
 {% endif %}
   monasca_log_api {
     ### Keystone settings

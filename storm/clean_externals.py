@@ -36,7 +36,7 @@ def main():
     invalid = keep.difference(externals)
     if not keep.issubset(externals):
         print('Invalid values for KEEP_EXTERNALS: {!r}'
-              .format(invalid, file=sys.stderr))
+              .format(invalid), file=sys.stderr)
         sys.exit(1)
 
     externals.difference_update()

@@ -28,6 +28,14 @@ to `json`) coming on both TCP and UDP protocols.
 To enable debug output from Logstash set `DEBUG` environment variable
 to `True`.
 
+This container is designed to work together with [Logspout][mon-logspout]
+container that will connect to all running containers on machine
+and proxy all they logs from `STDOUT` and `STDERR` to this container.
+
+To add service dimension to any running container you need to initialize
+it with `LOGSTASH_FIELDS` environment variable containing `kye=value`
+pair of `service` as key and service name as value e.g.: `"service=mysql"`.
+
 Configuration
 -------------
 
@@ -47,3 +55,4 @@ Configuration
 [2]: https://github.com/logstash-plugins/logstash-output-monasca_log_api
 [3]: http://semver.org/
 [4]: https://github.com/monasca/monasca-docker/tree/master/monasca-log-api
+[mon-logspout]: https://github.com/monasca/monasca-docker/tree/master/logspout

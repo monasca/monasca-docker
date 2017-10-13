@@ -20,6 +20,13 @@ Usage
 
 Logspout requires running instance of [Monasca Log Agent][4].
 
+To add service dimension that you would be able to filter by in Kibana
+you need to initialize running containers with `LOGSTASH_FIELDS` environment
+variable containing `kye=value` pair of `service` key and service name
+as a value e.g.: `"service=mysql"`.
+Logspout will pickup this env variable and send proper data
+to the Monasca Log Agent.
+
 Configuration
 -------------
 

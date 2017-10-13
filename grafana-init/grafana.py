@@ -38,6 +38,7 @@ DATASOURCE_ACCESS_MODE = os.environ.get('DATASOURCE_ACCESS_MODE', 'proxy')
 
 DASHBOARDS_DIR = os.environ.get('DASHBOARDS_DIR', '/dashboards.d')
 
+
 def retry(retries=5, delay=2.0, exc_types=(RequestException,)):
     def decorator(func):
         def f_retry(*args, **kwargs):
@@ -58,6 +59,7 @@ def retry(retries=5, delay=2.0, exc_types=(RequestException,)):
         return f_retry
     return decorator
 
+
 def create_login_payload():
     if os.environ.get('GRAFANA_USERS'):
         try:
@@ -69,6 +71,7 @@ def create_login_payload():
     else:
         grafana_users = GRAFANA_USERS
     return grafana_users
+
 
 @retry(retries=24, delay=5.0)
 def login(session, user):

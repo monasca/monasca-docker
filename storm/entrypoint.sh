@@ -94,7 +94,8 @@ template_dir() {
   dest_dir=$2
 
   for f in "$src_dir"/*; do
-    if [ ! -e "$f" ]; then
+     # Skip directories, links, etc
+    if [ ! -f "$f" ]; then     
       continue
     fi
 

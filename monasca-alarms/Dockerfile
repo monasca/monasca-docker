@@ -6,7 +6,8 @@ FROM monasca/client:${MON_CLIENT_VERSION}
 ARG REBUILD=1
 
 ENV MONASCA_WAIT_FOR_API=true \
-    KEYSTONE_DEFAULTS_ENABLED=true
+    KEYSTONE_DEFAULTS_ENABLED=true \
+    MONASCA_API_URL="http://monasca:8070/v2.0"
 
 RUN pip install Jinja2
 

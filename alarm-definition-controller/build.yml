@@ -3,5 +3,3 @@ variants:
   - tag: latest
     aliases:
       - :1.0.0
-    args:
-      ADC_BRANCH: fix-glide-monascaclient

@@ -423,10 +423,6 @@ def _get_parser():
                         default=_env('OS_PROJECT_ID'),
                         help='Defaults to env[OS_PROJECT_ID].')
 
-    parser.add_argument('--os-tenant-name',
-                        default=_env('OS_TENANT_NAME'),
-                        help='Defaults to env[OS_TENANT_NAME].')
-
     parser.add_argument('--os_project_id',
                         help=argparse.SUPPRESS)
 
@@ -559,7 +555,6 @@ def main(args=None):
         'auth_url': args.os_auth_url,
         'username': args.os_username,
         'password': args.os_password,
-        'tenant_name': args.os_tenant_name,
         'project_id': args.os_project_id,
         'project_name': args.os_project_name,
         'project_domain_name': args.os_project_domain_name,
@@ -582,7 +577,7 @@ def main(args=None):
     }
 
     if not monascaclient_found:
-        print("python-monascaclient>=1.6.0 is required", file=sys.stderr)
+        print("python-monascaclient is required", file=sys.stderr)
         sys.exit(1)
 
     if not args.definitions_file:

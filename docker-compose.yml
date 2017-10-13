@@ -52,15 +52,21 @@ services:
     image: monasca/alarms:${MON_ALARMS_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=monasca-alarms"
+    depends_on:
+      - keystone
+      - monasca
 
   zookeeper:
     image: zookeeper:${ZOOKEEPER_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=zookeeper"
+    restart: on-failure
+
   kafka:
     image: monasca/kafka:${MON_KAFKA_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=kafka"
+    restart: on-failure
     depends_on:
       - zookeeper
   kafka-init:
@@ -134,6 +140,7 @@ services:
     image: monasca/persister:${MON_PERSISTER_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=monasca-persister"
+    restart: on-failure
     depends_on:
       - monasca
       - influxdb

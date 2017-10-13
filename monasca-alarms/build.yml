@@ -1,5 +1,7 @@
 repository: monasca/alarms
 variants:
-  - tag: 1.1.1
+  - tag: 1.1.3
     aliases:
       - :latest
+    args:
+      MON_CLIENT_VERSION: "1.6.0"

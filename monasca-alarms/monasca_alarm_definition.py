@@ -135,25 +135,7 @@ import os
 import sys
 import yaml
 
-monascaclient_found = False
-try:
-    from monascaclient import client
-except ImportError:
-    paths = ["/opt/stack/service/monascaclient/venv", "/opt/monasca"]
-    for path in paths:
-        activate_this = os.path.realpath(path + '/bin/activate_this.py')
-        if not os.path.exists(activate_this):
-            continue
-        try:
-            execfile(activate_this, dict(__file__=activate_this))
-            from monascaclient import client
-        except ImportError:
-            monascaclient_found = False
-        else:
-            monascaclient_found = True
-            break
-else:
-    monascaclient_found = True
+from monascaclient import client
 
 
 class MonascaLoadDefinitions(object):
@@ -575,10 +557,6 @@ def main(args=None):
         'api_version': args.monasca_api_version,
         'verbose': args.verbose
     }
-
-    if not monascaclient_found:
-        print("python-monascaclient is required", file=sys.stderr)
-        sys.exit(1)
 
     if not args.definitions_file:
         raise Exception('--definitions-file argument is required')

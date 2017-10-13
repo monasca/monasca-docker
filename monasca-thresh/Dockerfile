@@ -1,4 +1,4 @@
-FROM monasca/storm:1.0.3-1.0.6
+FROM monasca/storm:1.0.3-1.0.5
 
 ENV MAVEN_HOME /usr/share/maven
 

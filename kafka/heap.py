@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 #
@@ -50,7 +51,7 @@ def get_effective_memory_limit_mb():
 
 def main():
     if HEAP_OVERRIDE_MB:
-        print('%sm' % HEAP_OVERRIDE_MB)
+        print('{}m'.format(HEAP_OVERRIDE_MB))
         return
 
     system_max = get_system_memory_mb()
@@ -68,11 +69,11 @@ def main():
     else:
         arg_max = effective_max
 
-    print('%dm' % min([
+    print('{:d}m'.format(min([
         effective_max,
         env_max,
         arg_max
-    ]))
+    ])))
 
 
 if __name__ == '__main__':

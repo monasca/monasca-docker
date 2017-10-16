@@ -1,0 +1,5 @@
+repository: monasca/alarm-definition-controller
+variants:
+  - tag: latest
+    aliases:
+      - :1.0.0

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 #
@@ -44,6 +45,7 @@ def main():
         mirror = r.json()['preferred']
 
     print(PATH.format(mirror=mirror, kafka=kafka_version, scala=scala_version))
+
 
 if __name__ == '__main__':
     main()

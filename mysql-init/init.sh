@@ -16,10 +16,10 @@ UPGRADE_SCRIPTS="/mysql-upgrade.d"
 wait_mysql() {
   echo "Waiting for MySQL to become available..."
   success="false"
-  for i in $(seq $MYSQL_INIT_WAIT_RETRIES); do
+  for i in $(seq "$MYSQL_INIT_WAIT_RETRIES"); do
     mysqladmin status \
         --host="$MYSQL_INIT_HOST" \
-        --port=$MYSQL_INIT_PORT \
+        --port="$MYSQL_INIT_PORT" \
         --user="$MYSQL_INIT_USERNAME" \
         --password="$MYSQL_INIT_PASSWORD" \
         --connect_timeout=10
@@ -58,7 +58,7 @@ clean_install() {
       echo "Running script: $f"
       mysql --host="$MYSQL_INIT_HOST" \
           --user="$MYSQL_INIT_USERNAME" \
-          --port=$MYSQL_INIT_PORT \
+          --port="$MYSQL_INIT_PORT" \
           --password="$MYSQL_INIT_PASSWORD" < "$f"
     fi
   done
@@ -69,7 +69,7 @@ clean_install() {
     set +x
     mysqladmin password \
         --host="$MYSQL_INIT_HOST" \
-        --port=$MYSQL_INIT_PORT \
+        --port="$MYSQL_INIT_PORT" \
         --user="$MYSQL_INIT_USERNAME" \
         --password="$MYSQL_INIT_PASSWORD" \
         "$MYSQL_INIT_SET_PASSWORD"
@@ -80,7 +80,7 @@ clean_install() {
     pw=$(pwgen -1 32)
     mysqladmin password \
         --host="$MYSQL_INIT_HOST" \
-        --port=$MYSQL_INIT_PORT \
+        --port="$MYSQL_INIT_PORT" \
         --user="$MYSQL_INIT_USERNAME" \
         --password="$MYSQL_INIT_PASSWORD" \
         "$pw"
@@ -92,7 +92,7 @@ clean_install() {
     echo "Disabling remote root login..."
     mysql --host="$MYSQL_INIT_HOST" \
         --user="$MYSQL_INIT_USERNAME" \
-        --port=$MYSQL_INIT_PORT \
+        --port="$MYSQL_INIT_PORT" \
         --password="$MYSQL_INIT_PASSWORD" < /disable-remote-root.sql
   fi
 }
@@ -102,7 +102,7 @@ schema_upgrade() {
 
   # ash doesn't support arrays, this seems to be the most concise way to get
   # fields by index
-  set $version
+  set "$version"
   if [ "$#" -ne "3" ]; then
     echo "Invalid version: '$version'"
     sleep 1
@@ -125,7 +125,7 @@ schema_upgrade() {
 
     # we explicitly want to word-split here...
     # shellcheck disable=SC2046
-    set $(echo $diff_version | tr '.' ' ')
+    set $(echo "$diff_version" | tr '.' ' ')
     if [ "$#" -ne "3" ]; then
       echo "Invalid version number in upgrade directory, quitting! $diff_version"
       sleep 1
@@ -164,7 +164,7 @@ schema_upgrade() {
         set +x
         mysql --host="$MYSQL_INIT_HOST" \
             --user="$MYSQL_INIT_USERNAME" \
-            --port=$MYSQL_INIT_PORT \
+            --port="$MYSQL_INIT_PORT" \
             --password="$MYSQL_INIT_PASSWORD" < "$f"
         set -x
         any_applied="true"
@@ -181,10 +181,10 @@ schema_upgrade() {
     echo "Recording version in $database: $last_major.$last_minor.$last_patch"
     query="insert into schema_version (major, minor, patch) values ($last_major, $last_minor, $last_patch);"
     set +x
-    echo $query | mysql \
+    echo "$query" | mysql \
         --host="$MYSQL_INIT_HOST" \
         --user="$MYSQL_INIT_USERNAME" \
-        --port=$MYSQL_INIT_PORT \
+        --port="$MYSQL_INIT_PORT" \
         --password="$MYSQL_INIT_PASSWORD" \
         "$database"
     set -x
@@ -201,10 +201,10 @@ query="select major, minor, patch from schema_version order by id desc limit 1;"
 version=$(echo "$query" | mysql \
     --host="$MYSQL_INIT_HOST" \
     --user="$MYSQL_INIT_USERNAME" \
-    --port=$MYSQL_INIT_PORT \
+    --port="$MYSQL_INIT_PORT" \
     --password="$MYSQL_INIT_PASSWORD" \
     --silent \
-    $MYSQL_INIT_SCHEMA_DATABASE)
+    "$MYSQL_INIT_SCHEMA_DATABASE")
 if [ $? -eq 0 ]; then
   schema_upgrade "$version"
 else

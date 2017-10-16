@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 # Copyright 2017 Fujitsu LIMITED
@@ -18,8 +19,6 @@
 import logging
 import os
 import subprocess
-import sys
-import time
 
 from itertools import chain
 
@@ -49,18 +48,19 @@ class CaptureException(Exception):
         self.stderr = stderr
 
     def __str__(self):
-        return 'CaptureException(retcode=%s, stdout=%r, stderr=%r)' % (
-            self.retcode,
-            self.stdout,
-            self.stderr
-        )
+        return 'CaptureException(retcode={!s}, stdout={!r}, stderr={!r})' \
+            .format(
+                self.retcode,
+                self.stdout,
+                self.stderr
+                )
 
 
 def kafka_topics(verb, args=None):
     args = [
         SCRIPT_PATH,
         '--zookeeper', ZOOKEEPER_CONNECTION_STRING,
-        '--%s' % verb
+        '--{}'.format(verb)
     ] + (args if args is not None else [])
 
     logger.debug('running: %s: %r', SCRIPT_PATH, args)
@@ -96,7 +96,7 @@ def list_topics():
 
 def create_topic(name, partitions, replicas, configs=None):
     if configs:
-        arg_pairs = map(lambda item: ['--config', '%s=%s' % item],
+        arg_pairs = map(lambda item: ['--config', '{0}={1}'.format(*item)],
                         configs.items())
         config_args = list(chain(*arg_pairs))
     else:
@@ -123,7 +123,8 @@ def create_topics(default_config, existing_topics):
         replicas = None
 
         if topic_name in existing_topics:
-            logger.info('Topic already exists, will not create: %s', topic_name)
+            logger.info('Topic already exists, will not create: %s',
+                        topic_name)
             continue
 
         index = 0
@@ -179,6 +180,7 @@ def main():
     created_topics = create_topics(default_config, existing_topics)
     logger.info('Topic creation finished successfully. Created: %r',
                 created_topics)
+
 
 if __name__ == '__main__':
     main()

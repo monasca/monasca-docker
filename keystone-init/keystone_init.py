@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 #
@@ -26,14 +27,16 @@ from itertools import ifilter
 
 import yaml
 
-from keystoneauth1.exceptions import RetriableConnectionFailure, NotFound
+from keystoneauth1.exceptions import NotFound
+from keystoneauth1.exceptions import RetriableConnectionFailure
 from keystoneauth1.identity import Password
 from keystoneauth1.session import Session
 from keystoneclient.discover import Discover
 from requests import HTTPError
 from requests import RequestException
 
-from kubernetes import KubernetesAPIClient, KubernetesAPIResponse
+from kubernetes import KubernetesAPIClient
+from kubernetes import KubernetesAPIResponse
 
 PASSWORD_CHARACTERS = string.ascii_letters + string.digits
 KEYSTONE_PASSWORD_ARGS = [
@@ -60,6 +63,8 @@ _global_role_cache = []
 _project_cache = defaultdict(lambda: [])
 _role_cache = defaultdict(lambda: [])
 _group_cache = defaultdict(lambda: [])
+_service_cache = []
+_endpoint_cache = []
 
 _kubernetes_client = None
 
@@ -267,7 +272,8 @@ def get_or_create_role(client, domain, name):
 
     global_role = first(lambda r: r.name == name, _global_role_cache)
     if global_role:
-        logger.info('found existing global role: name=%s id=%s', global_role.name, global_role.id)
+        logger.info('found existing global role: name=%s id=%s',
+                    global_role.name, global_role.id)
         return global_role
 
     cache = _role_cache[domain.id]
@@ -313,6 +319,94 @@ def get_or_create_group(client, domain, name):
         logger.debug('created group %r', group)
 
     return group
+
+
+@retry()
+def get_or_create_service(client, name, service_type, description):
+    """Get service or create it if doesn't exist.
+
+    :type client: keystoneclient.v3.client.Client
+    :type name: str
+    :type service_type: str
+    :type description: str
+    :return:
+    :rtype: keystoneclient.v3.services.Service
+    """
+    if not _service_cache:
+        _service_cache.extend(client.services.list())
+
+    service = first(lambda s: s.name == name, _service_cache)
+    if service:
+        logger.info('found existing service: %s', service.name)
+    else:
+        logger.info('creating new service %s of %s type', name, service_type)
+        service = client.services.create(
+            name=name,
+            type=service_type,
+            description=description,
+        )
+        _service_cache.append(service)
+        logger.debug('created service %r', service)
+
+    return service
+
+
+@retry()
+def get_or_create_endpoint(client, service, url, endpoint):
+    """Get endpoint or create it if doesn't exist.
+
+    :type client: keystoneclient.v3.client.Client
+    :type service: keystoneclient.v3.services.Service
+    :type url: str
+    :type endpoint: dict[str, str]
+    :return:
+    :rtype: keystoneclient.v3.endpoints.Endpoint
+    """
+    global _endpoint_cache
+    if not _endpoint_cache:
+        _endpoint_cache.extend(client.endpoints.list())
+
+    logger.debug('existing endpoints %r', _endpoint_cache)
+
+    endpoints = filter(lambda ep: ep.service_id == service.id, _endpoint_cache)
+    logger.debug('filtered endpoints %r', endpoints)
+
+    for e in endpoints:
+        if e.service_id == service.id:
+            if e.interface == endpoint['interface']:
+                if e.url == endpoint['url']:
+                    logger.debug('endpoint already exists %r', e)
+                    return e
+
+                logger.info('updating endpoint %r', e)
+                endpoint = client.endpoints.update(
+                    endpoint=e.id,
+                    service=service,
+                    url=endpoint['url'],
+                    interface=endpoint['interface'],
+                    region=endpoint['region'],
+                )
+                _endpoint_cache = [endpoint
+                                   if x.id == endpoint.id else x
+                                   for x in _endpoint_cache]
+                return endpoint
+
+    logger.info(
+        'creating new %s endpoint %s with url: %s on %s region',
+        endpoint['interface'], service.name,
+        endpoint['url'], endpoint['region']
+    )
+
+    endpoint = client.endpoints.create(
+        service=service,
+        url=endpoint['url'],
+        interface=endpoint['interface'],
+        region=endpoint['region'],
+    )
+    _endpoint_cache.append(endpoint)
+    logger.debug('created endpoint %r', endpoint)
+
+    return endpoint
 
 
 @retry()
@@ -444,8 +538,8 @@ def get_kubernetes_secret(name, namespace=None):
 
     try:
         return client.get('/api/v1/namespaces/{}/secrets/{}', namespace, name)
-    except HTTPError as e:
-        if e.response.status_code != 404:
+    except HTTPError as err:
+        if err.response.status_code != 404:
             raise
 
         return None
@@ -490,10 +584,10 @@ def create_kubernetes_secret(fields, name, namespace=None, replace=False):
                     name, namespace)
         return client.request('PUT', '/api/v1/namespaces/{}/secrets/{}',
                               namespace, name, json=secret)
-    else:
-        logger.info('creating secret "%s" in namespace "%s"', name, namespace)
-        return client.post('/api/v1/namespaces/{}/secrets',
-                           namespace, json=secret)
+
+    logger.info('creating secret "%s" in namespace "%s"', name, namespace)
+    return client.post('/api/v1/namespaces/{}/secrets',
+                       namespace, json=secret)
 
 
 def diff_kubernetes_secret(secret, desired_fields):
@@ -527,8 +621,8 @@ def parse_secret(secret):
         if '/' in secret:
             namespace, name = secret.split('/', 1)
             return namespace, name
-        else:
-            return None, secret
+
+        return None, secret
 
     return secret['namespace'], secret['name']
 
@@ -542,8 +636,8 @@ def get_password(secret):
     if 'OS_PASSWORD' not in secret.data:
         # probably not recoverable, short of deleting the existing
         # secret and re-creating (which would be awful in its own way)
-        raise KeystoneInitException('existing secret %s is '
-                                    'invalid' % secret.metadata.name)
+        raise KeystoneInitException('existing secret {} is '
+                                    'invalid'.format(secret.metadata.name))
 
     pass_bytes = base64.b64decode(secret.data['OS_PASSWORD'])
     return pass_bytes.decode('utf-8')
@@ -732,10 +826,35 @@ def load_domains(ks, domains, member_role_name):
     logger.info('all domains initialized successfully')
 
 
-def load_endpoints(ks, endpoints):
-    for name, options in endpoints.iteritems():
-        # TODO
-        pass
+def load_services(ks, services):
+    """Load services into Keystone.
+
+    :type ks: keystoneclient.v3.client.Client
+    :type services: dict[str, dict[str, list]]
+    :return:
+    """
+    for name, options in services.viewitems():
+        logger.debug('%r', options)
+        logger.info('creating service...')
+        service = get_or_create_service(
+            client=ks,
+            name=name,
+            service_type=options.get('type'),
+            description=options.get('description', None)
+        )
+
+        logger.info('creating %s endpoints...', name)
+        for endpoint in options.get('endpoints', []):
+            assert isinstance(endpoint, dict)
+
+            get_or_create_endpoint(
+                client=ks,
+                service=service,
+                url=options.get('url', ''),
+                endpoint=endpoint
+            )
+
+    logger.info('all services initialized successfully')
 
 
 def main():
@@ -755,8 +874,8 @@ def main():
         if 'domains' in preload:
             load_domains(ks, preload['domains'], member_role_name)
 
-        if 'endpoints' in preload:
-            load_endpoints(ks, preload['endpoints'])
+        if 'services' in preload:
+            load_services(ks, preload['services'])
 
 
 if __name__ == '__main__':

@@ -26,7 +26,7 @@ run mkdir -p /var/lib/grafana && \
   git fetch origin $GRAFANA_BRANCH && \
   git reset --hard FETCH_HEAD && \
   go run build.go setup && go run build.go build && \
-  npm install -g yarn@0.27 && yarn && \
+  npm install -g yarn@0.27 && yarn --no-emoji && \
   ./node_modules/.bin/grunt build --force && \
   cp -r ./conf /var/lib/grafana/conf && \
   cp -r ./public_gen /var/lib/grafana/public && \

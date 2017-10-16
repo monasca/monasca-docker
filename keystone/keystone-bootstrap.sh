@@ -41,15 +41,15 @@ fi
 if [[ -e /db-init ]]; then
     echo "Creating bootstrap credentials..."
     keystone-manage bootstrap \
-        --bootstrap-password $admin_password \
-        --bootstrap-username $admin_username \
-        --bootstrap-project-name $admin_project \
-        --bootstrap-role-name $admin_role \
-        --bootstrap-service-name $admin_service \
-        --bootstrap-region-id $admin_region \
-        --bootstrap-admin-url $admin_url \
-        --bootstrap-public-url $public_url \
-        --bootstrap-internal-url $internal_url
+        --bootstrap-password "$admin_password" \
+        --bootstrap-username "$admin_username" \
+        --bootstrap-project-name "$admin_project" \
+        --bootstrap-role-name "$admin_role" \
+        --bootstrap-service-name "$admin_service" \
+        --bootstrap-region-id "$admin_region" \
+        --bootstrap-admin-url "$admin_url" \
+        --bootstrap-public-url "$public_url" \
+        --bootstrap-internal-url "$internal_url"
 
     sleep 5
 

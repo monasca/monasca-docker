@@ -63,6 +63,8 @@ _global_role_cache = []
 _project_cache = defaultdict(lambda: [])
 _role_cache = defaultdict(lambda: [])
 _group_cache = defaultdict(lambda: [])
+_service_cache = []
+_endpoint_cache = []
 
 _kubernetes_client = None
 
@@ -317,6 +319,94 @@ def get_or_create_group(client, domain, name):
         logger.debug('created group %r', group)
 
     return group
+
+
+@retry()
+def get_or_create_service(client, name, service_type, description):
+    """Get service or create it if doesn't exist.
+
+    :type client: keystoneclient.v3.client.Client
+    :type name: str
+    :type service_type: str
+    :type description: str
+    :return:
+    :rtype: keystoneclient.v3.services.Service
+    """
+    if not _service_cache:
+        _service_cache.extend(client.services.list())
+
+    service = first(lambda s: s.name == name, _service_cache)
+    if service:
+        logger.info('found existing service: %s', service.name)
+    else:
+        logger.info('creating new service %s of %s type', name, service_type)
+        service = client.services.create(
+            name=name,
+            type=service_type,
+            description=description,
+        )
+        _service_cache.append(service)
+        logger.debug('created service %r', service)
+
+    return service
+
+
+@retry()
+def get_or_create_endpoint(client, service, url, endpoint):
+    """Get endpoint or create it if doesn't exist.
+
+    :type client: keystoneclient.v3.client.Client
+    :type service: keystoneclient.v3.services.Service
+    :type url: str
+    :type endpoint: dict[str, str]
+    :return:
+    :rtype: keystoneclient.v3.endpoints.Endpoint
+    """
+    global _endpoint_cache
+    if not _endpoint_cache:
+        _endpoint_cache.extend(client.endpoints.list())
+
+    logger.debug('existing endpoints %r', _endpoint_cache)
+
+    endpoints = filter(lambda ep: ep.service_id == service.id, _endpoint_cache)
+    logger.debug('filtered endpoints %r', endpoints)
+
+    for e in endpoints:
+        if e.service_id == service.id:
+            if e.interface == endpoint['interface']:
+                if e.url == endpoint['url']:
+                    logger.debug('endpoint already exists %r', e)
+                    return e
+
+                logger.info('updating endpoint %r', e)
+                endpoint = client.endpoints.update(
+                    endpoint=e.id,
+                    service=service,
+                    url=endpoint['url'],
+                    interface=endpoint['interface'],
+                    region=endpoint['region'],
+                )
+                _endpoint_cache = [endpoint
+                                   if x.id == endpoint.id else x
+                                   for x in _endpoint_cache]
+                return endpoint
+
+    logger.info(
+        'creating new %s endpoint %s with url: %s on %s region',
+        endpoint['interface'], service.name,
+        endpoint['url'], endpoint['region']
+    )
+
+    endpoint = client.endpoints.create(
+        service=service,
+        url=endpoint['url'],
+        interface=endpoint['interface'],
+        region=endpoint['region'],
+    )
+    _endpoint_cache.append(endpoint)
+    logger.debug('created endpoint %r', endpoint)
+
+    return endpoint
 
 
 @retry()
@@ -736,10 +826,35 @@ def load_domains(ks, domains, member_role_name):
     logger.info('all domains initialized successfully')
 
 
-def load_endpoints(ks, endpoints):
-    for name, options in endpoints.iteritems():
-        # TODO
-        pass
+def load_services(ks, services):
+    """Load services into Keystone.
+
+    :type ks: keystoneclient.v3.client.Client
+    :type services: dict[str, dict[str, list]]
+    :return:
+    """
+    for name, options in services.viewitems():
+        logger.debug('%r', options)
+        logger.info('creating service...')
+        service = get_or_create_service(
+            client=ks,
+            name=name,
+            service_type=options.get('type'),
+            description=options.get('description', None)
+        )
+
+        logger.info('creating %s endpoints...', name)
+        for endpoint in options.get('endpoints', []):
+            assert isinstance(endpoint, dict)
+
+            get_or_create_endpoint(
+                client=ks,
+                service=service,
+                url=options.get('url', ''),
+                endpoint=endpoint
+            )
+
+    logger.info('all services initialized successfully')
 
 
 def main():
@@ -759,8 +874,8 @@ def main():
         if 'domains' in preload:
             load_domains(ks, preload['domains'], member_role_name)
 
-        if 'endpoints' in preload:
-            load_endpoints(ks, preload['endpoints'])
+        if 'services' in preload:
+            load_services(ks, preload['services'])
 
 
 if __name__ == '__main__':

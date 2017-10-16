@@ -5,7 +5,7 @@ MONASCA_API_WAIT_RETRIES=${MONASCA_API_WAIT_RETRIES:-"24"}
 MONASCA_API_WAIT_DELAY=${MONASCA_API_WAIT_DELAY:-"5"}
 
 if [ "$KEYSTONE_DEFAULTS_ENABLED" == "true" ]; then
-  export OS_AUTH_URL=${OS_AUTH_URL:-"http://keystone:35357/v3/"}
+  export OS_AUTH_URL=${OS_AUTH_URL:-"http://keystone:35357"}
   export OS_USERNAME=${OS_USERNAME:-"mini-mon"}
   export OS_PASSWORD=${OS_PASSWORD:-"password"}
   export OS_USER_DOMAIN_NAME=${OS_USER_DOMAIN_NAME:-"Default"}

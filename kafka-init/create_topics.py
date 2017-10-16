@@ -96,7 +96,7 @@ def list_topics():
 
 def create_topic(name, partitions, replicas, configs=None):
     if configs:
-        arg_pairs = map(lambda item: ['--config', '{0}={0}'.format(item)],
+        arg_pairs = map(lambda item: ['--config', '{0}={1}'.format(*item)],
                         configs.items())
         config_args = list(chain(*arg_pairs))
     else:

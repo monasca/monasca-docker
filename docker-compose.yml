@@ -27,7 +27,6 @@ services:
   agent-forwarder:
     image: monasca/agent-forwarder:${MON_AGENT_FORWARDER_VERSION}
     environment:
-      OS_AUTH_URL: "http://keystone:35357/"
       NON_LOCAL_TRAFFIC: "true"
 
   agent-collector:
@@ -40,9 +39,7 @@ services:
       CADVISOR_URL: "http://cadvisor:8080/"
 
   alarms:
-    image: aadams/monasca-alarms:configure_keystone.0.60
-    environment:
-        OS_AUTH_URL: "http://keystone:35357/"
+    image: monasca/alarms:${MON_ALARMS_VERSION}
     depends_on:
       - keystone
       - monasca

@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding=utf-8
+
 # (C) Copyright 2015-2017 Hewlett-Packard Enterprise Development LP
 # Copyright 2015 FUJITSU LIMITED
 
@@ -40,8 +43,8 @@ def _retry(func, retries=5, exc=None):
                 time.sleep(1.0)
                 continue
             else:
-                print("Max retries reached after %d attempts: %s" % (retries,
-                                                                     e))
+                print("Max retries reached after {:d} attempts: {}"
+                      .format(retries, e))
                 raise
 
 
@@ -63,10 +66,10 @@ def get_project(ks_client, project_name):
     return None
 
 
-def add_projects(ks_client, project_name):
+def add_projects(ks_client, project_names):
     """Add the given project_names if they don't already exist"""
     default_domain = get_default_domain(ks_client)
-    for project_name in project_name:
+    for project_name in project_names:
         if not get_project(ks_client, project_name):
             _retry(lambda: ks_client.projects.create(name=project_name,
                                                      domain=default_domain,
@@ -141,8 +144,8 @@ def add_user_roles(ks_client, users):
     return True
 
 
-def add_service_endpoint(ks_client, name, description, type, url, region,
-                         interface):
+def add_service_endpoint(ks_client, name, description, endpoint_type,
+                         url, region, interface):
     """Add the Monasca service to the catalog with the specified endpoint,
     if it doesn't yet exist."""
     services = _retry(lambda: ks_client.services.list())
@@ -152,9 +155,9 @@ def add_service_endpoint(ks_client, name, description, type, url, region,
     else:
         service = _retry(lambda: ks_client.services.create(
             name=name,
-            type=type,
+            type=endpoint_type,
             description=description))
-        print("Created service '{}' of type '{}'".format(name, type))
+        print("Created service '{}' of type '{}'".format(name, endpoint_type))
 
     for endpoint in _retry(lambda: ks_client.endpoints.list()):
         if endpoint.service_id == service.id:
@@ -197,16 +200,17 @@ def resolve_k8s_service_by_url(url):
 
 
 def main(argv):
-    """ Get credentials to create a keystoneauth Session to instantiate a
+    """Get credentials to create a keystoneauth Session to instantiate a
      Keystone Client and then call methods to add users, projects and roles"""
 
     path = os.environ.get('PRELOAD_YAML_PATH', '/preload.yml')
     try:
-        with open(path, 'r') as f:
-            data = yaml.load(f)
+        with open(path, 'r') as pre:
+            data = yaml.load(pre)
     except IOError:
         data = {'users': [], 'endpoints': []}
-        print('No preload.yml at %s, using default values: %r' % (path, data))
+        print('No preload.yml at {}, using default values: {!r}'
+              .format(path, data))
 
     users = data['users']
     url = 'http://localhost:35357/v3'

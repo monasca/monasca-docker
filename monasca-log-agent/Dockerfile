@@ -10,7 +10,9 @@ WORKDIR /lomla
 
 ARG REBUILD_LOGSTASH_PLUGIN=1
 RUN apk add --no-cache git && \
-    git clone ${LOGSTASH_PLUGIN_REPO} -b ${LOGSTASH_PLUGIN_BRANCH} --single-branch --depth 1 . && \
+    git clone ${LOGSTASH_PLUGIN_REPO} --single-branch --depth 1 . && \
+    git fetch origin ${LOGSTASH_PLUGIN_BRANCH}:build_branch && \
+    git checkout build_branch && \
     bundle install && \
     gem build logstash-output-monasca_log_api.gemspec
 

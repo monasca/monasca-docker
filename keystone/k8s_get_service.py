@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 #
@@ -80,8 +81,8 @@ def get_node_port(service_name, port=None):
                 return ip, port_def['nodePort']
 
     raise KubernetesAPIException(
-        'Could not get NodePort from k8s API: service=%s, '
-        'port=%s' % (service_name, port))
+        'Could not get NodePort from k8s API: service={}, '
+        'port={}'.format(service_name, port))
 
 
 def get_node_ip():

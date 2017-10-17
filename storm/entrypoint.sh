@@ -34,19 +34,19 @@ if [ -n "$ZOOKEEPER_PORT" ]; then
   fi
 fi
 
-first_zk=$(echo $STORM_ZOOKEEPER_SERVERS | cut -d, -f1)
+first_zk=$(echo "$STORM_ZOOKEEPER_SERVERS" | cut -d, -f1)
 
 # wait for zookeeper to become available
 if [ "$ZOOKEEPER_WAIT" = "true" ]; then
   success="false"
-  for i in $(seq $ZOOKEEPER_WAIT_RETRIES); do
-    ok=$(echo ruok | nc $first_zk $STORM_ZOOKEEPER_PORT -w $ZOOKEEPER_WAIT_TIMEOUT)
+  for i in $(seq "$ZOOKEEPER_WAIT_RETRIES"); do
+    ok=$(echo ruok | nc "$first_zk" "$STORM_ZOOKEEPER_PORT" -w "$ZOOKEEPER_WAIT_TIMEOUT")
     if [ $? -eq 0 -a "$ok" = "imok" ]; then
       success="true"
       break
     else
       echo "Connect attempt $i of $ZOOKEEPER_WAIT_RETRIES failed, retrying..."
-      sleep $ZOOKEEPER_WAIT_DELAY
+      sleep "$ZOOKEEPER_WAIT_DELAY"
     fi
   done
 
@@ -65,12 +65,12 @@ if [ -z "$STORM_LOCAL_HOSTNAME" ]; then
 fi
 
 if [ -z "$SUPERVISOR_CHILDOPTS" ]; then
-  SUPERVISOR_CHILDOPTS="-Xmx$(python /heap.py $SUPERVISOR_MAX_HEAP_MB)"
+  SUPERVISOR_CHILDOPTS="-Xmx$(python /heap.py "$SUPERVISOR_MAX_HEAP_MB")"
   export SUPERVISOR_CHILDOPTS
 fi
 
 if [ -z "$WORKER_CHILDOPTS" ]; then
-  WORKER_CHILDOPTS="-Xmx$(python /heap.py $WORKER_MAX_HEAP_MB)"
+  WORKER_CHILDOPTS="-Xmx$(python /heap.py "$WORKER_MAX_HEAP_MB")"
   WORKER_CHILDOPTS="$WORKER_CHILDOPTS -XX:+UseConcMarkSweepGC"
   if [ "$WORKER_REMOTE_JMX" = "true" ]; then
     WORKER_CHILDOPTS="$WORKER_CHILDOPTS -Dcom.sun.management.jmxremote"
@@ -80,12 +80,12 @@ if [ -z "$WORKER_CHILDOPTS" ]; then
 fi
 
 if [ -z "$NIMBUS_CHILDOPTS" ]; then
-  NIMBUS_CHILDOPTS="-Xmx$(python /heap.py $NIMBUS_MAX_HEAP_MB)"
+  NIMBUS_CHILDOPTS="-Xmx$(python /heap.py "$NIMBUS_MAX_HEAP_MB")"
   export NIMBUS_CHILDOPTS
 fi
 
 if [ -z "$UI_CHILDOPTS" ]; then
-  UI_CHILDOPTS="-Xmx$(python /heap.py $UI_MAX_HEAP_MB)"
+  UI_CHILDOPTS="-Xmx$(python /heap.py "$UI_MAX_HEAP_MB")"
   export UI_CHILDOPTS
 fi
 
@@ -94,7 +94,8 @@ template_dir() {
   dest_dir=$2
 
   for f in "$src_dir"/*; do
-    if [ ! -e "$f" ]; then
+     # Skip directories, links, etc
+    if [ ! -f "$f" ]; then     
       continue
     fi
 
@@ -114,7 +115,7 @@ template_dir "$CONFIG_TEMPLATES" "$CONFIG_DEST"
 template_dir "$LOG_TEMPLATES" "$LOG_DEST"
 
 if [ "$WORKER_LOGS_TO_STDOUT" = "true" ]; then
-  for PORT in `echo $SUPERVISOR_SLOTS_PORTS | sed -e "s/,/ /" `; do
+  for PORT in `echo "$SUPERVISOR_SLOTS_PORTS" | sed -e "s/,/ /" `; do
     LOGDIR="/storm/logs/workers-artifacts/thresh/$PORT"
     mkdir -p "$LOGDIR"
     WORKER_LOG="$LOGDIR/worker.log"

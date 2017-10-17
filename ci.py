@@ -65,6 +65,8 @@ LOGS_PIPELINE_MODULE_TO_COMPOSE_SERVICES = {
     'kafka-init': 'kafka-log-init',
     'kibana': 'kibana',
     'monasca-log-api': 'log-api',
+    'monasca-log-agent': 'log-agent',
+    'logspout': 'logspout',
 }
 
 METRIC_PIPELINE_INIT_JOBS = ('influxdb-init', 'kafka-init', 'mysql-init', 'alarms', 'grafana-init')

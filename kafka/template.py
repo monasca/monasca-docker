@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 #
@@ -35,6 +36,7 @@ def main():
                      lstrip_blocks=True,
                      trim_blocks=True)
         out_file.write(t.render(os.environ))
+
 
 if __name__ == '__main__':
     main()

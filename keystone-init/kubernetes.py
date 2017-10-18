@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding=utf-8
+
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -34,8 +37,8 @@ DEFAULT_TIMEOUT = 10
 
 
 def load_current_kube_credentials():
-    with open(os.path.expanduser(KUBE_CONFIG_PATH), 'r') as f:
-        config = DotMap(yaml.safe_load(f))
+    with open(os.path.expanduser(KUBE_CONFIG_PATH), 'r') as kcf:
+        config = DotMap(yaml.safe_load(kcf))
 
         ctx_name = config['current-context']
         ctx = next(c for c in config.contexts if c.name == ctx_name)
@@ -49,8 +52,8 @@ def load_current_kube_credentials():
         if ctx.context.user:
             user = next(u for u in config.users if u.name == ctx.context.user).user
             return cluster.server, ca_cert, (user['client-certificate'], user['client-key'])
-        else:
-            return cluster.server, ca_cert, None
+
+        return cluster.server, ca_cert, None
 
 
 class KubernetesAPIError(Exception):

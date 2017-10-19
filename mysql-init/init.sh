@@ -102,8 +102,10 @@ schema_upgrade() {
 
   # ash doesn't support arrays, this seems to be the most concise way to get
   # fields by index
-  set "$version"
-  if [ "$#" -ne "1" ]; then
+
+  # shellcheck disable=SC2086
+  set $version
+  if [ "$#" -ne "3" ]; then
     echo "Invalid version: '$version'"
     sleep 1
     exit 1

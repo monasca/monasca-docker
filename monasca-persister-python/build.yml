@@ -37,7 +37,10 @@ variants:
       - :master-{date}-{time}
       - :master-python
     args:
-      PERSISTER_BRANCH: master
+      # TODO: revert once https://review.openstack.org/#/c/513172/4 is merged
+      PERSISTER_BRANCH: refs/changes/72/513172/4
+      # PERSISTER_BRANCH: master
+
       PYTHON_VERSION: '2'
       TIMESTAMP_SLUG: 20170809-155207
       CONSTRAINTS_BRANCH: master

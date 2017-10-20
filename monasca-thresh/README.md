@@ -70,7 +70,9 @@ Configuration
 | `AGGREGATION_BOLT_TASKS`      | `2`            | Aggregation Bolt Tasks      |
 | `THRESHOLDING_BOLT_THREADS`   | `2`            | Thresholding Bolt Threads   |
 | `THRESHOLDING_BOLT_TASKS`     | `2`            | Thresholding Bolt Tasks     |
+| `THRESH_STACK_SIZE`           | `256k`         | JVM stack size              |
 
+THRESH_STACK_SIZE
 Running with and without Storm
 ------------------------------
 

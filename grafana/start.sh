@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ -n $GF_DATABASE_PORT ]; then
+if [ -n "$GF_DATABASE_PORT" ]; then
   export GF_DATABASE_HOST=$GF_DATABASE_HOST":"$GF_DATABASE_PORT
 fi
 

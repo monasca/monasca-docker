@@ -42,7 +42,7 @@ ARG REBUILD_INSTALL_LOGSTASH_PLUGINS=1
 RUN logstash-plugin install logstash-output-monasca_log_api-*.gem && \
     logstash-plugin install logstash-filter-json_encode
 
-COPY monasca-log-agent.conf.p2 start.sh /
+COPY monasca-log-agent.conf.j2 start.sh /
 
 EXPOSE ${LOGSTASH_INPUT_PORT}
 

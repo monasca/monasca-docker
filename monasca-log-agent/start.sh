@@ -58,7 +58,7 @@ wait_for_keystone() {
 wait_for_log_api $MONASCA_WAIT_FOR_LOG_API
 wait_for_keystone $MONASCA_WAIT_FOR_KEYSTONE
 
-/p2 -t /monasca-log-agent.conf.p2 > /monasca-log-agent.conf
+/p2 -t /monasca-log-agent.conf.j2 > /monasca-log-agent.conf
 
 echo
 echo "Starting Monasca log agent"

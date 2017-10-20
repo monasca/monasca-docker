@@ -1,4 +1,5 @@
 #!/bin/ash
+# shellcheck shell=dash
 
 set -x
 
@@ -23,15 +24,14 @@ export AUTHORIZER_LOG_LEVEL=${AUTHORIZER_LOG_LEVEL:-"WARN"}
 GC_LOG_ENABLED=${GC_LOG_ENABLED:-"False"}
 
 first_zk=$(echo "$ZOOKEEPER_CONNECTION_STRING" | cut -d, -f1)
-zk_host=$(echo "$first_zk" | cut -d\: -f1)
-zk_port=$(echo "$first_zk" | cut -d\: -f2)
+zk_host=$(echo "$first_zk" | cut -d ":" -f1)
+zk_port=$(echo "$first_zk" | cut -d ":" -f2)
 
 # wait for zookeeper to become available
 if [ "$ZOOKEEPER_WAIT" = "true" ]; then
   success="false"
   for i in $(seq "$ZOOKEEPER_WAIT_RETRIES"); do
-    ok=$(echo ruok | nc "$zk_host" "$zk_port" -w "$ZOOKEEPER_WAIT_TIMEOUT")
-    if [ $? -eq 0 -a "$ok" = "imok" ]; then
+    if ok=$(echo ruok | nc "$zk_host" "$zk_port" -w "$ZOOKEEPER_WAIT_TIMEOUT") && [ "$ok" = "imok" ]; then
       success="true"
       break
     else

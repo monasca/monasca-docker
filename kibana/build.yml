@@ -2,7 +2,7 @@ repository: monasca/kibana
 variants:
   - tag: latest
     aliases:
-      - :4.6.3-master
+      - :4.6.4-master
       - :4.6-master
       - :4-master
     args:

@@ -1,11 +1,12 @@
 #!/bin/ash
+# shellcheck shell=dash
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 
 set -x
 
 AGENT_CONF="/etc/monasca/agent"
 
-if [ "$KEYSTONE_DEFAULTS_ENABLED" == "true" ]; then
+if [ "$KEYSTONE_DEFAULTS_ENABLED" = "true" ]; then
   export OS_AUTH_URL=${OS_AUTH_URL:-"http://keystone:35357/v3/"}
   export OS_USERNAME=${OS_USERNAME:-"monasca-agent"}
   export OS_PASSWORD=${OS_PASSWORD:-"password"}
@@ -23,8 +24,7 @@ template () {
 }
 
 if [ "$HOSTNAME_FROM_KUBERNETES" = "true" ]; then
-  AGENT_HOSTNAME=$(python /kubernetes_get_host.py)
-  if [ $? != 0 ]; then
+  if ! AGENT_HOSTNAME=$(python /kubernetes_get_host.py); then
     echo "Error getting hostname from Kubernetes"
     return 1
   fi

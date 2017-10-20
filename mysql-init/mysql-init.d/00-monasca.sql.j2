@@ -25,22 +25,22 @@ SET foreign_key_checks = 0;
 /*
  * Enum tables
  */
-CREATE TABLE `alarm_state` (
+CREATE TABLE if not exists `alarm_state` (
   `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `alarm_definition_severity` (
+CREATE TABLE if not exists `alarm_definition_severity` (
   `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `notification_method_type` (
+CREATE TABLE if not exists `notification_method_type` (
   `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `alarm` (
+CREATE TABLE if not exists `alarm` (
   `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `alarm_definition_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `state` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE `alarm` (
   CONSTRAINT `fk_alarm_alarm_state` FOREIGN KEY (`state`) REFERENCES `alarm_state` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `alarm_action` (
+CREATE TABLE if not exists `alarm_action` (
   `alarm_definition_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `alarm_state` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
   `action_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -65,7 +65,7 @@ CREATE TABLE `alarm_action` (
   CONSTRAINT `fk_alarm_action_alarm_state` FOREIGN KEY (`alarm_state`) REFERENCES `alarm_state` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `alarm_definition` (
+CREATE TABLE if not exists `alarm_definition` (
   `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tenant_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -83,7 +83,7 @@ CREATE TABLE `alarm_definition` (
   CONSTRAINT `fk_alarm_definition_severity` FOREIGN KEY (`severity`) REFERENCES `alarm_definition_severity` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `alarm_metric` (
+CREATE TABLE if not exists `alarm_metric` (
   `alarm_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `metric_definition_dimensions_id` binary(20) NOT NULL DEFAULT '\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0',
   PRIMARY KEY (`alarm_id`,`metric_definition_dimensions_id`),
@@ -92,7 +92,7 @@ CREATE TABLE `alarm_metric` (
   CONSTRAINT `fk_alarm_id` FOREIGN KEY (`alarm_id`) REFERENCES `alarm` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `metric_definition` (
+CREATE TABLE if not exists `metric_definition` (
   `id` binary(20) NOT NULL DEFAULT '\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0',
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tenant_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -100,7 +100,7 @@ CREATE TABLE `metric_definition` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `metric_definition_dimensions` (
+CREATE TABLE if not exists `metric_definition_dimensions` (
   `id` binary(20) NOT NULL DEFAULT '\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0',
   `metric_definition_id` binary(20) NOT NULL DEFAULT '\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0',
   `metric_dimension_set_id` binary(20) NOT NULL DEFAULT '\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0',
@@ -122,7 +122,7 @@ CREATE TABLE `metric_definition_dimensions` (
  * the "insert into metric_dimension ... on duplicate key update dimension_set_id=dimension_set_id
  * syntax
  */
-CREATE TABLE `metric_dimension` (
+CREATE TABLE if not exists `metric_dimension` (
   `dimension_set_id` binary(20) NOT NULL DEFAULT '\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0',
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `value` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
@@ -130,7 +130,7 @@ CREATE TABLE `metric_dimension` (
    KEY `dimension_set_id` (`dimension_set_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='PRIMARY KEY (`id`)';
 
-CREATE TABLE `notification_method` (
+CREATE TABLE if not exists `notification_method` (
   `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tenant_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `name` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -143,7 +143,7 @@ CREATE TABLE `notification_method` (
   CONSTRAINT `fk_alarm_noticication_method_type` FOREIGN KEY (`type`) REFERENCES `notification_method_type` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `sub_alarm_definition` (
+CREATE TABLE if not exists `sub_alarm_definition` (
   `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `alarm_definition_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `function` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -160,14 +160,14 @@ CREATE TABLE `sub_alarm_definition` (
   CONSTRAINT `fk_sub_alarm_definition` FOREIGN KEY (`alarm_definition_id`) REFERENCES `alarm_definition` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `sub_alarm_definition_dimension` (
+CREATE TABLE if not exists  `sub_alarm_definition_dimension` (
   `sub_alarm_definition_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `dimension_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `value` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   CONSTRAINT `fk_sub_alarm_definition_dimension` FOREIGN KEY (`sub_alarm_definition_id`) REFERENCES `sub_alarm_definition` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `sub_alarm` (
+CREATE TABLE if not exists `sub_alarm` (
   `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `alarm_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `sub_expression_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -186,16 +186,16 @@ CREATE TABLE `sub_alarm` (
 SET foreign_key_checks = 1;
 
 /* provide data for enum tables */
-insert into `alarm_state` values ('UNDETERMINED');
-insert into `alarm_state` values ('OK');
-insert into `alarm_state` values ('ALARM');
+insert ignore into `alarm_state` values ('UNDETERMINED');
+insert ignore into `alarm_state` values ('OK');
+insert ignore into `alarm_state` values ('ALARM');
 
-insert into `alarm_definition_severity` values ('LOW');
-insert into `alarm_definition_severity` values ('MEDIUM');
-insert into `alarm_definition_severity` values ('HIGH');
-insert into `alarm_definition_severity` values ('CRITICAL');
+insert ignore into `alarm_definition_severity` values ('LOW');
+insert ignore into `alarm_definition_severity` values ('MEDIUM');
+insert ignore into `alarm_definition_severity` values ('HIGH');
+insert ignore into `alarm_definition_severity` values ('CRITICAL');
 
-insert into `notification_method_type` values ('EMAIL');
-insert into `notification_method_type` values ('WEBHOOK');
-insert into `notification_method_type` values ('PAGERDUTY');
+insert ignore into `notification_method_type` values ('EMAIL');
+insert ignore into `notification_method_type` values ('WEBHOOK');
+insert ignore into `notification_method_type` values ('PAGERDUTY');
 /* provide data for enum tables */

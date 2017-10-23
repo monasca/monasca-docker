@@ -72,9 +72,13 @@ similar). This behavior can be tuned as follows:
 | `JVM_MAX_HEAP_MB`    | unset   | Value to use for allocatable memory, autodetect if unset |
 | `HEAP_OVERRIDE_MB`   | unset   | Ignore scaling, always return `-Xmx$HEAP_OVERRIDE_MB`    |
 | `SUPERVISOR_MAX_HEAP_MB` | `256` | Max heap size in MiB for supervisor |
-| `WORKER_MAX_HEAP_MB`     | `784` | Max head size in MiB for workers    |
+| `WORKER_MAX_HEAP_MB`     | `784` | Max heap size in MiB for workers    |
 | `NIMBUS_MAX_HEAP_MB`     | `256` | Max heap in MiB for nimbus          |
 | `UI_MAX_HEAP_MB`         | `768` | Max heap in MiB for UI              |
+| `SUPERVISOR_STACK_SIZE` | `1024k` | JVM stack size    |
+| `WORKER_STACK_SIZE`     | `1024k` | JVM stack size    |
+| `NIMBUS_STACK_SIZE`     | `1024k` | JVM stack size    |
+| `UI_STACK_SIZE`         | `1024k` | JVM stack size    |
 
 Memory scaling is done based off of an automatically determined "effective"
 memory limit. The ultimate limit is either the true system memory limit or, if

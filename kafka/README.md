@@ -65,6 +65,7 @@ Several parameters can be specified using environment variables:
 | `STATE_CHANGE_LOG_LEVEL`      | `INFO`  | Log Level for state changes                    |
 | `AUTHORIZER_LOG_LEVEL`        | `WARN`  | Log Level for the authorizer                   |
 | `GC_LOG_ENABLED`              | `False` | If True, JVM garbage collection log enabled    |
+| `KAFKA_STACK_SIZE`            | `1024k` | JVM stack size                                 |
 
 ### Log Files
 

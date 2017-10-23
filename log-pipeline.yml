@@ -88,7 +88,7 @@ services:
       - "5607:5607"
 
   log-agent:
-    image: monasca/log-agent:latest
+    image: monasca/log-agent:${MON_LOG_AGENT_VERSION}
     environment:
       LOGSPOUT: ignore
       LOGSTASH_FIELDS: "service=monasca-log-agent"
@@ -98,7 +98,7 @@ services:
     ports:
       - "5610:5610"
   logspout:
-    image: monasca/logspout:latest
+    image: monasca/logspout:${MON_LOGSPOUT_VERSION}
     environment:
       LOGSPOUT: ignore
       LOGSTASH_FIELDS: "service=logspout"

@@ -58,6 +58,7 @@ wait_for_wrapper()
         timeout "$BUSYTIMEFLAG" "$TIMEOUT" "$0" --child --host="$HOST" --port="$PORT" --timeout="$TIMEOUT" &
     fi
     PID=$!
+    # shellcheck disable=SC2064
     trap "kill -INT -$PID" INT
     wait $PID
     RESULT=$?
@@ -118,7 +119,7 @@ do
         ;;
         --)
         shift
-        CLI="$@"
+        CLI="$*"
         break
         ;;
         --help)

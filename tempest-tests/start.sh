@@ -37,10 +37,9 @@ if [ "$MONASCA_WAIT_FOR_API" = "true" ]; then
   success="false"
 
   for i in $(seq "$MONASCA_API_WAIT_RETRIES"); do
-    monasca --os-user-domain-name "${OS_DOMAIN_NAME}" --os-project-name "${OS_TENANT_NAME}" \
+    if monasca --os-user-domain-name "${OS_DOMAIN_NAME}" --os-project-name "${OS_TENANT_NAME}" \
        --os-auth-url "${AUTH_URI_V3}" --os-username "${OS_USERNAME}" \
-       --os-password "${OS_PASSWORD}" alarm-list --limit 1
-    if [ $? -eq 0 ]; then
+       --os-password "${OS_PASSWORD}" alarm-list --limit 1; then
       success="true"
       break
     else
@@ -72,7 +71,7 @@ ostestr --serial --regex "${OSTESTR_REGEX}"
 
 RESULT=$?
 
-if [ $RESULT != 0 -a "$STAY_ALIVE_ON_FAILURE" = "true" ]; then
+if [ $RESULT != 0 ] && [ "$STAY_ALIVE_ON_FAILURE" = "true" ]; then
   sleep 7200
 fi
 exit $RESULT

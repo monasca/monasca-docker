@@ -1,4 +1,5 @@
 #!/bin/ash
+# shellcheck shell=dash
 
 if [ -n "$DEBUG" ]; then
   set -x
@@ -45,8 +46,7 @@ first_zk=$(echo "$STORM_ZOOKEEPER_SERVERS" | cut -d, -f1)
 if [ "$ZOOKEEPER_WAIT" = "true" ]; then
   success="false"
   for i in $(seq "$ZOOKEEPER_WAIT_RETRIES"); do
-    ok=$(echo ruok | nc "$first_zk" "$STORM_ZOOKEEPER_PORT" -w "$ZOOKEEPER_WAIT_TIMEOUT")
-    if [ $? -eq 0 -a "$ok" = "imok" ]; then
+    if ok=$(echo ruok | nc "$first_zk" "$STORM_ZOOKEEPER_PORT" -w "$ZOOKEEPER_WAIT_TIMEOUT") && [ "$ok" = "imok" ]; then
       success="true"
       break
     else
@@ -120,7 +120,7 @@ template_dir "$CONFIG_TEMPLATES" "$CONFIG_DEST"
 template_dir "$LOG_TEMPLATES" "$LOG_DEST"
 
 if [ "$WORKER_LOGS_TO_STDOUT" = "true" ]; then
-  for PORT in `echo "$SUPERVISOR_SLOTS_PORTS" | sed -e "s/,/ /" `; do
+  for PORT in $(echo "$SUPERVISOR_SLOTS_PORTS" | sed -e "s/,/ /"); do
     LOGDIR="/storm/logs/workers-artifacts/thresh/$PORT"
     mkdir -p "$LOGDIR"
     WORKER_LOG="$LOGDIR/worker.log"

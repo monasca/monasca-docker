@@ -8,8 +8,7 @@ if [ -n "$KAFKA_WAIT_FOR_TOPICS" ]; then
   success="false"
 
   for i in $(seq "$KAFKA_WAIT_RETRIES"); do
-    python /kafka_wait_for_topics.py
-    if [ $? -eq 0 ]; then
+    if python /kafka_wait_for_topics.py; then
       success="true"
       break
     else

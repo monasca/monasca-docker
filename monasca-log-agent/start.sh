@@ -1,4 +1,5 @@
 #!/bin/sh
+# shellcheck disable=SC2086
 # (C) Copyright 2017 FUJITSU LIMITED
 
 MONASCA_LOG_API_WAIT_RETRIES=${MONASCA_LOG_API_WAIT_RETRIES:-"24"}
@@ -30,20 +31,20 @@ wait_for_keystone() {
     for i in $(seq "$KEYSTONE_WAIT_RETRIES"); do
       curl --fail --silent --show-error --output - \
         -H "Content-Type: application/json" \
-        -d "
-        { \"auth\": {
-            \"identity\": {
-              \"methods\": [\"password\"],
-              \"password\": {
-                \"user\": {
-                  \"name\": \""$OS_USERNAME"\",
-                  \"domain\": { \"id\": \""$OS_USER_DOMAIN_NAME"\" },
-                  \"password\": \""$OS_PASSWORD"\"
+        -d '
+        { "auth": {
+            "identity": {
+              "methods": ["password"],
+              "password": {
+                "user": {
+                  "name": "'$OS_USERNAME'",
+                  "domain": { "id": "'$OS_USER_DOMAIN_NAME'" },
+                  "password": "'$OS_PASSWORD'"
                 }
               }
             }
           }
-        }" "$OS_AUTH_URL"/auth/tokens 2>&1 && return
+        }' "$OS_AUTH_URL"/auth/tokens 2>&1 && return
 
       echo "Keystone not yet ready (attempt $i of $KEYSTONE_WAIT_RETRIES)"
       sleep "$KEYSTONE_WAIT_DELAY"

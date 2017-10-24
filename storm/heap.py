@@ -57,7 +57,7 @@ def main():
     system_max = get_system_memory_mb()
     cgroup_max = get_cgroup_memory_mb()
     effective_max_ratio = float(JVM_MAX_HEAP_RATIO)
-    effective_max = min(system_max, cgroup_max) * effective_max_ratio
+    effective_max = int(min(system_max, cgroup_max) * effective_max_ratio)
 
     if JVM_MAX_HEAP_MB:
         env_max = int(JVM_MAX_HEAP_MB)

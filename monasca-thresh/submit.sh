@@ -19,7 +19,7 @@ for i in $(seq $MYSQL_WAIT_RETRIES); do
       --user="$MYSQL_DB_USERNAME" \
       --password="$MYSQL_DB_PASSWORD" \
       --connect_timeout=10
-    if [ $? -eq 0 ]; then
+  if [ $? -eq 0 ]; then
     echo "MySQL is available, continuing..."
     success="true"
     break
@@ -69,7 +69,7 @@ fi
 echo "Waiting for storm to become available..."
 success="false"
 for i in $(seq $STORM_WAIT_RETRIES); do
-  timeout -t "$STORM_WAIT_TIMEOUT" storm list
+  timeout -t $STORM_WAIT_TIMEOUT storm list
   if [ $? -eq 0 ]; then
     echo "Storm is available, continuing..."
     success="true"

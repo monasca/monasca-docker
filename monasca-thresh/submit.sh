@@ -60,7 +60,7 @@ fi
 if ${NO_STORM_CLUSTER} = "true"; then
   echo "Using Thresh Config file /storm/conf/thresh-config.yml. Contents:"
   cat /storm/conf/thresh-config.yml | grep -vi password
-  JAVAOPTS="-Xmx$(python /heap.py $WORKER_MAX_HEAP_MB) -Xss$THRESH_STACK_SIZE"
+  JAVAOPTS="-XX:MaxRAM=$(python /memory.py $WORKER_MAX_MB) -XX:+UseSerialGC -Xss$THRESH_STACK_SIZE"
   echo "Submitting storm topology as local cluster using JAVAOPTS of $JAVAOPTS"
   java $JAVAOPTS -classpath "/monasca-thresh.jar:/storm/lib/*" monasca.thresh.ThresholdingEngine /storm/conf/thresh-config.yml thresh-cluster local
   exit $?

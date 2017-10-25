@@ -55,7 +55,7 @@ Configuration
 | `NO_STORM_CLUSTER`            | unset          | If `true`, run without Storm daemons     |
 | `STORM_WAIT_RETRIES`          | `24`           | # of tries to verify Storm availability  |
 | `STORM_WAIT_DELAY`            | `5`            | # seconds between retry attempts         |
-| `WORKER_MAX_HEAP_MB`          | unset          | If set and `NO_STORM_CLUSTER` is `true`, use as Heap Size for JVM |
+| `WORKER_MAX_MB`          | unset          | If set and `NO_STORM_CLUSTER` is `true`, use as MaxRam Size for JVM |
 | `METRIC_SPOUT_THREADS`        | `2`            | Metric Spout threads        |
 | `METRIC_SPOUT_TASKS`          | `2`            | Metric Spout tasks          |
 | `EVENT_SPOUT_THREADS`         | `2`            | Event Spout Threads         |

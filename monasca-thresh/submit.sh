@@ -12,6 +12,7 @@ THRESH_STACK_SIZE=${THRESH_STACK_SIZE:-"1024k"}
 
 echo "Waiting for MySQL to become available..."
 success="false"
+
 for i in $(seq $MYSQL_WAIT_RETRIES); do
   mysqladmin status \
       --host="$MYSQL_DB_HOST" \

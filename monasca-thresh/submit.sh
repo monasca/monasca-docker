@@ -12,14 +12,13 @@ THRESH_STACK_SIZE=${THRESH_STACK_SIZE:-"1024k"}
 
 echo "Waiting for MySQL to become available..."
 success="false"
-for i in $(seq $MYSQL_WAIT_RETRIES); do
-  mysqladmin status \
+for i in $(seq "$MYSQL_WAIT_RETRIES"); do
+  if mysqladmin status \
       --host="$MYSQL_DB_HOST" \
       --port="$MYSQL_DB_PORT" \
       --user="$MYSQL_DB_USERNAME" \
       --password="$MYSQL_DB_PASSWORD" \
-      --connect_timeout=10
-  if [ $? -eq 0 ]; then
+      --connect_timeout=10; then
     echo "MySQL is available, continuing..."
     success="true"
     break
@@ -39,9 +38,8 @@ if [ -n "$KAFKA_WAIT_FOR_TOPICS" ]; then
   echo "Waiting for Kafka topics to become available..."
   success="false"
 
-  for i in $(seq $KAFKA_WAIT_RETRIES); do
-    python /kafka_wait_for_topics.py
-    if [ $? -eq 0 ]; then
+  for i in $(seq "$KAFKA_WAIT_RETRIES"); do
+    if python /kafka_wait_for_topics.py; then
       success="true"
       break
     else
@@ -59,18 +57,19 @@ fi
 
 if ${NO_STORM_CLUSTER} = "true"; then
   echo "Using Thresh Config file /storm/conf/thresh-config.yml. Contents:"
-  cat /storm/conf/thresh-config.yml | grep -vi password
+  grep -vi password /storm/conf/thresh-config.yml
+  # shellcheck disable=SC2086
   JAVAOPTS="-Xmx$(python /heap.py $WORKER_MAX_HEAP_MB) -Xss$THRESH_STACK_SIZE"
   echo "Submitting storm topology as local cluster using JAVAOPTS of $JAVAOPTS"
+  # shellcheck disable=SC2086
   java $JAVAOPTS -classpath "/monasca-thresh.jar:/storm/lib/*" monasca.thresh.ThresholdingEngine /storm/conf/thresh-config.yml thresh-cluster local
   exit $?
 fi
 
 echo "Waiting for storm to become available..."
 success="false"
-for i in $(seq $STORM_WAIT_RETRIES); do
-  timeout -t $STORM_WAIT_TIMEOUT storm list
-  if [ $? -eq 0 ]; then
+for i in $(seq "$STORM_WAIT_RETRIES"); do
+  if timeout -t "$STORM_WAIT_TIMEOUT" storm list; then
     echo "Storm is available, continuing..."
     success="true"
     break
@@ -101,7 +100,7 @@ if [ "$found" = "true" ]; then
   # TODO handle upgrades
 else
   echo "Using Thresh Config file /storm/conf/thresh-config.yml. Contents:"
-  cat /storm/conf/thresh-config.yml | grep -vi password
+  grep -vi password /storm/conf/thresh-config.yml
   echo "Submitting storm topology..."
   storm jar /monasca-thresh.jar \
     monasca.thresh.ThresholdingEngine \

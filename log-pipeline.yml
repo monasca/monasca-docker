@@ -48,6 +48,7 @@ services:
       LOGSTASH_FIELDS: "service=elasticsearch-init"
     volumes:
       - ./elasticsearch-templates/logs.template:/templates/logs.json
+      - /usr/share/elasticsearch/data:/usr/share/elasticsearch/data
     depends_on:
       - elasticsearch
 
@@ -97,6 +98,7 @@ services:
       - keystone
     ports:
       - "5610:5610"
+
   logspout:
     image: monasca/logspout:${MON_LOGSPOUT_VERSION}
     environment:

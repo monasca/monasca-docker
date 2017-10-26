@@ -4,7 +4,7 @@ FROM node:4-alpine
 
 ARG KIBANA_PLUGIN_VER=""
 ARG KIBANA_PLUGIN_REPO=https://github.com/openstack/monasca-kibana-plugin.git
-ARG KIBANA_PLUGIN_BRANCH=master
+ARG KIBANA_PLUGIN_BRANCH=stable/pike
 
 WORKDIR /mkp/
 

@@ -1,7 +1,7 @@
 repository: monasca/logspout
 variants:
-  - tag: 0.0.2
+  - tag: pike
     aliases:
-      - :latest
+      - :pike-{date}-{time}
     args:
       LOGSPOUT_VERSION: v3.2.3

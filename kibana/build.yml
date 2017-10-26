@@ -1,10 +1,8 @@
 repository: monasca/kibana
 variants:
-  - tag: latest
+  - tag: pike
     aliases:
-      - :4.6.3-master
-      - :4.6-master
-      - :4-master
+      - :pike-{date}-{time}
     args:
       KIBANA_VERSION: 4.6.3
-      KIBANA_PLUGIN_BRANCH: master
+      KIBANA_PLUGIN_BRANCH: stable/pike

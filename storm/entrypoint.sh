@@ -70,12 +70,12 @@ if [ -z "$STORM_LOCAL_HOSTNAME" ]; then
 fi
 
 if [ -z "$SUPERVISOR_CHILDOPTS" ]; then
-  SUPERVISOR_CHILDOPTS="-Xmx$(python /heap.py "$SUPERVISOR_MAX_HEAP_MB") -Xss$SUPERVISOR_STACK_SIZE"
+  SUPERVISOR_CHILDOPTS="-XX:MaxRAM$(python /memory.py "$SUPERVISOR_MAX_MB") -XX:+UseSerialGC -Xss$SUPERVISOR_STACK_SIZE"
   export SUPERVISOR_CHILDOPTS
 fi
 
 if [ -z "$WORKER_CHILDOPTS" ]; then
-  WORKER_CHILDOPTS="-Xmx$(python /heap.py "$WORKER_MAX_HEAP_MB") -Xss$WORKER_STACK_SIZE"
+  WORKER_CHILDOPTS="-XX:MaxRAM$(python /memory.py "$WORKER_MAX_MB") -Xss$WORKER_STACK_SIZE"
   WORKER_CHILDOPTS="$WORKER_CHILDOPTS -XX:+UseConcMarkSweepGC"
   if [ "$WORKER_REMOTE_JMX" = "true" ]; then
     WORKER_CHILDOPTS="$WORKER_CHILDOPTS -Dcom.sun.management.jmxremote"
@@ -85,12 +85,12 @@ if [ -z "$WORKER_CHILDOPTS" ]; then
 fi
 
 if [ -z "$NIMBUS_CHILDOPTS" ]; then
-  NIMBUS_CHILDOPTS="-Xmx$(python /heap.py "$NIMBUS_MAX_HEAP_MB") -Xss$NIMBUS_STACK_SIZE"
+  NIMBUS_CHILDOPTS="-XX:MaxRAM$(python /memory.py "$NIMBUS_MAX_MB") -XX:+UseSerialGC -Xss$NIMBUS_STACK_SIZE"
   export NIMBUS_CHILDOPTS
 fi
 
 if [ -z "$UI_CHILDOPTS" ]; then
-  UI_CHILDOPTS="-Xmx$(python /heap.py "$UI_MAX_HEAP_MB") -Xss$UI_STACK_SIZE"
+  UI_CHILDOPTS="-XX:MaxRAM$(python /memory.py "$UI_MAX_MB") -XX:+UseSerialGC -Xss$UI_STACK_SIZE"
   export UI_CHILDOPTS
 fi
 

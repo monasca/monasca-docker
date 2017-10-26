@@ -72,8 +72,8 @@ for f in $CONFIG_TEMPLATES/*.properties.j2; do
 done
 
 if [ -z "$KAFKA_HEAP_OPTS" ]; then
-  max_heap=$(python /heap.py "$KAFKA_MAX_HEAP_MB")
-  KAFKA_HEAP_OPTS="-Xmx${max_heap} -Xms${max_heap} -Xss$KAFKA_STACK_SIZE"
+  max_ram=$(python /memory.py "$KAFKA_MAX_MB")
+  KAFKA_HEAP_OPTS="-XX:MaxRAM=${max_ram} -Xss$KAFKA_STACK_SIZE"
   export KAFKA_HEAP_OPTS
 fi
 

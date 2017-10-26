@@ -8,7 +8,7 @@ ARG SKIP_VERIFY=false
 
 ENV KAFKA_HOSTNAME_FROM_IP=true \
   ZOOKEEPER_CONNECTION_STRING=zookeeper:2181 \
-  KAFKA_MAX_HEAP_MB="1024"
+  KAFKA_MAX_MB="1024"
 
 COPY kafka_mirror.py /
 
@@ -28,7 +28,7 @@ RUN set -x && \
   rm /kafka.tar.gz /kafka_mirror.py && \
   apk del build-dep
 
-COPY template.py start.sh heap.py /
+COPY template.py start.sh memory.py /
 COPY templates /templates
 
 ENV PATH /kafka/bin:$PATH

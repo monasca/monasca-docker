@@ -73,7 +73,7 @@ done
 
 if [ -z "$KAFKA_HEAP_OPTS" ]; then
   max_ram=$(python /memory.py "$KAFKA_MAX_MB")
-  KAFKA_HEAP_OPTS="-XX:MaxRAM=${max_ram} -XX:+UseSerialGC -Xss$KAFKA_STACK_SIZE"
+  KAFKA_HEAP_OPTS="-XX:MaxRAM=${max_ram} -Xss$KAFKA_STACK_SIZE"
   export KAFKA_HEAP_OPTS
 fi
 

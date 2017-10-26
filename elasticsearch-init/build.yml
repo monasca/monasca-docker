@@ -1,7 +1,5 @@
 repository: monasca/elasticsearch-init
 variants:
-  - tag: 0.0.2
+  - tag: pike
     aliases:
-      - :latest
-      
-#test to trigger travis
+      - :pike-{date}-{time}

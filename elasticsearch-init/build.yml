@@ -3,3 +3,5 @@ variants:
   - tag: 0.0.2
     aliases:
       - :latest
+      
+#test to trigger travis

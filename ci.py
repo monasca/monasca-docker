@@ -820,9 +820,9 @@ def main():
     pipeline = args[0] if len(args) >= 1 else None
     voting = bool(args[1]) if len(args) == 2 else True
 
-    if os.environ.get('TRAVIS_BRANCH', None) != 'master':
-        print('Not master branch, skipping tests.')
-        return
+#    if os.environ.get('TRAVIS_BRANCH', None) != 'master':
+#        print('Not master branch, skipping tests.')
+#        return
     if not pipeline or pipeline not in ('logs', 'metrics'):
         print('Unkown pipeline=', pipeline)
         return
@@ -860,8 +860,8 @@ def main():
     finally:
         output_docker_ps()
         output_docker_logs()
-        uploaded_files = upload_log_files()
-        upload_manifest(pipeline, voting, uploaded_files, modules, files, tags)
+#        uploaded_files = upload_log_files()
+#        upload_manifest(pipeline, voting, uploaded_files, modules, files, tags)
 
 
 if __name__ == '__main__':

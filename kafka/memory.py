@@ -20,9 +20,9 @@ from __future__ import print_function
 import os
 import sys
 
-JVM_MAX_HEAP_RATIO = os.environ.get('JVM_MAX_HEAP_RATIO', '0.75')
-JVM_MAX_HEAP_MB = os.environ.get('JVM_MAX_HEAP_MB', None)
-HEAP_OVERRIDE_MB = os.environ.get('HEAP_OVERRIDE_MB', None)
+JVM_MAX_RATIO = os.environ.get('JVM_MAX_RATIO', '0.75')
+JVM_MAX_MB = os.environ.get('JVM_MAX_MB', None)
+MAX_OVERRIDE_MB = os.environ.get('MAX_OVERRIDE_MB', None)
 
 
 def get_system_memory_mb():
@@ -50,17 +50,17 @@ def get_effective_memory_limit_mb():
 
 
 def main():
-    if HEAP_OVERRIDE_MB:
-        print('{}m'.format(HEAP_OVERRIDE_MB))
+    if MAX_OVERRIDE_MB:
+        print('{}m'.format(MAX_OVERRIDE_MB))
         return
 
     system_max = get_system_memory_mb()
     cgroup_max = get_cgroup_memory_mb()
-    effective_max_ratio = float(JVM_MAX_HEAP_RATIO)
+    effective_max_ratio = float(JVM_MAX_RATIO)
     effective_max = int(min(system_max, cgroup_max) * effective_max_ratio)
 
-    if JVM_MAX_HEAP_MB:
-        env_max = int(JVM_MAX_HEAP_MB)
+    if JVM_MAX_MB:
+        env_max = int(JVM_MAX_MB)
     else:
         env_max = effective_max
 

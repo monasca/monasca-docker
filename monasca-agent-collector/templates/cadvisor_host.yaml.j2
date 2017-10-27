@@ -2,7 +2,15 @@
 
 init_config:
   connection_timeout: {{ CADVISOR_TIMEOUT | default(3) }}
-
+  {% if CADVISOR_MINIMUM_WHITELIST %}
+  white_list:
+    metrics:
+      cpu.total_time_sec:
+      mem.cache_bytes:
+      mem.swap_bytes:
+      mem.used_bytes:
+      mem.working_set_bytes:
+  {% endif %}
 instances:
   {% if CADVISOR_URL %}
   - cadvisor_url: "{{ CADVISOR_URL }}"

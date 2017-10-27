@@ -111,6 +111,11 @@ This plugin is enabled when `KUBERNETES=true`. It has the following options:
    namespaces to include as dimensions for metrics that are under that
    namespace. Should be passed in as 'annotation1,annotation2,annotation3'.
    Default: unset
+ * `KUBERNETES_MINIMUM_WHITELIST`: Sets whitelist on kubernetes plugin for
+   the following metrics pod.cpu.total_time_sec, pod.mem.cache_bytes, 
+   pod.mem.swap_bytes, pod.mem.used_bytes, pod.mem.working_set_bytes. This
+   will alleviate the amount of load on Monasca. 
+   Default: unset
 
 The Kubernetes plugin is intended to be run as a DaemonSet on each Kubernetes
 node. In order for API endpoints to be detected correctly, `AGENT_POD_NAME` and
@@ -178,7 +183,12 @@ This plugin is enabled when `CADVISOR=true`. It has the following options:
  * `CADVISOR_URL`: If set, sets the URL at which to access cAdvisor. If unset,
    (default) the cAdvisor host will be determined automatically via the
    Kubernetes API.
-
+ * `CADVISOR_MINIMUM_WHITELIST`: Sets whitelist on cadvisor host plugin for
+   the following metrics cpu.total_time_sec, mem.cache_bytes, 
+   mem.swap_bytes, mem.used_bytes, mem.working_set_bytes. This
+   will alleviate the amount of load on Monasca. 
+   Default: unset
+   
 This plugin collects host-level metrics from a running cAdvisor instance.
 cAdvisor is included in `kubelet` when in Kubernetes environments and is
 necessary to retrieve host-level metrics. As with the Kubernetes plugin,

@@ -1,11 +1,10 @@
 repository: monasca/log-agent
 variants:
-  - tag: 0.0.1
+  - tag: 0.0.4
     aliases:
       - :latest
     args:
-      # TODO(matrixik): change back to stable when PR is merged
-      LOGSTASH_PLUGIN_BRANCH: pull/4/head
+      LOGSTASH_PLUGIN_BRANCH: v1.0.2
       JRUBY_VERSION: 9.1-alpine
       LOGSTASH_VERSION: 2.4-alpine
 

@@ -1,4 +1,5 @@
 #!/bin/sh
+# shellcheck disable=SC2086
 # (C) Copyright 2017 FUJITSU LIMITED
 
 MONASCA_LOG_API_WAIT_RETRIES=${MONASCA_LOG_API_WAIT_RETRIES:-"24"}
@@ -10,7 +11,7 @@ wait_for_log_api() {
   if [ "$1" = "true" ]; then
     echo "Waiting for Monasca Log API to become available..."
 
-    for i in $(seq $MONASCA_LOG_API_WAIT_RETRIES); do
+    for i in $(seq "$MONASCA_LOG_API_WAIT_RETRIES"); do
       curl --silent --show-error --output - \
         "${MONASCA_LOG_API_URL}"/healthcheck 2>&1 && return
 
@@ -43,7 +44,7 @@ wait_for_keystone() {
               }
             }
           }
-        }' $OS_AUTH_URL/auth/tokens 2>&1 && return
+        }' "$OS_AUTH_URL"/auth/tokens 2>&1 && return
 
       echo "Keystone not yet ready (attempt $i of $KEYSTONE_WAIT_RETRIES)"
       sleep "$KEYSTONE_WAIT_DELAY"
@@ -55,10 +56,10 @@ wait_for_keystone() {
   fi
 }
 
-wait_for_log_api $MONASCA_WAIT_FOR_LOG_API
-wait_for_keystone $MONASCA_WAIT_FOR_KEYSTONE
+wait_for_log_api "$MONASCA_WAIT_FOR_LOG_API"
+wait_for_keystone "$MONASCA_WAIT_FOR_KEYSTONE"
 
-/p2 -t /monasca-log-agent.conf.p2 > /monasca-log-agent.conf
+/p2 -t /monasca-log-agent.conf.j2 > /monasca-log-agent.conf
 
 echo
 echo "Starting Monasca log agent"

@@ -786,9 +786,9 @@ def run_tempest_tests_metrics():
     print('Tempest-tests succeeded')
 
 
-def handle_other(files, modules, tags):
+def handle_other(files, modules, tags, pipeline):
     print('Unsupported event type "%s", nothing to do.' % (
-        os.environ.get('TRAVS_EVENT_TYPE')))
+        os.environ.get('TRAVIS_EVENT_TYPE')))
 
 
 def print_env(pipeline, voting, to_print=True):

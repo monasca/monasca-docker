@@ -3,6 +3,13 @@ services:
   - docker
 language: python
 
+addons:
+  apt:
+    sources:
+    - debian-sid    # Grab shellcheck from the Debian repo (o_O)
+    packages:
+    - shellcheck
+
 env:
   - IGNORE_DOCKER_VERSION=true PYTHONUNBUFFERED=true
 
@@ -21,6 +28,8 @@ before_install:
 
 jobs:
   include:
+    - stage: lint-shellcheck
+      script: bash -c 'shopt -s globstar; shellcheck **/*.sh'
     - stage: linting-flake8
       script: flake8
     - stage: linting-pylint

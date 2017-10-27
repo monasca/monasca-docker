@@ -1,6 +1,7 @@
 #!/bin/sh
 
-if [ -n $GF_DATABASE_PORT ]; then
+# shellcheck disable=SC2153
+if [ -n "$GF_DATABASE_PORT" ]; then
   export GF_DATABASE_HOST=$GF_DATABASE_HOST":"$GF_DATABASE_PORT
 fi
 

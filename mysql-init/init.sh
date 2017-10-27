@@ -17,13 +17,12 @@ wait_mysql() {
   echo "Waiting for MySQL to become available..."
   success="false"
   for i in $(seq "$MYSQL_INIT_WAIT_RETRIES"); do
-    mysqladmin status \
+    if mysqladmin status \
         --host="$MYSQL_INIT_HOST" \
         --port="$MYSQL_INIT_PORT" \
         --user="$MYSQL_INIT_USERNAME" \
         --password="$MYSQL_INIT_PASSWORD" \
-        --connect_timeout=10
-    if [ $? -eq 0 ]; then
+        --connect_timeout=10; then
       echo "MySQL is available, continuing..."
       success="true"
       break
@@ -102,7 +101,9 @@ schema_upgrade() {
 
   # ash doesn't support arrays, this seems to be the most concise way to get
   # fields by index
-  set "$version"
+
+  # shellcheck disable=SC2086
+  set $version
   if [ "$#" -ne "3" ]; then
     echo "Invalid version: '$version'"
     sleep 1
@@ -117,6 +118,7 @@ schema_upgrade() {
   last_major=$c_major
   last_minor=$c_minor
   last_patch=$c_patch
+  # shellcheck disable=SC2012
   for diff_version in $(ls $UPGRADE_SCRIPTS | sort -V); do
     if [ ! -d "$UPGRADE_SCRIPTS/$diff_version" ]; then
       echo "Ignoring: $UPGRADE_SCRIPTS/$diff_version"
@@ -136,12 +138,12 @@ schema_upgrade() {
     d_minor=$2
     d_patch=$3
 
-    if [ "$d_major" -le "$c_major" -a "$d_minor" -le "$c_minor" -a "$d_patch" -le "$c_patch" ]; then
+    if [ "$d_major" -le "$c_major" ] && [ "$d_minor" -le "$c_minor" ] && [ "$d_patch" -le "$c_patch" ]; then
       echo "Skipping update $diff_version (too old)"
       continue
     fi
 
-    if [ "$d_major" -gt "$c_major" -a "$d_minor" -gt "$c_minor" -a "$d_patch" -gt "$c_patch" ]; then
+    if [ "$d_major" -gt "$c_major" ] && [ "$d_minor" -gt "$c_minor" ] && [ "$d_patch" -gt "$c_patch" ]; then
       echo "Warning: update too new: $diff_version. This update will not be applied!"
       echo "Make sure to update SCHEMA_MAJOR_REV, SCHEMA_MINOR_REV, and SCHEMA_PATCH_REV!"
       echo "No futher updates will be applied."
@@ -198,17 +200,17 @@ schema_upgrade() {
 
 wait_mysql
 query="select major, minor, patch from schema_version order by id desc limit 1;"
-version=$(echo "$query" | mysql \
+if version=$(echo "$query" | mysql \
     --host="$MYSQL_INIT_HOST" \
     --user="$MYSQL_INIT_USERNAME" \
     --port="$MYSQL_INIT_PORT" \
     --password="$MYSQL_INIT_PASSWORD" \
     --silent \
-    "$MYSQL_INIT_SCHEMA_DATABASE")
-if [ $? -eq 0 ]; then
+    "$MYSQL_INIT_SCHEMA_DATABASE"); then
   schema_upgrade "$version"
 else
   clean_install
 fi
 
 echo "mysql-init exiting successfully"
+return 0

@@ -1,4 +1,5 @@
 #!/bin/ash
+# shellcheck shell=dash
 
 set -x
 
@@ -20,18 +21,20 @@ export CONTROLLER_LOG_LEVEL=${CONTROLLER_LOG_LEVEL:-"INFO"}
 export LOG_CLEANER_LOG_LEVEL=${LOG_CLEANER_LOG_LEVEL:-"INFO"}
 export STATE_CHANGE_LOG_LEVEL=${STATE_CHANGE_LOG_LEVEL:-"INFO"}
 export AUTHORIZER_LOG_LEVEL=${AUTHORIZER_LOG_LEVEL:-"WARN"}
+
+KAFKA_STACK_SIZE=${KAFKA_STACK_SIZE:-"1024k"}
+
 GC_LOG_ENABLED=${GC_LOG_ENABLED:-"False"}
 
 first_zk=$(echo "$ZOOKEEPER_CONNECTION_STRING" | cut -d, -f1)
-zk_host=$(echo "$first_zk" | cut -d\: -f1)
-zk_port=$(echo "$first_zk" | cut -d\: -f2)
+zk_host=$(echo "$first_zk" | cut -d ":" -f1)
+zk_port=$(echo "$first_zk" | cut -d ":" -f2)
 
 # wait for zookeeper to become available
 if [ "$ZOOKEEPER_WAIT" = "true" ]; then
   success="false"
   for i in $(seq "$ZOOKEEPER_WAIT_RETRIES"); do
-    ok=$(echo ruok | nc "$zk_host" "$zk_port" -w "$ZOOKEEPER_WAIT_TIMEOUT")
-    if [ $? -eq 0 -a "$ok" = "imok" ]; then
+    if ok=$(echo ruok | nc "$zk_host" "$zk_port" -w "$ZOOKEEPER_WAIT_TIMEOUT") && [ "$ok" = "imok" ]; then
       success="true"
       break
     else
@@ -69,8 +72,8 @@ for f in $CONFIG_TEMPLATES/*.properties.j2; do
 done
 
 if [ -z "$KAFKA_HEAP_OPTS" ]; then
-  max_heap=$(python /heap.py "$KAFKA_MAX_HEAP_MB")
-  KAFKA_HEAP_OPTS="-Xmx${max_heap} -Xms${max_heap}"
+  max_ram=$(python /memory.py "$KAFKA_MAX_MB")
+  KAFKA_HEAP_OPTS="-XX:MaxRAM=${max_ram} -Xss$KAFKA_STACK_SIZE"
   export KAFKA_HEAP_OPTS
 fi
 

@@ -6,7 +6,7 @@ variants:
       - :1.8
       - :1
     args:
-      CLIENT_BRANCH: 1.7.0
+      CLIENT_BRANCH: 1.8.0
       PYTHON_VERSION: '2'
       TIMESTAMP_SLUG: 20171030-111713
       CONSTRAINTS_BRANCH: master

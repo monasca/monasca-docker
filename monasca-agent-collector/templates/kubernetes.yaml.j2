@@ -2,7 +2,15 @@
 
 init_config:
   connection_timeout: {{ KUBERNETES_TIMEOUT | default(3) }}
-
+  {% if KUBERNETES_MINIMUM_WHITELIST %}
+  white_list:
+    metrics:
+      pod.cpu.total_time_sec:
+      pod.mem.cache_bytes:
+      pod.mem.swap_bytes:
+      pod.mem.used_bytes:
+      pod.mem.working_set_bytes:
+  {% endif %}
 instances:
   - derive_host: True
     {% if KUBERNETES_NAMESPACE_ANNOTATIONS %}

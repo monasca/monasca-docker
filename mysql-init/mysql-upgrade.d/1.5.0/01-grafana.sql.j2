@@ -2,17 +2,20 @@
 {% set grafana_user = GRAFANA_USERNAME | default('grafana') %}
 {% set grafana_password = GRAFANA_PASSWORD | default('password') %}
 
-CREATE DATABASE grafana;
+CREATE DATABASE if not exists grafana;
 
 USE grafana;
 
-CREATE TABLE `session` (
+CREATE TABLE if not exists `session` (
     `key`       CHAR(16) NOT NULL,
     `data`      BLOB,
     `expiry`    INT(11) UNSIGNED NOT NULL,
     PRIMARY KEY (`key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+{% if CREATE_MON_USERS | default('true') | lower == 'true' -%}
 GRANT ALL ON grafana.* TO '{{ grafana_user }}'@'%' IDENTIFIED BY '{{ grafana_password }}';
 GRANT ALL ON grafana.* TO '{{ grafana_user }}'@'localhost' IDENTIFIED BY '{{ grafana_password }}';
+{%- endif %}
+
 {%- endif %}

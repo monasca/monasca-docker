@@ -1,6 +1,6 @@
 FROM alpine:3.5
 
-ARG STORM_VERSION=1.0.3
+ARG STORM_VERSION=1.1.1
 ARG STORM_KEYS=https://dist.apache.org/repos/dist/release/storm/KEYS
 ARG ASC_MIRROR=https://dist.apache.org/repos/dist/release/storm
 ARG SKIP_VERIFY=false
@@ -10,11 +10,11 @@ ENV ZOOKEEPER_SERVERS="zookeeper" \
   ZOOKEEPER_PORT="2181" \
   ZOOKEEPER_WAIT="true" \
   SUPERVISOR_SLOTS_PORTS="6701,6702" \
-  SUPERVISOR_MAX_HEAP_MB="256" \
-  WORKER_MAX_HEAP_MB="784" \
+  SUPERVISOR_MAX_MB="256" \
+  WORKER_MAX_MB="784" \
   NIMBUS_SEEDS="storm-nimbus" \
-  NIMBUS_MAX_HEAP_MB="256" \
-  UI_MAX_HEAP_MB="768" \
+  NIMBUS_MAX_MB="256" \
+  UI_MAX_MB="768" \
   WORKER_LOGS_TO_STDOUT="false" \
   USE_SSL_ENABLED="true"
 
@@ -41,7 +41,7 @@ RUN mkdir /storm && \
 
 ENV PATH /storm/bin:$PATH
 
-COPY template.py heap.py entrypoint.sh /
+COPY template.py memory.py entrypoint.sh /
 COPY templates /templates
 COPY logging /logging
 

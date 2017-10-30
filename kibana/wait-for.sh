@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #   Use this script to test if a given TCP host/port are available
 
-cmdname=$(basename $0)
+cmdname=$(basename "$0")
 
 echoerr() { if [[ $QUIET -ne 1 ]]; then echo "$@" 1>&2; fi }
 
@@ -33,10 +33,10 @@ wait_for()
     while :
     do
         if [[ $ISBUSY -eq 1 ]]; then
-            nc -z $HOST $PORT
+            nc -z "$HOST" "$PORT"
             result=$?
         else
-            (echo > /dev/tcp/$HOST/$PORT) >/dev/null 2>&1
+            (echo > /dev/tcp/"$HOST"/"$PORT") >/dev/null 2>&1
             result=$?
         fi
         if [[ $result -eq 0 ]]; then
@@ -53,11 +53,12 @@ wait_for_wrapper()
 {
     # In order to support SIGINT during timeout: http://unix.stackexchange.com/a/57692
     if [[ $QUIET -eq 1 ]]; then
-        timeout $BUSYTIMEFLAG $TIMEOUT $0 --quiet --child --host=$HOST --port=$PORT --timeout=$TIMEOUT &
+        timeout "$BUSYTIMEFLAG" "$TIMEOUT" "$0" --quiet --child --host="$HOST" --port="$PORT" --timeout="$TIMEOUT" &
     else
-        timeout $BUSYTIMEFLAG $TIMEOUT $0 --child --host=$HOST --port=$PORT --timeout=$TIMEOUT &
+        timeout "$BUSYTIMEFLAG" "$TIMEOUT" "$0" --child --host="$HOST" --port="$PORT" --timeout="$TIMEOUT" &
     fi
     PID=$!
+    # shellcheck disable=SC2064
     trap "kill -INT -$PID" INT
     wait $PID
     RESULT=$?
@@ -118,7 +119,7 @@ do
         ;;
         --)
         shift
-        CLI="$@"
+        CLI="$*"
         break
         ;;
         --help)
@@ -142,7 +143,7 @@ CHILD=${CHILD:-0}
 QUIET=${QUIET:-0}
 
 # check to see if timeout is from busybox?
-TIMEOUT_PATH=$(realpath $(which timeout))
+TIMEOUT_PATH=$(realpath "$(which timeout)")
 if [[ $TIMEOUT_PATH =~ "busybox" ]]; then
         ISBUSY=1
         BUSYTIMEFLAG="-t"
@@ -170,7 +171,7 @@ if [[ $CLI != "" ]]; then
         echoerr "$cmdname: strict mode, refusing to execute subprocess"
         exit $RESULT
     fi
-    exec $CLI
+    exec "$CLI"
 else
-    exit $RESULT
+    exit "$RESULT"
 fi

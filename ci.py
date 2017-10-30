@@ -65,6 +65,8 @@ LOGS_PIPELINE_MODULE_TO_COMPOSE_SERVICES = {
     'kafka-init': 'kafka-log-init',
     'kibana': 'kibana',
     'monasca-log-api': 'log-api',
+    'monasca-log-agent': 'log-agent',
+    'logspout': 'logspout',
 }
 
 METRIC_PIPELINE_INIT_JOBS = ('influxdb-init', 'kafka-init', 'mysql-init', 'alarms', 'grafana-init')
@@ -502,6 +504,12 @@ def pick_modules_for_pipeline(modules, pipeline):
     }
 
     pipeline_modules = modules_for_pipeline[pipeline]
+
+    # some of the modules are not used in pipelines, but should be
+    # taken into consideration during the build
+    other_modules = [
+        'storm'
+    ]
     print('modules: %s \n pipeline_modules: %s' % (modules, pipeline_modules))
 
     # iterate over copy of all modules that are planned for the build
@@ -509,6 +517,9 @@ def pick_modules_for_pipeline(modules, pipeline):
     # remove from current run
     for m in modules[::]:
         if m not in pipeline_modules:
+            if m in other_modules:
+                print('%s is not part of either pipeline, but it will be build anyway' % m)
+                continue
             print('Module %s does not belong to %s, skipping' % (
                 m, pipeline
             ))
@@ -775,9 +786,9 @@ def run_tempest_tests_metrics():
     print('Tempest-tests succeeded')
 
 
-def handle_other(files, modules, tags):
+def handle_other(files, modules, tags, pipeline):
     print('Unsupported event type "%s", nothing to do.' % (
-        os.environ.get('TRAVS_EVENT_TYPE')))
+        os.environ.get('TRAVIS_EVENT_TYPE')))
 
 
 def print_env(pipeline, voting, to_print=True):

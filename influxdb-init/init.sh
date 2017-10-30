@@ -8,6 +8,7 @@ API_USERNAME=${API_USERNAME:-"mon_api"}
 API_PASSWORD=${API_PASSWORD:-"password "}
 PERSISTER_USERNAME=${PERSISTER_USERNAME:-"mon_persister"}
 PERSISTER_PASSWORD=${PERSISTER_PASSWORD:-"password "}
+INFLUXDB_DEFAULT_RETENTION=${INFLUXDB_DEFAULT_RETENTION:-"INF"}
 
 attempts=10
 delay=5s
@@ -15,8 +16,7 @@ delay=5s
 echo "Waiting for influx to become available..."
 success=1
 for i in $(seq 1 $attempts); do
-  http get "${INFLUXDB_URL}/ping"
-  if [ $? -eq 0 ]; then
+  if http get "${INFLUXDB_URL}/ping"; then
     success=0
     break
   else
@@ -42,7 +42,11 @@ post () {
 }
 
 echo "Creating database \"${MONASCA_DATABASE}\"..."
-post "CREATE DATABASE \"${MONASCA_DATABASE}\""
+if [ -z "${INFLUXDB_SHARD_DURATION}" ]; then
+  post "CREATE DATABASE \"${MONASCA_DATABASE}\" WITH DURATION ${INFLUXDB_DEFAULT_RETENTION} REPLICATION 1 NAME \"default_mon\""
+else
+  post "CREATE DATABASE \"${MONASCA_DATABASE}\" WITH DURATION ${INFLUXDB_DEFAULT_RETENTION} REPLICATION 1 SHARD DURATION ${INFLUXDB_SHARD_DURATION} NAME \"default_mon\""
+fi
 
 echo "Adding ${API_USERNAME} user..."
 post "CREATE USER \"${API_USERNAME}\" WITH PASSWORD '${API_PASSWORD}'"

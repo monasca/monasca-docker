@@ -33,7 +33,7 @@ jobs:
     - stage: linting-flake8
       script: flake8
     - stage: linting-pylint
-      script: pylint
+      script: pylint --rcfile=setup.cfg *
     - stage: lint-shellcheck
       script: bash -c 'shopt -s globstar; shellcheck **/*.sh'
     - stage: metrics-pipeline

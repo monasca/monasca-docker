@@ -8,7 +8,7 @@ variants:
     args:
       CLIENT_BRANCH: 1.8.0
       PYTHON_VERSION: '2'
-      TIMESTAMP_SLUG: 20171030-111713
+      TIMESTAMP_SLUG: 20171024-093600
       CONSTRAINTS_BRANCH: master
 
   - tag: 1.7.0
@@ -18,7 +18,7 @@ variants:
     args:
       CLIENT_BRANCH: 1.7.0
       PYTHON_VERSION: '2'
-      TIMESTAMP_SLUG: 20171030-111713
+      TIMESTAMP_SLUG: 20170809-155207
       CONSTRAINTS_BRANCH: master
 
   - tag: 1.6.0
@@ -27,7 +27,7 @@ variants:
     args:
       CLIENT_BRANCH: 1.6.0
       PYTHON_VERSION: '2'
-      TIMESTAMP_SLUG: 20171030-111713
+      TIMESTAMP_SLUG: 20170809-155207
       CONSTRAINTS_BRANCH: master
 
   - tag: master
@@ -36,5 +36,5 @@ variants:
     args:
       CLIENT_BRANCH: master
       PYTHON_VERSION: '2'
-      TIMESTAMP_SLUG: 20171030-111713
+      TIMESTAMP_SLUG: 20171024-093600
       CONSTRAINTS_BRANCH: master

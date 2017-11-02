@@ -303,10 +303,10 @@ def get_dirty_modules(dirty_files):
 
             dirty.add(mod)
 
-    if len(dirty) > 5:
-        print ('Max number of changed modules exceded. '
-               'Please break up the patch set until a maximum of 5 modules are changed.')
-        sys.exit(1)
+#    if len(dirty) > 5:
+#        print ('Max number of changed modules exceded. '
+#               'Please break up the patch set until a maximum of 5 modules are changed.')
+#        sys.exit(1)
     return list(dirty)
 
 

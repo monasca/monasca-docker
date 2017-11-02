@@ -10,7 +10,7 @@ ARG CONSTRAINTS_BRANCH=master
 # `docker build`
 ARG REBUILD=1
 
-RUN apk add --no-cache --virtual build-dep libxml2-dev libxslt-dev && \
+RUN apk add --no-cache --virtual build-dep libxml2-dev libxslt-dev git && \
   /build.sh -r ${CLIENT_REPO} -b ${CLIENT_BRANCH} -q ${CONSTRAINTS_BRANCH} && \
   monasca --version
 

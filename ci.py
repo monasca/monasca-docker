@@ -135,6 +135,7 @@ def print_logs():
 
 
 def get_client():
+    print('XXXX>get_client() BEGIN')
     cred_dict_str = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS', None)
     if not cred_dict_str:
         return None
@@ -149,6 +150,7 @@ def get_client():
 
 
 def upload_log_files():
+    print('XXXX>upload_log_files() BEGIN')
     client = get_client()
     if not client:
         print ('Could not upload logs to GCP')
@@ -163,6 +165,7 @@ def upload_log_files():
 
 
 def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags):
+    print('XXXX>upload_manifest() BEGIN')
     client = get_client()
     if not client:
         print ('Could not upload logs to GCP')
@@ -196,6 +199,7 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
 
 
 def upload_files(log_dir, bucket):
+    print('XXXX>upload_files() BEGIN')
     uploaded_files = {}
     blob = bucket.blob(log_dir)
     for f in os.listdir(log_dir):
@@ -214,6 +218,7 @@ def upload_files(log_dir, bucket):
 
 def upload_file(bucket, file_path, file_str=None, content_type='text/plain',
                 content_encoding=None):
+    print('XXXX>upload_file() BEGIN')
     try:
         blob = bucket.blob(file_path)
         if content_encoding:
@@ -243,6 +248,7 @@ def upload_file(bucket, file_path, file_str=None, content_type='text/plain',
 
 
 def set_log_dir():
+    print('XXXX>set_log_dir() BEGIN')
     if not os.path.exists(LOG_DIR):
         os.makedirs(LOG_DIR)
     if not os.path.exists(BUILD_LOG_DIR):
@@ -252,6 +258,7 @@ def set_log_dir():
 
 
 def get_changed_files():
+    print('XXXX>get_changed_files() BEGIN')
     commit_range = os.environ.get('TRAVIS_COMMIT_RANGE', None)
     if not commit_range:
         return []
@@ -268,6 +275,7 @@ def get_changed_files():
 
 
 def get_message_tags():
+    print('XXXX>get_message_tags() BEGIN')
     commit = os.environ.get('TRAVIS_COMMIT_RANGE', None)
     if not commit:
         return []
@@ -290,6 +298,7 @@ def get_message_tags():
 
 
 def get_dirty_modules(dirty_files):
+    print('XXXX>get_dirty_modules() BEGIN')
     dirty = set()
     for f in dirty_files:
         if os.path.sep in f:
@@ -311,6 +320,7 @@ def get_dirty_modules(dirty_files):
 
 
 def get_dirty_for_module(files, module=None):
+    print('XXXX>get_dirty_for_module() BEGIN')
     ret = []
     for f in files:
         if os.path.sep in f:
@@ -326,6 +336,7 @@ def get_dirty_for_module(files, module=None):
 
 
 def run_build(modules):
+    print('XXXX>run_build() BEGIN')
     log_dir = BUILD_LOG_DIR
     build_args = ['dbuild', '-sd', '--build-log-dir', log_dir, 'build', 'all', '+', ':ci-cd'] + modules
     print('build command:', build_args)
@@ -345,6 +356,7 @@ def run_build(modules):
 
 
 def run_push(modules):
+    print('XXXX>run_push(modules) BEGIN')
     if os.environ.get('TRAVIS_SECURE_ENV_VARS', None) != "true":
         print('No push permissions in this context, skipping!')
         print('Not pushing: %r' % modules)
@@ -352,6 +364,9 @@ def run_push(modules):
 
     username = os.environ.get('DOCKER_HUB_USERNAME', None)
     password = os.environ.get('DOCKER_HUB_PASSWORD', None)
+    print('XXXX>run_push(modules) username', username)
+    print('XXXX>run_push(modules) password', password)
+
     if username and password:
         print('Logging into docker registry...')
         r = subprocess.call([
@@ -382,6 +397,7 @@ def run_push(modules):
 
 
 def run_readme(modules):
+    print('XXXX>run_readme() BEGIN')
     if os.environ.get('TRAVIS_SECURE_ENV_VARS', None) != "true":
         print('No Docker Hub permissions in this context, skipping!')
         print('Not updating READMEs: %r' % modules)
@@ -406,7 +422,7 @@ def run_readme(modules):
 
 
 def update_docker_compose(modules, pipeline):
-
+    print('XXXX>update_docker_compose() BEGIN')
     compose_dict = load_yml(PIPELINE_TO_YAML_COMPOSE['metrics'])
     services_to_changes = METRIC_PIPELINE_MODULE_TO_COMPOSE_SERVICES.copy()
 
@@ -445,6 +461,7 @@ def update_docker_compose(modules, pipeline):
 
 
 def load_yml(yml_path):
+    print('XXXX>load_yml() BEGIN')
     try:
         with open(yml_path) as compose_file:
             compose_dict = yaml.safe_load(compose_file)
@@ -454,6 +471,7 @@ def load_yml(yml_path):
 
 
 def handle_pull_request(files, modules, tags, pipeline):
+    print('XXXX>handle_pull_request() BEGIN')
     modules_to_build = modules[:]
 
     for tag, arg in tags:
@@ -495,6 +513,7 @@ def handle_pull_request(files, modules, tags, pipeline):
 
 
 def pick_modules_for_pipeline(modules, pipeline):
+    print('XXXX>pick_modules_for_pipeline() BEGIN')
     if not modules:
         return []
 
@@ -529,6 +548,7 @@ def pick_modules_for_pipeline(modules, pipeline):
 
 
 def get_current_init_status(docker_id):
+    print('XXXX>get_current_init_status() BEGIN')
     init_status = ['docker', 'inspect', '-f', '{{ .State.ExitCode }}:{{ .State.Status }}', docker_id]
     p = subprocess.Popen(init_status, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
@@ -552,6 +572,7 @@ def get_current_init_status(docker_id):
 
 
 def output_docker_logs():
+    print('XXXX>output_docker_logs() BEGIN')
     docker_names = ['docker', 'ps', '-a', '--format', '"{{.Names}}"']
 
     p = subprocess.Popen(docker_names, stdout=subprocess.PIPE)
@@ -582,6 +603,7 @@ def output_docker_logs():
 
 
 def output_docker_ps():
+    print('XXXX>output_docker_ps() BEGIN')
     docker_ps = ['docker', 'ps', '-a']
 
     docker_ps_process = subprocess.Popen(docker_ps)
@@ -598,6 +620,7 @@ def output_docker_ps():
 
 
 def output_compose_details(pipeline):
+    print('XXXX>output_compose_details() BEGIN')
     print('Running docker-compose -f ', CI_COMPOSE_FILE)
     if pipeline == 'metrics':
         services = METRIC_PIPELINE_SERVICES
@@ -607,6 +630,7 @@ def output_compose_details(pipeline):
 
 
 def get_docker_id(init_job):
+    print('XXXX>get_docker_id() BEGIN')
     docker_id = ['docker-compose',
                  '-f', CI_COMPOSE_FILE,
                  'ps',
@@ -631,6 +655,7 @@ def get_docker_id(init_job):
 
 
 def wait_for_init_jobs(pipeline):
+    print('XXXX>wait_for_init_jobs() BEGIN')
     init_status_dict = {job: False for job in INIT_JOBS[pipeline]}
     docker_id_dict = {job: "" for job in INIT_JOBS[pipeline]}
 
@@ -663,6 +688,7 @@ def wait_for_init_jobs(pipeline):
 
 
 def handle_push(files, modules, tags, pipeline):
+    print('XXXX>handle_push() BEGIN')
     modules_to_push = []
     modules_to_readme = []
 
@@ -834,8 +860,11 @@ def main():
     set_log_dir()
 
     files = get_changed_files()
+    print('XXXX>get_changed_files():', files)
     modules = get_dirty_modules(files)
+    print('XXXX>get_dirty_modules():', modules)
     tags = get_message_tags()
+    print('XXXX>get_message_tags():', tags)
 
     if tags:
         print('Tags detected:')

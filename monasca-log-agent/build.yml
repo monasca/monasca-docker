@@ -7,3 +7,5 @@ variants:
       LOGSTASH_PLUGIN_BRANCH: v1.0.2
       JRUBY_VERSION: 9.1-alpine
       LOGSTASH_VERSION: 2.4-alpine
+
+#trigger travis

@@ -6,3 +6,5 @@ variants:
     args:
       KIBANA_VERSION: 4.6.3
       KIBANA_PLUGIN_BRANCH: stable/pike
+
+#trigger travis

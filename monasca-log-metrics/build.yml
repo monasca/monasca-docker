@@ -5,3 +5,5 @@ variants:
       - :pike-{date}-{time}
     args:
       LOGSTASH_VERSION: 2.4-alpine
+
+#trigger travis

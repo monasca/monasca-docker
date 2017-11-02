@@ -3,5 +3,3 @@ variants:
   - tag: pike
     aliases:
       - :pike-{date}-{time}
-
-#trigger travis

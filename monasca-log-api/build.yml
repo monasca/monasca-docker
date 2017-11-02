@@ -1,4 +1,4 @@
-repository: monasca/log-api
+repository: fest/log-api
 variants:
   - tag: pike
     aliases:

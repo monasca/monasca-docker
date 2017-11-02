@@ -1,4 +1,4 @@
-repository: monasca/elasticsearch-init
+repository: fest/elasticsearch-init
 variants:
   - tag: pike
     aliases:

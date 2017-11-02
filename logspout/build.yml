@@ -1,4 +1,4 @@
-repository: monasca/logspout
+repository: fest/logspout
 variants:
   - tag: pike
     aliases:

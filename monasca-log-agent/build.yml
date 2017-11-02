@@ -1,4 +1,4 @@
-repository: monasca/log-agent
+repository: fest/log-agent
 variants:
   - tag: pike
     aliases:

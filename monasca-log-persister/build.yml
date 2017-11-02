@@ -1,4 +1,4 @@
-repository: monasca/log-persister
+repository: fest/log-persister
 variants:
   - tag: pike
     aliases:

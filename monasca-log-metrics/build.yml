@@ -1,4 +1,4 @@
-repository: monasca/log-metrics
+repository: fest/log-metrics
 variants:
   - tag: pike
     aliases:

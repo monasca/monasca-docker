@@ -733,9 +733,11 @@ def run_docker_compose(pipeline):
 
 
 def run_smoke_tests_metrics():
+    print ('Running Smoke-tests for stable/pike')
+    #TODO: branch as variable... use TRAVIS_PULL_REQUEST_BRANCH ?
     smoke_tests_run = ['docker', 'run', '-e', 'MONASCA_URL=http://monasca:8070', '-e',
                        'METRIC_NAME_TO_CHECK=monasca.thread_count', '--net', 'monascadocker_default', '-p',
-                       '0.0.0.0:8080:8080', 'monasca/smoke-tests:latest']
+                       '0.0.0.0:8080:8080', 'monasca/smoke-tests:stable/pike']
 
     p = subprocess.Popen(smoke_tests_run)
 
@@ -752,10 +754,11 @@ def run_smoke_tests_metrics():
 
 
 def run_tempest_tests_metrics():
-    print ('Running Tempest-tests')
+    print ('Running Tempest-tests for stable/pike')
+    #TODO: branch as variable... use TRAVIS_PULL_REQUEST_BRANCH ?
     tempest_tests_run = ['docker', 'run', '-e', 'KEYSTONE_SERVER=keystone', '-e',
                          'KEYSTONE_PORT=5000', '--net', 'monascadocker_default',
-                         'monasca/tempest-tests:latest']
+                         'monasca/tempest-tests:stable/pike']
 
     with open(LOG_DIR + 'tempest_tests.log', 'w') as out:
         p = subprocess.Popen(tempest_tests_run, stdout=out)

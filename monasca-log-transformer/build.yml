@@ -1,4 +1,4 @@
-repository: monasca/log-transformer
+repository: fest/log-transformer
 variants:
   - tag: pike
     aliases:

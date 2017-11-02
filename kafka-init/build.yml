@@ -1,4 +1,4 @@
-repository: monasca/kafka-init
+repository: fest/kafka-init
 variants:
   - tag: pike
     aliases:

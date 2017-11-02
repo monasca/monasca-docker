@@ -1,4 +1,4 @@
-repository: monasca/kibana
+repository: fest/kibana
 variants:
   - tag: pike
     aliases:
@@ -6,5 +6,3 @@ variants:
     args:
       KIBANA_VERSION: 4.6.3
       KIBANA_PLUGIN_BRANCH: stable/pike
-
-#trigger travis

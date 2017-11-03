@@ -768,7 +768,9 @@ def run_smoke_tests_metrics():
     #TODO: branch as variable... use TRAVIS_PULL_REQUEST_BRANCH ?
     smoke_tests_run = ['docker', 'run', '-e', 'MONASCA_URL=http://monasca:8070', '-e',
                        'METRIC_NAME_TO_CHECK=monasca.thread_count', '--net', 'monascadocker_default', '-p',
-                       '0.0.0.0:8080:8080', 'monasca/smoke-tests:stable/pike']
+                       '0.0.0.0:8080:8080', 'fest/smoke-tests:pike-latest']
+    #TODO: repo has no stable/pike!
+    #TODO: image name!
 
     p = subprocess.Popen(smoke_tests_run)
 
@@ -789,7 +791,8 @@ def run_tempest_tests_metrics():
     #TODO: branch as variable... use TRAVIS_PULL_REQUEST_BRANCH ?
     tempest_tests_run = ['docker', 'run', '-e', 'KEYSTONE_SERVER=keystone', '-e',
                          'KEYSTONE_PORT=5000', '--net', 'monascadocker_default',
-                         'monasca/tempest-tests:stable/pike']
+                         'fest/tempest-tests:pike-latest']
+    #TODO: image name!
 
     with open(LOG_DIR + 'tempest_tests.log', 'w') as out:
         p = subprocess.Popen(tempest_tests_run, stdout=out)

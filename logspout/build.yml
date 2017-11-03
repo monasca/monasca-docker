@@ -1,9 +1,7 @@
 repository: fest/logspout
 variants:
-  - tag: pike
+  - tag: pike-latest
     aliases:
       - :pike-{date}-{time}
     args:
       LOGSPOUT_VERSION: v3.2.3
-      
-#trigger travis

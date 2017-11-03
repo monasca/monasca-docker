@@ -1,11 +1,12 @@
 FROM alpine:3.5
 
 ARG API_REPO=https://github.com/openstack/monasca-api
-ARG API_BRANCH="master"
+ARG API_BRANCH="stable/pike"
 
 ARG CLIENT_REPO=https://git.openstack.org/openstack/python-monascaclient
-ARG CLIENT_BRANCH="master"
-ARG UPPER_CONSTRAINTS=https://raw.githubusercontent.com/openstack/requirements/master/upper-constraints.txt
+ARG CLIENT_BRANCH="stable/pike"
+ARG UPPER_CONSTRAINTS=https://raw.githubusercontent.com/openstack/requirements/stable/pike/upper-constraints.txt
+
 
 ENV GIT_SSL_NO_VERIFY true
 

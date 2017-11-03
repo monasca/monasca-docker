@@ -1,5 +1,5 @@
-repository: monasca/tempest-tests
+repository: fest/tempest-tests
 variants:
-  - tag: 1.0.0
+  - tag: pike-latest
     aliases:
-      - :latest
+      - :pike-{date}-{time}

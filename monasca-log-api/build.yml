@@ -1,6 +1,6 @@
 repository: fest/log-api
 variants:
-  - tag: pike
+  - tag: pike-latest
     aliases:
       - :pike-{date}-{time}
     args:
@@ -8,5 +8,3 @@ variants:
       CONSTRAINTS_BRANCH: stable/pike
       PYTHON_VERSION: '2'
       TIMESTAMP_SLUG: 20170809-155207
-
-#trigger travis

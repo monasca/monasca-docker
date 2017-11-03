@@ -21,7 +21,7 @@ before_install:
   - pip install pip --upgrade
   - pip install git+https://github.com/timothyb89/dbuild.git
   - pip install google-cloud-storage
-  - pip install flake8 flake8-blind-except flake8-builtins flake8-pep3101 flake8-coding
+  - pip install flake8 flake8-blind-except flake8-builtins flake8-pep3101 flake8-coding hacking
   - pip install pylint
   - docker --version
   - docker-compose --version
@@ -34,8 +34,6 @@ jobs:
       script: flake8
     - stage: linting-pylint
       script: pylint --rcfile=setup.cfg *
-    - stage: lint-shellcheck
-      script: bash -c 'shopt -s globstar; shellcheck **/*.sh'
     - stage: metrics-pipeline
       script: python ci.py metrics
     - stage: logs-pipeline

@@ -355,8 +355,13 @@ def run_build(modules):
         sys.exit(p.returncode)
 
 
-def run_push(modules):
+def run_push(modules, pipeline):
     print('XXXX>run_push(modules) BEGIN')
+
+    if pipeline == 'logs':
+        print('images are already pushed by metrics-pipeline, skipping!')
+        return
+
     if os.environ.get('TRAVIS_SECURE_ENV_VARS', None) != "true":
         print('No push permissions in this context, skipping!')
         print('Not pushing: %r' % modules)
@@ -716,7 +721,7 @@ def handle_push(files, modules, tags, pipeline):
             modules_to_readme.append(module)
 
     if modules_to_push:
-        run_push(modules_to_push)
+        run_push(modules_to_push, pipeline)
     else:
         print('No modules to push.')
 

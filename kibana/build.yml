@@ -1,6 +1,6 @@
 repository: fest/kibana
 variants:
-  - tag: pike
+  - tag: pike-latest
     aliases:
       - :pike-{date}-{time}
     args:

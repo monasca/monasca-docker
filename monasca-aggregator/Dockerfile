@@ -2,7 +2,7 @@
 from alpine:edge
 
 arg AGGREGATOR_REPO=https://github.com/monasca/monasca-aggregator
-arg AGGREGATOR_BRANCH=master
+arg AGGREGATOR_BRANCH=stable/pike
 
 env GOPATH=/go
 

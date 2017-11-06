@@ -32,12 +32,10 @@ services:
   elasticsearch:
     image: elasticsearch:${ELASTICSEARCH_VERSION}
     environment:
-      - cluster.name=monasca
-      - http.host=0.0.0.0
-      - transport.host=127.0.0.1
-      - bootstrap.memory_lock=true
-      - ES_JAVA_OPTS=-Xms1g -Xmx1g
       - LOGSTASH_FIELDS="service=elasticsearch"
+    volumes:
+      - /usr/share/elasticsearch/data:/usr/share/elasticsearch/data
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
       - 9200:9200
       - 9300:9300
@@ -48,7 +46,6 @@ services:
       LOGSTASH_FIELDS: "service=elasticsearch-init"
     volumes:
       - ./elasticsearch-templates/logs.template:/templates/logs.json
-      - /usr/share/elasticsearch/data:/usr/share/elasticsearch/data
     depends_on:
       - elasticsearch
 

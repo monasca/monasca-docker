@@ -1,0 +1,9 @@
+network.host: 0.0.0.0
+cluster.name: monasca
+node.name: elasticsearch_node_1
+
+#For details see:
+#https://www.elastic.co/guide/en/elasticsearch/reference/2.4/setup-service.html
+#https://www.elastic.co/guide/en/elasticsearch/reference/2.4/setup-configuration.html
+bootstrap.memory_lock: true
+ES_JAVA_OPTS: -Xms1g -Xmx1g

@@ -1,4 +1,4 @@
-repository: monasca/client
+repository: fest/client
 variants:
   - tag: pike-latest
     aliases:

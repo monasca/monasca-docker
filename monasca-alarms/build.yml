@@ -1,7 +1,7 @@
-repository: monasca/alarms
+repository: fest/alarms
 variants:
-  - tag: 1.1.4
+  - tag: pike-latest
     aliases:
-      - :latest
+      - :pike-{date}-{time}
     args:
-      MON_CLIENT_VERSION: "1.6.0"
+      MON_CLIENT_VERSION: "pike-latest"

@@ -1,30 +1,10 @@
 repository: monasca/client
 variants:
-  - tag: 1.7.0
+  - tag: pike-latest
     aliases:
-      - :latest
-      - :1.7
-      - :1
+      - :pike-{date}-{time}
     args:
-      CLIENT_BRANCH: 1.7.0
+      CLIENT_BRANCH: pike-latest
       PYTHON_VERSION: '2'
       TIMESTAMP_SLUG: 20170809-155207
-      CONSTRAINTS_BRANCH: master
-
-  - tag: 1.6.0
-    aliases:
-      - :1.6
-    args:
-      CLIENT_BRANCH: 1.6.0
-      PYTHON_VERSION: '2'
-      TIMESTAMP_SLUG: 20170809-155207
-      CONSTRAINTS_BRANCH: master
-
-  - tag: master
-    aliases:
-      - :master-{date}-{time}
-    args:
-      CLIENT_BRANCH: master
-      PYTHON_VERSION: '2'
-      TIMESTAMP_SLUG: 20170809-155207
-      CONSTRAINTS_BRANCH: master
+      CONSTRAINTS_BRANCH: pike-latest

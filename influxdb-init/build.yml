@@ -1,5 +1,5 @@
 repository: monasca/influxdb-init
 variants:
-  - tag: latest
+  - tag: pike-latest
     aliases:
-      - :1.0.2
+      - :pike-{date}-{time}

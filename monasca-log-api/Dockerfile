@@ -1,6 +1,7 @@
+
 ARG PYTHON_VERSION
 ARG TIMESTAMP_SLUG
-FROM monasca/python:${PYTHON_VERSION}-${TIMESTAMP_SLUG}
+FROM fest/python:${PYTHON_VERSION}-${TIMESTAMP_SLUG}
 
 ARG LOG_API_REPO=https://github.com/openstack/monasca-log-api.git
 ARG LOG_API_BRANCH=stable/pike

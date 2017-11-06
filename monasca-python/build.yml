@@ -1,4 +1,4 @@
-repository: monasca/python
+repository: fest/python
 variants:
   - tag: pike-latest
     aliases:

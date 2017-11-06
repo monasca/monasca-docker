@@ -1,4 +1,4 @@
-repository: monasca/influxdb-init
+repository: fest/influxdb-init
 variants:
   - tag: pike-latest
     aliases:

@@ -6,5 +6,5 @@ variants:
     args:
       CLIENT_BRANCH: pike-latest
       PYTHON_VERSION: '2'
-      TIMESTAMP_SLUG: 20170809-155207
+      TIMESTAMP_SLUG: pike-latest
       CONSTRAINTS_BRANCH: pike-latest

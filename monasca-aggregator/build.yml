@@ -1,5 +1,5 @@
-repository: fest/aggregator
+repository: monasca/aggregator
 variants:
-  - tag: pike-latest
+  - tag: 0.1.2
     aliases:
-      - :pike-{date}-{time}
+      - :latest

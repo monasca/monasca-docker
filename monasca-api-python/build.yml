@@ -1,9 +1,9 @@
-repository: monasca/api
+repository: fest/api
 variants:
-  - tag: master
+  - tag: pike-latest
     aliases:
-      - :master-{date}-{time}
+      - :pike-{date}-{time}
     args:
-      API_BRANCH: refs/changes/63/417163/10
-      CONSTRAINTS_BRANCH: master
+      API_BRANCH: stable/pike
+      CONSTRAINTS_BRANCH: stable/pike
       TIMESTAMP_SLUG: 20170809-155207

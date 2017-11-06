@@ -4,8 +4,8 @@ ARG TIMESTAMP_SLUG
 FROM monasca/python:2-${TIMESTAMP_SLUG}
 
 ARG API_REPO=https://github.com/openstack/monasca-api.git
-ARG API_BRANCH=master
-ARG CONSTRAINTS_BRANCH=master
+ARG API_BRANCH=stabe/pike
+ARG CONSTRAINTS_BRANCH=stable/pike
 
 # To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
 # `docker build`

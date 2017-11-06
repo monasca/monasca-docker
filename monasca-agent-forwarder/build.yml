@@ -1,7 +1,7 @@
-repository: monasca/agent-forwarder
+repository: fest/agent-forwarder
 variants:
-  - tag: master
+  - tag: pike-latest
     aliases:
-      - :master-{date}-{time}
+      - :pike-{date}-{time}
     args:
-      MON_AGENT_BASE_VERSION: master-20171019-180215
+      MON_AGENT_BASE_VERSION: pike-latest

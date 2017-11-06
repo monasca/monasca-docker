@@ -1,5 +1,5 @@
-repository: monasca/grafana-init
+repository: fest/grafana-init
 variants:
-  - tag: latest
+  - tag: pike-latest
     aliases:
-      - :1.2.1
+      - :pike-{date}-{time}

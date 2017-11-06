@@ -1,7 +1,7 @@
 repository: fest/python
 variants:
-  - tag: pike-latest
+  - tag: 2-pike-latest
     aliases:
-      - :pike-{date}-{time}
+      - :2-pike-{date}-{time}
     args:
       PYTHON_VERSION: '2'

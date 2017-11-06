@@ -1,13 +1,7 @@
 repository: monasca/python
 variants:
-  - tag: '2'
+  - tag: pike-latest
     aliases:
-      - :default
-      - :2-{date}-{time}
+      - :pike-{date}-{time}
     args:
       PYTHON_VERSION: '2'
-  - tag: '3'
-    aliases:
-      - :3-{date}-{time}
-    args:
-      PYTHON_VERSION: '3'

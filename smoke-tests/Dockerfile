@@ -1,8 +1,7 @@
 FROM alpine:3.5
 
 arg SMOKE_TEST_REPO=https://github.com/monasca/smoke-test
-arg SMOKE_TEST_BRANCH=master
-#arg SMOKE_TEST_BRANCH=stable/pike   TODO: no stable/pike!
+arg SMOKE_TEST_BRANCH=stable/pike
 
 env GOPATH=/go
 

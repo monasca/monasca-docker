@@ -1,7 +1,7 @@
-repository: monasca/agent-base
+repository: fest/agent-base
 variants:
-  - tag: master
+  - tag: pike-latest
     aliases:
-      - :master-{date}-{time}
+      - :pike-{date}-{time}
     args:
       TIMESTAMP_SLUG: 20170809-155207

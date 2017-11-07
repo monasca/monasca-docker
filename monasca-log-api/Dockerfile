@@ -1,5 +1,5 @@
 ARG TIMESTAMP_SLUG
-FROM fest/python:2-${TIMESTAMP_SLUG}
+FROM monasca/python:2-20170809-155207
 
 ARG LOG_API_REPO=https://github.com/openstack/monasca-log-api.git
 ARG LOG_API_BRANCH=stable/pike

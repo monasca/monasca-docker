@@ -4,7 +4,7 @@ ARG TIMESTAMP_SLUG
 FROM fest/python:2-${TIMESTAMP_SLUG}
 
 ARG API_REPO=https://github.com/openstack/monasca-api.git
-ARG API_BRANCH=stabe/pike
+ARG API_BRANCH=stable/pike
 ARG CONSTRAINTS_BRANCH=stable/pike
 
 # To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running

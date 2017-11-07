@@ -7,5 +7,4 @@ variants:
       LOG_API_BRANCH: stable/pike
       CONSTRAINTS_BRANCH: stable/pike
       PYTHON_VERSION: '2'
-      TIMESTAMP_SLUG: pike-latest
- 
+      TIMESTAMP_SLUG: 'pike-latest'

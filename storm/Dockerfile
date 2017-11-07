@@ -20,24 +20,43 @@ ENV ZOOKEEPER_SERVERS="zookeeper" \
 
 COPY storm_mirror.py clean_externals.py /
 
-RUN mkdir /storm && \
-  apk add --no-cache openjdk8-jre-base py2-jinja2 bash procps && \
-  apk add --no-cache --virtual build-dep gnupg curl py2-requests tar && \
-  url=$(python /storm_mirror.py $STORM_VERSION) && \
-  echo "Using mirror: $url" && \
-  curl -f "$url" > /storm.tar.gz && \
-  set -x && \
-  echo "Verifying against keys: $STORM_KEYS" && \
-  curl -f "$ASC_MIRROR/apache-storm-$STORM_VERSION/apache-storm-$STORM_VERSION.tar.gz.asc" > /storm.asc && \
-  curl "$STORM_KEYS" | gpg --import && \
-  gpg --batch --verify storm.asc storm.tar.gz || $SKIP_VERIFY && \
-  echo "Download verified, continuing..." && \
-  tar zxf /storm.tar.gz -C /storm --strip-components=1 && \
-  rm /storm.tar.gz /storm_mirror.py && \
-  apk del build-dep && \
-  rm -rf /storm/examples && \
-  python /clean_externals.py && \
-  rm /clean_externals.py
+RUN mkdir /storm
+RUN apk add --no-cache openjdk8-jre-base py2-jinja2 bash procps
+RUN apk add --no-cache --virtual build-dep gnupg curl py2-requests tar
+RUN url=$(python /storm_mirror.py $STORM_VERSION)
+RUN echo "Using mirror: $url"
+RUN curl -f "$url" > /storm.tar.gz
+RUN set -x
+RUN echo "Verifying against keys: $STORM_KEYS"
+RUN curl -f "$ASC_MIRROR/apache-storm-$STORM_VERSION/apache-storm-$STORM_VERSION.tar.gz.asc" > /storm.asc
+RUN curl "$STORM_KEYS" | gpg --import
+RUN gpg --batch --verify storm.asc storm.tar.gz || $SKIP_VERIFY
+RUN echo "Download verified, continuing..."
+RUN tar zxf /storm.tar.gz -C /storm --strip-components=1
+RUN rm /storm.tar.gz /storm_mirror.py
+RUN apk del build-dep
+RUN rm -rf /storm/examples
+RUN python /clean_externals.py
+RUN rm /clean_externals.py
+
+#RUN mkdir /storm && \
+#  apk add --no-cache openjdk8-jre-base py2-jinja2 bash procps && \
+#  apk add --no-cache --virtual build-dep gnupg curl py2-requests tar && \
+#  url=$(python /storm_mirror.py $STORM_VERSION) && \
+#  echo "Using mirror: $url" && \
+#  curl -f "$url" > /storm.tar.gz && \
+#  set -x && \
+#  echo "Verifying against keys: $STORM_KEYS" && \
+#  curl -f "$ASC_MIRROR/apache-storm-$STORM_VERSION/apache-storm-$STORM_VERSION.tar.gz.asc" > /storm.asc && \
+#  curl "$STORM_KEYS" | gpg --import && \
+#  gpg --batch --verify storm.asc storm.tar.gz || $SKIP_VERIFY && \
+#  echo "Download verified, continuing..." && \
+#  tar zxf /storm.tar.gz -C /storm --strip-components=1 && \
+#  rm /storm.tar.gz /storm_mirror.py && \
+#  apk del build-dep && \
+#  rm -rf /storm/examples && \
+#  python /clean_externals.py && \
+#  rm /clean_externals.py
 
 ENV PATH /storm/bin:$PATH
 

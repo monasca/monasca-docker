@@ -1,5 +1,5 @@
 ARG TIMESTAMP_SLUG
-FROM monasca/python:2-${TIMESTAMP_SLUG}
+FROM fest/python:2-${TIMESTAMP_SLUG}
 # note(kornicameister) there's no full Python3 support for
 # monasca-notification at the moment, enforcing Python 2
 

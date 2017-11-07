@@ -1,10 +1,8 @@
-repository: monasca/notification
+repository: fest/notification
 variants:
-
-  - tag: master
+  - tag: pike-latest
     aliases:
-      - :latest
-      - :master-{date}-{time}
+      - :pike-{date}-{time}
     args:
       NOTIFICATION_BRANCH: refs/changes/17/461917/3
-      TIMESTAMP_SLUG: 20170809-155207
+      TIMESTAMP_SLUG: pike-latest

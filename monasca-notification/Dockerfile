@@ -4,8 +4,8 @@ FROM monasca/python:2-${TIMESTAMP_SLUG}
 # monasca-notification at the moment, enforcing Python 2
 
 ARG NOTIFICATION_REPO=https://git.openstack.org/openstack/monasca-notification
-ARG NOTIFICATION_BRANCH=master
-ARG CONSTRAINTS_BRANCH=master
+ARG NOTIFICATION_BRANCH=stable/pike
+ARG CONSTRAINTS_BRANCH=stable/pike
 
 # To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
 # `docker build`

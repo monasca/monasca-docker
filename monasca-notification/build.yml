@@ -4,5 +4,5 @@ variants:
     aliases:
       - :pike-{date}-{time}
     args:
-      NOTIFICATION_BRANCH: refs/changes/17/461917/3
+      NOTIFICATION_BRANCH: stable/pike
       TIMESTAMP_SLUG: pike-latest

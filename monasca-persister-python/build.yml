@@ -1,43 +1,11 @@
-repository: monasca/persister
+repository: fest/persister
 variants:
-  - tag: 1.6.0-python
+  - tag: pike-latest
     aliases:
-      - :latest
-      - :latest-python
-      - :1.6.0
-      - :1.6
-      - :1
-      - :1-python
+      - :pike-{date}-{time}
     args:
-      PERSISTER_BRANCH: 1.6.0
+      CONSTRAINTS_BRANCH: stable/pike
+      NOTIFICATION_BRANCH: stable/pike
+      PERSISTER_BRANCH: stable/pike
       PYTHON_VERSION: '2'
-      TIMESTAMP_SLUG: 20170809-155207
-
-  - tag: 1.5.0-python
-    aliases:
-      - :1.5.0
-      - :1.5
-      - :1.5-python
-    args:
-      PERSISTER_BRANCH: 1.5.0
-      PYTHON_VERSION: '2'
-      TIMESTAMP_SLUG: 20170809-155207
-
-  - tag: ocata-python
-    aliases:
-      - :ocata
-    args:
-      PERSISTER_BRANCH: stable/ocata
-      PYTHON_VERSION: '2'
-      TIMESTAMP_SLUG: 20170809-155207
-      CONSTRAINTS_BRANCH: stable/ocata
-
-  - tag: master
-    aliases:
-      - :master-{date}-{time}
-      - :master-python
-    args:
-      PERSISTER_BRANCH: master
-      PYTHON_VERSION: '2'
-      TIMESTAMP_SLUG: 20170809-155207
-      CONSTRAINTS_BRANCH: master
+      TIMESTAMP_SLUG: pike-latest

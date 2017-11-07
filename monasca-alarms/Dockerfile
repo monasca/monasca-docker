@@ -1,7 +1,7 @@
 ARG MON_CLIENT_VERSION
 FROM fest/client:${MON_CLIENT_VERSION}
 
-# To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
+# To force a rebuild, pass --build-arg REBUILD="$(DATE)", when running
 # `docker build`
 ARG REBUILD=1
 

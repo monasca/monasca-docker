@@ -1,6 +1,6 @@
 ARG PYTHON_VERSION
 ARG TIMESTAMP_SLUG
-FROM monasca/python:${PYTHON_VERSION}-${TIMESTAMP_SLUG}
+FROM fest/python:${PYTHON_VERSION}-${TIMESTAMP_SLUG}
 
 ARG CLIENT_REPO=https://git.openstack.org/openstack/python-monascaclient
 ARG CLIENT_BRANCH=pike-latest

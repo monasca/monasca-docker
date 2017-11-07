@@ -1,7 +1,7 @@
 ARG TIMESTAMP_SLUG
 # note(kornicameiter) running monasca-agent with Python3 is not possible
 # at the moment, enforce Python2 variant of monasca/python
-FROM monasca/python:2-${TIMESTAMP_SLUG}
+FROM fest/python:2-${TIMESTAMP_SLUG}
 
 ARG AGENT_REPO=https://git.openstack.org/openstack/monasca-agent
 ARG AGENT_BRANCH=stable/pike

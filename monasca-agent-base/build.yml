@@ -4,4 +4,4 @@ variants:
     aliases:
       - :pike-{date}-{time}
     args:
-      TIMESTAMP_SLUG: 20170809-155207
+      TIMESTAMP_SLUG: pike-latest

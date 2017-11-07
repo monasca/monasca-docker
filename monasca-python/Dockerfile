@@ -11,5 +11,5 @@ RUN apk add --no-cache ca-certificates tini && \
   apk add --no-cache --virtual build-dep musl-dev linux-headers git make g++ linux-headers && \
   gcc -shared -fPIC /stack-fix.c -o /stack-fix.so && \
   apk del build-dep
-
+ 
 ENTRYPOINT ["/entrypoint.sh"]

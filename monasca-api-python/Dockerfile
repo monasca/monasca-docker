@@ -1,7 +1,7 @@
 ARG TIMESTAMP_SLUG
 # monasca-api cannot run under Python3
 # enforcing Python2
-FROM monasca/python:2-${TIMESTAMP_SLUG}
+FROM fest/python:2-${TIMESTAMP_SLUG}
 
 ARG API_REPO=https://github.com/openstack/monasca-api.git
 ARG API_BRANCH=stabe/pike

@@ -1,7 +1,5 @@
-repository: monasca/keystone-init
+repository: fest/keystone-init
 variants:
-  - tag: latest
+  - tag: pike-latest
     aliases:
-      - :1.2.0
-      - :1.2
-      - :1
+      - :pike-{date}-{time}

@@ -1,7 +1,6 @@
 ARG PYTHON_VERSION
 ARG TIMESTAMP_SLUG
 FROM fest/python:${PYTHON_VERSION}-${TIMESTAMP_SLUG}
-#FROM monasca/python:${PYTHON_VERSION}
 
 ARG PERSISTER_REPO=https://github.com/openstack/monasca-persister.git
 ARG PERSISTER_BRANCH=stable/pike

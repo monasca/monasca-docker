@@ -157,8 +157,6 @@ def create_topics(default_config, existing_topics):
                 topic_name)
             continue
         if topic_name in existing_topics:
-            logger.info('Topic %s already exists, ensuring configuration options match up',
-                        topic_name)
             existing_topics_config[topic_name] = configs
             continue
         logger.info('Creating topic %s: partitions=%s, replicas=%s, config=%r',
@@ -171,6 +169,9 @@ def create_topics(default_config, existing_topics):
 
 def update_topic_configs(existing_topics_config):
     for topic, config in existing_topics_config.iteritems():
+        logger.info('Topic %s already exists, ensuring configuration options match up',
+                    topic)
+        logger.info('Attempting to set configuration options to %s', config)
         topic_describe_output, err = kafka_topics("describe", ["--topic", topic])
         topic_describe = topic_describe_output.split('\n')[0]
         current_config = {}
@@ -209,7 +210,6 @@ def main():
     logger.info('Topic creation finished successfully. Created: %r',
                 created_topics)
 
-    logger.info(existing_topics_config)
     update_topic_configs(existing_topics_config)
 
 if __name__ == '__main__':

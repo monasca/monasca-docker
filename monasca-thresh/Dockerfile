@@ -1,13 +1,13 @@
-FROM monasca/storm:1.0.3-1.0.5
+FROM fest/storm:1.0.3-1.0.5
 
 ENV MAVEN_HOME /usr/share/maven
 
 COPY settings.xml.j2 /
 
 ENV COMMON_REPO=https://git.openstack.org/openstack/monasca-common.git \
-  COMMON_BRANCH="master" \
+  COMMON_BRANCH="stable/pike" \
   THRESH_REPO=https://git.openstack.org/openstack/monasca-thresh.git \
-  THRESH_BRANCH="master" \
+  THRESH_BRANCH="stable/pike" \
   STORM_WAIT_RETRIES=12 \
   STORM_WAIT_DELAY=5 \
   STORM_WAIT_TIMEOUT=20 \

@@ -347,7 +347,7 @@ def run_build(modules):
 def run_push(modules):
     if os.environ.get('TRAVIS_SECURE_ENV_VARS', None) != "true":
         print('No push permissions in this context, skipping!')
-        print('Not pushing: {0!r}'.format(modules))
+        print('Not pushing: {!r}'.format(modules))
         return
 
     username = os.environ.get('DOCKER_HUB_USERNAME', None)
@@ -384,7 +384,7 @@ def run_push(modules):
 def run_readme(modules):
     if os.environ.get('TRAVIS_SECURE_ENV_VARS', None) != "true":
         print('No Docker Hub permissions in this context, skipping!')
-        print('Not updating READMEs: {0!r}'.format(modules))
+        print('Not updating READMEs: {!r}'.format(modules))
         return
 
     log_dir = BUILD_LOG_DIR
@@ -438,7 +438,7 @@ def update_docker_compose(modules, pipeline):
     try:
         with open(CI_COMPOSE_FILE, 'w') as docker_compose:
             yaml.dump(compose_dict, docker_compose, default_flow_style=False)
-    except (RuntimeError, IOError):
+    except (RuntimeError, EnvironmentError):
         raise FileWriteException(
             'Error writing CI dictionary to {}'.format(CI_COMPOSE_FILE)
         )
@@ -449,7 +449,7 @@ def load_yml(yml_path):
         with open(yml_path) as compose_file:
             compose_dict = yaml.safe_load(compose_file)
             return compose_dict
-    except(RuntimeError, IOError):
+    except(RuntimeError, EnvironmentError):
         raise FileReadException('Failed to read %s', yml_path)
 
 
@@ -785,7 +785,8 @@ def run_tempest_tests_metrics():
 
 
 def handle_other(files, modules, tags, pipeline):
-    print('Unsupported event type "{}", nothing to do.'.format(os.environ.get('TRAVIS_EVENT_TYPE')))
+    print('Unsupported event type "{}", nothing to do.'.format(
+        os.environ.get('TRAVIS_EVENT_TYPE')))
 
 
 def print_env(pipeline, voting, to_print=True):

@@ -23,6 +23,8 @@ ARG REBUILD=1
 ARG SKIP_COMMON_TESTS=false
 ARG SKIP_THRESH_TESTS=false
 
+# comment, just to trigger travis (remove later)
+
 RUN apk add --no-cache --virtual build-dep maven git py2-pip python-dev git openjdk8 make g++ && \
   apk add --no-cache python mysql-client && \
   mkdir /root/.m2 && \

@@ -11,7 +11,7 @@ services:
     environment:
       LOGSTASH_FIELDS: "service=influxdb"
   influxdb-init:
-    image: monasca/influxdb-init:${INFLUXDB_INIT_VERSION}
+    image: fest/influxdb-init:${INFLUXDB_INIT_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=influxdb-init"
     depends_on:

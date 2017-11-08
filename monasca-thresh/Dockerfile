@@ -1,4 +1,4 @@
-FROM fest/storm:1.0.3-1.0.7
+FROM fest/storm:pike-latest
 
 ENV MAVEN_HOME /usr/share/maven
 

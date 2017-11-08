@@ -66,6 +66,9 @@ Several parameters can be specified using environment variables:
 | `AUTHORIZER_LOG_LEVEL`        | `WARN`  | Log Level for the authorizer                   |
 | `GC_LOG_ENABLED`              | `False` | If True, JVM garbage collection log enabled    |
 | `KAFKA_STACK_SIZE`            | `1024k` | JVM stack size                                 |
+| `LOG_RETENTION_HOURS`         | `4`     | Number of hours to keep a log file             |
+| `LOG_ROLL_MS`                 | `900000` | Number of ms before a new log segment is rolled out |
+| `STAY_ALIVE_ON_FAILURE`       | `false` | If `true`, container stays alive for 2 hours after kafka exits |
 
 ### Log Files
 

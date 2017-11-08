@@ -70,8 +70,11 @@ num.partitions=1
 # A segment will be deleted whenever *either* of these criteria are met. Deletion always happens
 # from the end of the log.
 
-# The minimum age of a log file to be eligible for deletion
-log.retention.hours=4
+# The number of hours to keep a log file before deleting it
+log.retention.hours={{ LOG_RETENTION_HOURS | default(4) }}
+
+# The maximum time before a new log segment is rolled out
+log.roll.ms={{ LOG_ROLL_MS | default(900000) }}
 
 # The interval at which log segments are checked to see if they can be deleted according
 # to the retention policies

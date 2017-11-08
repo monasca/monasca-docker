@@ -4,5 +4,4 @@ variants:
     aliases:
       - :2-pike-{date}-{time}
     args:
-      SKIP_COMMON_TESTS: "true"
-      
+      SKIP_COMMON_TESTS: "true"    

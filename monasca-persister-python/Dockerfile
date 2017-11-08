@@ -26,9 +26,13 @@ ENV CONFIG_TEMPLATE=true \
   INFLUX_PASSWORD=password \
   INFLUX_DB=mon
 
-RUN /build.sh -r ${PERSISTER_REPO} -b ${PERSISTER_BRANCH} \
-  -q ${CONSTRAINTS_BRANCH} -d "influxdb Jinja2" && \
-  rm -rf /build.sh
+#RUN /build.sh -r ${PERSISTER_REPO} -b ${PERSISTER_BRANCH} \
+#  -q ${CONSTRAINTS_BRANCH} -d "influxdb Jinja2" && \
+#  rm -rf /build.sh
+
+  RUN /build.sh -r ${PERSISTER_REPO} -b ${PERSISTER_BRANCH} \
+    -q ${CONSTRAINTS_BRANCH} -d "gunicorn python-memcached influxdb Jinja2" && \
+    rm -rf /build.sh
 
 COPY persister.conf.j2 /etc/monasca-persister/
 COPY template.py start.sh kafka_wait_for_topics.py /

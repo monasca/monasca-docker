@@ -1,7 +1,5 @@
-repository: monasca/mysql-users-init
+repository: fest/mysql-users-init
 variants:
-  - tag: latest
+  - tag: pike-latest
     aliases:
-      - :1.1.0
-      - :1.1
-      - :1
+      - :pike-{date}-{time}

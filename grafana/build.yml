@@ -1,8 +1,8 @@
-repository: monasca/grafana
+repository: fest/grafana
 variants:
-  - tag: latest
+  - tag: pike-latest
     aliases:
-      - :4.0.0-1.1.4
+      - :pike-{date}-{time}
   - tag: app
     aliases:
       - :4.0.0-1.3.1-app

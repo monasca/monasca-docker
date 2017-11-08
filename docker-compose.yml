@@ -11,7 +11,7 @@ services:
     environment:
       LOGSTASH_FIELDS: "service=influxdb"
   influxdb-init:
-    image: monasca/influxdb-init:${INFLUXDB_INIT_VERSION}
+    image: fest/influxdb-init:${INFLUXDB_INIT_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=influxdb-init"
     depends_on:
@@ -33,13 +33,13 @@ services:
       - "/var/lib/docker:/var/lib/docker:ro"
 
   agent-forwarder:
-    image: monasca/agent-forwarder:${MON_AGENT_FORWARDER_VERSION}
+    image: fest/agent-forwarder:${MON_AGENT_FORWARDER_VERSION}
     environment:
       NON_LOCAL_TRAFFIC: "true"
       LOGSTASH_FIELDS: "service=monasca-agent-forwarder"
 
   agent-collector:
-    image: monasca/agent-collector:${MON_AGENT_COLLECTOR_VERSION}
+    image: fest/agent-collector:${MON_AGENT_COLLECTOR_VERSION}
     restart: on-failure
     environment:
       AGENT_HOSTNAME: "docker-host"
@@ -49,7 +49,7 @@ services:
       LOGSTASH_FIELDS: "service=monasca-agent-collector"
 
   alarms:
-    image: monasca/alarms:${MON_ALARMS_VERSION}
+    image: fest/alarms:${MON_ALARMS_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=monasca-alarms"
     depends_on:
@@ -63,7 +63,7 @@ services:
     restart: on-failure
 
   kafka:
-    image: monasca/kafka:${MON_KAFKA_VERSION}
+    image: fest/kafka:${MON_KAFKA_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=kafka"
     restart: on-failure
@@ -92,14 +92,14 @@ services:
       MYSQL_ROOT_PASSWORD: secretmysql
       LOGSTASH_FIELDS: "service=mysql"
   mysql-init:
-    image: monasca/mysql-init:${MYSQL_INIT_VERSION}
+    image: fest/mysql-init:${MYSQL_INIT_VERSION}
     environment:
       MYSQL_INIT_DISABLE_REMOTE_ROOT: "false"
       MYSQL_INIT_RANDOM_PASSWORD: "false"
       LOGSTASH_FIELDS: "service=mysql-init"
 
   keystone:
-    image: monasca/keystone:${MON_KEYSTONE_VERSION}
+    image: fest/keystone:${MON_KEYSTONE_VERSION}
     environment:
       KEYSTONE_HOST: keystone
       KEYSTONE_PASSWORD: secretadmin
@@ -121,7 +121,7 @@ services:
       LOGSTASH_FIELDS: "service=monasca-sidecar"
 
   monasca:
-    image: monasca/api:${MON_API_VERSION}
+    image: fest/api:${MON_API_VERSION}
     environment:
       SIDECAR_URL: http://monasca-sidecar:4888/v1/ingest
       LOGSTASH_FIELDS: "service=monasca-api"
@@ -137,7 +137,7 @@ services:
       - "8070:8070"
 
   monasca-persister:
-    image: monasca/persister:${MON_PERSISTER_VERSION}
+    image: fest/persister:${MON_PERSISTER_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=monasca-persister"
     restart: on-failure
@@ -148,7 +148,7 @@ services:
       - kafka
 
   thresh:
-    image: monasca/thresh:${MON_THRESH_VERSION}
+    image: fest/thresh:${MON_THRESH_VERSION}
     environment:
       NO_STORM_CLUSTER: "true"
       WORKER_MAX_HEAP_MB: "256"
@@ -158,7 +158,7 @@ services:
       - kafka
 
   monasca-notification:
-    image: monasca/notification:${MON_NOTIFICATION_VERSION}
+    image: fest/notification:${MON_NOTIFICATION_VERSION}
     environment:
       NF_PLUGINS: "webhook"
       LOGSTASH_FIELDS: "service=monasca-notification"
@@ -169,7 +169,7 @@ services:
       - mysql
 
   grafana:
-    image: monasca/grafana:${MON_GRAFANA_VERSION}
+    image: fest/grafana:${MON_GRAFANA_VERSION}
     environment:
       GF_AUTH_BASIC_ENABLED: "false"
       GF_USERS_ALLOW_SIGN_UP: "true"
@@ -186,7 +186,7 @@ services:
       - monasca
 
   grafana-init:
-    image: monasca/grafana-init:${MON_GRAFANA_INIT_VERSION}
+    image: fest/grafana-init:${MON_GRAFANA_INIT_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=grafana-init"
     depends_on:

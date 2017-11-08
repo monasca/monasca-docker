@@ -1,8 +1,7 @@
-repository: monasca/thresh
+repository: fest/thresh
 variants:
-  - tag: master
+  - tag: 2-pike-latest
     aliases:
-      - :master-{date}-{time}
-      - :latest
+      - :2-pike-{date}-{time}
     args:
       SKIP_COMMON_TESTS: "true"

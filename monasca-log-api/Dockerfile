@@ -1,5 +1,4 @@
-ARG TIMESTAMP_SLUG
-#FROM monasca/python:2-20170809-155207
+ARG TIMESTAMP_SLUG=pike-latest
 FROM fest/python:2-${TIMESTAMP_SLUG}
 
 ARG LOG_API_REPO=https://github.com/openstack/monasca-log-api.git
@@ -30,6 +29,7 @@ ENV CONFIG_TEMPLATE=true \
   ACCESS_LOG_FIELDS='%(h)s %(l)s %(u)s %(t)s %(r)s %(s)s %(b)s "%(f)s" "%(a)s" %(L)s'
 
 ARG REBUILD_PROJECT=1
+COPY apk_install.sh /apk.sh
 RUN /build.sh \
   -r "${LOG_API_REPO}" \
   -b "${LOG_API_BRANCH}" \

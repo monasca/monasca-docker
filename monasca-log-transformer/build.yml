@@ -1,4 +1,7 @@
 repository: fest/log-transformer
-
+variants:
+  - tag: pike-latest
+    aliases:
+      - :pike-{date}-{time}
     args:
       LOGSTASH_VERSION: 2.4-alpine

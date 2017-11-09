@@ -30,11 +30,11 @@ ENV CONFIG_TEMPLATE=true \
 #  -q ${CONSTRAINTS_BRANCH} -d "influxdb Jinja2" && \
 #  rm -rf /build.sh
 
-RUN /build.sh -r ${PERSISTER_REPO} -b ${PERSISTER_BRANCH} \
-  -q ${CONSTRAINTS_BRANCH} -d "influxdb Jinja2"
-RUN rm -rf /build.sh
+#RUN /build.sh -r ${PERSISTER_REPO} -b ${PERSISTER_BRANCH} \
+#  -q ${CONSTRAINTS_BRANCH} -d "influxdb Jinja2"
+#RUN rm -rf /build.sh
 
-COPY persister.conf.j2 /etc/monasca-persister/
-COPY template.py start.sh kafka_wait_for_topics.py /
+#COPY persister.conf.j2 /etc/monasca-persister/
+#COPY template.py start.sh kafka_wait_for_topics.py /
 
-CMD ["/start.sh"]
+#CMD ["/start.sh"]

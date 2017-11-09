@@ -20,7 +20,7 @@ run mkdir -p /var/lib/grafana && \
   cd $GOPATH/src/github.com/grafana/grafana/ && \
   apk add --no-cache --virtual build-dep \
     nodejs go git musl-dev make g++ && \
-  apk add --no-cache python py-jinja2 && \
+  apk add --no-cache python py-jinja2 ca-certificates && \
   git init && \
   git remote add origin $GRAFANA_REPO && \
   git fetch origin $GRAFANA_BRANCH && \

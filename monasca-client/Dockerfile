@@ -10,11 +10,14 @@ ARG CONSTRAINTS_BRANCH=pike-latest
 # `docker build`
 ARG REBUILD=1
 
-#RUN apk add --no-cache --virtual build-dep libxml2-dev libxslt-dev && \
-#  /build.sh -r ${CLIENT_REPO} -b ${CLIENT_BRANCH} -q ${CONSTRAINTS_BRANCH} && \
-#  monasca --version
+RUN apk add --no-cache --virtual build-dep libxml2-dev libxslt-dev git && \
+  make g++ linux-headers && \
+  /build.sh -r ${CLIENT_REPO} -b ${CLIENT_BRANCH} -q ${CONSTRAINTS_BRANCH} && \
+  monasca --version
 
-RUN apk add --no-cache --virtual build-dep libxml2-dev libxslt-dev
-RUN /build.sh -r ${CLIENT_REPO} -b ${CLIENT_BRANCH} -q ${CONSTRAINTS_BRANCH}
-RUN monasca --version
+#RUN apk add --no-cache --virtual build-dep libxml2-dev libxslt-dev git make g++ linux-headers
+#RUN pip install osc-lib
+#RUN /build.sh -r ${CLIENT_REPO} -b ${CLIENT_BRANCH} -q ${CONSTRAINTS_BRANCH}
+#RUN monasca --version
+
 CMD ["sh"]

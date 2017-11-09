@@ -1,7 +1,7 @@
 repository: fest/thresh
 variants:
-  - tag: 2-pike-latest
+  - tag: pike-latest
     aliases:
-      - :2-pike-{date}-{time}
+      - :pike-{date}-{time}
     args:
       SKIP_COMMON_TESTS: "true"

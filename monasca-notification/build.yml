@@ -5,4 +5,4 @@ variants:
       - :pike-{date}-{time}
     args:
       NOTIFICATION_BRANCH: stable/pike
-      TIMESTAMP_SLUG: pike-latest
+      TIMESTAMP_SLUG: pike-latest      

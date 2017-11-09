@@ -4,8 +4,8 @@ variants:
     aliases:
       - :pike-{date}-{time}
     args:
-      CLIENT_BRANCH: pike-latest
+      CLIENT_BRANCH: stable/pike
       PYTHON_VERSION: '2'
       TIMESTAMP_SLUG: pike-latest
-      CONSTRAINTS_BRANCH: pike-latest
+      CONSTRAINTS_BRANCH: stable/pike
    

@@ -8,5 +8,4 @@ variants:
       PERSISTER_BRANCH: stable/pike
       PYTHON_VERSION: '2'
       TIMESTAMP_SLUG: pike-latest
-
   

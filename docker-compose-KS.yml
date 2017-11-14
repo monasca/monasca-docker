@@ -1,0 +1,30 @@
+version: '2'
+services:
+  mysql:
+    image: mysql:${MYSQL_VERSION}
+    environment:
+      MYSQL_ROOT_PASSWORD: secretmysql
+      LOGSTASH_FIELDS: "service=mysql"
+  mysql-init:
+    image: fest/mysql-init:${MYSQL_INIT_VERSION}
+    environment:
+      MYSQL_INIT_DISABLE_REMOTE_ROOT: "false"
+      MYSQL_INIT_RANDOM_PASSWORD: "false"
+      LOGSTASH_FIELDS: "service=mysql-init"
+
+  keystone:
+    image: fest/keystone:${MON_KEYSTONE_VERSION}
+    environment:
+      KEYSTONE_HOST: keystone
+      KEYSTONE_PASSWORD: secretadmin
+      KEYSTONE_DATABASE_BACKEND: mysql
+      KEYSTONE_MYSQL_HOST: mysql
+      KEYSTONE_MYSQL_USER: keystone
+      KEYSTONE_MYSQL_PASSWORD: keystone
+      KEYSTONE_MYSQL_DATABASE: keystone
+      LOGSTASH_FIELDS: "service=keystone"
+    depends_on:
+      - mysql
+    ports:
+      - "5000:5000"
+      - "35357:35357"

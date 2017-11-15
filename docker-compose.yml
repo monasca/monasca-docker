@@ -81,6 +81,7 @@ services:
         alarm-notifications:12:1,\
         retry-notifications:3:1,\
         events:12:1,\
+        kafka-health-check:1:1,\
         60-seconds-notifications:3:1"
       LOGSTASH_FIELDS: "service=kafka-init"
     depends_on:

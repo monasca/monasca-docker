@@ -1,0 +1,19 @@
+curator_actions:
+  - {
+      delete_by: age,
+      description: 'Delete indices older than 60 days',
+      deleted_days: 60,
+      disable: False
+    }
+
+curator_cron_config:
+  - {
+      minute: 0,
+      hour: 0
+    }
+
+curator_excluded_index:
+  - {
+      index_name: .kibana,
+      exclude: True
+    }

@@ -115,15 +115,9 @@ services:
       - "5000:5000"
       - "35357:35357"
 
-  monasca-sidecar:
-    image: timothyb89/monasca-sidecar:${MON_SIDECAR_VERSION}
-    environment:
-      LOGSTASH_FIELDS: "service=monasca-sidecar"
-
   monasca:
     image: fest/api:${MON_API_VERSION}
     environment:
-      SIDECAR_URL: http://monasca-sidecar:4888/v1/ingest
       LOGSTASH_FIELDS: "service=monasca-api"
     depends_on:
       - influxdb
@@ -131,7 +125,6 @@ services:
       - mysql
       - zookeeper
       - kafka
-      - monasca-sidecar
       - memcached
     ports:
       - "8070:8070"

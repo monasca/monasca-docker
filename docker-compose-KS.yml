@@ -13,7 +13,7 @@ services:
     networks:
       - network_keystone
 
-  mysql-init_ks:
+  mysql-init_keystone:
     image: fest/mysql-init:${MYSQL_INIT_VERSION}
     environment:
       CREATE_MON_USERS: "false"

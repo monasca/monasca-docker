@@ -1,6 +1,10 @@
+####################################################
+# make sure that keystone is alread running
+# !!!! Configure IP address of keystone !!!!
+#      Currently: 172.31.0.216
+####################################################
 version: '2'
 services:
-
   log-metrics:
     image: fest/log-metrics:${MON_LOG_METRICS_VERSION}
     environment:
@@ -66,9 +70,9 @@ services:
       SERVER_NAME: kibana
       ELASTICSEARCH_PINGTIMEOUT: 1000
       LOGSTASH_FIELDS: "service=kibana"
+      KEYSTONE_URI: "http://172.31.0.216/identity"
     depends_on:
       - elasticsearch
-      - keystone
     ports:
       - 5601:5601
 
@@ -77,8 +81,14 @@ services:
     environment:
       LOGSPOUT: ignore
       LOGSTASH_FIELDS: "service=monasca-log-api"
+      #TODO: keystone URI should be sufficient!?
+      KEYSTONE_IDENTITY_URI: "http://172.31.0.216/identity"
+      KEYSTONE_AUTH_URI: "http://172.31.0.216/identity"
+      KEYSTONE_ADMIN_USER: admin
+      KEYSTONE_ADMIN_PASSWORD: secretadmin
+      #KEYSTONE_ADMIN_TENANT: admin
+      #KEYSTONE_ADMIN_DOMAIN: default
     depends_on:
-      - keystone
       - zookeeper
       - kafka
       - memcached
@@ -90,9 +100,15 @@ services:
     environment:
       LOGSPOUT: ignore
       LOGSTASH_FIELDS: "service=monasca-log-agent"
+      #TODO: adapt readme! not tested yet!
+      OS_AUTH_URL: "http://172.31.0.216/identity/v3"
+      OS_USERNAME: monasca-agent
+      OS_PASSWORD: password
+      OS_PROJECT_NAME: mini-mon
+      #OS_USER_DOMAIN_NAME: Default
+      #OS_PROJECT_DOMAIN_NAME: Default
     depends_on:
       - log-api
-      - keystone
     ports:
       - "5610:5610"
 

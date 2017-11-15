@@ -1,0 +1,107 @@
+version: '2'
+services:
+
+  log-metrics:
+    image: fest/log-metrics:${MON_LOG_METRICS_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=monasca-log-metrics"
+    depends_on:
+      - kafka
+      - zookeeper
+      - log-transformer
+
+  log-persister:
+    image: fest/log-persister:${MON_LOG_PERSISTER_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=monasca-log-persister"
+    depends_on:
+      - kafka
+      - zookeeper
+      - elasticsearch
+      - log-transformer
+
+  log-transformer:
+    image: fest/log-transformer:${MON_LOG_TRANSFORMER_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=monasca-log-transformer"
+    depends_on:
+      - kafka
+      - zookeeper
+      - log-api
+
+  elasticsearch:
+    image: elasticsearch:${ELASTICSEARCH_VERSION}
+    environment:
+      - LOGSTASH_FIELDS="service=elasticsearch"
+    volumes:
+      - /usr/share/elasticsearch/data:/usr/share/elasticsearch/data
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - 9200:9200
+      - 9300:9300
+
+  elasticsearch-init:
+    image: fest/elasticsearch-init:${MON_ELASTICSEARCH_INIT_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=elasticsearch-init"
+    volumes:
+      - ./elasticsearch-templates/logs.template:/templates/logs.json
+    depends_on:
+      - elasticsearch
+
+  kafka-log-init:
+    image: fest/kafka-init:${MON_KAFKA_INIT_VERSION}
+    environment:
+      KAFKA_TOPIC_CONFIG: segment.ms=900000 # 15m
+      KAFKA_CREATE_TOPICS: "\
+        log:4:1,\
+        log-transformed:4:1"
+      LOGSTASH_FIELDS: "service=kafka-log-init"
+    depends_on:
+      - kafka
+
+  kibana:
+    image: fest/kibana:${MON_KIBANA_VERSION}
+    environment:
+      SERVER_NAME: kibana
+      ELASTICSEARCH_PINGTIMEOUT: 1000
+      LOGSTASH_FIELDS: "service=kibana"
+    depends_on:
+      - elasticsearch
+      - keystone
+    ports:
+      - 5601:5601
+
+  log-api:
+    image: fest/log-api:${MON_LOG_API_VERSION}
+    environment:
+      LOGSPOUT: ignore
+      LOGSTASH_FIELDS: "service=monasca-log-api"
+    depends_on:
+      - keystone
+      - zookeeper
+      - kafka
+      - memcached
+    ports:
+      - "5607:5607"
+
+  log-agent:
+    image: fest/log-agent:${MON_LOG_AGENT_VERSION}
+    environment:
+      LOGSPOUT: ignore
+      LOGSTASH_FIELDS: "service=monasca-log-agent"
+    depends_on:
+      - log-api
+      - keystone
+    ports:
+      - "5610:5610"
+
+  logspout:
+    image: fest/logspout:${MON_LOGSPOUT_VERSION}
+    environment:
+      LOGSPOUT: ignore
+      LOGSTASH_FIELDS: "service=logspout"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    depends_on:
+        - log-agent

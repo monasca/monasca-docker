@@ -1,0 +1,49 @@
+####################################################
+# "external" keystone service with own MySQL in
+# an own network (MySQL not accessible from outside).
+# Only keystone ports 5000 and 35357 are accessible!
+####################################################
+version: '2'
+services:
+  mysql_keystone:
+    image: mysql:${MYSQL_VERSION}
+    environment:
+      MYSQL_ROOT_PASSWORD: secretmysql
+      LOGSTASH_FIELDS: "service=mysql_keystone"
+    networks:
+      - network_keystone
+
+  mysql-init_ks:
+    image: fest/mysql-init:${MYSQL_INIT_VERSION}
+    environment:
+      CREATE_MON_USERS: "false"
+      GRAFANA_DB_ENABLED: "false"
+      MYSQL_INIT_HOST: mysql_keystone
+      MYSQL_INIT_DISABLE_REMOTE_ROOT: "false"
+      MYSQL_INIT_RANDOM_PASSWORD: "false"
+      LOGSTASH_FIELDS: "service=mysql_keystone-init"
+    networks:
+      - network_keystone
+
+  keystone:
+    image: fest/keystone:${MON_KEYSTONE_VERSION}
+    environment:
+      KEYSTONE_HOST: keystone
+      KEYSTONE_PASSWORD: secretadmin
+      KEYSTONE_DATABASE_BACKEND: mysql
+      KEYSTONE_MYSQL_HOST: mysql_keystone
+      KEYSTONE_MYSQL_USER: keystone
+      KEYSTONE_MYSQL_PASSWORD: keystone
+      KEYSTONE_MYSQL_DATABASE: keystone
+      LOGSTASH_FIELDS: "service=keystone"
+    depends_on:
+      - mysql_keystone
+    ports:
+      - "5000:5000"
+      - "35357:35357"
+    networks:
+      - network_keystone
+
+networks:
+  network_keystone:
+    driver: bridge

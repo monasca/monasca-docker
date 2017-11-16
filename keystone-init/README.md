@@ -108,6 +108,7 @@ domains:
       - username: test-user
         project: some-project
         roles: [a, b, c]
+        domain_roles: [d, e, f]
         secret: some-secret-name
 ```
 

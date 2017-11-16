@@ -70,7 +70,7 @@ services:
       SERVER_NAME: kibana
       ELASTICSEARCH_PINGTIMEOUT: 1000
       LOGSTASH_FIELDS: "service=kibana"
-      KEYSTONE_URI: "http://172.31.0.216/identity"
+      KEYSTONE_URI: "http://172.31.0.216:5000"
     depends_on:
       - elasticsearch
     ports:
@@ -82,8 +82,8 @@ services:
       LOGSPOUT: ignore
       LOGSTASH_FIELDS: "service=monasca-log-api"
       #TODO: keystone URI should be sufficient!?
-      KEYSTONE_IDENTITY_URI: "http://172.31.0.216/identity"
-      KEYSTONE_AUTH_URI: "http://172.31.0.216/identity"
+      KEYSTONE_IDENTITY_URI: "http://172.31.0.216:5000"
+      KEYSTONE_AUTH_URI: "http://172.31.0.216:5000"
       KEYSTONE_ADMIN_USER: admin
       KEYSTONE_ADMIN_PASSWORD: secretadmin
       #KEYSTONE_ADMIN_TENANT: admin
@@ -101,7 +101,7 @@ services:
       LOGSPOUT: ignore
       LOGSTASH_FIELDS: "service=monasca-log-agent"
       #TODO: adapt readme! not tested yet!
-      OS_AUTH_URL: "http://172.31.0.216/identity/v3"
+      OS_AUTH_URL: "http://172.31.0.216:5000/v3"
       OS_USERNAME: monasca-agent
       OS_PASSWORD: password
       OS_PROJECT_NAME: mini-mon

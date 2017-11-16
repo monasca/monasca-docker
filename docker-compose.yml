@@ -37,6 +37,8 @@ services:
     environment:
       NON_LOCAL_TRAFFIC: "true"
       LOGSTASH_FIELDS: "service=monasca-agent-forwarder"
+    depends_on:
+      - monasca
 
   agent-collector:
     image: fest/agent-collector:${MON_AGENT_COLLECTOR_VERSION}

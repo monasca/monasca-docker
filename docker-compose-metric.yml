@@ -129,15 +129,9 @@ services:
       MYSQL_INIT_RANDOM_PASSWORD: "false"
       LOGSTASH_FIELDS: "service=mysql-init"
 
-  monasca-sidecar:
-    image: timothyb89/monasca-sidecar:${MON_SIDECAR_VERSION}
-    environment:
-      LOGSTASH_FIELDS: "service=monasca-sidecar"
-
   monasca:
     image: fest/api:${MON_API_VERSION}
     environment:
-      SIDECAR_URL: http://monasca-sidecar:4888/v1/ingest
       LOGSTASH_FIELDS: "service=monasca-api"
       #TODO: keystone URI should be sufficient!?
       KEYSTONE_IDENTITY_URI: "http://172.31.0.216/identity"

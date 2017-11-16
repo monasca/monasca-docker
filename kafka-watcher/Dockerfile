@@ -6,7 +6,7 @@ from alpine:edge
 ARG REBUILD=1
 
 arg WATCHER_REPO=https://github.com/monasca/monasca-watchers
-arg WATCHER_BRANCH=master
+arg ATCHER_BRANCH=master
 
 env GOPATH=/go
 
@@ -26,4 +26,6 @@ run apk add --no-cache openssl py2-jinja2 && \
   cd / && \
   rm -rf $GOPATH
 
-cmd ["/kafka-watcher"]
+COPY start.sh /
+
+cmd ["/start.sh"]

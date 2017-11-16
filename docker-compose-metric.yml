@@ -1,6 +1,10 @@
+####################################################
+# make sure that keystone is alread running
+# !!!! Configure IP address of keystone !!!!
+#      Currently: 172.31.0.216
+####################################################
 version: '2'
 services:
-
   memcached:
     image: memcached:${MEMCACHED_VERSION}
     environment:
@@ -37,6 +41,16 @@ services:
     environment:
       NON_LOCAL_TRAFFIC: "true"
       LOGSTASH_FIELDS: "service=monasca-agent-forwarder"
+      OS_AUTH_URL: "http://172.31.0.216:5000/v3"
+      OS_USERNAME: monasca-agent
+      OS_PASSWORD: password
+      OS_PROJECT_NAME: mini-mon
+      #TODO: from monasca-agent-base
+      #user_domain_id: "{{ OS_USER_DOMAIN_ID | default('') }}"
+      #user_domain_name: "{{ OS_USER_DOMAIN_NAME | default('') }}"
+      #project_domain_id: "{{ OS_PROJECT_DOMAIN_ID | default('') }}"
+      #project_domain_name: "{{ OS_PROJECT_DOMAIN_NAME | default('') }}"
+      #project_id: "{{ OS_PROJECT_ID | default('') }}"
 
   agent-collector:
     image: fest/agent-collector:${MON_AGENT_COLLECTOR_VERSION}
@@ -47,13 +61,29 @@ services:
       CADVISOR: "true"
       CADVISOR_URL: "http://cadvisor:8080/"
       LOGSTASH_FIELDS: "service=monasca-agent-collector"
+      OS_AUTH_URL: "http://172.31.0.216:5000/v3"
+      OS_USERNAME: monasca-agent
+      OS_PASSWORD: password
+      OS_PROJECT_NAME: mini-mon
+      #TODO: from monasca-agent-base
+      #user_domain_id: "{{ OS_USER_DOMAIN_ID | default('') }}"
+      #user_domain_name: "{{ OS_USER_DOMAIN_NAME | default('') }}"
+      #project_domain_id: "{{ OS_PROJECT_DOMAIN_ID | default('') }}"
+      #project_domain_name: "{{ OS_PROJECT_DOMAIN_NAME | default('') }}"
+      #project_id: "{{ OS_PROJECT_ID | default('') }}"
 
   alarms:
     image: fest/alarms:${MON_ALARMS_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=monasca-alarms"
+      #TODO: from start.sh + 2 more!!!!!
+      OS_AUTH_URL: "http://172.31.0.216:5000/v3"
+      OS_USERNAME: mini-mon
+      OS_PASSWORD: password
+      OS_PROJECT_NAME: mini-mon
+      #OS_USER_DOMAIN_NAME: Default
+      #OS_PROJECT_DOMAIN_NAME: Default
     depends_on:
-      - keystone
       - monasca
 
   zookeeper:
@@ -94,44 +124,27 @@ services:
   mysql-init:
     image: fest/mysql-init:${MYSQL_INIT_VERSION}
     environment:
+      KEYSTONE_DB_ENABLED: "false"
       MYSQL_INIT_DISABLE_REMOTE_ROOT: "false"
       MYSQL_INIT_RANDOM_PASSWORD: "false"
       LOGSTASH_FIELDS: "service=mysql-init"
 
-  keystone:
-    image: fest/keystone:${MON_KEYSTONE_VERSION}
-    environment:
-      KEYSTONE_HOST: keystone
-      KEYSTONE_PASSWORD: secretadmin
-      KEYSTONE_DATABASE_BACKEND: mysql
-      KEYSTONE_MYSQL_HOST: mysql
-      KEYSTONE_MYSQL_USER: keystone
-      KEYSTONE_MYSQL_PASSWORD: keystone
-      KEYSTONE_MYSQL_DATABASE: keystone
-      LOGSTASH_FIELDS: "service=keystone"
-    depends_on:
-      - mysql
-    ports:
-      - "5000:5000"
-      - "35357:35357"
-
-  monasca-sidecar:
-    image: timothyb89/monasca-sidecar:${MON_SIDECAR_VERSION}
-    environment:
-      LOGSTASH_FIELDS: "service=monasca-sidecar"
-
   monasca:
     image: fest/api:${MON_API_VERSION}
     environment:
-      SIDECAR_URL: http://monasca-sidecar:4888/v1/ingest
       LOGSTASH_FIELDS: "service=monasca-api"
+      #TODO: keystone URI should be sufficient!?
+      KEYSTONE_IDENTITY_URI: "http://172.31.0.216:35357"
+      KEYSTONE_AUTH_URI: "http://172.31.0.216:5000"
+      KEYSTONE_ADMIN_USER: admin
+      KEYSTONE_ADMIN_PASSWORD: secretadmin
+      #KEYSTONE_ADMIN_TENANT: admin
+      #KEYSTONE_ADMIN_DOMAIN: default
     depends_on:
       - influxdb
-      - keystone
       - mysql
       - zookeeper
       - kafka
-      - monasca-sidecar
       - memcached
     ports:
       - "8070:8070"
@@ -175,14 +188,13 @@ services:
       GF_USERS_ALLOW_SIGN_UP: "true"
       GF_USERS_ALLOW_ORG_CREATE: "true"
       GF_AUTH_KEYSTONE_ENABLED: "true"
-      GF_AUTH_KEYSTONE_AUTH_URL: http://keystone:5000
+      GF_AUTH_KEYSTONE_AUTH_URL: "http://172.31.0.216:5000"
       GF_AUTH_KEYSTONE_VERIFY_SSL_CERT: "false"
       GF_AUTH_KEYSTONE_DEFAULT_DOMAIN: "Default"
       LOGSTASH_FIELDS: "service=grafana"
     ports:
       - "3000:3000"
     depends_on:
-      - keystone
       - monasca
 
   grafana-init:

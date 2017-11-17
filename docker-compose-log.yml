@@ -1,7 +1,6 @@
 ####################################################
-# make sure that keystone is alread running
-# !!!! Configure IP address of keystone !!!!
-#      Currently: 172.31.0.216
+# Make sure that Keystone is alread running
+# !!!! Configure MON_KEYSTONE_URL in .env !!!!
 ####################################################
 version: '2'
 services:
@@ -70,7 +69,7 @@ services:
       SERVER_NAME: kibana
       ELASTICSEARCH_PINGTIMEOUT: 1000
       LOGSTASH_FIELDS: "service=kibana"
-      KEYSTONE_URI: "http://172.31.0.216:5000"
+      KEYSTONE_URI: ${MON_KEYSTONE_URL}
     depends_on:
       - elasticsearch
     ports:
@@ -82,8 +81,9 @@ services:
       LOGSPOUT: ignore
       LOGSTASH_FIELDS: "service=monasca-log-api"
       #TODO: keystone URI should be sufficient!?
-      KEYSTONE_IDENTITY_URI: "http://172.31.0.216:5000"
-      KEYSTONE_AUTH_URI: "http://172.31.0.216:5000"
+      # use port 35357 for KEYSTONE_IDENTITY_URI? are really both URIs needed?
+      KEYSTONE_IDENTITY_URI: ${MON_KEYSTONE_URL}
+      KEYSTONE_AUTH_URI: ${MON_KEYSTONE_URL}
       KEYSTONE_ADMIN_USER: admin
       KEYSTONE_ADMIN_PASSWORD: secretadmin
       #KEYSTONE_ADMIN_TENANT: admin
@@ -101,7 +101,7 @@ services:
       LOGSPOUT: ignore
       LOGSTASH_FIELDS: "service=monasca-log-agent"
       #TODO: adapt readme! not tested yet!
-      OS_AUTH_URL: "http://172.31.0.216:5000/v3"
+      OS_AUTH_URL: ${MON_KEYSTONE_URL}/v3
       OS_USERNAME: monasca-agent
       OS_PASSWORD: password
       OS_PROJECT_NAME: mini-mon

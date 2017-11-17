@@ -1,11 +1,8 @@
 ####################################################
-# "external" keystone service with own MySQL in
-#   an own network (MySQL not accessible from outside).
-# Only keystone ports 5000 and 35357 are accessible!
-#
-# Keystone endpoint:
-#   Set KEYSTONE_HOST to IP address of the host!
-#    e.g. 172.31.0.216
+# "External" Keystone service with own MySQL in
+# an own network (MySQL not accessible from outside).
+# Only Keystone ports 5000 and 35357 are accessible.
+# !!!! Configure MON_KEYSTONE_IP_ADDR in .env !!!!
 ####################################################
 version: '2'
 services:
@@ -32,7 +29,7 @@ services:
   keystone:
     image: fest/keystone:${MON_KEYSTONE_VERSION}
     environment:
-      KEYSTONE_HOST: 172.31.0.216
+      KEYSTONE_HOST: ${MON_KEYSTONE_IP_ADDR}
       KEYSTONE_PASSWORD: secretadmin
       KEYSTONE_DATABASE_BACKEND: mysql
       KEYSTONE_MYSQL_HOST: mysql_keystone

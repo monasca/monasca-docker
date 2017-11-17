@@ -1,7 +1,6 @@
 ####################################################
-# make sure that keystone is alread running
-# !!!! Configure IP address of keystone !!!!
-#      Currently: 172.31.0.216
+# Make sure that Keystone is alread running
+# !!!! Configure MON_KEYSTONE_URL in .env !!!!
 ####################################################
 version: '2'
 services:
@@ -41,7 +40,7 @@ services:
     environment:
       NON_LOCAL_TRAFFIC: "true"
       LOGSTASH_FIELDS: "service=monasca-agent-forwarder"
-      OS_AUTH_URL: "http://172.31.0.216:5000/v3"
+      OS_AUTH_URL: ${MON_KEYSTONE_URL}/v3
       OS_USERNAME: monasca-agent
       OS_PASSWORD: password
       OS_PROJECT_NAME: mini-mon
@@ -61,7 +60,7 @@ services:
       CADVISOR: "true"
       CADVISOR_URL: "http://cadvisor:8080/"
       LOGSTASH_FIELDS: "service=monasca-agent-collector"
-      OS_AUTH_URL: "http://172.31.0.216:5000/v3"
+      OS_AUTH_URL: ${MON_KEYSTONE_URL}/v3
       OS_USERNAME: monasca-agent
       OS_PASSWORD: password
       OS_PROJECT_NAME: mini-mon
@@ -77,7 +76,7 @@ services:
     environment:
       LOGSTASH_FIELDS: "service=monasca-alarms"
       #TODO: from start.sh + 2 more!!!!!
-      OS_AUTH_URL: "http://172.31.0.216:5000/v3"
+      OS_AUTH_URL: ${MON_KEYSTONE_URL}/v3
       OS_USERNAME: mini-mon
       OS_PASSWORD: password
       OS_PROJECT_NAME: mini-mon
@@ -134,8 +133,9 @@ services:
     environment:
       LOGSTASH_FIELDS: "service=monasca-api"
       #TODO: keystone URI should be sufficient!?
-      KEYSTONE_IDENTITY_URI: "http://172.31.0.216:35357"
-      KEYSTONE_AUTH_URI: "http://172.31.0.216:5000"
+      # use port 35357 for KEYSTONE_IDENTITY_URI? are really both URIs needed?
+      KEYSTONE_IDENTITY_URI: ${MON_KEYSTONE_URL}
+      KEYSTONE_AUTH_URI: ${MON_KEYSTONE_URL}
       KEYSTONE_ADMIN_USER: admin
       KEYSTONE_ADMIN_PASSWORD: secretadmin
       #KEYSTONE_ADMIN_TENANT: admin
@@ -188,7 +188,7 @@ services:
       GF_USERS_ALLOW_SIGN_UP: "true"
       GF_USERS_ALLOW_ORG_CREATE: "true"
       GF_AUTH_KEYSTONE_ENABLED: "true"
-      GF_AUTH_KEYSTONE_AUTH_URL: "http://172.31.0.216:5000"
+      GF_AUTH_KEYSTONE_AUTH_URL: ${MON_KEYSTONE_URL}
       GF_AUTH_KEYSTONE_VERIFY_SSL_CERT: "false"
       GF_AUTH_KEYSTONE_DEFAULT_DOMAIN: "Default"
       LOGSTASH_FIELDS: "service=grafana"

@@ -68,6 +68,7 @@ domains:
     projects: []
     roles: []
     users: []
+    groups: []
 
 services:
   example:
@@ -179,6 +180,21 @@ containers:
         value: some-value
 # adjust indent() as necessary
 {{ include "keystone_env" .Values.my_pod.auth | indent(6) }}
+```
+
+The `groups` block can contain a list of groups to be created. The list
+can consist of group names as string values, or objects containing role
+grants. For instance:
+```yaml
+domains:
+  default:
+    groups:
+      - a
+      - name: b
+        project_roles:
+          - project: c
+            roles: d, e
+
 ```
 
 Services are created by their unique name:

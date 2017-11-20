@@ -251,7 +251,7 @@ class MonascaLoadDefinitions(object):
 
             self._print_message('Deleting notification "{}"'.format(name))
 
-            # TODO Delete could be tricky if this notification is used by alarm definitions
+            # TODO(craigbr) Delete could be tricky if this notification is used by alarm definitions
             resp = self._monasca.notifications.delete(notification_id=notifications[name]['id'])
             if resp.status_code == 204:
                 self._print_message('Successfully deleted notification "{}"'.format(name))
@@ -269,8 +269,8 @@ class MonascaLoadDefinitions(object):
                 matches = True
                 for field in fields:
                     if existing[field] != def_kwargs[field]:
-                        self._print_message('Notification "{}": Field {} value "{}" does not match expected "{}"'.format(
-                              name, field, existing[field], def_kwargs[field]))
+                        self._print_message('Notification "{}": Field {} value "{}" does not match expected "{}"'
+                                            .format(name, field, existing[field], def_kwargs[field]))
                         matches = False
                 if matches:
                     self._print_message('Notification "{}" has no changes'.format(name))
@@ -338,7 +338,8 @@ class MonascaLoadDefinitions(object):
             ok_actions = self._map_notifications(definition.get('ok_actions', []), notification_ids)
             undetermined_actions = self._map_notifications(definition.get('undetermined_actions', []), notification_ids)
             def_kwargs = {'name': name, 'description': definition.get('description', ''), 'expression': expression,
-                          'match_by': definition.get('match_by', []), 'severity': definition.get('severity', 'LOW').upper(),
+                          'match_by': definition.get('match_by', []),
+                          'severity': definition.get('severity', 'LOW').upper(),
                           'alarm_actions': alarm_actions, 'ok_actions': ok_actions,
                           'undetermined_actions': undetermined_actions}
 
@@ -348,12 +349,13 @@ class MonascaLoadDefinitions(object):
                 existing['alarm_actions'].sort()
                 existing['ok_actions'].sort()
                 existing['undetermined_actions'].sort()
-                fields = ['name', 'description', 'expression', 'match_by', 'severity', 'alarm_actions', 'ok_actions', 'undetermined_actions']
+                fields = ['name', 'description', 'expression', 'match_by', 'severity',
+                          'alarm_actions', 'ok_actions', 'undetermined_actions']
                 matches = True
                 for field in fields:
                     if existing[field] != def_kwargs[field]:
-                        self._print_message('Alarm Definition "{}": Field {} value "{}" does not match expected "{}"'.format(
-                              name, field, existing[field], def_kwargs[field]))
+                        self._print_message('Alarm Definition "{}": Field {} value "{}" does not match expected "{}"'
+                                            .format(name, field, existing[field], def_kwargs[field]))
                         matches = False
                 if matches:
                     self._print_message('Alarm Definition "{}" has no changes'.format(name))

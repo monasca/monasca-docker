@@ -16,4 +16,4 @@ RUN apk add --no-cache --virtual build-dep libxml2-dev libxslt-dev git \
   /build.sh -r ${CLIENT_REPO} -b ${CLIENT_BRANCH} -q ${CONSTRAINTS_BRANCH} && \
   monasca --version
 
-CMD ["sh"]
+CMD ["sh"]    

@@ -53,7 +53,7 @@ class CaptureException(Exception):
                 self.retcode,
                 self.stdout,
                 self.stderr
-                )
+        )
 
 
 def kafka_topics(verb, args=None):
@@ -211,6 +211,7 @@ def main():
                 created_topics)
 
     update_topic_configs(existing_topics_config)
+
 
 if __name__ == '__main__':
     main()

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 #
@@ -62,15 +63,15 @@ def is_condition_complete(condition):
 def try_delete_job(client, namespace, job, retries, force=False):
     if 'conditions' not in job.status and not force:
         print('Job has no conditions (probably still running), '
-              'will wait for it to finish: %s/%s (%d attempts '
-              'remaining)' % (namespace, job.metadata.name, retries))
+              'will wait for it to finish: {}/{} ({} attempts '
+              'remaining)'.format(namespace, job.metadata.name, retries))
         return False, retries - 1
 
     if not force:
         complete = filter(is_condition_complete, job.status.conditions)
         if not complete:
-            print('Job is not complete, will wait for it to finish: %s/%s (%d '
-                  'attempts remaining)' % (namespace, job.metadata.name, retries))
+            print('Job is not complete, will wait for it to finish: {}/{} ({} '
+                  'attempts remaining)'.format(namespace, job.metadata.name, retries))
             return False, retries - 1
 
     grace_period = 0 if force else TIMEOUT
@@ -79,13 +80,13 @@ def try_delete_job(client, namespace, job, retries, force=False):
 
     job_name = job.metadata.name
     pods = client.get('/api/v1/namespaces/{}/pods', namespace,
-                      params={'labelSelector': 'job-name=%s' % job_name})
+                      params={'labelSelector': 'job-name={}'.format(job_name)})
     for pod in pods['items']:
         if pod.metadata.labels.get('defunct') == 'true':
             # we could exclude this in the labelSelector, but it's probably
             # better to surface the weird pod state as much as possible
             print('Pod is marked as defunct and will not be deleted: '
-                  '%s/%s' % (namespace, pod.metadata.name))
+                  '{}/{}'.format(namespace, pod.metadata.name))
             continue
 
         del_status = client.delete('/api/v1/namespaces/{}/pods/{}',
@@ -97,10 +98,10 @@ def try_delete_job(client, namespace, job, retries, force=False):
         # it returns the full Pod on success, or a Status if fail
         # wat
         if del_status.status_code == 200:
-            print('Deleted job pod %s/%s' % (namespace, job.metadata.name))
+            print('Deleted job pod {}/{}'.format(namespace, job.metadata.name))
         else:
-            print('Failed to delete job pod %s/%s: %r (job: %s, %d attempts '
-                  'remaining' % (namespace, pod.metadata.name, del_status,
+            print('Failed to delete job pod {}/{}: {!r} (job: {}, {} attempts '
+                  'remaining'.format(namespace, pod.metadata.name, del_status,
                                  job.metadata.name, retries), file=sys.stderr)
             return False, retries - 1
 
@@ -109,11 +110,11 @@ def try_delete_job(client, namespace, job, retries, force=False):
                         json=delete_options,
                         raise_for_status=False)
     if ret.status_code == 200:
-        print('Deleted job %s/%s' % (namespace, job.metadata.name))
+        print('Deleted job {}/{}'.format(namespace, job.metadata.name))
         return True, 0
     else:
-        print('Failed to delete job %s/%s: %r (%d attempts '
-              'remaining)' % (namespace, job.metadata.name, ret, retries),
+        print('Failed to delete job {}/{}: {!r} ({} attempts '
+              'remaining)'.format(namespace, job.metadata.name, ret, retries),
               file=sys.stderr)
 
         return False, retries - 1
@@ -122,7 +123,7 @@ def try_delete_job(client, namespace, job, retries, force=False):
 def label_defunct(client, namespace, job):
     job_name = job.metadata.name
     pods = client.get('/api/v1/namespaces/{}/pods', namespace,
-                      params={'labelSelector': 'job-name=%s' % job_name})
+                      params={'labelSelector': 'job-name={}'.format(job_name)})
 
     defunct_ops = [{
         'op': 'add',
@@ -138,7 +139,7 @@ def label_defunct(client, namespace, job):
         if r.status_code != 200:
             # oh well
             print('Failed to label pod as defunct: '
-                  '%s/%s' % (namespace, pod.metadata.name),
+                  '{}/{}'.format(namespace, pod.metadata.name),
                   file=sys.stderr)
 
 
@@ -176,7 +177,7 @@ def main():
 
     failed = []
     while items:
-        print('Removing %d jobs...' % len(items))
+        print('Removing {} jobs...'.format(len(items)))
         remaining = []
         for job, retries in items:
             success, retries = try_delete_job(client, namespace, job, retries)
@@ -201,7 +202,7 @@ def main():
               file=sys.stderr)
         still_failed = []
         for job in failed:
-            print('Killing job: %s/%s' % (namespace, job.metadata.name))
+            print('Killing job: {}/{}'.format(namespace, job.metadata.name))
             success, _ = try_delete_job(client, namespace, job, 0, force=True)
             if not success:
                 still_failed.append(job)
@@ -212,7 +213,7 @@ def main():
                   'be ignored by future cleanup jobs. They will need to be '
                   'removed manually.', file=sys.stderr)
             for job in still_failed:
-                print(' - %s/%s' % (namespace, job.metadata.name))
+                print(' - {}/{}'.format(namespace, job.metadata.name))
                 label_defunct(client, namespace, job)
 
             sys.exit(1)

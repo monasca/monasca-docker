@@ -15,6 +15,8 @@ ZOOKEEPER_WAIT_TIMEOUT=${ZOOKEEPER_WAIT_TIMEOUT:-"3"}
 ZOOKEEPER_WAIT_DELAY=${ZOOKEEPER_WAIT_DELAY:-"10"}
 ZOOKEEPER_WAIT_RETRIES=${ZOOKEEPER_WAIT_RETRIES:-"20"}
 
+STAY_ALIVE_ON_FAILURE=${STAY_ALIVE_ON_FAILURE:-"false"}
+
 export SERVER_LOG_LEVEL=${SERVER_LOG_LEVEL:-"INFO"}
 export REQUEST_LOG_LEVEL=${REQUEST_LOG_LEVEL:-"WARN"}
 export CONTROLLER_LOG_LEVEL=${CONTROLLER_LOG_LEVEL:-"INFO"}
@@ -103,5 +105,19 @@ if [ "$GC_LOG_ENABLED" != "true" ]; then
   sed "-i.sv" -e "s/-loggc//" /kafka/bin/kafka-server-start.sh
 fi
 
+echo "Current disk space usage"
+# Make this directory configurable if it becomes configurable in server.properties.j2
+df /data
+
 echo "Starting kafka..."
-exec /kafka/bin/kafka-server-start.sh "$CONFIG_DEST/server.properties"
+EXEC="exec"
+if [ "$STAY_ALIVE_ON_FAILURE" = "true" ]; then
+  EXEC=""
+fi
+$EXEC /kafka/bin/kafka-server-start.sh "$CONFIG_DEST/server.properties"
+RESULT=$?
+
+# Keep the container alive for debugging or actions like resolving a full disk. This
+# sleep will only be reached if STAY_ALIVE_ON_FAILURE is true
+sleep 7200
+exit $RESULT

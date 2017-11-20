@@ -4,7 +4,7 @@ FROM fest/python:2-${TIMESTAMP_SLUG}
 ARG LOG_API_REPO=https://github.com/openstack/monasca-log-api.git
 ARG LOG_API_BRANCH=stable/pike
 ARG CONSTRAINTS_BRANCH=stable/pike
-ARG EXTRA_DEPENDENCIES="gunicorn python-memcached"
+ARG EXTRA_DEPENDENCIES="gunicorn python-memcached pykafka"
 
 # To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
 # `docker build`

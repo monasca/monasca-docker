@@ -36,7 +36,6 @@ from requests import HTTPError
 from requests import RequestException
 
 from kubernetes import KubernetesAPIClient
-from kubernetes import KubernetesAPIResponse
 
 PASSWORD_CHARACTERS = string.ascii_letters + string.digits
 KEYSTONE_PASSWORD_ARGS = [
@@ -155,7 +154,7 @@ def get_keystone_client():
 
 @retry()
 def get_or_create_domain(client, name=None):
-    """
+    """Get domain or create it if it doesn't exist
 
     :param client:
     :type client: keystoneclient.v3.client.Client
@@ -183,7 +182,8 @@ def get_or_create_domain(client, name=None):
 
 
 def get_keystone_admin_url(client, domain):
-    """
+    """Get Keystone admin URL
+
     :type client: keystoneclient.v3.client.Client
     :type domain: keystoneclient.v3.domains.Domain
     :rtype: str or None
@@ -204,7 +204,7 @@ def get_keystone_admin_url(client, domain):
 
 @retry()
 def get_or_create_project(client, domain, name):
-    """
+    """Get project or create it if it doesn't exist
 
     :param client:
     :type client: keystoneclient.v3.client.Client
@@ -233,7 +233,7 @@ def get_or_create_project(client, domain, name):
 
 @retry()
 def get_or_create_global_role(client, name):
-    """
+    """Get global rule or create it if it doesn't exist
 
     :type client: keystoneclient.v3.client.Client
     :type name: str
@@ -256,7 +256,7 @@ def get_or_create_global_role(client, name):
 
 @retry()
 def get_or_create_role(client, domain, name):
-    """
+    """Get role or create it if it doesn't exist
 
     :param client:
     :type client: keystoneclient.v3.client.Client
@@ -297,7 +297,7 @@ def get_or_create_role(client, domain, name):
 
 
 def get_or_create_group(client, domain, group):
-    """
+    """Get group or create it if it doesn't exist
 
     :type client: keystoneclient.v3.client.Client
     :type domain: keystoneclient.v3.domains.Domain
@@ -432,7 +432,7 @@ def get_or_create_endpoint(client, service, url, endpoint):
 
 @retry()
 def get_user(client, domain, name):
-    """
+    """Get user
 
     :type client: keystoneclient.v3.client.Client
     :type domain: keystoneclient.v3.domains.Domain
@@ -446,7 +446,7 @@ def get_user(client, domain, name):
 
 @retry()
 def create_user(client, username, **kwargs):
-    """
+    """Create user
 
     :param client:
     :type client: keystoneclient.v3.client.Client
@@ -462,7 +462,7 @@ def create_user(client, username, **kwargs):
 
 @retry()
 def update_user(client, user, **kwargs):
-    """
+    """Update user
 
     :param client:
     :type client: keystoneclient.v3.client.Client
@@ -476,7 +476,7 @@ def update_user(client, user, **kwargs):
 
 @retry()
 def get_role_assignments(client, user, project):
-    """
+    """Get role assignments
 
     :param client:
     :type client: keystoneclient.v3.client.Client
@@ -491,7 +491,7 @@ def get_role_assignments(client, user, project):
 
 @retry()
 def get_group_role_assignments(client, group, project):
-    """
+    """Get group role assignments
 
     :param client:
     :type client: keystoneclient.v3.client.Client
@@ -507,7 +507,7 @@ def get_group_role_assignments(client, group, project):
 
 @retry()
 def get_domain_role_assignments(client, user, domain):
-    """
+    """Get domain role assignments
 
     :param client:
     :type client: keystoneclient.v3.client.Client
@@ -522,7 +522,7 @@ def get_domain_role_assignments(client, user, domain):
 
 @retry()
 def grant_role(client, role_id, user, project):
-    """
+    """Grant role
 
     :param client:
     :type client: keystoneclient.v3.client.Client
@@ -539,7 +539,7 @@ def grant_role(client, role_id, user, project):
 
 @retry()
 def grant_group_role(client, role_id, group, project):
-    """
+    """Grant group role
 
     :param client:
     :type client: keystoneclient.v3.client.Client
@@ -556,7 +556,7 @@ def grant_group_role(client, role_id, group, project):
 
 @retry()
 def grant_domain_role(client, role_id, user, domain):
-    """
+    """Grant domain role
 
     :param client:
     :type client: keystoneclient.v3.client.Client
@@ -571,7 +571,7 @@ def grant_domain_role(client, role_id, user, domain):
     client.roles.grant(role_id, user=user, domain=domain)
 
 def ensure_user_in_group(client, user, group):
-    """
+    """Ensure user is in the specified group
 
     :type client: keystoneclient.v3.client.Client
     :type user: keystoneclient.v3.users.User
@@ -588,7 +588,7 @@ def ensure_user_in_group(client, user, group):
 
 @retry()
 def ensure_kubernetes_namespace(client, namespace):
-    """
+    """Ensure Kubernetes namespace exists
 
     :type client: kubernetes.KubernetesAPIClient
     :type namespace: str
@@ -610,7 +610,7 @@ def ensure_kubernetes_namespace(client, namespace):
 
 @retry()
 def get_kubernetes_secret(name, namespace=None):
-    """
+    """Get Kubernetes secret
 
     :param name:
     :param namespace: namespace, auto if None
@@ -631,7 +631,7 @@ def get_kubernetes_secret(name, namespace=None):
 
 
 def create_kubernetes_secret(fields, name, namespace=None, replace=False):
-    """
+    """Create Kubernetes secret
 
     :param fields:
     :type fields: dict[str, str]
@@ -676,8 +676,7 @@ def create_kubernetes_secret(fields, name, namespace=None, replace=False):
 
 
 def diff_kubernetes_secret(secret, desired_fields):
-    """
-    Computes a set of changed fields (either added, removed, or modified)
+    """Computes a set of changed fields (either added, removed, or modified)
     between the given existing secret and the set of desired fields.
 
     :param secret: an existing secret as a KubernetesAPIResponse containing
@@ -713,7 +712,7 @@ def parse_secret(secret):
 
 
 def get_password(secret):
-    """
+    """Get password
 
     :type secret: KubernetesAPIResponse
     :return:
@@ -729,8 +728,7 @@ def get_password(secret):
 
 
 def ensure_kubernetes_secret(existing, fields, secret_cfg):
-    """
-    Ensures that a secret exists with the given fields and values. Existing
+    """Ensures that a secret exists with the given fields and values. Existing
     secrets will be replaced if fields have changed.
 
     :param existing: the existing secret
@@ -757,7 +755,7 @@ def ensure_kubernetes_secret(existing, fields, secret_cfg):
 
 
 def load_global_roles(ks, global_roles):
-    """
+    """Load global roles
 
     :type ks: keystoneclient.v3.client.Client
     :type global_roles: list[str]
@@ -768,7 +766,7 @@ def load_global_roles(ks, global_roles):
 
 
 def _roles_to_grant(ks, domain, current_roles, desired_role_names):
-    """
+    """Which roles to grant
 
     :type ks: keystoneclient.v3.client.Client
     :type current_roles: list[keystoneclient.v3.roles.Role]
@@ -786,7 +784,7 @@ def _roles_to_grant(ks, domain, current_roles, desired_role_names):
 
 
 def load_user(ks, domain, user_cfg, member_role_name, admin_url=None):
-    """
+    """Load user
 
     :type ks: keystoneclient.v3.client.Client
     :type domain: keystoneclient.v3.domains.Domain
@@ -811,7 +809,7 @@ def load_user(ks, domain, user_cfg, member_role_name, admin_url=None):
         s_namespace, s_name = parse_secret(user_cfg['secret'])
         secret = get_kubernetes_secret(s_name, s_namespace)
         if secret:
-            # TODO consider verifying this password (i.e. attempt to log in)
+            # TODO(timothyb89) consider verifying this password (i.e. attempt to log in)
             password = get_password(secret)
             logger.info('using existing password from secret %s for user %s',
                         s_name, username)
@@ -878,7 +876,7 @@ def load_user(ks, domain, user_cfg, member_role_name, admin_url=None):
             ensure_user_in_group(ks, user, group)
 
 
-    # TODO should we remove roles that aren't in the list? Could modify
+    # TODO(sjmc7) should we remove roles that aren't in the list? Could modify
     # roles_to_grant to return two lists
     desired_project_roles = user_cfg.get('roles', [])
     if desired_project_roles:
@@ -904,7 +902,7 @@ def load_user(ks, domain, user_cfg, member_role_name, admin_url=None):
 
 
 def load_domains(ks, domains, member_role_name):
-    """
+    """Load domains
 
     :type ks: keystoneclient.v3.client.Client
     :type domains: dict[str, dict[str, list]]

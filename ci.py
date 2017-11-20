@@ -17,9 +17,8 @@
 #
 
 from __future__ import print_function
+
 import datetime
-from google.cloud import storage
-from google.oauth2 import service_account
 import gzip
 import json
 import os
@@ -32,6 +31,8 @@ import sys
 import time
 import yaml
 
+from google.cloud import storage
+from google.oauth2 import service_account
 
 TAG_REGEX = re.compile(r'^!(\w+)(?:\s+([\w-]+))?$')
 

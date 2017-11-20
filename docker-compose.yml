@@ -54,14 +54,6 @@ services:
     depends_on:
       - agent-forwarder
 
-  alarms:
-    image: fest/alarms:${MON_ALARMS_VERSION}
-    environment:
-      LOGSTASH_FIELDS: "service=monasca-alarms"
-    depends_on:
-      - keystone
-      - monasca
-
   zookeeper:
     image: zookeeper:${ZOOKEEPER_VERSION}
     environment:

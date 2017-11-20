@@ -30,7 +30,7 @@ This parameter can be specified using environment variables:
 | `STAY_ALIVE_ON_FAILURE`       | `false`          | If `true`, container stays alive for 2 hours after kafka watcher exits |
 
 
-Additionaly parameters are available.  See https://github.com/craigbr/monasca-watchers for more details.
+Additional parameters are available. See https://github.com/monasca/monasca-watchers for more details.
 
 [1]: http://semver.org/
 [2]: https://github.com/monasca/monasca-docker/tree/master/kafka

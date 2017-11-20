@@ -69,10 +69,11 @@ services:
     restart: on-failure
     depends_on:
       - zookeeper
-  watcher:
+  kafka-watcher:
     image: kafka-watcher:${MON_KAFKA_WATCHER_VERSION}
     environment:
       BOOT_STRAP_SERVERS: "kafka"
+      LOGSTASH_FIELDS: "service=kafka-watcher"
     depends_on:
       - kafka
     ports:

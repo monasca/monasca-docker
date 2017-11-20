@@ -5,5 +5,3 @@ variants:
       - :pike-{date}-{time}
     args:
       MON_CLIENT_VERSION: "pike-latest"
-
-     

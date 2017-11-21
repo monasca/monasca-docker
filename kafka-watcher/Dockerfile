@@ -11,10 +11,8 @@ ARG WATCHER_BRANCH=master
 ENV GOPATH=/go
 ENV PROJECT_DIR=$GOPATH/src/github.com/monasca/monasca-watchers
 
-RUN apk add --no-cache openssl py2-jinja2
-
-RUN apk add --no-cache --virtual build-dep librdkafka-dev \
-      git go glide make g++ openssl-dev
+RUN apk add --no-cache openssl-dev librdkafka-dev \
+      git go glide g++
 
 WORKDIR $PROJECT_DIR
 RUN git init && \
@@ -27,9 +25,9 @@ RUN glide install && \
 
 FROM alpine:3.6
 
-RUN apk add --no-cache tini
+RUN apk add --no-cache openssl librdkafka-dev tini
 
-COPY --from=kafka-watcher-builder $PROJECT_DIR/kafka-watcher /kafka-watcher
+COPY --from=kafka-watcher-builder /go/src/github.com/monasca/monasca-watchers/kafka-watcher /kafka-watcher
 
 COPY start.sh /
 

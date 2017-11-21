@@ -4,12 +4,16 @@
 ELASTICSEARCH_WAIT_RETRIES=${ELASTICSEARCH_WAIT_RETRIES:-"24"}
 ELASTICSEARCH_WAIT_DELAY=${ELASTICSEARCH_WAIT_DELAY:-"5"}
 
-/p2 -t /action.yml.j2 -i actions.yml > /action.yml
+j2 /action.yml.j2 /actions.yml > /action.yml
+j2 /crontab.j2 > /var/spool/cron/crontabs/curator
 
 if [ "$WAIT_FOR_ELASTICSEARCH" = "true" ]; then
     RETRIES=$ELASTICSEARCH_WAIT_RETRIES \
       SLEEP_LENGTH=$ELASTICSEARCH_WAIT_DELAY \
-      /wait-for.sh "${ELASTICSEARCH_URI}" && crond -f
+      /wait-for.sh "${ELASTICSEARCH_URI}" && \
+        crontab /var/spool/cron/crontabs/curator && \
+        crond -f
 else
-    crond -f
+    crontab /var/spool/cron/crontabs/curator && \
+      crond -f
 fi

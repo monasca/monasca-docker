@@ -62,6 +62,7 @@ LOGS_PIPELINE_MODULE_TO_COMPOSE_SERVICES = {
     'monasca-log-metrics': 'log-metrics',
     'monasca-log-persister': 'log-persister',
     'monasca-log-transformer': 'log-transformer',
+    'elasticsearch-curator': 'elasticsearch-curator',
     'elasticsearch-init': 'elasticsearch-init',
     'kafka-init': 'kafka-log-init',
     'kibana': 'kibana',

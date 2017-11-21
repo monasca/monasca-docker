@@ -13,10 +13,10 @@ actions:
           ignore_empty_list: True
           timeout_override:
           continue_if_exception: False
-          disable_action: {{ item.disable|default(True) }}
+          disable_action: {{ item.disable }}
         filters:
         {% if curator_excluded_index|length >=1 %}
-          {% for it in curator_excluded_index%}
+          {% for it in curator_excluded_index %}
 
           - filtertype: pattern
             kind: prefix
@@ -24,22 +24,22 @@ actions:
             exclude: {{ it.exclude }}
           {% endfor %}
         {% endif %}
-        {% if item.delete_by == 'age' %}
+        {% if item.delete_by == "age" %}
 
           - filtertype: age
             source: name
             direction: older
-            timestring: '%Y-%m-%d'
+            timestring: "%Y-%m-%d"
             unit: days
-            unit_count: {{ item.deleted_days|default(7) }}
+            unit_count: {{ item.deleted_days }}
             field:
             stats_result:
             epoch:
             exclude: False
-        {% elif item.delete_by == 'size' %}
+        {% elif item.delete_by == "space" %}
 
           - filtertype: space
-            disk_space: {{ item.deleted_size|float/1000 }}
+            disk_space: {{ item.deleted_space }}
             reverse: True
             use_age: False
             source: creation_date

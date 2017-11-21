@@ -9,13 +9,12 @@ ENV ELASTICSEARCH_URI=elasticsearch:9200 \
 ARG ELASTICSEARCH_CURATOR_VERSION=4.3.1
 
 COPY start.sh wait-for.sh /
-COPY config.yml action.yml.j2 actions.yml /
-COPY crontab /var/spool/cron/crontabs/curator
+COPY templates/ /
 
 RUN apk add --no-cache wget ca-certificates tini && \
-    pip install --no-cache-dir elasticsearch-curator==$ELASTICSEARCH_CURATOR_VERSION && \
-    wget -q -O /p2 https://github.com/wrouesnel/p2cli/releases/download/r5/p2 && \
-    chmod +x /p2 /wait-for.sh /start.sh
+    pip install --no-cache-dir elasticsearch-curator==$ELASTICSEARCH_CURATOR_VERSION shinto-cli[yaml] && \
+    touch /var/spool/cron/crontabs/curator && \
+    chmod +x /wait-for.sh /start.sh
 
 ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["/start.sh"]

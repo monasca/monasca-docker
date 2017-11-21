@@ -34,6 +34,5 @@ def main():
         tmle = Template(in_file.read())
         out_file.write(tmle.render(os.environ))
 
-
 if __name__ == '__main__':
     main()

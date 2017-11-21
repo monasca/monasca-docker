@@ -4,6 +4,7 @@
 ####################################################
 version: '2'
 services:
+
   memcached:
     image: memcached:${MEMCACHED_VERSION}
     environment:
@@ -13,6 +14,8 @@ services:
     image: influxdb:${INFLUXDB_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=influxdb"
+    volumes:
+    - "${MON_DOCKER_VOL_ROOT}/influxdb:/var/lib/influxdb:rw"
   influxdb-init:
     image: fest/influxdb-init:${INFLUXDB_INIT_VERSION}
     environment:
@@ -50,6 +53,8 @@ services:
       #project_domain_id: "{{ OS_PROJECT_DOMAIN_ID | default('') }}"
       #project_domain_name: "{{ OS_PROJECT_DOMAIN_NAME | default('') }}"
       #project_id: "{{ OS_PROJECT_ID | default('') }}"
+    depends_on:
+      - monasca
 
   agent-collector:
     image: fest/agent-collector:${MON_AGENT_COLLECTOR_VERSION}
@@ -70,20 +75,8 @@ services:
       #project_domain_id: "{{ OS_PROJECT_DOMAIN_ID | default('') }}"
       #project_domain_name: "{{ OS_PROJECT_DOMAIN_NAME | default('') }}"
       #project_id: "{{ OS_PROJECT_ID | default('') }}"
-
-  alarms:
-    image: fest/alarms:${MON_ALARMS_VERSION}
-    environment:
-      LOGSTASH_FIELDS: "service=monasca-alarms"
-      #TODO: from start.sh + 2 more!!!!!
-      OS_AUTH_URL: ${MON_KEYSTONE_URL}/v3
-      OS_USERNAME: mini-mon
-      OS_PASSWORD: password
-      OS_PROJECT_NAME: mini-mon
-      #OS_USER_DOMAIN_NAME: Default
-      #OS_PROJECT_DOMAIN_NAME: Default
     depends_on:
-      - monasca
+      - agent-forwarder
 
   zookeeper:
     image: zookeeper:${ZOOKEEPER_VERSION}
@@ -95,6 +88,8 @@ services:
     image: fest/kafka:${MON_KAFKA_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=kafka"
+    volumes:
+    - "${MON_DOCKER_VOL_ROOT}/kafka:/data:rw"
     restart: on-failure
     depends_on:
       - zookeeper
@@ -114,12 +109,15 @@ services:
       LOGSTASH_FIELDS: "service=kafka-init"
     depends_on:
       - zookeeper
+      - kafka
 
   mysql:
     image: mysql:${MYSQL_VERSION}
     environment:
       MYSQL_ROOT_PASSWORD: secretmysql
       LOGSTASH_FIELDS: "service=mysql"
+    volumes:
+    - "${MON_DOCKER_VOL_ROOT}/mysql:/var/lib/mysql:rw"
   mysql-init:
     image: fest/mysql-init:${MYSQL_INIT_VERSION}
     environment:
@@ -127,6 +125,8 @@ services:
       MYSQL_INIT_DISABLE_REMOTE_ROOT: "false"
       MYSQL_INIT_RANDOM_PASSWORD: "false"
       LOGSTASH_FIELDS: "service=mysql-init"
+    depends_on:
+      - mysql
 
   monasca:
     image: fest/api:${MON_API_VERSION}

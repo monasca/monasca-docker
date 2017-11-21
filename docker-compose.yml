@@ -11,7 +11,7 @@ services:
     environment:
       LOGSTASH_FIELDS: "service=influxdb"
     volumes:
-    - "/var/lib/influxdb:/var/lib/influxdb"
+    - "${MON_DOCKER_VOL_ROOT}/influxdb:/var/lib/influxdb:rw"
   influxdb-init:
     image: fest/influxdb-init:${INFLUXDB_INIT_VERSION}
     environment:
@@ -64,6 +64,8 @@ services:
     image: fest/kafka:${MON_KAFKA_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=kafka"
+    volumes:
+    - "${MON_DOCKER_VOL_ROOT}/kafka:/data:rw"
     restart: on-failure
     depends_on:
       - zookeeper
@@ -90,6 +92,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: secretmysql
       LOGSTASH_FIELDS: "service=mysql"
+    volumes:
+    - "${MON_DOCKER_VOL_ROOT}/mysql:/var/lib/mysql:rw"
   mysql-init:
     image: fest/mysql-init:${MYSQL_INIT_VERSION}
     environment:

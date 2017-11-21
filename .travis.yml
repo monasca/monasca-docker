@@ -21,7 +21,7 @@ before_install:
   - pip install pip --upgrade
   - pip install git+https://github.com/timothyb89/dbuild.git
   - pip install google-cloud-storage
-  - pip3 install flake8 flake8-blind-except flake8-builtins flake8-pep3101 flake8-coding hacking
+  - pip install flake8 flake8-blind-except flake8-builtins flake8-pep3101 flake8-coding hacking
   - pip install pylint
   - docker --version
   - docker-compose --version

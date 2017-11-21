@@ -3,6 +3,18 @@
 
 # (C) Copyright 2015-2017 Hewlett-Packard Enterprise Development LP
 # Copyright 2015 FUJITSU LIMITED
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
 
 from __future__ import print_function
 
@@ -13,9 +25,9 @@ import urlparse
 
 import yaml
 
-from keystoneauth1 import session as ks_session
 from keystoneauth1.exceptions.connection import ConnectFailure
 from keystoneauth1.identity import v3
+from keystoneauth1 import session as ks_session
 from keystoneclient.v3 import client
 
 
@@ -147,7 +159,8 @@ def add_user_roles(ks_client, users):
 def add_service_endpoint(ks_client, name, description, endpoint_type,
                          url, region, interface):
     """Add the Monasca service to the catalog with the specified endpoint,
-    if it doesn't yet exist."""
+    if it doesn't yet exist.
+    """
     services = _retry(lambda: ks_client.services.list())
     service_names = {service.name: service for service in services}
     if name in service_names.keys():
@@ -201,7 +214,8 @@ def resolve_k8s_service_by_url(url):
 
 def main(argv):
     """Get credentials to create a keystoneauth Session to instantiate a
-     Keystone Client and then call methods to add users, projects and roles"""
+    Keystone Client and then call methods to add users, projects and roles
+    """
 
     path = os.environ.get('PRELOAD_YAML_PATH', '/preload.yml')
     try:

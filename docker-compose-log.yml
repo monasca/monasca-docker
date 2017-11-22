@@ -39,7 +39,7 @@ services:
     environment:
       - LOGSTASH_FIELDS="service=elasticsearch"
     volumes:
-      - /usr/share/elasticsearch/data:/usr/share/elasticsearch/data
+      - ${MON_DOCKER_VOL_ROOT}/elasticsearch/data:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
       - 9300:9300

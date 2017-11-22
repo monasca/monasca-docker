@@ -84,6 +84,8 @@ curator_actions:
     }
 ```
 `deleted_space` could contain number smaller than `1`, like `0.05`.
+If you want to disable some action from running simply set `disable`
+to `True`.
 
 You can exclude specific index from processing with `curator_excluded_index`:
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 #
@@ -20,7 +21,8 @@ import logging
 import os
 import time
 
-from requests import Session, RequestException
+from requests import RequestException
+from requests import Session
 
 LOG_LEVEL = logging.getLevelName(os.environ.get('LOG_LEVEL', 'INFO'))
 logging.basicConfig(level=LOG_LEVEL)
@@ -153,6 +155,7 @@ def main():
         session.get('{url}/logout'.format(url=GRAFANA_URL))
 
     logging.info('Finished successfully.')
+
 
 if __name__ == '__main__':
     main()

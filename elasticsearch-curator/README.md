@@ -30,7 +30,7 @@ elasticsearch-curator:
   environment:
     LOGSTASH_FIELDS: "service=elasticsearch-curator"
   volumes:
-    - ./elasticsearch-curator/templates/actions.yml:/actions.yml
+    - ./elasticsearch-curator/actions.yml:/actions.yml
   depends_on:
     - elasticsearch
 ```
@@ -83,6 +83,7 @@ curator_actions:
       disable: False
     }
 ```
+`deleted_space` could contain number smaller than `1`, like `0.05`.
 
 You can exclude specific index from processing with `curator_excluded_index`:
 

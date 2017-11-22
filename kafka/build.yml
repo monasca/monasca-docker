@@ -3,6 +3,7 @@ variants:
   - tag: 2.0.0
     aliases:
       - :pike-{date}-{time}
+      - ${KAFKA_VERSION}-${SCALA_VERSION}
     args:
       KAFKA_VERSION: "0.10.2.1"
       SCALA_VERSION: "2.11"

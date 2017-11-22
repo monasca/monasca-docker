@@ -34,7 +34,7 @@ services:
       - log-api
 
   elasticsearch:
-    image: fest/elasticsearch:${ELASTICSEARCH_VERSION}
+    image: fest/elasticsearch:${MON_ELASTICSEARCH_VERSION}
 
     environment:
       - LOGSTASH_FIELDS="service=elasticsearch"

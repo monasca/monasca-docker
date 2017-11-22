@@ -192,6 +192,8 @@ services:
       GF_AUTH_KEYSTONE_VERIFY_SSL_CERT: "false"
       GF_AUTH_KEYSTONE_DEFAULT_DOMAIN: "Default"
       LOGSTASH_FIELDS: "service=grafana"
+    volumes:
+    - "${MON_DOCKER_VOL_ROOT}/grafana/data:/var/lib/grafana/data:rw"
     ports:
       - "3000:3000"
     depends_on:

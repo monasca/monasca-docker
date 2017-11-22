@@ -1,6 +1,6 @@
 repository: fest/python
 variants:
-  - tag: 2-pike-latest
+  - tag: 2-2.0.0
     aliases:
       - :2-pike-{date}-{time}
     args:

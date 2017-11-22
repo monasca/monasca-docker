@@ -30,12 +30,12 @@ services:
       - log-api
 
   elasticsearch:
-    image: elasticsearch:${ELASTICSEARCH_VERSION}
+    image: fest/elasticsearch:${ELASTICSEARCH_VERSION}
+
     environment:
       - LOGSTASH_FIELDS="service=elasticsearch"
     volumes:
       - /usr/share/elasticsearch/data:/usr/share/elasticsearch/data
-      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
       - 9200:9200
       - 9300:9300

@@ -4,6 +4,7 @@
 ####################################################
 version: '2'
 services:
+
   log-metrics:
     image: fest/log-metrics:${MON_LOG_METRICS_VERSION}
     environment:

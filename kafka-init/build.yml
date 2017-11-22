@@ -4,4 +4,4 @@ variants:
     aliases:
       - :pike-{date}-{time}
     args:
-      MON_KAFKA_VERSION: "0.10.2.1-2.11"
+      MON_KAFKA_VERSION: "2.0.0"

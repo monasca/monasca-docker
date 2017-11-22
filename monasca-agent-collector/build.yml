@@ -1,7 +1,7 @@
 repository: fest/agent-collector
 variants:
-  - tag: pike-latest
+  - tag: 2.0.0
     aliases:
       - :pike-{date}-{time}
     args:
-      MON_AGENT_BASE_VERSION: pike-latest
+      MON_AGENT_BASE_VERSION: 2.0.0

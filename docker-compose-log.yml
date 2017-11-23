@@ -35,7 +35,6 @@ services:
 
   elasticsearch:
     image: fest/elasticsearch:${MON_ELASTICSEARCH_VERSION}
-
     environment:
       - LOGSTASH_FIELDS="service=elasticsearch"
     volumes:
@@ -48,8 +47,6 @@ services:
     image: fest/elasticsearch-init:${MON_ELASTICSEARCH_INIT_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=elasticsearch-init"
-    volumes:
-      - ./elasticsearch-templates/logs.template:/templates/logs.json
     depends_on:
       - elasticsearch
 

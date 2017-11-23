@@ -5,6 +5,12 @@ curator_actions:
       deleted_days: 60,
       disable: False
     }
+  - {
+      delete_by: space,
+      description: 'Delete oldest indices over 5 GB',
+      deleted_space: 5,
+      disable: True
+    }
 
 curator_excluded_index:
   - {

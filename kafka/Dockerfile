@@ -1,10 +1,13 @@
 FROM alpine:3.5
 
-ARG KAFKA_VERSION=0.10.2.1
+ARG KAFKA_VERSION=0.9.0.1
 ARG SCALA_VERSION=2.11
 ARG KAFKA_KEYS=https://kafka.apache.org/KEYS
-ARG ASC_MIRROR=https://dist.apache.org/repos/dist/release/kafka
+ARG ASC_MIRROR=https://archive.apache.org/dist/kafka
 ARG SKIP_VERIFY=false
+
+ENV MIRROR=https://archive.apache.org/dist/ \
+    DIRECT=True
 
 ENV KAFKA_HOSTNAME_FROM_IP=true \
   ZOOKEEPER_CONNECTION_STRING=zookeeper:2181 \
@@ -32,7 +35,7 @@ COPY template.py start.sh heap.py /
 COPY templates /templates
 
 ENV PATH /kafka/bin:$PATH
-
+ 
 EXPOSE 9092
 VOLUME [ "/data", "/logs" ]
 

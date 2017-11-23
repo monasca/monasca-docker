@@ -4,5 +4,5 @@ variants:
     aliases:
       - :pike-{date}-{time}
     args:
-      KAFKA_VERSION: "0.10.2.1"
+      KAFKA_VERSION: "0.9.0.1"
       SCALA_VERSION: "2.11"

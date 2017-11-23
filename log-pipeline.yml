@@ -49,6 +49,15 @@ services:
     depends_on:
       - elasticsearch
 
+  elasticsearch-curator:
+    image: monasca/elasticsearch-curator:${MON_ELASTICSEARCH_CURATOR_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=elasticsearch-curator"
+    volumes:
+      - ./elasticsearch-curator/actions.yml:/actions.yml
+    depends_on:
+      - elasticsearch
+
   kafka-log-init:
     image: fest/kafka-init:${MON_KAFKA_INIT_VERSION}
     environment:

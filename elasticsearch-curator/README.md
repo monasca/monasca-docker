@@ -54,16 +54,9 @@ Actions configuration
 ---------------------
 
 A single file, `/actions.yml`, should be mounted into the container to provide
-actions configuration. The default config file is empty, and should be
-overridden for this container to be of any use.
-
-An empty config file looks as follows:
-
-```yaml
-curator_actions: []
-
-curator_excluded_index: []
-```
+actions configuration. In the default configuration file indices older
+than 60 days are removed, to have custom configuration you need to override
+`/actions.yml` for this container.
 
 You are able to configure Elasticsearch Curator to delete oldest data
 by `age` or `space`. You can also have more than one action at once:

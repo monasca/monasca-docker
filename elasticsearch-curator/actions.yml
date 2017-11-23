@@ -3,13 +3,11 @@ curator_actions:
       delete_by: age,
       description: 'Delete indices older than 60 days',
       deleted_days: 60,
-      disable: True
-    }
-  - {
-      delete_by: space,
-      description: 'Delete oldest indices over 5 GB',
-      deleted_space: 5,
-      disable: True
+      disable: False
     }
 
-curator_excluded_index: []
+curator_excluded_index:
+  - {
+      index_name: .kibana,
+      exclude: True
+    }

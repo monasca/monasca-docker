@@ -55,7 +55,7 @@ if [ -n "$KAFKA_WAIT_FOR_TOPICS" ]; then
   fi
 fi
 
-if ${NO_STORM_CLUSTER} = "true"; then
+if [ "${NO_STORM_CLUSTER}" = "true" ]; then
   echo "Using Thresh Config file /storm/conf/thresh-config.yml. Contents:"
   grep -vi password /storm/conf/thresh-config.yml
   # shellcheck disable=SC2086

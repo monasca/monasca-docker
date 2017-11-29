@@ -7,9 +7,9 @@ curator_actions:
     }
   - {
       delete_by: space,
-      description: 'Delete oldest indices over 2 MB',
-      deleted_space: 0.002,
-      disable: False
+      description: 'Delete oldest indices over 5 GB',
+      deleted_space: 5,
+      disable: True
     }
 
 curator_excluded_index:

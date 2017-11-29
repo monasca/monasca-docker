@@ -35,7 +35,7 @@ Main:
   num_collector_threads: {{ NUM_COLLECTOR_THREADS | default(1) }}
   pool_full_max_retries: {{ POOL_FULL_MAX_TRIES | default(4) }}
   sub_collection_warn: {{ SUB_COLLECTION_WARN | default(6) }}
-  autorestart: {{ AUTORESTART | default(True) }}
+  autorestart: {{ AUTORESTART | default(False) }}
   collector_restart_interval: {{ COLLECTOR_RESTART_INTERVAL | default(24) }}
   non_local_traffic: {{ NON_LOCAL_TRAFFIC | default(False) }}
   forwarder_url: {{ FORWARDER_URL | default("http://localhost:17123") }}

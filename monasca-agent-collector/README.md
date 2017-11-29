@@ -83,9 +83,15 @@ Configuration
 | `MONASCA_URL`               | `http://monasca:8070/v2.0` | Versioned Monasca API URL |
 | `HOSTNAME_FROM_KUBERNETES`  | `false` | If true, determine node hostname from Kubernetes  |
 | `FORWARDER_URL`             | `http://localhost:17123` | Monasca Agent Collector URL |
+| `AUTORESTART`               | `false`          | Auto Restart Monasca Agent Collector |
+| `COLLECTOR_RESTART_INTERVAL`| `24`             | Interval in hours to restart Monasca Agent Collector |
 
 Note that additional variables can be specified as well, see the
 [config template][8] for a definitive list.
+
+Note that the auto restart feature can be enabled if the agent collector has unchecked
+memory growth. The proper restart behavior must be enabled in docker or kubernetes if
+this feature is turned on.
 
 ### Docker Plugin
 

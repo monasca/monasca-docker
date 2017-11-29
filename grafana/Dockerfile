@@ -1,7 +1,8 @@
 from alpine:3.5
 
 arg GRAFANA_REPO=https://github.com/monasca/grafana.git
-arg GRAFANA_BRANCH=grafana4
+#arg GRAFANA_BRANCH=grafana4
+arg GRAFANA_BRANCH=v4.1.2-keystone
 arg MONASCA_DATASOURCE_REPO=https://git.openstack.org/openstack/monasca-grafana-datasource
 arg MONASCA_DATASOURCE_BRANCH=1.1.0
 arg MONASCA_APP_REPO=https://github.com/stackhpc/monasca-grafana-app

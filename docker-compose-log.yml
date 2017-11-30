@@ -69,6 +69,7 @@ services:
       LOGSTASH_FIELDS: "service=kibana"
       KEYSTONE_URI: ${MON_KEYSTONE_URL}
       MONASCA_PLUGIN_ENABLED: ${MON_MONASCA_PLUGIN_ENABLED}
+      BASE_PATH: ${MON_BASE_PATH}
     depends_on:
       - elasticsearch
     ports:

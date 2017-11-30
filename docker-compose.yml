@@ -69,6 +69,15 @@ services:
     restart: on-failure
     depends_on:
       - zookeeper
+  kafka-watcher:
+    image: kafka-watcher:${MON_KAFKA_WATCHER_VERSION}
+    environment:
+      BOOT_STRAP_SERVERS: "kafka"
+      LOGSTASH_FIELDS: "service=kafka-watcher"
+    depends_on:
+      - kafka
+    ports:
+      - "8080:8080"
   kafka-init:
     image: monasca/kafka-init:${MON_KAFKA_INIT_VERSION}
     environment:
@@ -81,6 +90,7 @@ services:
         alarm-notifications:12:1,\
         retry-notifications:3:1,\
         events:12:1,\
+        kafka-health-check:1:1,\
         60-seconds-notifications:3:1"
       LOGSTASH_FIELDS: "service=kafka-init"
     depends_on:

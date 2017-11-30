@@ -68,6 +68,7 @@ services:
       ELASTICSEARCH_PINGTIMEOUT: 1000
       LOGSTASH_FIELDS: "service=kibana"
       KEYSTONE_URI: ${MON_KEYSTONE_URL}
+      MONASCA_PLUGIN_ENABLED: ${MON_MONASCA_PLUGIN_ENABLED}
     depends_on:
       - elasticsearch
     ports:
@@ -78,14 +79,10 @@ services:
     environment:
       LOGSPOUT: ignore
       LOGSTASH_FIELDS: "service=monasca-log-api"
-      #TODO: keystone URI should be sufficient!?
-      # use port 35357 for KEYSTONE_IDENTITY_URI? are really both URIs needed?
       KEYSTONE_IDENTITY_URI: ${MON_KEYSTONE_URL}
       KEYSTONE_AUTH_URI: ${MON_KEYSTONE_URL}
-      KEYSTONE_ADMIN_USER: admin
-      KEYSTONE_ADMIN_PASSWORD: secretadmin
-      #KEYSTONE_ADMIN_TENANT: admin
-      #KEYSTONE_ADMIN_DOMAIN: default
+      KEYSTONE_ADMIN_USER: ${MON_API_USERNAME}
+      KEYSTONE_ADMIN_PASSWORD: ${MON_API_PASSWORD}
     depends_on:
       - zookeeper
       - kafka
@@ -98,13 +95,10 @@ services:
     environment:
       LOGSPOUT: ignore
       LOGSTASH_FIELDS: "service=monasca-log-agent"
-      #TODO: adapt readme! not tested yet!
       OS_AUTH_URL: ${MON_KEYSTONE_URL}/v3
-      OS_USERNAME: monasca-agent
-      OS_PASSWORD: password
-      OS_PROJECT_NAME: mini-mon
-      #OS_USER_DOMAIN_NAME: Default
-      #OS_PROJECT_DOMAIN_NAME: Default
+      OS_USERNAME: ${MON_AGENT_USERNAME}
+      OS_PASSWORD: ${MON_AGENT_PASSWORD}
+      OS_PROJECT_NAME: ${MON_AGENT_PROJECT_NAME}
     depends_on:
       - log-api
     ports:

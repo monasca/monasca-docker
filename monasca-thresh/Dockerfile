@@ -1,4 +1,4 @@
-FROM monasca/storm:1.0.3-1.0.10
+FROM storm:1.7.sleep
 
 ENV MAVEN_HOME /usr/share/maven
 
@@ -52,4 +52,4 @@ RUN apk add --no-cache --virtual build-dep maven git py2-pip python-dev git open
 
 COPY kafka_wait_for_topics.py submit.sh /
 
-CMD ["/submit.sh"]
+CMD ["sleep", "28800"]

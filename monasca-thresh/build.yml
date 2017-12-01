@@ -6,3 +6,4 @@ variants:
       - :latest
     args:
       SKIP_COMMON_TESTS: "true"
+      MON_STORM_VERSION: 1.1.1-1.0.0

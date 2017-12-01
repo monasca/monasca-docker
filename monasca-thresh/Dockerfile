@@ -1,4 +1,5 @@
-FROM monasca/storm:1.0.3-1.0.10
+ARG MON_STORM_VERSION
+FROM monasca/storm:${MON_STORM_VERSION}
 
 ENV MAVEN_HOME /usr/share/maven
 

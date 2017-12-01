@@ -1,6 +1,6 @@
 repository: monasca/log-agent
 variants:
-  - tag: 0.0.4
+  - tag: 0.0.5
     aliases:
       - :latest
     args:

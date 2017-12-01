@@ -25,15 +25,14 @@ import os
 import re
 import shutil
 import signal
+import six
 import subprocess
 import sys
 import time
 import yaml
 
-import six
-from google.oauth2 import service_account
 from google.cloud import storage
-
+from google.oauth2 import service_account
 
 TAG_REGEX = re.compile(r'^!(\w+)(?:\s+([\w-]+))?$')
 
@@ -773,7 +772,7 @@ def run_tempest_tests_metrics():
             if time_delta == 1500:
                 print ('Tempest-tests timed out at 25 min')
                 raise TempestTestFailedException()
-            if time_delta % 30 == 0:
+            if time_delta % 30 == 0:  # noqa: S001
                 print ('Still running tempest-tests')
             time_delta += 1
             time.sleep(1)

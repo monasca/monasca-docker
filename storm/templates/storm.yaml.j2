@@ -43,9 +43,9 @@ nimbus.seeds:
 nimbus.thrift.port: {{ NIMBUS_THRIFT_PORT | default('6627') }}
 nimbus.childopts: "{{ NIMBUS_CHILDOPTS }}"
 
-ui.host: "{{ UI_HOST | default ('127.0.0.1') }}"
-ui.port: {{ UI_PORT | default('8088') }}
-ui.childopts: "{{ UI_CHILDOPTS }}"
+ui.host: "{{ STORM_UI_HOST | default ('127.0.0.1') }}"
+ui.port: {{ STORM_UI_PORT | default('8088') }}
+ui.childopts: "{{ STORM_UI_CHILDOPTS }}"
 
 transactional.zookeeper.servers:
 {% for server in TRANSACTIONAL_ZOOKEEPER_SERVERS.split(',') %}

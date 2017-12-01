@@ -73,8 +73,10 @@ CONSTRAINTS=""
 CONSTRAINTS_URL=""
 CONSTRAINTS_BRANCH=""
 
-if OPTS=$(getopt -n 'parse-options' -o r:b:e:d:c:u:q: -- "$@"); then
-echo "Failed parsing options." >&2 ; exit 1 ; fi
+if ! OPTS=$(getopt -n 'parse-options' -o r:b:e:d:c:u:q: -- "$@"); then
+  echo "Failed parsing options." >&2
+  exit 1
+fi
 
 echo "$OPTS"
 eval set -- "$OPTS"

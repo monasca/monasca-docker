@@ -5,6 +5,7 @@ domains:
     projects: []
     roles: []
     users: []
+    groups: []
 
 services:
   example:

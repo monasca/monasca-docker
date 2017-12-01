@@ -70,7 +70,7 @@ services:
     depends_on:
       - zookeeper
   kafka-watcher:
-    image: kafka-watcher:${MON_KAFKA_WATCHER_VERSION}
+    image: monasca/kafka-watcher:${MON_KAFKA_WATCHER_VERSION}
     environment:
       BOOT_STRAP_SERVERS: "kafka"
       LOGSTASH_FIELDS: "service=kafka-watcher"

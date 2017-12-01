@@ -54,8 +54,6 @@ services:
     image: monasca/elasticsearch-curator:${MON_ELASTICSEARCH_CURATOR_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=elasticsearch-curator"
-    volumes:
-      - ./elasticsearch-curator/actions.yml:/actions.yml
     depends_on:
       - elasticsearch
 

@@ -73,11 +73,12 @@ services:
     image: monasca/kafka-watcher:${MON_KAFKA_WATCHER_VERSION}
     environment:
       BOOT_STRAP_SERVERS: "kafka"
+      PROMETHEUS_ENDPOINT: "0.0.0.0:8080"
       LOGSTASH_FIELDS: "service=kafka-watcher"
     depends_on:
       - kafka
     ports:
-      - "8080:8080"
+      - "18080:8080"
   kafka-init:
     image: monasca/kafka-init:${MON_KAFKA_INIT_VERSION}
     environment:

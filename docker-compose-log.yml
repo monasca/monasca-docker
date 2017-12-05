@@ -108,8 +108,6 @@ services:
       OS_PROJECT_NAME: ${MON_AGENT_PROJECT_NAME}
     depends_on:
       - log-api
-    ports:
-      - "5610:5610"
 
   logspout:
     image: fest/logspout:${MON_LOGSPOUT_VERSION}

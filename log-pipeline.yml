@@ -96,8 +96,6 @@ services:
     depends_on:
       - log-api
       - keystone
-    ports:
-      - "5610:5610"
 
   logspout:
     image: fest/logspout:${MON_LOGSPOUT_VERSION}

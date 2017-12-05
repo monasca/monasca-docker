@@ -8,6 +8,7 @@ ENV COMMON_REPO=https://git.openstack.org/openstack/monasca-common.git \
   COMMON_BRANCH="master" \
   THRESH_REPO=https://git.openstack.org/openstack/monasca-thresh.git \
   THRESH_BRANCH="master" \
+  LOG_CONFIG_FILE="/storm/log4j2/cluster.xml" \
   STORM_WAIT_RETRIES=12 \
   STORM_WAIT_DELAY=5 \
   STORM_WAIT_TIMEOUT=20 \

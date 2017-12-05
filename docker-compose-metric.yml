@@ -13,6 +13,7 @@ services:
   influxdb:
     image: influxdb:${INFLUXDB_VERSION}
     environment:
+      INFLUXDB_DEFAULT_RETENTION: ${MON_INFLUXDB_RETENTION}
       LOGSTASH_FIELDS: "service=influxdb"
     volumes:
     - "${MON_DOCKER_VOL_ROOT}/influxdb:/var/lib/influxdb:rw"

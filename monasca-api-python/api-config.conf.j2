@@ -34,7 +34,7 @@ read_only_authorized_roles = {{ READ_ONLY_AUTHORIZED_ROLES | default('monasca-re
 
 # The roles that are allowed to access the API on behalf of another tenant.
 # For example, a service can POST metrics to another tenant if they are a member of the "delegate" role.
-delegate_authorized_roles = {{ DELEGATE_AUTHORIZED_ROLES | default('admin') }}
+delegate_authorized_roles = {{ DELEGATE_AUTHORIZED_ROLES | default('monitoring-delegate') }}
 
 [messaging]
 # The message queue driver to use

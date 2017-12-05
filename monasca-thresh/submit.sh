@@ -72,6 +72,10 @@ if ${NO_STORM_CLUSTER} = "true"; then
     JAVAOPTS="$JAVAOPTS -Dcom.sun.management.jmxremote.local.only=false"
   fi
 
+  if [ -n "$LOG_CONFIG_FILE" ]; then
+    JAVAOPTS="$JAVAOPTS -Dlog4j.configurationFile=$LOG_CONFIG_FILE"
+  fi
+
   echo "Submitting storm topology as local cluster using JAVAOPTS of $JAVAOPTS"
   # shellcheck disable=SC2086
   java $JAVAOPTS -classpath "/monasca-thresh.jar:/storm/lib/*" monasca.thresh.ThresholdingEngine /storm/conf/thresh-config.yml thresh-cluster local

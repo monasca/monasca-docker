@@ -1,4 +1,4 @@
-FROM storm:1.7.sleep
+FROM monasca/storm:1.1.1-1.0.11
 
 ENV MAVEN_HOME /usr/share/maven
 
@@ -8,6 +8,7 @@ ENV COMMON_REPO=https://git.openstack.org/openstack/monasca-common.git \
   COMMON_BRANCH="master" \
   THRESH_REPO=https://git.openstack.org/openstack/monasca-thresh.git \
   THRESH_BRANCH="master" \
+  LOG_CONFIG_FILE="/storm/log4j2/cluster.xml" \
   STORM_WAIT_RETRIES=12 \
   STORM_WAIT_DELAY=5 \
   STORM_WAIT_TIMEOUT=20 \
@@ -52,4 +53,4 @@ RUN apk add --no-cache --virtual build-dep maven git py2-pip python-dev git open
 
 COPY kafka_wait_for_topics.py submit.sh /
 
-CMD ["sleep", "28800"]
+CMD ["/submit.sh"]

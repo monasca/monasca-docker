@@ -35,9 +35,6 @@ services:
       LOGSTASH_FIELDS: "service=elasticsearch"
     volumes:
       - ${MON_DOCKER_VOL_ROOT}/elasticsearch/data:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
-      - 9300:9300
 
   elasticsearch-init:
     image: fest/elasticsearch-init:${MON_ELASTICSEARCH_INIT_VERSION}

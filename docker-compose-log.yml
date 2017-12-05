@@ -55,7 +55,6 @@ services:
     environment:
       CURATOR_EXCLUDED_INDEX_NAME: .kibana
       CURATOR_DELETE_BY_AGE: ${MON_ELASTICSEARCH_DATA_RETENTION_DAYS}
-      CURATOR_DELETE_BY_SPACE: ${MON_ELASTICSEARCH_DATA_RETENTION_GB}
       LOGSTASH_FIELDS: "service=elasticsearch-curator"
     depends_on:
       - elasticsearch

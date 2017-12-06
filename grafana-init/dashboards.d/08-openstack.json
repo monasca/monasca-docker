@@ -554,8 +554,8 @@
               "target": "",
               "aggregator": "none",
               "column": "value",
-              "metric": "mem.swap_used_mb",
-              "alias": "mem.swap_used_mb (@hostname)",
+              "metric": "mem.used_real_mb",
+              "alias": "mem.used_real_mb (@hostname)",
               "dimensions": [
                 {
                   "key": "hostname",
@@ -567,14 +567,31 @@
               "target": "",
               "aggregator": "none",
               "column": "value",
-              "metric": "mem.used_mb",
-              "alias": "mem.used_mb (@hostname)",
+              "metric": "mem.used_cache",
+              "alias": "mem.used_cache (@hostname)",
               "dimensions": [
                 {
                   "key": "hostname",
                   "value": "$all"
                 }
               ]
+            },
+            {
+              "aggregator": "none",
+              "alias": "mem.free_mb (@hostname)",
+              "column": "value",
+              "dimensions": [
+                {
+                  "key": "hostname",
+                  "value": "$all"
+                }
+              ],
+              "metric": "mem.free_mb",
+              "target": "",
+              "refId": "F",
+              "period": "300",
+              "error": "",
+              "hide": false
             },
             {
               "target": "",
@@ -593,8 +610,8 @@
               "target": "",
               "aggregator": "none",
               "column": "value",
-              "metric": "mem.used_cache",
-              "alias": "mem.used_cache (@hostname)",
+              "metric": "mem.swap_used_mb",
+              "alias": "mem.swap_used_mb (@hostname)",
               "dimensions": [
                 {
                   "key": "hostname",

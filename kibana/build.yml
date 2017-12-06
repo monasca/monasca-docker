@@ -1,6 +1,6 @@
 repository: fest/kibana
 variants:
-  - tag: 2.0.0
+  - tag: 2.0.1
     aliases:
       - :pike-{date}-{time}
     args:

@@ -1,52 +1,63 @@
 ---
 # Remember, leave a key empty if there is no value. None will be a string,
 # not a Python "NoneType"
-{% if curator_actions|length >= 1 %}
+
 actions:
-  {% for item in curator_actions %}
+{% if CURATOR_DELETE_BY_AGE is defined %}
+  1:
+    action: delete_indices
+    description: >-
+      Delete indices older than {{ CURATOR_DELETE_BY_AGE }} days
+    options:
+      ignore_empty_list: True
+      timeout_override:
+      continue_if_exception: False
+      disable_action: False
+    filters:
+    {% if CURATOR_EXCLUDED_INDEX_NAME is defined %}
+      - filtertype: pattern
+        kind: prefix
+        value: {{ CURATOR_EXCLUDED_INDEX_NAME }}
+        exclude: True
+    {% endif %}
 
-  {{ loop.index }} :
-        action: delete_indices
-        description: >-
-          {{ item.description }}
-        options:
-          ignore_empty_list: True
-          timeout_override:
-          continue_if_exception: False
-          disable_action: {{ item.disable }}
-        filters:
-        {% if curator_excluded_index|length >=1 %}
-          {% for it in curator_excluded_index %}
+      - filtertype: age
+        source: name
+        direction: older
+        timestring: "%Y-%m-%d"
+        unit: days
+        unit_count: {{ CURATOR_DELETE_BY_AGE }}
+        field:
+        stats_result:
+        epoch:
+        exclude: False
+{% endif %}
 
-          - filtertype: pattern
-            kind: prefix
-            value: {{ it.index_name }}
-            exclude: {{ it.exclude }}
-          {% endfor %}
-        {% endif %}
-        {% if item.delete_by == "age" %}
+{% if CURATOR_DELETE_BY_SPACE is defined %}
+  2:
+    action: delete_indices
+    description: >-
+      Delete oldest indices over {{ CURATOR_DELETE_BY_SPACE }} GB
+    options:
+      ignore_empty_list: True
+      timeout_override:
+      continue_if_exception: False
+      disable_action: False
+    filters:
+    {% if CURATOR_EXCLUDED_INDEX_NAME is defined %}
+      - filtertype: pattern
+        kind: prefix
+        value: {{ CURATOR_EXCLUDED_INDEX_NAME }}
+        exclude: True
+    {% endif %}
 
-          - filtertype: age
-            source: name
-            direction: older
-            timestring: "%Y-%m-%d"
-            unit: days
-            unit_count: {{ item.deleted_days }}
-            field:
-            stats_result:
-            epoch:
-            exclude: False
-        {% elif item.delete_by == "space" %}
-
-          - filtertype: space
-            disk_space: {{ item.deleted_space }}
-            reverse: True
-            use_age: False
-            source: creation_date
-            timestring:
-            field:
-            stats_result:
-            exclude: False
-        {% endif %}
-  {% endfor %}
+      - filtertype: space
+        disk_space: {{ CURATOR_DELETE_BY_SPACE }}
+        reverse: True
+        use_age: False
+        source: creation_date
+        timestring:
+        field:
+        stats_result:
+        exclude: False
 {% endif %}

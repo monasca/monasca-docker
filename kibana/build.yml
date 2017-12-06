@@ -1,8 +1,9 @@
 repository: fest/kibana
 variants:
-  - tag: 2.0.0
+  - tag: 2.0.1
     aliases:
       - :pike-{date}-{time}
     args:
       KIBANA_VERSION: 4.6.3
       KIBANA_PLUGIN_BRANCH: stable/pike
+ 

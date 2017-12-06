@@ -4,7 +4,7 @@
 ELASTICSEARCH_WAIT_RETRIES=${ELASTICSEARCH_WAIT_RETRIES:-"24"}
 ELASTICSEARCH_WAIT_DELAY=${ELASTICSEARCH_WAIT_DELAY:-"5"}
 
-j2 /action.yml.j2 /actions.yml > /action.yml
+j2 /action.yml.j2 > /action.yml
 j2 /crontab.j2 > /var/spool/cron/crontabs/curator
 
 if [ "$WAIT_FOR_ELASTICSEARCH" = "true" ]; then

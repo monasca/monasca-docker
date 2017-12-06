@@ -19,6 +19,7 @@ services:
   influxdb-init:
     image: fest/influxdb-init:${INFLUXDB_INIT_VERSION}
     environment:
+      INFLUXDB_DEFAULT_RETENTION: ${MON_INFLUXDB_RETENTION}
       LOGSTASH_FIELDS: "service=influxdb-init"
     depends_on:
       - influxdb
@@ -44,15 +45,9 @@ services:
       NON_LOCAL_TRAFFIC: "true"
       LOGSTASH_FIELDS: "service=monasca-agent-forwarder"
       OS_AUTH_URL: ${MON_KEYSTONE_URL}/v3
-      OS_USERNAME: monasca-agent
-      OS_PASSWORD: password
-      OS_PROJECT_NAME: mini-mon
-      #TODO: from monasca-agent-base
-      #user_domain_id: "{{ OS_USER_DOMAIN_ID | default('') }}"
-      #user_domain_name: "{{ OS_USER_DOMAIN_NAME | default('') }}"
-      #project_domain_id: "{{ OS_PROJECT_DOMAIN_ID | default('') }}"
-      #project_domain_name: "{{ OS_PROJECT_DOMAIN_NAME | default('') }}"
-      #project_id: "{{ OS_PROJECT_ID | default('') }}"
+      OS_USERNAME: ${MON_AGENT_USERNAME}
+      OS_PASSWORD: ${MON_AGENT_PASSWORD}
+      OS_PROJECT_NAME: ${MON_AGENT_PROJECT_NAME}
     depends_on:
       - monasca
 
@@ -65,16 +60,7 @@ services:
       CADVISOR: "true"
       CADVISOR_URL: "http://cadvisor:8080/"
       LOGSTASH_FIELDS: "service=monasca-agent-collector"
-      OS_AUTH_URL: ${MON_KEYSTONE_URL}/v3
-      OS_USERNAME: monasca-agent
-      OS_PASSWORD: password
-      OS_PROJECT_NAME: mini-mon
-      #TODO: from monasca-agent-base
-      #user_domain_id: "{{ OS_USER_DOMAIN_ID | default('') }}"
-      #user_domain_name: "{{ OS_USER_DOMAIN_NAME | default('') }}"
-      #project_domain_id: "{{ OS_PROJECT_DOMAIN_ID | default('') }}"
-      #project_domain_name: "{{ OS_PROJECT_DOMAIN_NAME | default('') }}"
-      #project_id: "{{ OS_PROJECT_ID | default('') }}"
+      KEYSTONE_DEFAULTS_ENABLED: "false"
     depends_on:
       - agent-forwarder
 
@@ -132,14 +118,10 @@ services:
     image: fest/api:${MON_API_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=monasca-api"
-      #TODO: keystone URI should be sufficient!?
-      # use port 35357 for KEYSTONE_IDENTITY_URI? are really both URIs needed?
       KEYSTONE_IDENTITY_URI: ${MON_KEYSTONE_URL}
       KEYSTONE_AUTH_URI: ${MON_KEYSTONE_URL}
-      KEYSTONE_ADMIN_USER: admin
-      KEYSTONE_ADMIN_PASSWORD: secretadmin
-      #KEYSTONE_ADMIN_TENANT: admin
-      #KEYSTONE_ADMIN_DOMAIN: default
+      KEYSTONE_ADMIN_USER: ${MON_KEYSTONE_ADMIN_USER}
+      KEYSTONE_ADMIN_PASSWORD: ${MON_KEYSTONE_ADMIN_PASSWORD}
     depends_on:
       - influxdb
       - mysql
@@ -189,6 +171,8 @@ services:
       GF_USERS_ALLOW_ORG_CREATE: "true"
       GF_AUTH_KEYSTONE_ENABLED: "true"
       GF_AUTH_KEYSTONE_AUTH_URL: ${MON_KEYSTONE_URL}
+      GRAFANA_ADMIN_USER: ${MON_KEYSTONE_ADMIN_USER}
+      GRAFANA_ADMIN_PASSWORD: ${MON_KEYSTONE_ADMIN_PASSWORD}
       GF_AUTH_KEYSTONE_VERIFY_SSL_CERT: "false"
       GF_AUTH_KEYSTONE_DEFAULT_DOMAIN: "Default"
       LOGSTASH_FIELDS: "service=grafana"
@@ -202,6 +186,8 @@ services:
   grafana-init:
     image: fest/grafana-init:${MON_GRAFANA_INIT_VERSION}
     environment:
+      GRAFANA_USERNAME: ${MON_GRAFANA_USERNAME}
+      GRAFANA_PASSWORD: ${MON_GRAFANA_PASSWORD}
       LOGSTASH_FIELDS: "service=grafana-init"
     depends_on:
       - grafana

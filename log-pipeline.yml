@@ -32,12 +32,9 @@ services:
   elasticsearch:
     image: fest/elasticsearch:${MON_ELASTICSEARCH_VERSION}
     environment:
-      - LOGSTASH_FIELDS="service=elasticsearch"
+      LOGSTASH_FIELDS: "service=elasticsearch"
     volumes:
       - ${MON_DOCKER_VOL_ROOT}/elasticsearch/data:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
-      - 9300:9300
 
   elasticsearch-init:
     image: fest/elasticsearch-init:${MON_ELASTICSEARCH_INIT_VERSION}
@@ -47,11 +44,11 @@ services:
       - elasticsearch
 
   elasticsearch-curator:
-    image: monasca/elasticsearch-curator:${MON_ELASTICSEARCH_CURATOR_VERSION}
+    image: fest/elasticsearch-curator:${MON_ELASTICSEARCH_CURATOR_VERSION}
     environment:
+      CURATOR_EXCLUDED_INDEX_NAME: .kibana
+      CURATOR_DELETE_BY_AGE: ${MON_ELASTICSEARCH_DATA_RETENTION_DAYS}
       LOGSTASH_FIELDS: "service=elasticsearch-curator"
-    volumes:
-      - ./elasticsearch-curator/actions.yml:/actions.yml
     depends_on:
       - elasticsearch
 
@@ -99,8 +96,6 @@ services:
     depends_on:
       - log-api
       - keystone
-    ports:
-      - "5610:5610"
 
   logspout:
     image: fest/logspout:${MON_LOGSPOUT_VERSION}

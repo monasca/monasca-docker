@@ -372,7 +372,6 @@
           "editable": true,
           "type": "graph",
           "loadingEditor": false,
-          
           "renderer": "flot",
           "x-axis": true,
           "y-axis": true,
@@ -492,7 +491,6 @@
           "editable": true,
           "type": "graph",
           "id": 13,
-          
           "renderer": "flot",
           "x-axis": true,
           "y-axis": true,
@@ -632,7 +630,6 @@
           "editable": true,
           "type": "graph",
           "id": 14,
-          
           "renderer": "flot",
           "x-axis": true,
           "y-axis": true,
@@ -740,7 +737,6 @@
           "editable": true,
           "type": "graph",
           "id": 15,
-          
           "renderer": "flot",
           "x-axis": true,
           "y-axis": true,

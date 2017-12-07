@@ -7,7 +7,7 @@ statsd_port = {{ STATSD_PORT | default(8125) }}
 statsd_buffer = {{ STATSD_BUFFER | default(50) }}
 
 [service]
-region = switzerland
+region = {{ REGION | default('useast') }}
 max_log_size = 1048576
 
 [roles_middleware]

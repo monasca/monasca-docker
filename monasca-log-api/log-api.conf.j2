@@ -7,7 +7,7 @@ statsd_port = {{ STATSD_PORT | default(8125) }}
 statsd_buffer = {{ STATSD_BUFFER | default(50) }}
 
 [service]
-region = useast
+region = switzerland
 max_log_size = 1048576
 
 [roles_middleware]
@@ -16,13 +16,13 @@ default_roles = {{ AUTHORIZED_ROLES | default('admin, domainuser, domainadmin, m
 agent_roles = {{ AGENT_AUTHORIZED_ROLES | default('monasca-agent') }}
 
 [log_publisher]
-topics = log
+topics = {{ LOG_PUBLISHER_TOPIC | default('log') }}
 kafka_url = {{ KAFKA_URI | default('kafka:9092') }}
-max_message_size = 1048576
+max_message_size = {{ MAX_MESSAGE_SIZE | default(1048576) }}
 
 [kafka_healthcheck]
 kafka_url = {{ KAFKA_URI | default('kafka:9092') }}
-kafka_topics = log
+kafka_topics = {{ KAFKA_HEALTH_TOPIC | default('log') }}
 
 [keystone_authtoken]
 auth_type = password

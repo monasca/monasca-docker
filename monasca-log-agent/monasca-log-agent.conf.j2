@@ -29,7 +29,7 @@ filter {
 }
 
 output {
-{% if DEBUG %}
+{% if DEBUG | lower == "true" %}
   stdout { codec => rubydebug { metadata => true } }
 {% endif %}
   monasca_log_api {

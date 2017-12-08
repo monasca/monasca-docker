@@ -55,7 +55,7 @@ if [ -n "$KAFKA_WAIT_FOR_TOPICS" ]; then
   fi
 fi
 
-if ${NO_STORM_CLUSTER} = "true"; then
+if [ "${NO_STORM_CLUSTER}" = "true" ]; then
   echo "Using Thresh Config file /storm/conf/thresh-config.yml. Contents:"
   grep -vi password /storm/conf/thresh-config.yml
   # shellcheck disable=SC2086
@@ -70,6 +70,10 @@ if ${NO_STORM_CLUSTER} = "true"; then
     JAVAOPTS="$JAVAOPTS -Dcom.sun.management.jmxremote.ssl=false"
     JAVAOPTS="$JAVAOPTS -Dcom.sun.management.jmxremote.authenticate=false"
     JAVAOPTS="$JAVAOPTS -Dcom.sun.management.jmxremote.local.only=false"
+  fi
+
+  if [ -n "$LOG_CONFIG_FILE" ]; then
+    JAVAOPTS="$JAVAOPTS -Dlog4j.configurationFile=$LOG_CONFIG_FILE"
   fi
 
   echo "Submitting storm topology as local cluster using JAVAOPTS of $JAVAOPTS"

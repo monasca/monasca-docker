@@ -2,23 +2,23 @@
 # This file prepares the environment for a Monasca server integrated with an
 # OpenStack Keystone service.
 #
-# There are two docker-compose files available:
+# There are two docker-compose files:
 # - docker-compose-metric.yml (metric-pipeline)
 # - docker-compose-log.yml    (as extension: log-pipeline)
 #
 # Before you start:
-# - make sure Keystone service is up and running
-# - provide necessary configurations in this file and replace the
+# - make sure the OpenStack Keystone service is up and running
+# - provide the necessary configuration in this file and replace the
 #   placeholders "<...>" with the correct settings (see below)
-#   * configure the IPv4 address (MON_KEYSTONE_URL) of the Keystone host
-#   * make sure kibana authorization is enabled (MON_MONASCA_PLUGIN_ENABLED)
-#   * set path to mount kibana to the Horizon proxy (MON_BASE_PATH)
-#   * grafana credentials for grafana-admin and grafana-user must be adapted
+#   * configure the IPv4 address (MON_KEYSTONE_URL) for the OpenStack Keystone host
+#   * make sure that the Kibana authorization is enabled (MON_MONASCA_PLUGIN_ENABLED)
+#   * set the path to mount Kibana to the OpenStack Horizon proxy (MON_BASE_PATH)
+#   * adapt the grafana credentials for grafana-admin and grafana-user
 #     (see MON_GRAFANA_*)
-#   * user credentials for agent and admin must be adapted to your
-#     Keystone installation (see MON_AGENT_*)
-#   * set path for data directories (see MON_DOCKER_VOL_ROOT)
-#   * set data retention for elasticsearch and influxdb
+#   * adapt the user credentials for agent and admin to your
+#     OpenStack Keystone installation (see MON_AGENT_*)
+#   * set the path for the data directories (see MON_DOCKER_VOL_ROOT)
+#   * configure data retention for Elasticsearch and InfluxDB
 ################################################################################
 
 ################################################################################

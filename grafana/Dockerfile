@@ -1,7 +1,7 @@
 from alpine:3.5
 
-arg GRAFANA_REPO=https://github.com/twc-openstack/grafana.git
-arg GRAFANA_BRANCH=master-keystone
+arg GRAFANA_REPO=https://github.com/monasca/grafana.git
+arg GRAFANA_BRANCH=grafana4
 arg MONASCA_DATASOURCE_REPO=https://git.openstack.org/openstack/monasca-grafana-datasource
 arg MONASCA_DATASOURCE_BRANCH=master
 arg MONASCA_APP_REPO=https://github.com/stackhpc/monasca-grafana-app
@@ -20,7 +20,7 @@ run mkdir -p /var/lib/grafana && \
   cd $GOPATH/src/github.com/grafana/grafana/ && \
   apk add --no-cache --virtual build-dep \
     nodejs go git musl-dev make g++ && \
-  apk add --no-cache python py-jinja2 && \
+  apk add --no-cache python py-jinja2 ca-certificates && \
   git init && \
   git remote add origin $GRAFANA_REPO && \
   git fetch origin $GRAFANA_BRANCH && \
@@ -47,6 +47,7 @@ run mkdir -p /var/lib/grafana && \
   git remote add origin $MONASCA_APP_REPO && \
   git fetch origin $MONASCA_APP_BRANCH && \
   git reset --hard FETCH_HEAD && \
+  $GOPATH/bin/grafana-cli plugins install natel-discrete-panel && \
   apk del build-dep && \
   rm -rf /usr/lib/node_modules /usr/lib/go && \
   rm -rf /tmp/npm* /tmp/phantomjs && \

@@ -36,9 +36,11 @@ services:
   elasticsearch:
     image: fest/elasticsearch:${MON_ELASTICSEARCH_VERSION}
     environment:
+      ES_PATH_REPO: /elasticsearch_backup
       LOGSTASH_FIELDS: "service=elasticsearch"
     volumes:
       - ${MON_DOCKER_VOL_ROOT}/elasticsearch/data:/usr/share/elasticsearch/data
+      - ${MON_ELASTICSEARCH_BACKUP}:/elasticsearch_backup
 
   elasticsearch-init:
     image: fest/elasticsearch-init:${MON_ELASTICSEARCH_INIT_VERSION}

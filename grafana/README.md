@@ -4,7 +4,7 @@ monasca/grafana Dockerfile
 This image contains Grafana built with Keystone support and the Monasca data
 source. For more information on the Monasca project, see [the wiki][1].
 
-Sources: [twc-openstack/grafana][2] &middot; [monasca-docker][3] &middot; [Dockerfile][4]
+Sources: [monasca/grafana][2] &middot; [monasca-docker][3] &middot; [Dockerfile][4]
 
 Tags
 ----
@@ -59,7 +59,7 @@ configuration file can also be mounted into the image at
 `/var/lib/grafana/plugins`.
 
 [1]: https://wiki.openstack.org/wiki/Monasca
-[2]: https://github.com/twc-openstack/grafana/tree/master-keystone
+[2]: https://github.com/monasca/grafana
 [3]: https://github.com/hpcloud-mon/monasca-docker/
 [4]: https://github.com/hpcloud-mon/monasca-docker/blob/master/grafana/Dockerfile
 [5]: https://github.com/hpcloud-mon/monasca-docker/blob/master/README.md

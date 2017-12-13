@@ -123,6 +123,7 @@ services:
       KEYSTONE_AUTH_URI: ${MON_KEYSTONE_URL}
       KEYSTONE_ADMIN_USER: ${MON_KEYSTONE_ADMIN_USER}
       KEYSTONE_ADMIN_PASSWORD: ${MON_KEYSTONE_ADMIN_PASSWORD}
+      DELEGATE_AUTHORIZED_ROLES: "monitoring-delegate"
     depends_on:
       - influxdb
       - mysql

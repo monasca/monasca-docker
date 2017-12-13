@@ -50,6 +50,12 @@ services:
       - ./elasticsearch-templates/logs.template:/templates/logs.json
     depends_on:
       - elasticsearch
+  elasticsearch-curator:
+    image: monasca/elasticsearch-curator:${MON_ELASTICSEARCH_CURATOR_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=elasticsearch-curator"
+    depends_on:
+      - elasticsearch
 
   kafka-log-init:
     image: monasca/kafka-init:${MON_KAFKA_INIT_VERSION}

@@ -17,7 +17,7 @@ Usage
 -----
 
 **zookeeper-watcher** requires a running instance of [Zookeeper][2]. It can be launched using
-command similar to this ```docker run -d -p 9092:9092 -l zookeeper monasca/zookeeper```.
+command similar to this ```docker run -d -p 8080:8080 -l zookeeper-watcher monasca/zookeeper-watcher```.
 **zookeeper-watcher** will wait for Zookeeper to become accessible before monitoring its state.
 
 Configuration

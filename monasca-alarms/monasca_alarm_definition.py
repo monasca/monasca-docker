@@ -136,7 +136,7 @@ import sys
 import time
 import yaml
 
-from keystoneauth1.exceptions import RetriableConnectionFailure
+from keystoneauth1.exceptions import RetriableConnectionFailure, Unauthorized
 from keystoneauth1.identity import Password
 from keystoneauth1.session import Session
 from keystoneclient.discover import Discover
@@ -536,13 +536,14 @@ def get_keystone_client(keystone_args):
             discover = Discover(session=session)
             discover.create_client()
             return session
-        except RetriableConnectionFailure as ex:
+        except (RetriableConnectionFailure, Unauthorized) as ex:
             print('Keystone is not yet ready (attempt {} of {}): {}'.format(
                 i, KEYSTONE_RETRIES, ex.message
             ))
 
             if i < KEYSTONE_RETRIES - 1:
                 time.sleep(KEYSTONE_DELAY)
+
         except Exception as ex:
             print('Unexpected error while connecting to Keystone, giving up: ',
                   ex.message)
@@ -620,7 +621,6 @@ def main(args=None):
     session = get_keystone_client(ks_kwargs)
 
     kwargs = {
-        'keystone_'
         'keystone_token': args.os_auth_token,
         'endpoint_type': args.os_endpoint_type,
         'os_cacert': args.os_cacert,

@@ -133,15 +133,31 @@ alarm_definitions:
 import argparse
 import os
 import sys
+import time
 import yaml
 
+from keystoneauth1.exceptions import RetriableConnectionFailure
+from keystoneauth1.identity import Password
+from keystoneauth1.session import Session
+from keystoneclient.discover import Discover
+
 from monascaclient import client
+
+KEYSTONE_RETRIES = int(os.environ.get('KEYSTONE_RETRIES', '12'))
+KEYSTONE_DELAY = float(os.environ.get('KEYSTONE_DELAY', '5.0'))
+KEYSTONE_TIMEOUT = int(os.environ.get('KEYSTONE_TIMEOUT', '10'))
+KEYSTONE_VERIFY = os.environ.get('KEYSTONE_VERIFY', 'true') == 'true'
+KEYSTONE_CERT = os.environ.get('KEYSTONE_CERT', None)
+
+MONASCA_RETRIES = int(os.environ.get('MONASCA_RETRIES', '12'))
+MONASCA_DELAY = float(os.environ.get('MONASCA_DELAY', '5.0'))
 
 
 class MonascaLoadDefinitions(object):
     """Loads Notifications and Alarm Definitions into Monasca
     """
-    def __init__(self, args):
+    def __init__(self, monasca, args):
+        self._monasca = monasca
         self._args = args
         self._existing_notifications = None
         self._existing_alarm_definitions = None
@@ -166,18 +182,10 @@ class MonascaLoadDefinitions(object):
 
         yaml_data = yaml.safe_load(yaml_text)
 
-        if not self._args['monasca_api_url']:
-            raise Exception('Error: monasca_api_url is required')
-        api_url = self._args['monasca_api_url']
-
-        self._monasca = client.Client(self._args['api_version'],
-                                      api_url,
-                                      **self._args['keystone_kwargs'])
-        self._print_message('Using Monasca at {}'.format(api_url))
         if 'notifications' not in yaml_data:
             raise Exception('No notifications section in {}'.format(data_file))
 
-        (processed, changed, notification_ids) = self._do_notifications(yaml_data['notifications'])
+        processed, changed, notification_ids = self._do_notifications(yaml_data['notifications'])
         self._print_message(
             '{:d} Notifications Processed {:d} Notifications Changed'
             .format(processed, changed))
@@ -186,7 +194,7 @@ class MonascaLoadDefinitions(object):
             raise Exception('No alarm_definitions section in {}'
                             .format(data_file))
 
-        (processed, changed) = self.do_alarm_definitions(yaml_data['alarm_definitions'], notification_ids)
+        processed, changed = self.do_alarm_definitions(yaml_data['alarm_definitions'], notification_ids)
         self._print_message(
             '{:d} Alarm Definitions Processed {:d} Alarm Definitions Changed'
             .format(processed, changed))
@@ -199,7 +207,7 @@ class MonascaLoadDefinitions(object):
             processed += 1
             if self._process_notification(notification, notification_ids):
                 changed += 1
-        return (processed, changed, notification_ids)
+        return processed, changed, notification_ids
 
     def _process_notification(self, notification, notification_ids):
         name = notification['name']
@@ -265,7 +273,7 @@ class MonascaLoadDefinitions(object):
             processed += 1
             if self._process_alarm_definition(definition, notification_ids):
                 changed += 1
-        return (processed, changed)
+        return processed, changed
 
     def _map_notifications(self, actions, notification_ids):
         mapped = []
@@ -510,6 +518,70 @@ def _env(*vars, **kwargs):
     return kwargs.get('default', '')
 
 
+def get_keystone_client(keystone_args):
+    auth = Password(**keystone_args)
+
+    for i in range(KEYSTONE_RETRIES):
+        try:
+            session = Session(auth=auth,
+                              app_name='monasca-alarms',
+                              user_agent='monasca-alarms',
+                              timeout=KEYSTONE_TIMEOUT,
+                              verify=KEYSTONE_VERIFY,
+                              cert=KEYSTONE_CERT)
+
+            # we will end up throwing away the client we make here since
+            # somehow there is no way to pass a working Keystone client to the
+            # monascaclient (thanks osc-lib)
+            discover = Discover(session=session)
+            discover.create_client()
+            return session
+        except RetriableConnectionFailure as ex:
+            print('Keystone is not yet ready (attempt {} of {}): {}'.format(
+                i, KEYSTONE_RETRIES, ex.message
+            ))
+
+            if i < KEYSTONE_RETRIES - 1:
+                time.sleep(KEYSTONE_DELAY)
+        except Exception as ex:
+            print('Unexpected error while connecting to Keystone, giving up: ',
+                  ex.message)
+            raise
+
+    print('Could not connect to Keystone after {} retries, '
+          'giving up!'.format(KEYSTONE_RETRIES))
+    raise Exception('could not connect to keystone')
+
+
+def get_monasca_client(args, keystone_args):
+    api_url = args.get('monasca_api_url')
+    if not api_url:
+        raise Exception('Error: monasca_api_url is required')
+
+    monasca = client.Client(args['api_version'], api_url, **keystone_args)
+    print('Using Monasca at {}'.format(api_url))
+
+    for i in range(MONASCA_RETRIES):
+        try:
+            # just make an api call that should always succeed
+            monasca.notifications.list(limit=1)
+            return monasca
+
+        # I don't feel like spending an hour digging through osc-lib's
+        # spaghetti to figure out what exceptions list() raises, so, yeah.
+        except Exception as ex:
+            print('Attempt {} of {} to {} failed: {}'.format(
+                i, MONASCA_RETRIES, api_url, ex.message
+            ))
+
+            if i < MONASCA_RETRIES - 1:
+                time.sleep(MONASCA_DELAY)
+
+    print('Could not connect to Monasca after {} retries, '
+          'giving up!'.format(MONASCA_RETRIES))
+    raise Exception('could not connect to monasca at {}', api_url)
+
+
 def main(args=None):
     if args is None:
         args = sys.argv[1:]
@@ -544,10 +616,11 @@ def main(args=None):
         'domain_id': args.os_domain_id,
         'domain_name': args.os_domain_name
     }
-    ks_kwargs = dict((k, v) for k, v in all_keystone_kwargs.iteritems() if v)
+    ks_kwargs = {k: v for k, v in all_keystone_kwargs.iteritems() if v}
+    session = get_keystone_client(ks_kwargs)
 
     kwargs = {
-        'keystone_kwargs': ks_kwargs,
+        'keystone_'
         'keystone_token': args.os_auth_token,
         'endpoint_type': args.os_endpoint_type,
         'os_cacert': args.os_cacert,
@@ -555,14 +628,16 @@ def main(args=None):
         'insecure': args.insecure,
         'monasca_api_url': args.monasca_api_url,
         'api_version': args.monasca_api_version,
-        'verbose': args.verbose
+        'verbose': args.verbose,
+        'session': session
     }
 
     if not args.definitions_file:
         raise Exception('--definitions-file argument is required')
 
-    definition = MonascaLoadDefinitions(kwargs)
+    monasca = get_monasca_client(kwargs, ks_kwargs)
 
+    definition = MonascaLoadDefinitions(monasca, kwargs)
     definition.run(args.definitions_file)
 
 

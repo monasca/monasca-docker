@@ -136,18 +136,7 @@ import sys
 import time
 import yaml
 
-from keystoneauth1.exceptions import RetriableConnectionFailure, Unauthorized
-from keystoneauth1.identity import Password
-from keystoneauth1.session import Session
-from keystoneclient.discover import Discover
-
 from monascaclient import client
-
-KEYSTONE_RETRIES = int(os.environ.get('KEYSTONE_RETRIES', '12'))
-KEYSTONE_DELAY = float(os.environ.get('KEYSTONE_DELAY', '5.0'))
-KEYSTONE_TIMEOUT = int(os.environ.get('KEYSTONE_TIMEOUT', '10'))
-KEYSTONE_VERIFY = os.environ.get('KEYSTONE_VERIFY', 'true') == 'true'
-KEYSTONE_CERT = os.environ.get('KEYSTONE_CERT', None)
 
 MONASCA_RETRIES = int(os.environ.get('MONASCA_RETRIES', '12'))
 MONASCA_DELAY = float(os.environ.get('MONASCA_DELAY', '5.0'))
@@ -518,42 +507,6 @@ def _env(*vars, **kwargs):
     return kwargs.get('default', '')
 
 
-def get_keystone_client(keystone_args):
-    auth = Password(**keystone_args)
-
-    for i in range(KEYSTONE_RETRIES):
-        try:
-            session = Session(auth=auth,
-                              app_name='monasca-alarms',
-                              user_agent='monasca-alarms',
-                              timeout=KEYSTONE_TIMEOUT,
-                              verify=KEYSTONE_VERIFY,
-                              cert=KEYSTONE_CERT)
-
-            # we will end up throwing away the client we make here since
-            # somehow there is no way to pass a working Keystone client to the
-            # monascaclient (thanks osc-lib)
-            discover = Discover(session=session)
-            discover.create_client()
-            return session
-        except (RetriableConnectionFailure, Unauthorized) as ex:
-            print('Keystone is not yet ready (attempt {} of {}): {}'.format(
-                i, KEYSTONE_RETRIES, ex.message
-            ))
-
-            if i < KEYSTONE_RETRIES - 1:
-                time.sleep(KEYSTONE_DELAY)
-
-        except Exception as ex:
-            print('Unexpected error while connecting to Keystone, giving up: ',
-                  ex.message)
-            raise
-
-    print('Could not connect to Keystone after {} retries, '
-          'giving up!'.format(KEYSTONE_RETRIES))
-    raise Exception('could not connect to keystone')
-
-
 def get_monasca_client(args, keystone_args):
     api_url = args.get('monasca_api_url')
     if not api_url:
@@ -566,6 +519,7 @@ def get_monasca_client(args, keystone_args):
         try:
             # just make an api call that should always succeed
             monasca.notifications.list(limit=1)
+            print('Monasca API is ready')
             return monasca
 
         # I don't feel like spending an hour digging through osc-lib's
@@ -618,9 +572,9 @@ def main(args=None):
         'domain_name': args.os_domain_name
     }
     ks_kwargs = {k: v for k, v in all_keystone_kwargs.iteritems() if v}
-    session = get_keystone_client(ks_kwargs)
 
     kwargs = {
+        'keystone_kwargs': ks_kwargs,
         'keystone_token': args.os_auth_token,
         'endpoint_type': args.os_endpoint_type,
         'os_cacert': args.os_cacert,
@@ -628,8 +582,7 @@ def main(args=None):
         'insecure': args.insecure,
         'monasca_api_url': args.monasca_api_url,
         'api_version': args.monasca_api_version,
-        'verbose': args.verbose,
-        'session': session
+        'verbose': args.verbose
     }
 
     if not args.definitions_file:

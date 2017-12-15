@@ -1,0 +1,63 @@
+---
+# Remember, leave a key empty if there is no value. None will be a string,
+# not a Python "NoneType"
+
+actions:
+{% if CURATOR_DELETE_BY_AGE is defined %}
+  1:
+    action: delete_indices
+    description: >-
+      Delete indices older than {{ CURATOR_DELETE_BY_AGE }} days
+    options:
+      ignore_empty_list: True
+      timeout_override:
+      continue_if_exception: False
+      disable_action: False
+    filters:
+    {% if CURATOR_EXCLUDED_INDEX_NAME is defined %}
+      - filtertype: pattern
+        kind: prefix
+        value: {{ CURATOR_EXCLUDED_INDEX_NAME }}
+        exclude: True
+    {% endif %}
+
+      - filtertype: age
+        source: name
+        direction: older
+        timestring: "%Y-%m-%d"
+        unit: days
+        unit_count: {{ CURATOR_DELETE_BY_AGE }}
+        field:
+        stats_result:
+        epoch:
+        exclude: False
+{% endif %}
+
+{% if CURATOR_DELETE_BY_SPACE is defined %}
+  2:
+    action: delete_indices
+    description: >-
+      Delete oldest indices over {{ CURATOR_DELETE_BY_SPACE }} GB
+    options:
+      ignore_empty_list: True
+      timeout_override:
+      continue_if_exception: False
+      disable_action: False
+    filters:
+    {% if CURATOR_EXCLUDED_INDEX_NAME is defined %}
+      - filtertype: pattern
+        kind: prefix
+        value: {{ CURATOR_EXCLUDED_INDEX_NAME }}
+        exclude: True
+    {% endif %}
+
+      - filtertype: space
+        disk_space: {{ CURATOR_DELETE_BY_SPACE }}
+        reverse: True
+        use_age: False
+        source: creation_date
+        timestring:
+        field:
+        stats_result:
+        exclude: False
+{% endif %}

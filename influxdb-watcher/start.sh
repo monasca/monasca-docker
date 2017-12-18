@@ -7,11 +7,11 @@ echo "Starting influxdb watcher..."
 EXEC="exec"
 if [ "$STAY_ALIVE_ON_FAILURE" = "true" ]; then
       EXEC=""
-  fi
-  $EXEC /influxdb-watcher
-  RESULT=$?
+fi
+$EXEC /influxdb-watcher
+RESULT=$?
 
-  # Keep the container alive for debugging or actions like resolving a full disk. This
-  # sleep will only be reached if STAY_ALIVE_ON_FAILURE is true
-  sleep 7200
-  exit $RESULT
+# Keep the container alive for debugging or actions like resolving a full disk. This
+# sleep will only be reached if STAY_ALIVE_ON_FAILURE is true
+sleep 7200
+exit $RESULT

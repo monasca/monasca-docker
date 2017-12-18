@@ -1,0 +1,124 @@
+################################################################################
+# This file prepares the environment for a Monasca server integrated with an
+# OpenStack Keystone service.
+#
+# There are two docker-compose files:
+# - docker-compose-metric.yml (metric pipeline)
+# - docker-compose-log.yml    (as extension: log pipeline)
+#
+# Before you start:
+# - make sure that the OpenStack Keystone service is up and running
+# - provide the necessary configuration in this file and replace the
+#   placeholders "<...>" with the correct settings (see below)
+#   * configure the IPv4 address (MON_KEYSTONE_URL) for the OpenStack Keystone host
+#   * make sure that Kibana authorization is enabled (MON_MONASCA_PLUGIN_ENABLED)
+#   * set the path to mount Kibana to the OpenStack Horizon proxy (MON_BASE_PATH)
+#   * adapt the Grafana credentials for grafana-admin and grafana-user
+#     (see MON_GRAFANA_*)
+#   * adapt the user credentials for agent and admin to your
+#     OpenStack Keystone installation (see MON_AGENT_*)
+#   * set the path for the data directories (see MON_DOCKER_VOL_ROOT)
+#   * configure data retention for Elasticsearch and InfluxDB
+################################################################################
+
+################################################################################
+# Set IPv4 address of the OpenStack Keystone host
+################################################################################
+MON_KEYSTONE_URL=http://<IPv4 address>:5000
+
+################################################################################
+# Kibana authorization must be enabled (auth-token from Horizon)
+################################################################################
+MON_MONASCA_PLUGIN_ENABLED=True
+
+################################################################################
+# Set the path to mount Kibana to the Horizon proxy
+################################################################################
+MON_BASE_PATH=/dashboard/monitoring/logs_proxy
+
+################################################################################
+# Define the Grafana user settings
+# - Grafana admin (must be different to the OpenStack admin user)
+# - Grafana user is the OpenStack admin user (see "admin credentials" below)
+#   (The Monasca data-source is assigned automatically to the grafana user)
+################################################################################
+MON_GRAFANA_ADMIN_USER=<grafana admin user name>
+MON_GRAFANA_ADMIN_PASSWORD=<grafana admin password>
+MON_GRAFANA_USERNAME=<OpenStack admin user name>
+MON_GRAFANA_PASSWORD=<OpenStack admin user password>
+
+################################################################################
+# Set the OpenStack Keystone credentials
+################################################################################
+# Agent credentials
+MON_AGENT_USERNAME=<Monasca agent name>
+MON_AGENT_PASSWORD=<Monasca agent password>
+MON_AGENT_PROJECT_NAME=<OpenStack admin project name>
+
+# Admin credentials
+MON_KEYSTONE_ADMIN_USER=<OpenStack admin user name>
+MON_KEYSTONE_ADMIN_PASSWORD=<OpenStack admin user password>
+
+################################################################################
+# Set the path for the data directories of Elasticsearch, InfluxDB, MySQL,
+# Kafka, and Grafana
+################################################################################
+MON_DOCKER_VOL_ROOT=/opt/monasca-containers
+
+################################################################################
+# Set path for backup directories of Elasticsearch, InfluxDB, MySQL
+################################################################################
+MON_BACKUP_DIR=/mount/backup
+
+################################################################################
+# Configure data retention
+################################################################################
+# Retention period for Elasticsearch database (delete job executed every day
+# at 12 a.m.)
+MON_ELASTICSEARCH_DATA_RETENTION_DAYS=60
+
+# Retention perion for InfluxDB database
+MON_INFLUXDB_RETENTION=60d
+
+
+
+################################################################################
+# Image versions
+################################################################################
+# Metric pipeline
+INFLUXDB_VERSION=1.3.4-alpine
+INFLUXDB_INIT_VERSION=2.0.0
+
+MYSQL_VERSION=5.5
+MYSQL_INIT_VERSION=2.0.0
+
+MEMCACHED_VERSION=1.5.0-alpine
+CADVISOR_VERSION=v0.27.1
+ZOOKEEPER_VERSION=3.4
+
+MON_KEYSTONE_VERSION=2.0.0
+MON_KAFKA_VERSION=2.0.0
+MON_KAFKA_INIT_VERSION=2.0.0
+MON_GRAFANA_VERSION=2.0.2
+MON_GRAFANA_INIT_VERSION=2.0.4
+
+MON_API_VERSION=2.0.0
+MON_PERSISTER_VERSION=2.0.0
+MON_THRESH_VERSION=2.0.0
+MON_NOTIFICATION_VERSION=2.0.0
+MON_AGENT_FORWARDER_VERSION=2.0.0
+MON_AGENT_COLLECTOR_VERSION=2.0.0
+
+# Log pipeline
+MON_LOG_METRICS_VERSION=2.0.0
+MON_LOG_PERSISTER_VERSION=2.0.0
+MON_LOG_TRANSFORMER_VERSION=2.0.0
+MON_ELASTICSEARCH_VERSION=2.0.3
+MON_ELASTICSEARCH_INIT_VERSION=2.0.0
+MON_ELASTICSEARCH_CURATOR_VERSION=2.0.0
+MON_LOG_API_VERSION=2.0.0
+MON_KIBANA_VERSION=2.0.1
+MON_LOG_AGENT_VERSION=2.0.1
+MON_LOGSPOUT_VERSION=2.0.0
+
+ELASTICSEARCH_VERSION=2-alpine

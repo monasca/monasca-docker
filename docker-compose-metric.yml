@@ -17,6 +17,7 @@ services:
       LOGSTASH_FIELDS: "service=influxdb"
     volumes:
     - "${MON_DOCKER_VOL_ROOT}/influxdb:/var/lib/influxdb:rw"
+    - "${MON_BACKUP_DIR}/influxdb_backup:/influxdb_backup:rw"
   influxdb-init:
     image: fest/influxdb-init:${INFLUXDB_INIT_VERSION}
     environment:
@@ -105,6 +106,7 @@ services:
       LOGSTASH_FIELDS: "service=mysql"
     volumes:
     - "${MON_DOCKER_VOL_ROOT}/mysql:/var/lib/mysql:rw"
+    - "${MON_BACKUP_DIR}/mysql_backup:/mysql_backup:rw"
   mysql-init:
     image: fest/mysql-init:${MYSQL_INIT_VERSION}
     environment:
@@ -123,6 +125,7 @@ services:
       KEYSTONE_AUTH_URI: ${MON_KEYSTONE_URL}
       KEYSTONE_ADMIN_USER: ${MON_KEYSTONE_ADMIN_USER}
       KEYSTONE_ADMIN_PASSWORD: ${MON_KEYSTONE_ADMIN_PASSWORD}
+      DELEGATE_AUTHORIZED_ROLES: "monitoring-delegate"
     depends_on:
       - influxdb
       - mysql
@@ -172,8 +175,8 @@ services:
       GF_USERS_ALLOW_ORG_CREATE: "true"
       GF_AUTH_KEYSTONE_ENABLED: "true"
       GF_AUTH_KEYSTONE_AUTH_URL: ${MON_KEYSTONE_URL}
-      GRAFANA_ADMIN_USER: ${MON_KEYSTONE_ADMIN_USER}
-      GRAFANA_ADMIN_PASSWORD: ${MON_KEYSTONE_ADMIN_PASSWORD}
+      GRAFANA_ADMIN_USER: ${MON_GRAFANA_ADMIN_USER}
+      GRAFANA_ADMIN_PASSWORD: ${MON_GRAFANA_ADMIN_PASSWORD}
       GF_AUTH_KEYSTONE_VERIFY_SSL_CERT: "false"
       GF_AUTH_KEYSTONE_DEFAULT_DOMAIN: "Default"
       LOGSTASH_FIELDS: "service=grafana"

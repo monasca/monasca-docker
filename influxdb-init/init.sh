@@ -62,6 +62,4 @@ echo "Adding ${INFLUXDB_WATCHER_USERNAME} user..."
 post "CREATE USER \"${INFLUXDB_WATCHER_USERNAME}\" WITH PASSWORD '${INFLUXDB_WATCHER_PASSWORD}'"
 post "GRANT ALL ON \"mon\" to \"${INFLUXDB_WATCHER_USERNAME}\""
 
-
-
 echo "InfluxDB init finished."

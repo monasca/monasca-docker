@@ -27,7 +27,7 @@ from dotmap import DotMap
 from tiny_kubernetes import KubernetesAPIClient
 
 NAMESPACE = '/var/run/secrets/kubernetes.io/serviceaccount/namespace'
-TIMEOUT = float(os.environ.get('WAIT_TIMEOUT', '10'))
+TIMEOUT = int(os.environ.get('WAIT_TIMEOUT', '10'))
 RETRIES = int(os.environ.get('WAIT_RETRIES', '5'))
 RETRY_DELAY = float(os.environ.get('WAIT_DELAY', '5.0'))
 
@@ -84,8 +84,7 @@ def try_delete_job(client: KubernetesAPIClient,
             return False, retries - 1
 
     grace_period = 0 if force else TIMEOUT
-    delete_options = {'propagationPolicy': 'Foreground',
-                      'gracePeriodSeconds': grace_period}
+    delete_options = {'gracePeriodSeconds': grace_period}
 
     job_name = job.metadata.name
     pods = client.get('/api/v1/namespaces/{}/pods', namespace,

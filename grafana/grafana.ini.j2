@@ -234,7 +234,7 @@ admin_password = {{ GRAFANA_ADMIN_PASSWORD }}
 mode = console
 
 # Either "trace", "debug", "info", "warn", "error", "critical", default is "info"
-;level = info
+level = {{ GRAFANA_LOG_LEVEL }}
 
 # For "console" mode only
 [log.console]

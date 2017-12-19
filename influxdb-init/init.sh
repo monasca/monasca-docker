@@ -21,7 +21,7 @@ for i in $(seq 1 $attempts); do
     break
   else
     echo "Failed to ping ${INFLUXDB_URL}, attempt $i of $attempts..."
-    sleep
+    sleep $delay
   fi
 
   sleep $delay

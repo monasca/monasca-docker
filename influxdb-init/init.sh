@@ -10,7 +10,7 @@ PERSISTER_USERNAME=${PERSISTER_USERNAME:-"mon_persister"}
 PERSISTER_PASSWORD=${PERSISTER_PASSWORD:-"password "}
 INFLUXDB_DEFAULT_RETENTION=${INFLUXDB_DEFAULT_RETENTION:-"INF"}
 
-attempts=10
+attempts=24
 delay=5s
 
 echo "Waiting for influx to become available..."
@@ -19,11 +19,9 @@ for i in $(seq 1 $attempts); do
   if http get "${INFLUXDB_URL}/ping"; then
     success=0
     break
-  else
-    echo "Failed to ping ${INFLUXDB_URL}, attempt $i of $attempts..."
-    sleep $delay
   fi
 
+  echo "Failed to ping ${INFLUXDB_URL}, attempt $i of $attempts..."
   sleep $delay
 done
 

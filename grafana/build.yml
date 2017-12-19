@@ -1,6 +1,6 @@
 repository: fest/grafana
 variants:
-  - tag: 2.0.3
+  - tag: 2.0.4
     aliases:
       - :pike-{date}-{time}
   - tag: app

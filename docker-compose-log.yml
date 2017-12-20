@@ -6,6 +6,7 @@ version: '2'
 services:
 
   log-metrics:
+    hostname: docker-host
     image: fest/log-metrics:${MON_LOG_METRICS_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=monasca-log-metrics"
@@ -15,6 +16,7 @@ services:
       - log-transformer
 
   log-persister:
+    hostname: docker-host
     image: fest/log-persister:${MON_LOG_PERSISTER_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=monasca-log-persister"
@@ -25,6 +27,7 @@ services:
       - log-transformer
 
   log-transformer:
+    hostname: docker-host
     image: fest/log-transformer:${MON_LOG_TRANSFORMER_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=monasca-log-transformer"
@@ -34,6 +37,7 @@ services:
       - log-api
 
   elasticsearch:
+    hostname: docker-host
     image: fest/elasticsearch:${MON_ELASTICSEARCH_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=elasticsearch"
@@ -42,6 +46,7 @@ services:
       - ${MON_BACKUP_DIR}/elasticsearch_backup:/elasticsearch_backup
 
   elasticsearch-init:
+    hostname: docker-host
     image: fest/elasticsearch-init:${MON_ELASTICSEARCH_INIT_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=elasticsearch-init"
@@ -49,6 +54,7 @@ services:
       - elasticsearch
 
   elasticsearch-curator:
+    hostname: docker-host
     image: fest/elasticsearch-curator:${MON_ELASTICSEARCH_CURATOR_VERSION}
     environment:
       CURATOR_EXCLUDED_INDEX_NAME: .kibana
@@ -58,6 +64,7 @@ services:
       - elasticsearch
 
   kafka-log-init:
+    hostname: docker-host
     image: fest/kafka-init:${MON_KAFKA_INIT_VERSION}
     environment:
       KAFKA_TOPIC_CONFIG: segment.ms=900000 # 15m
@@ -69,6 +76,7 @@ services:
       - kafka
 
   kibana:
+    hostname: docker-host
     image: fest/kibana:${MON_KIBANA_VERSION}
     environment:
       SERVER_NAME: kibana
@@ -83,6 +91,7 @@ services:
       - 5601:5601
 
   log-api:
+    hostname: docker-host
     image: fest/log-api:${MON_LOG_API_VERSION}
     environment:
       LOGSPOUT: ignore
@@ -99,6 +108,7 @@ services:
       - "5607:5607"
 
   log-agent:
+    hostname: docker-host
     image: fest/log-agent:${MON_LOG_AGENT_VERSION}
     environment:
       LOGSPOUT: ignore
@@ -111,6 +121,7 @@ services:
       - log-api
 
   logspout:
+    hostname: docker-host
     image: fest/logspout:${MON_LOGSPOUT_VERSION}
     environment:
       LOGSPOUT: ignore

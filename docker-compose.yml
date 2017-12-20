@@ -2,11 +2,13 @@ version: '2'
 services:
 
   memcached:
+    hostname: docker-host
     image: memcached:${MEMCACHED_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=memcached"
 
   influxdb:
+    hostname: docker-host
     image: influxdb:${INFLUXDB_VERSION}
     environment:
       INFLUXDB_HTTP_LOG_ENABLED: "false"
@@ -15,6 +17,7 @@ services:
     - "${MON_DOCKER_VOL_ROOT}/influxdb:/var/lib/influxdb:rw"
     - "${MON_BACKUP_DIR}/influxdb_backup:/influxdb_backup:rw"
   influxdb-init:
+    hostname: docker-host
     image: fest/influxdb-init:${INFLUXDB_INIT_VERSION}
     environment:
       INFLUXDB_DEFAULT_RETENTION: ${MON_INFLUXDB_RETENTION}
@@ -28,6 +31,7 @@ services:
   # environment variable should be set to "false" in the `agent-collector`
   # block - however no metrics will be collected
   cadvisor:
+    hostname: docker-host
     image: google/cadvisor:${CADVISOR_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=cadvisor"
@@ -38,6 +42,7 @@ services:
       - "/var/lib/docker:/var/lib/docker:ro"
 
   agent-forwarder:
+    hostname: docker-host
     image: fest/agent-forwarder:${MON_AGENT_FORWARDER_VERSION}
     environment:
       NON_LOCAL_TRAFFIC: "true"
@@ -46,6 +51,7 @@ services:
       - monasca
 
   agent-collector:
+    hostname: docker-host
     image: fest/agent-collector:${MON_AGENT_COLLECTOR_VERSION}
     restart: on-failure
     environment:
@@ -58,12 +64,14 @@ services:
       - agent-forwarder
 
   zookeeper:
+    hostname: docker-host
     image: zookeeper:${ZOOKEEPER_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=zookeeper"
     restart: on-failure
 
   kafka:
+    hostname: docker-host
     image: fest/kafka:${MON_KAFKA_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=kafka"
@@ -73,6 +81,7 @@ services:
     depends_on:
       - zookeeper
   kafka-init:
+    hostname: docker-host
     image: fest/kafka-init:${MON_KAFKA_INIT_VERSION}
     environment:
       ZOOKEEPER_CONNECTION_STRING: "zookeeper:2181"
@@ -91,6 +100,7 @@ services:
       - kafka
 
   mysql:
+    hostname: docker-host
     image: mysql:${MYSQL_VERSION}
     environment:
       MYSQL_ROOT_PASSWORD: secretmysql
@@ -99,6 +109,7 @@ services:
     - "${MON_DOCKER_VOL_ROOT}/mysql:/var/lib/mysql:rw"
     - "${MON_BACKUP_DIR}/mysql_backup:/mysql_backup:rw"
   mysql-init:
+    hostname: docker-host
     image: fest/mysql-init:${MYSQL_INIT_VERSION}
     environment:
       MYSQL_INIT_DISABLE_REMOTE_ROOT: "false"
@@ -125,6 +136,7 @@ services:
       - "35357:35357"
 
   monasca:
+    hostname: docker-host
     image: fest/api:${MON_API_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=monasca-api"
@@ -139,6 +151,7 @@ services:
       - "8070:8070"
 
   monasca-persister:
+    hostname: docker-host
     image: fest/persister:${MON_PERSISTER_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=monasca-persister"
@@ -150,6 +163,7 @@ services:
       - kafka
 
   thresh:
+    hostname: docker-host
     image: fest/thresh:${MON_THRESH_VERSION}
     environment:
       NO_STORM_CLUSTER: "true"
@@ -160,6 +174,7 @@ services:
       - kafka
 
   monasca-notification:
+    hostname: docker-host
     image: fest/notification:${MON_NOTIFICATION_VERSION}
     environment:
       NF_PLUGINS: "webhook"
@@ -171,6 +186,7 @@ services:
       - mysql
 
   grafana:
+    hostname: docker-host
     image: fest/grafana:${MON_GRAFANA_VERSION}
     environment:
       GF_AUTH_BASIC_ENABLED: "false"
@@ -190,6 +206,7 @@ services:
       - monasca
 
   grafana-init:
+    hostname: docker-host
     image: fest/grafana-init:${MON_GRAFANA_INIT_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=grafana-init"

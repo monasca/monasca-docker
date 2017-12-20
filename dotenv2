@@ -74,7 +74,7 @@ MON_BACKUP_DIR=/mount/backup
 # Configure data retention
 ################################################################################
 # Retention period for Elasticsearch database (delete job executed every day
-# at 12 a.m.)
+# at 12 a.m. UTC)
 MON_ELASTICSEARCH_DATA_RETENTION_DAYS=60
 
 # Retention perion for InfluxDB database

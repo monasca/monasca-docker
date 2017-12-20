@@ -15,6 +15,7 @@ services:
     hostname: docker-host
     image: influxdb:${INFLUXDB_VERSION}
     environment:
+      INFLUXDB_DATA_QUERY_LOG_ENABLED: "false"
       INFLUXDB_HTTP_LOG_ENABLED: "false"
       LOGSTASH_FIELDS: "service=influxdb"
     volumes:

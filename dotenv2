@@ -2,12 +2,12 @@
 # This file prepares the environment for a Monasca server integrated with an
 # OpenStack Keystone service.
 #
-# There are two docker-compose files:
+# Related docker-compose files:
 # - docker-compose-metric.yml (metric pipeline)
 # - docker-compose-log.yml    (as extension: log pipeline)
 #
 # Before you start:
-# - make sure that the OpenStack Keystone service is up and running
+# - make sure that the Keystone service is up and running
 # - provide the necessary configuration in this file and replace the
 #   placeholders "<...>" with the correct settings (see below)
 #   * configure the IPv4 address (MON_KEYSTONE_URL) for the OpenStack Keystone host
@@ -18,16 +18,17 @@
 #   * adapt the user credentials for agent and admin to your
 #     OpenStack Keystone installation (see MON_AGENT_*)
 #   * set the path for the data directories (see MON_DOCKER_VOL_ROOT)
+#   * set the path for the backup directories (see MON_BACKUP_DIR)
 #   * configure data retention for Elasticsearch and InfluxDB
 ################################################################################
 
 ################################################################################
-# Set IPv4 address of the OpenStack Keystone host
+# Set IPv4 address of the Keystone host
 ################################################################################
 MON_KEYSTONE_URL=http://<IPv4 address>:5000
 
 ################################################################################
-# Kibana authorization must be enabled (auth-token from Horizon)
+# Kibana authorization via Horizon
 ################################################################################
 MON_MONASCA_PLUGIN_ENABLED=True
 
@@ -40,7 +41,7 @@ MON_BASE_PATH=/dashboard/monitoring/logs_proxy
 # Define the Grafana user settings
 # - Grafana admin (must be different to the OpenStack admin user)
 # - Grafana user is the OpenStack admin user (see "admin credentials" below)
-#   (The Monasca data-source is assigned automatically to the grafana user)
+#   (The Monasca data-source is assigned automatically to the Grafana user)
 ################################################################################
 MON_GRAFANA_ADMIN_USER=<grafana admin user name>
 MON_GRAFANA_ADMIN_PASSWORD=<grafana admin password>
@@ -48,7 +49,7 @@ MON_GRAFANA_USERNAME=<OpenStack admin user name>
 MON_GRAFANA_PASSWORD=<OpenStack admin user password>
 
 ################################################################################
-# Set the OpenStack Keystone credentials
+# Set the Keystone credentials
 ################################################################################
 # Agent credentials
 MON_AGENT_USERNAME=<Monasca agent name>
@@ -97,12 +98,12 @@ CADVISOR_VERSION=v0.27.1
 ZOOKEEPER_VERSION=3.4
 
 MON_KEYSTONE_VERSION=2.0.0
-MON_KAFKA_VERSION=2.0.0
+MON_KAFKA_VERSION=2.0.2
 MON_KAFKA_INIT_VERSION=2.0.0
-MON_GRAFANA_VERSION=2.0.2
+MON_GRAFANA_VERSION=2.0.4
 MON_GRAFANA_INIT_VERSION=2.0.4
 
-MON_API_VERSION=2.0.0
+MON_API_VERSION=2.0.1
 MON_PERSISTER_VERSION=2.0.0
 MON_THRESH_VERSION=2.0.0
 MON_NOTIFICATION_VERSION=2.0.0

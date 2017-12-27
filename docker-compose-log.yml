@@ -124,6 +124,7 @@ services:
     hostname: docker-host
     image: fest/logspout:${MON_LOGSPOUT_VERSION}
     environment:
+      RETRY_SEND: "true"
       LOGSPOUT: ignore
       LOGSTASH_FIELDS: "service=logspout"
     volumes:

@@ -11,7 +11,9 @@ init_config:
       pod.mem.used_bytes:
       pod.mem.working_set_bytes:
       pod.mem.rss_bytes:
+      container.mem.usage_percent:
   {% endif %}
+  report_container_mem_percent: True
 instances:
   - derive_host: True
     {% if KUBERNETES_NAMESPACE_ANNOTATIONS %}

@@ -12,7 +12,7 @@ INFLUXDB_WATCHER_USERNAME=${INFLUXDB_WATCHER_USERNAME:-"influxdb_watcher"}
 INFLUXDB_WATCHER_PASSWORD=${INFLUXDB_WATCHER_PASSWORD:-"password"}
 INFLUXDB_DEFAULT_RETENTION=${INFLUXDB_DEFAULT_RETENTION:-"INF"}
 
-attempts=10
+attempts=24
 delay=5s
 
 echo "Waiting for influx to become available..."
@@ -21,11 +21,9 @@ for i in $(seq 1 $attempts); do
   if http get "${INFLUXDB_URL}/ping"; then
     success=0
     break
-  else
-    echo "Failed to ping ${INFLUXDB_URL}, attempt $i of $attempts..."
-    sleep
   fi
 
+  echo "Failed to ping ${INFLUXDB_URL}, attempt $i of $attempts..."
   sleep $delay
 done
 

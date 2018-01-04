@@ -1,12 +1,12 @@
 #!/bin/sh
 
 # Default values for executing it manually on the host
-KEYSTONE_AUTH_URI=${1:-http://localhost:5000}
-KEYSTONE_ADMIN_USER=${2:-admin}
-KEYSTONE_ADMIN_PASSWORD=${3:-secretadmin}
-KEYSTONE_ADMIN_TENANT=${4:-admin}
-KEYSTONE_ADMIN_DOMAIN=${5:-default}
-MONASCA_CONTAINER_API_PORT=${6:-8070}
+KEYSTONE_AUTH_URI=${KEYSTONE_AUTH_URI:-http://localhost:5000}
+KEYSTONE_ADMIN_USER=${KEYSTONE_ADMIN_USER:-admin}
+KEYSTONE_ADMIN_PASSWORD=${KEYSTONE_ADMIN_PASSWORD:-secretadmin}
+KEYSTONE_ADMIN_TENANT=${KEYSTONE_ADMIN_TENANT:-admin}
+KEYSTONE_ADMIN_DOMAIN=${KEYSTONE_ADMIN_DOMAIN:-default}
+MONASCA_CONTAINER_API_PORT=${MONASCA_CONTAINER_API_PORT:-8070}
 
 KEYSTONE_TOKEN=$(curl --include --silent --show-error --output - --header "Content-Type:application/json" \
     --data '{ "auth": {

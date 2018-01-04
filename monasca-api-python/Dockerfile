@@ -44,7 +44,7 @@ RUN /build.sh -r ${API_REPO} -b ${API_BRANCH} \
   rm -rf /build.sh
 
 COPY api-* /etc/monasca/
-COPY template.py start.sh health-check.sh kafka_wait_for_topics.py /
+COPY template.py start.sh kafka_wait_for_topics.py /
 
 EXPOSE 8070
 

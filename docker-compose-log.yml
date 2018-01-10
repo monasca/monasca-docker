@@ -1,7 +1,3 @@
-####################################################
-# Make sure that Keystone is alread running
-# !!!! Configure MON_KEYSTONE_URL in .env !!!!
-####################################################
 version: '2'
 services:
 

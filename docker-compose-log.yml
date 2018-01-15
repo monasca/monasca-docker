@@ -42,8 +42,8 @@ services:
     environment:
       LOGSTASH_FIELDS: "service=elasticsearch"
     volumes:
-      - ${MON_DOCKER_VOL_ROOT}/elasticsearch/data:/usr/share/elasticsearch/data
-      - ${MON_BACKUP_DIR}/elasticsearch_backup:/elasticsearch_backup
+      - ${MON_DOCKER_VOL_ROOT}/elasticsearch/data:/usr/share/elasticsearch/data:Z
+      - ${MON_BACKUP_DIR}/elasticsearch_backup:/elasticsearch_backup:Z
 
   elasticsearch-init:
     hostname: docker-host
@@ -128,6 +128,7 @@ services:
     hostname: docker-host
     image: fest/logspout:${MON_LOGSPOUT_VERSION}
     restart: on-failure
+    privileged: true
     environment:
       RETRY_SEND: "true"
       LOGSPOUT: ignore

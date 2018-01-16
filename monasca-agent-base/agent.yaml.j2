@@ -17,6 +17,7 @@ Api:
   ca_file: "{{ CA_FILE | default('') }}"
 
   max_buffer_size: {{ MAX_BUFFER_SIZE | default(1000) }}
+  max_batch_size: {{ MAX_BATCH_SIZE | default(0) }}
   max_measurement_buffer_size: {{ MAX_MEASUREMENT_BUFFER_SIZE | default(-1)}}
   backlog_send_rate: {{ BACKLOG_SEND_RATE | default(5) }}
 

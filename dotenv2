@@ -39,7 +39,7 @@ MON_BASE_PATH=/dashboard/monitoring/logs_proxy
 
 ################################################################################
 # Define the Grafana user settings
-# - Grafana admin (must be different to the OpenStack admin user)
+# - Grafana admin (user name must be different to all OpenStack user names)
 # - Grafana user is the OpenStack admin user (see "admin credentials" below)
 #   (The Monasca data-source is assigned automatically to the Grafana user)
 ################################################################################

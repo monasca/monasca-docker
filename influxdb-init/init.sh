@@ -8,9 +8,11 @@ API_USERNAME=${API_USERNAME:-"mon_api"}
 API_PASSWORD=${API_PASSWORD:-"password "}
 PERSISTER_USERNAME=${PERSISTER_USERNAME:-"mon_persister"}
 PERSISTER_PASSWORD=${PERSISTER_PASSWORD:-"password "}
+INFLUXDB_WATCHER_USERNAME=${INFLUXDB_WATCHER_USERNAME:-"influxdb_watcher"}
+INFLUXDB_WATCHER_PASSWORD=${INFLUXDB_WATCHER_PASSWORD:-"password"}
 INFLUXDB_DEFAULT_RETENTION=${INFLUXDB_DEFAULT_RETENTION:-"INF"}
 
-attempts=10
+attempts=24
 delay=5s
 
 echo "Waiting for influx to become available..."
@@ -19,11 +21,9 @@ for i in $(seq 1 $attempts); do
   if http get "${INFLUXDB_URL}/ping"; then
     success=0
     break
-  else
-    echo "Failed to ping ${INFLUXDB_URL}, attempt $i of $attempts..."
-    sleep
   fi
 
+  echo "Failed to ping ${INFLUXDB_URL}, attempt $i of $attempts..."
   sleep $delay
 done
 
@@ -55,5 +55,9 @@ post "GRANT ALL ON \"mon\" to \"${API_USERNAME}\""
 echo "Adding ${PERSISTER_USERNAME} user..."
 post "CREATE USER \"${PERSISTER_USERNAME}\" WITH PASSWORD '${PERSISTER_PASSWORD}'"
 post "GRANT ALL ON \"mon\" to \"${PERSISTER_USERNAME}\""
+
+echo "Adding ${INFLUXDB_WATCHER_USERNAME} user..."
+post "CREATE USER \"${INFLUXDB_WATCHER_USERNAME}\" WITH PASSWORD '${INFLUXDB_WATCHER_PASSWORD}'"
+post "GRANT ALL ON \"mon\" to \"${INFLUXDB_WATCHER_USERNAME}\""
 
 echo "InfluxDB init finished."

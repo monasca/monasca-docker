@@ -2,6 +2,6 @@ repository: monasca/alarm-definition-controller
 variants:
   - tag: latest
     aliases:
-      - :1.0.3
+      - :1.1.0
     args:
-      ADC_BRANCH: 1.0.3
+      ADC_BRANCH: 1.1.0

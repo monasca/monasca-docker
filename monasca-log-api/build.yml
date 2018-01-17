@@ -1,11 +1,9 @@
 repository: fest/log-api
 variants:
-  - tag: 2.0.0
+  - tag: 2.0.1
     aliases:
       - :pike-{date}-{time}
     args:
       LOG_API_BRANCH: stable/pike
       CONSTRAINTS_BRANCH: stable/pike
       TIMESTAMP_SLUG: pike-latest
-
- 

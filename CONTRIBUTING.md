@@ -27,8 +27,13 @@ triggered in one of two ways:
  * A `!push <module>` tag is included in the merge commit message
 
 Several components are not given explicit versions as they track upstream Git
-repositories, so tags are generated automatically at build time. As these
-automatic
+repositories, so tags are generated automatically at build time. These
+components will generally have an alias in `build.yml` that looks like
+`:master-{date}-{time}`.
+
+In these instances, `build.yml` will not generate a diff and so no images will
+be built automatically. A `!push <module>` tag in the merge commit message can
+be used to trigger a rebuild manually.
 
 #### Example workflow: updating `monasca-agent`
 

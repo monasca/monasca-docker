@@ -125,7 +125,9 @@ services:
       - mysql
 
   keystone:
+    hostname: docker-host
     image: fest/keystone:${MON_KEYSTONE_VERSION}
+    restart: on-failure
     environment:
       KEYSTONE_HOST: keystone
       KEYSTONE_PASSWORD: secretadmin
@@ -134,6 +136,7 @@ services:
       KEYSTONE_MYSQL_USER: keystone
       KEYSTONE_MYSQL_PASSWORD: keystone
       KEYSTONE_MYSQL_DATABASE: keystone
+      KEYSTONE_MONASCA_ENDPOINT: ${MON_MONASCA_API_URL}
       LOGSTASH_FIELDS: "service=keystone"
     depends_on:
       - mysql

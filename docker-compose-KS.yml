@@ -2,12 +2,15 @@
 # "External" Keystone service with own MySQL in
 # an own network (MySQL not accessible from outside).
 # Only Keystone ports 5000 and 35357 are accessible.
-# !!!! Configure MON_KEYSTONE_IP_ADDR in .env !!!!
+# !!!! Configure .env !!!!
 ####################################################
 version: '2'
 services:
+
   mysql_keystone:
+    hostname: keystone-host
     image: mysql:${MYSQL_VERSION}
+    restart: on-failure
     environment:
       MYSQL_ROOT_PASSWORD: secretmysql
       LOGSTASH_FIELDS: "service=mysql_keystone"
@@ -15,6 +18,7 @@ services:
       - network_keystone
 
   mysql-init_keystone:
+    hostname: keystone-host
     image: fest/mysql-init:${MYSQL_INIT_VERSION}
     environment:
       CREATE_MON_USERS: "false"
@@ -25,9 +29,13 @@ services:
       LOGSTASH_FIELDS: "service=mysql_keystone-init"
     networks:
       - network_keystone
+    depends_on:
+      - mysql_keystone
 
   keystone:
+    hostname: keystone-host
     image: fest/keystone:${MON_KEYSTONE_VERSION}
+    restart: on-failure
     environment:
       KEYSTONE_HOST: ${MON_KEYSTONE_IP_ADDR}
       KEYSTONE_PASSWORD: secretadmin
@@ -36,6 +44,7 @@ services:
       KEYSTONE_MYSQL_USER: keystone
       KEYSTONE_MYSQL_PASSWORD: keystone
       KEYSTONE_MYSQL_DATABASE: keystone
+      KEYSTONE_MONASCA_ENDPOINT: ${MON_MONASCA_API_URL}
       LOGSTASH_FIELDS: "service=keystone"
     depends_on:
       - mysql_keystone

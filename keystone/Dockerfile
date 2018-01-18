@@ -3,12 +3,13 @@ from ubuntu:16.04
 run apt-get update && \
     apt-get install -y \
         curl python-openstackclient keystone supervisor \
-        uwsgi uwsgi-plugin-python mysql-client-5.7
+        uwsgi uwsgi-plugin-python mysql-client-5.7 python-pip && \
+        pip install --no-cache-dir shinto-cli[yaml]
 
 expose 5000 35357
 
 copy supervisord.conf /etc/supervisor/supervisord.conf
-copy start.sh preload.py k8s_get_service.py keystone-bootstrap.sh preload.yml /
+copy start.sh preload.py k8s_get_service.py keystone-bootstrap.sh templates /
 copy exit-event-listener.py /usr/local/bin/exit-event-listener
 
 cmd /start.sh

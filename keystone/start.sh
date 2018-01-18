@@ -1,5 +1,7 @@
 #!/bin/bash
 
+j2 /preload.yml.j2 > /preload.yml
+
 if [[ "$KEYSTONE_DATABASE_BACKEND" =  "mysql" ]]; then
     mysql_host=${KEYSTONE_MYSQL_HOST:-"keystone-mysql"}
     mysql_port=${KEYSTONE_MYSQL_TCP_PORT:-"3306"}

@@ -53,7 +53,6 @@ METRIC_PIPELINE_MODULE_TO_COMPOSE_SERVICES = {
     'monasca-agent-collector': 'agent-collector',
     'grafana': 'grafana',
     'keystone': 'keystone',
-    'monasca-alarms': 'alarms',
     'monasca-notification': 'monasca-notification',
     'grafana-init': 'grafana-init'
 }
@@ -70,7 +69,7 @@ LOGS_PIPELINE_MODULE_TO_COMPOSE_SERVICES = {
     'logspout': 'logspout',
 }
 
-METRIC_PIPELINE_INIT_JOBS = ('influxdb-init', 'kafka-init', 'mysql-init', 'alarms', 'grafana-init')
+METRIC_PIPELINE_INIT_JOBS = ('influxdb-init', 'kafka-init', 'mysql-init', 'grafana-init')
 LOG_PIPELINE_INIT_JOBS = ('elasticsearch-init', 'kafka-log-init')
 INIT_JOBS = {
     METRIC_PIPELINE_MARKER: METRIC_PIPELINE_INIT_JOBS,

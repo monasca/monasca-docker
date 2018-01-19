@@ -214,8 +214,9 @@ services:
     hostname: docker-host
     image: fest/grafana-init:${MON_GRAFANA_INIT_VERSION}
     environment:
-      GRAFANA_USERNAME: ${MON_GRAFANA_USERNAME}
-      GRAFANA_PASSWORD: ${MON_GRAFANA_PASSWORD}
+      GRAFANA_ADMIN_USERNAME: ${MON_GRAFANA_ADMIN_USER}
+      GRAFANA_ADMIN_PASSWORD: ${MON_GRAFANA_ADMIN_PASSWORD}
+      GRAFANA_USERS: ${MON_GRAFANA_USERS}
       LOGSTASH_FIELDS: "service=grafana-init"
     depends_on:
       - grafana

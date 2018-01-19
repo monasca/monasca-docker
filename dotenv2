@@ -42,11 +42,12 @@ MON_BASE_PATH=/dashboard/monitoring/logs_proxy
 # - Grafana admin (user name must be different to all OpenStack user names)
 # - Grafana user is the OpenStack admin user (see "admin credentials" below)
 #   (The Monasca data-source is assigned automatically to the Grafana user)
+#   It need to be provided in JSON format together with project and domain
+#   Example: [{"user": "mini-mon", "password": "password", "email": "", "project": "mini-mon", "domain": "Default"}]
 ################################################################################
 MON_GRAFANA_ADMIN_USER=<grafana admin user name>
 MON_GRAFANA_ADMIN_PASSWORD=<grafana admin password>
-MON_GRAFANA_USERNAME=<OpenStack admin user name>
-MON_GRAFANA_PASSWORD=<OpenStack admin user password>
+MON_GRAFANA_USERS=<json with users data>
 
 ################################################################################
 # Set the Keystone credentials
@@ -100,7 +101,7 @@ ZOOKEEPER_VERSION=3.4
 MON_KAFKA_VERSION=2.0.2
 MON_KAFKA_INIT_VERSION=2.0.0
 MON_GRAFANA_VERSION=2.0.4
-MON_GRAFANA_INIT_VERSION=2.0.4
+MON_GRAFANA_INIT_VERSION=2.0.5
 
 MON_API_VERSION=2.0.1
 MON_PERSISTER_VERSION=2.0.0

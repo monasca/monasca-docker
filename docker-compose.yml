@@ -223,6 +223,8 @@ services:
       GF_USERS_ALLOW_ORG_CREATE: "true"
       GF_AUTH_KEYSTONE_ENABLED: "true"
       GF_AUTH_KEYSTONE_AUTH_URL: http://keystone:5000
+      GRAFANA_ADMIN_USER: ${MON_GRAFANA_ADMIN_USER}
+      GRAFANA_ADMIN_PASSWORD: ${MON_GRAFANA_ADMIN_PASSWORD}
       GF_AUTH_KEYSTONE_VERIFY_SSL_CERT: "false"
       GF_AUTH_KEYSTONE_DEFAULT_DOMAIN: "Default"
       LOGSTASH_FIELDS: "service=grafana"
@@ -238,6 +240,8 @@ services:
     hostname: docker-host
     image: fest/grafana-init:${MON_GRAFANA_INIT_VERSION}
     environment:
+      GRAFANA_ADMIN_USERNAME: ${MON_GRAFANA_ADMIN_USER}
+      GRAFANA_ADMIN_PASSWORD: ${MON_GRAFANA_ADMIN_PASSWORD}
       LOGSTASH_FIELDS: "service=grafana-init"
     depends_on:
       - grafana

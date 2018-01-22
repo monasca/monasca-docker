@@ -2,6 +2,7 @@
 log_config_append=/etc/monasca/log-api-logging.conf
 
 [monitoring]
+enable = {{ MONITORING_ENABLE | default(False) }}
 statsd_host = {{ STATSD_HOST | default('127.0.0.1') }}
 statsd_port = {{ STATSD_PORT | default(8125) }}
 statsd_buffer = {{ STATSD_BUFFER | default(50) }}

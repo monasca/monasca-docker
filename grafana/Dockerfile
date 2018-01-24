@@ -46,10 +46,10 @@ run mkdir -p /var/lib/grafana && \
   git init && \
   git remote add origin $MONASCA_APP_REPO && \
   git fetch origin $MONASCA_APP_BRANCH && \
+  git reset --hard FETCH_HEAD && \
   npm install grunt && \
   npm install && \
   ./node_modules/.bin/grunt && \
-  git reset --hard FETCH_HEAD && \
   $GOPATH/bin/grafana-cli plugins install natel-discrete-panel && \
   apk del build-dep && \
   rm -rf /usr/lib/node_modules /usr/lib/go && \

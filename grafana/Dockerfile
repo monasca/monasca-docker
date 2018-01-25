@@ -4,7 +4,7 @@ arg GRAFANA_REPO=https://github.com/monasca/grafana.git
 arg GRAFANA_BRANCH=grafana4
 arg MONASCA_DATASOURCE_REPO=https://git.openstack.org/openstack/monasca-grafana-datasource
 arg MONASCA_DATASOURCE_BRANCH=master
-arg MONASCA_APP_REPO=https://github.com/stackhpc/monasca-grafana-app
+arg MONASCA_APP_REPO=https://github.com/monasca/monasca-grafana
 arg MONASCA_APP_BRANCH=master
 
 # To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
@@ -47,6 +47,9 @@ run mkdir -p /var/lib/grafana && \
   git remote add origin $MONASCA_APP_REPO && \
   git fetch origin $MONASCA_APP_BRANCH && \
   git reset --hard FETCH_HEAD && \
+  npm install grunt && \
+  npm install && \
+  ./node_modules/.bin/grunt && \
   $GOPATH/bin/grafana-cli plugins install natel-discrete-panel && \
   apk del build-dep && \
   rm -rf /usr/lib/node_modules /usr/lib/go && \

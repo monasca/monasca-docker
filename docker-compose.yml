@@ -17,8 +17,8 @@ services:
       INFLUXDB_HTTP_LOG_ENABLED: "false"
       LOGSTASH_FIELDS: "service=influxdb"
     volumes:
-    - "${MON_DOCKER_VOL_ROOT}/influxdb:/var/lib/influxdb:rw"
-    - "${MON_BACKUP_DIR}/influxdb_backup:/influxdb_backup:rw"
+    - "${MON_DOCKER_VOL_ROOT}/influxdb:/var/lib/influxdb:Z"
+    - "${MON_BACKUP_DIR}/influxdb_backup:/influxdb_backup:Z"
   influxdb-init:
     hostname: docker-host
     image: fest/influxdb-init:${INFLUXDB_INIT_VERSION}
@@ -39,6 +39,7 @@ services:
     restart: on-failure
     environment:
       LOGSTASH_FIELDS: "service=cadvisor"
+    privileged: true
     volumes:
       - "/:/rootfs:ro"
       - "/var/run:/var/run:rw"
@@ -52,6 +53,9 @@ services:
     environment:
       NON_LOCAL_TRAFFIC: "true"
       LOGSTASH_FIELDS: "service=monasca-agent-forwarder"
+      OS_USERNAME: ${MON_AGENT_USERNAME}
+      OS_PASSWORD: ${MON_AGENT_PASSWORD}
+      OS_PROJECT_NAME: ${MON_AGENT_PROJECT_NAME}
     depends_on:
       - monasca
 
@@ -82,7 +86,7 @@ services:
     environment:
       LOGSTASH_FIELDS: "service=kafka"
     volumes:
-    - "${MON_DOCKER_VOL_ROOT}/kafka:/data:rw"
+    - "${MON_DOCKER_VOL_ROOT}/kafka:/data:Z"
     depends_on:
       - zookeeper
   kafka-init:
@@ -112,8 +116,8 @@ services:
       MYSQL_ROOT_PASSWORD: secretmysql
       LOGSTASH_FIELDS: "service=mysql"
     volumes:
-    - "${MON_DOCKER_VOL_ROOT}/mysql:/var/lib/mysql:rw"
-    - "${MON_BACKUP_DIR}/mysql_backup:/mysql_backup:rw"
+    - "${MON_DOCKER_VOL_ROOT}/mysql:/var/lib/mysql:Z"
+    - "${MON_BACKUP_DIR}/mysql_backup:/mysql_backup:Z"
   mysql-init:
     hostname: docker-host
     image: fest/mysql-init:${MYSQL_INIT_VERSION}
@@ -150,6 +154,7 @@ services:
     restart: on-failure
     environment:
       LOGSTASH_FIELDS: "service=monasca-api"
+      DELEGATE_AUTHORIZED_ROLES: "monitoring-delegate"
     depends_on:
       - influxdb
       - keystone
@@ -229,7 +234,7 @@ services:
       GF_AUTH_KEYSTONE_DEFAULT_DOMAIN: "Default"
       LOGSTASH_FIELDS: "service=grafana"
     volumes:
-    - "${MON_DOCKER_VOL_ROOT}/grafana/data:/var/lib/grafana/data:rw"
+    - "${MON_DOCKER_VOL_ROOT}/grafana/data:/var/lib/grafana/data:Z"
     ports:
       - "3000:3000"
     depends_on:
@@ -242,6 +247,7 @@ services:
     environment:
       GRAFANA_ADMIN_USERNAME: ${MON_GRAFANA_ADMIN_USER}
       GRAFANA_ADMIN_PASSWORD: ${MON_GRAFANA_ADMIN_PASSWORD}
+      GRAFANA_USERS: ${MON_GRAFANA_USERS}
       LOGSTASH_FIELDS: "service=grafana-init"
     depends_on:
       - grafana

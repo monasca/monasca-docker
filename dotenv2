@@ -82,6 +82,7 @@ MON_ELASTICSEARCH_DATA_RETENTION_DAYS=60
 
 # Retention perion for InfluxDB database
 MON_INFLUXDB_RETENTION=60d
+
 ################################################################################
 # Monasca-notification plugins
 #   -A list of notification plugins can be provided by setting NF_PLUGINS to a 
@@ -126,7 +127,6 @@ NF_SLACK_CERTS=
 NF_SLACK_INSECURE=
 #if set, use the given HTTP(S) proxy server to send notifications
 NF_SLACK_PROXY=
-
 
 
 ################################################################################

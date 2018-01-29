@@ -69,7 +69,11 @@ are needed).
 ### Signing Commits
 
 We require a code sign-off for all contributions to indicate you have the right
-to release any code as open-source.
+to release any code as open-source. As explained by the [Docker project][1]:
+
+> The sign-off is a simple line at the end of the explanation for the patch.
+> Your signature certifies that you wrote the patch or otherwise have the right
+> to pass it on as an open-source patch.
 
 The agreement we use is the [Developer Certificate of Origin][1] (copied below),
 as used by the Linux kernel, Docker, and many other open source projects:

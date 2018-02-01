@@ -1,9 +1,12 @@
 #!/bin/sh
 
+# shellcheck disable=SC1091
 . /root/.keystonerc
 
 if [ -t 1 ]; then
     echo "Press enter to continue..."
+
+    # shellcheck disable=SC2162
     read
 
     echo ""
@@ -25,15 +28,13 @@ if [ -t 1 ]; then
     fi
 else
     if [ -n "$KEYSTONE_SECRET" ]; then
-        secret "$KEYSTONE_SECRET"
-        if [ $? -ne 0 ]; then
+        if ! secret "$KEYSTONE_SECRET"; then
             echo "Could not find secret: $KEYSTONE_SECRET"
             sleep 5
             exit 1
         fi
 
-        python -c "import keystone_shell_vars; keystone_shell_vars.get_keystone_client()"
-        if [ $? -eq 0 ]; then
+        if python -c "import keystone_shell_vars; keystone_shell_vars.get_keystone_client()"; then
             echo "Keystone connection successful!"
             sleep 1
             exit 0

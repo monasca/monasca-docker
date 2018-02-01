@@ -31,5 +31,6 @@ either of the aforementioned commands can be found
 * [Using external components](./external_cmps.md)
 * [.env](./env.md)
 * [Tips & Tricks](./tips_and_tricks.md)
+* [Contribution Guide](../CONTRIBUTING.md)
 
 [1]: https://docs.docker.com/compose/

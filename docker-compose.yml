@@ -3,11 +3,17 @@ services:
 
   memcached:
     image: memcached:${MEMCACHED_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=memcached"
 
   influxdb:
     image: influxdb:${INFLUXDB_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=influxdb"
   influxdb-init:
     image: monasca/influxdb-init:${INFLUXDB_INIT_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=influxdb-init"
     depends_on:
       - influxdb
 
@@ -18,6 +24,8 @@ services:
   # block - however no metrics will be collected
   cadvisor:
     image: google/cadvisor:${CADVISOR_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=cadvisor"
     volumes:
       - "/:/rootfs:ro"
       - "/var/run:/var/run:rw"
@@ -28,6 +36,7 @@ services:
     image: monasca/agent-forwarder:${MON_AGENT_FORWARDER_VERSION}
     environment:
       NON_LOCAL_TRAFFIC: "true"
+      LOGSTASH_FIELDS: "service=monasca-agent-forwarder"
 
   agent-collector:
     image: monasca/agent-collector:${MON_AGENT_COLLECTOR_VERSION}
@@ -37,16 +46,39 @@ services:
       FORWARDER_URL: "http://agent-forwarder:17123"
       CADVISOR: "true"
       CADVISOR_URL: "http://cadvisor:8080/"
+      LOGSTASH_FIELDS: "service=monasca-agent-collector"
 
   alarms:
     image: monasca/alarms:${MON_ALARMS_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=monasca-alarms"
+    depends_on:
+      - keystone
+      - monasca
 
   zookeeper:
     image: zookeeper:${ZOOKEEPER_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=zookeeper"
+    restart: on-failure
+
   kafka:
     image: monasca/kafka:${MON_KAFKA_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=kafka"
+    restart: on-failure
     depends_on:
       - zookeeper
+  kafka-watcher:
+    image: monasca/kafka-watcher:${MON_KAFKA_WATCHER_VERSION}
+    environment:
+      BOOT_STRAP_SERVERS: "kafka"
+      PROMETHEUS_ENDPOINT: "0.0.0.0:8080"
+      LOGSTASH_FIELDS: "service=kafka-watcher"
+    depends_on:
+      - kafka
+    ports:
+      - "18080:8080"
   kafka-init:
     image: monasca/kafka-init:${MON_KAFKA_INIT_VERSION}
     environment:
@@ -59,7 +91,9 @@ services:
         alarm-notifications:12:1,\
         retry-notifications:3:1,\
         events:12:1,\
+        kafka-health-check:1:1,\
         60-seconds-notifications:3:1"
+      LOGSTASH_FIELDS: "service=kafka-init"
     depends_on:
       - zookeeper
 
@@ -67,11 +101,13 @@ services:
     image: mysql:${MYSQL_VERSION}
     environment:
       MYSQL_ROOT_PASSWORD: secretmysql
+      LOGSTASH_FIELDS: "service=mysql"
   mysql-init:
     image: monasca/mysql-init:${MYSQL_INIT_VERSION}
     environment:
       MYSQL_INIT_DISABLE_REMOTE_ROOT: "false"
       MYSQL_INIT_RANDOM_PASSWORD: "false"
+      LOGSTASH_FIELDS: "service=mysql-init"
 
   keystone:
     image: monasca/keystone:${MON_KEYSTONE_VERSION}
@@ -83,6 +119,7 @@ services:
       KEYSTONE_MYSQL_USER: keystone
       KEYSTONE_MYSQL_PASSWORD: keystone
       KEYSTONE_MYSQL_DATABASE: keystone
+      LOGSTASH_FIELDS: "service=keystone"
     depends_on:
       - mysql
     ports:
@@ -91,11 +128,14 @@ services:
 
   monasca-sidecar:
     image: timothyb89/monasca-sidecar:${MON_SIDECAR_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=monasca-sidecar"
 
   monasca:
     image: monasca/api:${MON_API_VERSION}
     environment:
       SIDECAR_URL: http://monasca-sidecar:4888/v1/ingest
+      LOGSTASH_FIELDS: "service=monasca-api"
     depends_on:
       - influxdb
       - keystone
@@ -109,6 +149,9 @@ services:
 
   monasca-persister:
     image: monasca/persister:${MON_PERSISTER_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=monasca-persister"
+    restart: on-failure
     depends_on:
       - monasca
       - influxdb
@@ -120,6 +163,7 @@ services:
     environment:
       NO_STORM_CLUSTER: "true"
       WORKER_MAX_HEAP_MB: "256"
+      LOGSTASH_FIELDS: "service=monasca-thresh"
     depends_on:
       - zookeeper
       - kafka
@@ -128,6 +172,7 @@ services:
     image: monasca/notification:${MON_NOTIFICATION_VERSION}
     environment:
       NF_PLUGINS: "webhook"
+      LOGSTASH_FIELDS: "service=monasca-notification"
     depends_on:
       - monasca
       - zookeeper
@@ -144,6 +189,7 @@ services:
       GF_AUTH_KEYSTONE_AUTH_URL: http://keystone:5000
       GF_AUTH_KEYSTONE_VERIFY_SSL_CERT: "false"
       GF_AUTH_KEYSTONE_DEFAULT_DOMAIN: "Default"
+      LOGSTASH_FIELDS: "service=grafana"
     ports:
       - "3000:3000"
     depends_on:
@@ -152,5 +198,7 @@ services:
 
   grafana-init:
     image: monasca/grafana-init:${MON_GRAFANA_INIT_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=grafana-init"
     depends_on:
       - grafana

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 #
@@ -15,11 +16,9 @@
 # under the License.
 
 
-
-
-
 def main():
     pass
+
 
 if __name__ == '__main__':
     main()

@@ -10,13 +10,12 @@ KAFKA_WAIT_DELAY=${KAFKA_WAIT_DELAY:-"5"}
 echo "Waiting for MySQL to become available..."
 success="false"
 for i in $(seq "$MYSQL_WAIT_RETRIES"); do
-  mysqladmin status \
+  if mysqladmin status \
       --host="$MYSQL_DB_HOST" \
       --port="$MYSQL_DB_PORT" \
       --user="$MYSQL_DB_USERNAME" \
       --password="$MYSQL_DB_PASSWORD" \
-      --connect_timeout=10
-  if [ $? -eq 0 ]; then
+      --connect_timeout=10; then
     echo "MySQL is available, continuing..."
     success="true"
     break
@@ -37,8 +36,7 @@ if [ -n "$KAFKA_WAIT_FOR_TOPICS" ]; then
   success="false"
 
   for i in $(seq "$KAFKA_WAIT_RETRIES"); do
-    python /kafka_wait_for_topics.py
-    if [ $? -eq 0 ]; then
+    if python /kafka_wait_for_topics.py; then
       success="true"
       break
     else

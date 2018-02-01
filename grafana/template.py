@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 #
@@ -33,6 +34,7 @@ def main():
     with open(in_path, 'r') as in_file, open(out_path, 'w') as out_file:
         t = Template(in_file.read())
         out_file.write(t.render(os.environ))
+
 
 if __name__ == '__main__':
     main()

@@ -68,52 +68,57 @@ similar). This behavior can be tuned as follows:
 
 | Variable             | Default | Description                                              |
 |----------------------|---------|----------------------------------------------------------|
-| `JVM_MAX_HEAP_RATIO` | `0.75`  | The max % of allocatable memory to pass to `-Xmx`        |
-| `JVM_MAX_HEAP_MB`    | unset   | Value to use for allocatable memory, autodetect if unset |
-| `HEAP_OVERRIDE_MB`   | unset   | Ignore scaling, always return `-Xmx$HEAP_OVERRIDE_MB`    |
-| `SUPERVISOR_MAX_HEAP_MB` | `256` | Max heap size in MiB for supervisor |
-| `WORKER_MAX_HEAP_MB`     | `784` | Max head size in MiB for workers    |
-| `NIMBUS_MAX_HEAP_MB`     | `256` | Max heap in MiB for nimbus          |
-| `UI_MAX_HEAP_MB`         | `768` | Max heap in MiB for UI              |
+| `JVM_MAX_RATIO` | `0.75`  | The max % of allocatable memory to pass to `-XX:MaxRAM`       |
+| `JVM_MAX_MB`    | unset   | Value to use for allocatable memory, autodetect if unset |
+| `MAX_OVERRIDE_MB`   | unset   | Ignore scaling, always return `-XX:MaxRAM$MAX_OVERRIDE_MB` |
+| `SUPERVISOR_MAX_MB` | `256` | MaxRam of JVM in MiB for supervisor |
+| `WORKER_MAX_MB`     | `784` | MaxRam of JVM in MiB for workers    |
+| `NIMBUS_MAX_MB`     | `256` | MaxRam of JVM in MiB for nimbus          |
+| `UI_MAX_MB`         | `768` | MaxRam of JVM in MiB for UI              |
+| `SUPERVISOR_STACK_SIZE` | `1024k` | JVM stack size    |
+| `WORKER_STACK_SIZE`     | `1024k` | JVM stack size    |
+| `NIMBUS_STACK_SIZE`     | `1024k` | JVM stack size    |
+| `UI_STACK_SIZE`         | `1024k` | JVM stack size    |
 
 Memory scaling is done based off of an automatically determined "effective"
 memory limit. The ultimate limit is either the true system memory limit or, if
 set, a limited value set via Docker's `--memory` flag (whichever value is
-smallest). This value is then scaled by `JVM_MAX_HEAP_RATIO` to ensure some
+smallest). This value is then scaled by `JVM_MAX_RATIO` to ensure some
 memory is left for other use.
 
-The final max heap size for each component is then the smallest of:
- * The component-specific memory request, e.g. `WORKER_MAX_HEAP_MB`
+The final max ram size for each component is then the smallest of:
+ * The component-specific memory request, e.g. `WORKER_MAX_MB`
  * The scaled allocatable memory (as described above)
- * If set, `JVM_MAX_HEAP_MB`
+ * If set, `JVM_MAX_MB`
 
 ### monasca-thresh
 
 Configuration for [monasca-thresh][6] is included by default and supports a
 number of additional configuration options:
 
-| Variable                      | Default      | Description                 |
-|-------------------------------|--------------|-----------------------------|
-| `METRIC_SPOUT_THREADS`        | `2`          | Metric Spout threads        |
-| `METRIC_SPOUT_TASKS`          | `2`          | Metric Spout tasks          |
-| `KAFKA_URI`                   | `kafka:9092` | Kafka host                  |
-| `MYSQL_DB_HOST`               | `mysql`      | MySQL host                  |
-| `MYSQL_DB_PORT`               | `3306`       | MySQL port                  |
-| `MYSQL_DB_DATABASE`           | `mon`        | Monasca database name       |
-| `MYSQL_DB_USERNAME`           | `thresh`     | MySQL user                  |
-| `MYSQL_DB_PASSWORD`           | `password`   | MySQL password              |
-| `EVENT_SPOUT_THREADS`         | `2`          | Event Spout Threads         |
-| `EVENT_SPOUT_TASKS`           | `2`          | Event Spout Tasks           |
-| `EVENT_BOLT_THREADS`          | `2`          | Event Bolt Threads          |
-| `EVENT_BOLT_TASKS`            | `2`          | Event Bolt Tasks            |
-| `FILTERING_BOLT_THREADS`      | `2`          | Filtering Bolt Threads      |
-| `FILTERING_BOLT_TASKS`        | `2`          | Filtering Bolt Tasks        |
-| `ALARM_CREATION_BOLT_THREADS` | `2`          | Alarm Creation Bolt Threads |
-| `ALARM_CREATION_BOLT_TASKS`   | `2`          | Alarm Creation Bolt Tasks   |
-| `AGGREGATION_BOLT_THREADS`    | `2`          | Aggregation Bolt Threads    |
-| `AGGREGATION_BOLT_TASKS`      | `2`          | Aggregation Bolt Tasks      |
-| `THRESHOLDING_BOLT_THREADS`   | `2`          | Thresholding Bolt Threads   |
-| `THRESHOLDING_BOLT_TASKS`     | `2`          | Thresholding Bolt Tasks     |
+| Variable                      | Default      | Description                   |
+|-------------------------------|--------------|-------------------------------|
+| `METRIC_SPOUT_THREADS`        | `2`          | Metric Spout threads          |
+| `METRIC_SPOUT_TASKS`          | `2`          | Metric Spout tasks            |
+| `KAFKA_URI`                   | `kafka:9092` | Kafka host                    |
+| `MYSQL_DB_HOST`               | `mysql`      | MySQL host                    |
+| `MYSQL_DB_PORT`               | `3306`       | MySQL port                    |
+| `MYSQL_DB_DATABASE`           | `mon`        | Monasca database name         |
+| `MYSQL_DB_USERNAME`           | `thresh`     | MySQL user                    |
+| `MYSQL_DB_PASSWORD`           | `password`   | MySQL password                |
+| `EVENT_SPOUT_THREADS`         | `2`          | Event Spout Threads           |
+| `EVENT_SPOUT_TASKS`           | `2`          | Event Spout Tasks             |
+| `EVENT_BOLT_THREADS`          | `2`          | Event Bolt Threads            |
+| `EVENT_BOLT_TASKS`            | `2`          | Event Bolt Tasks              |
+| `FILTERING_BOLT_THREADS`      | `2`          | Filtering Bolt Threads        |
+| `FILTERING_BOLT_TASKS`        | `2`          | Filtering Bolt Tasks          |
+| `ALARM_CREATION_BOLT_THREADS` | `2`          | Alarm Creation Bolt Threads   |
+| `ALARM_CREATION_BOLT_TASKS`   | `2`          | Alarm Creation Bolt Tasks     |
+| `AGGREGATION_BOLT_THREADS`    | `2`          | Aggregation Bolt Threads      |
+| `AGGREGATION_BOLT_TASKS`      | `2`          | Aggregation Bolt Tasks        |
+| `THRESHOLDING_BOLT_THREADS`   | `2`          | Thresholding Bolt Threads     |
+| `THRESHOLDING_BOLT_TASKS`     | `2`          | Thresholding Bolt Tasks       |
+| `USE_SSL_ENABLED`             | `true`       | Use SSL validation with MySql |
 
 Note that monasca-thresh configs can be removed by overwriting or removing
 `/templates/thresh-config.yml.j2`.

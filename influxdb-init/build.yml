@@ -2,4 +2,4 @@ repository: monasca/influxdb-init
 variants:
   - tag: latest
     aliases:
-      - :1.0.0
+      - :1.0.3

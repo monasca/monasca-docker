@@ -1,0 +1,51 @@
+input {
+  udp {
+      port => {{ LOGSTASH_INPUT_PORT }}
+      codec => {{ LOGSTASH_INPUT_CODEC }}
+  }
+  tcp {
+      port => {{ LOGSTASH_INPUT_PORT }}
+      codec => {{ LOGSTASH_INPUT_CODEC }}
+  }
+}
+
+filter {
+    ruby {
+        code => '
+            event["dimensions"] = []
+            event["docker"].each do |key, value|
+              unless event["docker"][key].nil?
+                event["dimensions"].push([key, value].to_s)
+              end
+            end
+            if event.to_hash.has_key?("service")
+              event["dimensions"].push(["service", event["service"]].to_s)
+            end
+        '
+    }
+    mutate {
+        remove_field => ["docker"]
+    }
+}
+
+output {
+{% if DEBUG | lower == "true" %}
+  stdout { codec => rubydebug { metadata => true } }
+{% endif %}
+  monasca_log_api {
+    ### Keystone settings
+    keystone_api_url => "{{ OS_AUTH_URL }}"
+    username => "{{ OS_USERNAME }}"
+    password => "{{ OS_PASSWORD }}"
+    user_domain_name => "{{ OS_USER_DOMAIN_NAME }}"
+    project_name => "{{ OS_PROJECT_NAME }}"
+    project_domain_name => "{{ OS_PROJECT_DOMAIN_NAME }}"
+    ### Monasca settings
+    monasca_log_api_url => "{{ MONASCA_LOG_API_URL }}"
+    num_of_logs => 125
+    delay => 10
+    elapsed_time_sec => 30
+    max_data_size_kb => 5120
+    dimensions => ["service:monasca-docker"]
+  }
+}

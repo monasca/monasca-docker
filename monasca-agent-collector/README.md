@@ -70,21 +70,28 @@ variables must be set instead, see below for details.
 Configuration
 -------------
 
-| Variable                 | Default          | Description                         |
-|--------------------------|------------------|-------------------------------------|
-| `LOG_LEVEL`              | `WARN`           | Python logging level                |
-| `OS_AUTH_URL`            | `http://keystone:35357/v3/` | Versioned Keystone URL   |
-| `OS_USERNAME`            | `monasca-agent`  | Agent Keystone username             |
-| `OS_PASSWORD`            | `password`       | Agent Keystone password             |
-| `OS_USER_DOMAIN_NAME`    | `Default`        | Agent Keystone user domain          |
-| `OS_PROJECT_NAME`        | `mini-mon`       | Agent Keystone project name         |
-| `OS_PROJECT_DOMAIN_NAME` | `Default`        | Agent Keystone project domain       |
-| `MONASCA_URL`            | `http://monasca:8070/v2.0` | Versioned Monasca API URL |
-| `HOSTNAME_FROM_KUBERNETES` | `false` | If true, determine node hostname from Kubernetes  |
-| `FORWARDER_URL`            | `http://localhost:17123` | Monasca Agent Collector URL |
+| Variable                    | Default          | Description                         |
+|-----------------------------|------------------|-------------------------------------|
+| `LOG_LEVEL`                 | `WARN`           | Python logging level                |
+| `KEYSTONE_DEFAULTS_ENABLED` | `true`           | Sets all OS defaults                |
+| `OS_AUTH_URL`               | `http://keystone:35357/v3/` | Versioned Keystone URL   |
+| `OS_USERNAME`               | `monasca-agent`  | Agent Keystone username             |
+| `OS_PASSWORD`               | `password`       | Agent Keystone password             |
+| `OS_USER_DOMAIN_NAME`       | `Default`        | Agent Keystone user domain          |
+| `OS_PROJECT_NAME`           | `mini-mon`       | Agent Keystone project name         |
+| `OS_PROJECT_DOMAIN_NAME`    | `Default`        | Agent Keystone project domain       |
+| `MONASCA_URL`               | `http://monasca:8070/v2.0` | Versioned Monasca API URL |
+| `HOSTNAME_FROM_KUBERNETES`  | `false` | If true, determine node hostname from Kubernetes  |
+| `FORWARDER_URL`             | `http://localhost:17123` | Monasca Agent Collector URL |
+| `AUTORESTART`               | `false`          | Auto Restart Monasca Agent Collector |
+| `COLLECTOR_RESTART_INTERVAL`| `24`             | Interval in hours to restart Monasca Agent Collector |
 
 Note that additional variables can be specified as well, see the
 [config template][8] for a definitive list.
+
+Note that the auto restart feature can be enabled if the agent collector has unchecked
+memory growth. The proper restart behavior must be enabled in docker or kubernetes if
+this feature is turned on.
 
 ### Docker Plugin
 
@@ -109,6 +116,11 @@ This plugin is enabled when `KUBERNETES=true`. It has the following options:
  * `KUBERNETES_NAMESPACE_ANNOTATIONS`: If set, will grab annotations from
    namespaces to include as dimensions for metrics that are under that
    namespace. Should be passed in as 'annotation1,annotation2,annotation3'.
+   Default: unset
+ * `KUBERNETES_MINIMUM_WHITELIST`: Sets whitelist on kubernetes plugin for
+   the following metrics pod.cpu.total_time_sec, pod.mem.cache_bytes, 
+   pod.mem.swap_bytes, pod.mem.used_bytes, pod.mem.working_set_bytes. This
+   will alleviate the amount of load on Monasca. 
    Default: unset
 
 The Kubernetes plugin is intended to be run as a DaemonSet on each Kubernetes
@@ -177,7 +189,12 @@ This plugin is enabled when `CADVISOR=true`. It has the following options:
  * `CADVISOR_URL`: If set, sets the URL at which to access cAdvisor. If unset,
    (default) the cAdvisor host will be determined automatically via the
    Kubernetes API.
-
+ * `CADVISOR_MINIMUM_WHITELIST`: Sets whitelist on cadvisor host plugin for
+   the following metrics cpu.total_time_sec, mem.cache_bytes, 
+   mem.swap_bytes, mem.used_bytes, mem.working_set_bytes. This
+   will alleviate the amount of load on Monasca. 
+   Default: unset
+   
 This plugin collects host-level metrics from a running cAdvisor instance.
 cAdvisor is included in `kubelet` when in Kubernetes environments and is
 necessary to retrieve host-level metrics. As with the Kubernetes plugin,
@@ -206,8 +223,6 @@ To build the container from scratch using just docker commands, run:
 
 A few build argument can be set:
 
- * `AGENT_USER`: the user to run the agent as. The same user must be specified
-   as the user specified when the agent-base image was built.
  * `REBULID`: a simple method to invalidate the Docker image cache. Set to
    `--build-arg REBUILD="$(date)"` to force a full image rebuild.
  * `HTTP_PROXY` and `HTTPS_PROXY` should be set as needed for your environment

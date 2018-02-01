@@ -1,4 +1,5 @@
 #!/bin/ash
+# shellcheck shell=dash
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 
 set -x
@@ -8,6 +9,15 @@ USER_PLUGINS="/plugins.d"
 
 AGENT_CONF="/etc/monasca/agent"
 AGENT_PLUGINS="$AGENT_CONF/conf.d"
+
+if [ "$KEYSTONE_DEFAULTS_ENABLED" = "true" ]; then
+  export OS_AUTH_URL=${OS_AUTH_URL:-"http://keystone:35357/v3/"}
+  export OS_USERNAME=${OS_USERNAME:-"monasca-agent"}
+  export OS_PASSWORD=${OS_PASSWORD:-"password"}
+  export OS_USER_DOMAIN_NAME=${OS_USER_DOMAIN_NAME:-"Default"}
+  export OS_PROJECT_NAME=${OS_PROJECT_NAME:-"mini-mon"}
+  export OS_PROJECT_DOMAIN_NAME=${OS_PROJECT_DOMAIN_NAME:-"Default"}
+fi
 
 mkdir -p "$AGENT_PLUGINS"
 
@@ -20,8 +30,7 @@ template () {
 }
 
 if [ "$HOSTNAME_FROM_KUBERNETES" = "true" ]; then
-  AGENT_HOSTNAME=$(python /kubernetes_get_host.py)
-  if [ $? != 0 ]; then
+  if ! AGENT_HOSTNAME=$(python /kubernetes_get_host.py); then
     echo "Error getting hostname from Kubernetes"
     return 1
   fi
@@ -68,4 +77,4 @@ done
 
 template $AGENT_CONF/agent.yaml.j2 $AGENT_CONF/agent.yaml
 
-/usr/bin/monasca-collector foreground
+monasca-collector foreground

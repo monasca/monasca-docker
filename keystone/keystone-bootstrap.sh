@@ -22,15 +22,13 @@ fi
 
 if [[ "$KUBERNETES_RESOLVE_PUBLIC_ENDPOINTS" = "true" ]]; then
     keystone_service_name=${KEYSTONE_SERVICE_NAME:-"keystone"}
-    service_url=$(python /k8s_get_service.py "${keystone_service_name}" http)
-    if [[ $? -eq 0 ]]; then
+    if service_url=$(python /k8s_get_service.py "${keystone_service_name}" http); then
         public_url="http://${service_url}"
     else
         echo "ERROR: Failed to get public URL from Kubernetes API!"
     fi
 
-    service_admin_url=$(python /k8s_get_service.py "${keystone_service_name}" admin)
-    if [[ $? -eq 0 ]]; then
+    if service_admin_url=$(python /k8s_get_service.py "${keystone_service_name}" admin); then
       admin_url="http://${service_admin_url}"
     else
       # not ERROR since this is somewhat less fatal
@@ -41,23 +39,22 @@ fi
 if [[ -e /db-init ]]; then
     echo "Creating bootstrap credentials..."
     keystone-manage bootstrap \
-        --bootstrap-password $admin_password \
-        --bootstrap-username $admin_username \
-        --bootstrap-project-name $admin_project \
-        --bootstrap-role-name $admin_role \
-        --bootstrap-service-name $admin_service \
-        --bootstrap-region-id $admin_region \
-        --bootstrap-admin-url $admin_url \
-        --bootstrap-public-url $public_url \
-        --bootstrap-internal-url $internal_url
+        --bootstrap-password "$admin_password" \
+        --bootstrap-username "$admin_username" \
+        --bootstrap-project-name "$admin_project" \
+        --bootstrap-role-name "$admin_role" \
+        --bootstrap-service-name "$admin_service" \
+        --bootstrap-region-id "$admin_region" \
+        --bootstrap-admin-url "$admin_url" \
+        --bootstrap-public-url "$public_url" \
+        --bootstrap-internal-url "$internal_url"
 
     sleep 5
 
     echo "Waiting for keystone to become available at $admin_url..."
     success=false
     for i in {1..10}; do
-        curl -sSf "$admin_url" > /dev/null
-        if [[ $? -eq 0 ]]; then
+        if curl -sSf "$admin_url" > /dev/null; then
             echo "Keystone API is up, continuing..."
             success=true
             break

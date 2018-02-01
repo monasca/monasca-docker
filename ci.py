@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 #
@@ -24,15 +25,14 @@ import os
 import re
 import shutil
 import signal
+import six
 import subprocess
 import sys
 import time
 import yaml
 
-import six
-from google.oauth2 import service_account
 from google.cloud import storage
-
+from google.oauth2 import service_account
 
 TAG_REGEX = re.compile(r'^!(\w+)(?:\s+([\w-]+))?$')
 
@@ -61,13 +61,16 @@ LOGS_PIPELINE_MODULE_TO_COMPOSE_SERVICES = {
     'monasca-log-metrics': 'log-metrics',
     'monasca-log-persister': 'log-persister',
     'monasca-log-transformer': 'log-transformer',
+    'elasticsearch-curator': 'elasticsearch-curator',
     'elasticsearch-init': 'elasticsearch-init',
     'kafka-init': 'kafka-log-init',
     'kibana': 'kibana',
     'monasca-log-api': 'log-api',
+    'monasca-log-agent': 'log-agent',
+    'logspout': 'logspout',
 }
 
-METRIC_PIPELINE_INIT_JOBS = ('influxdb-init', 'kafka-init', 'mysql-init')
+METRIC_PIPELINE_INIT_JOBS = ('influxdb-init', 'kafka-init', 'mysql-init', 'alarms', 'grafana-init')
 LOG_PIPELINE_INIT_JOBS = ('elasticsearch-init', 'kafka-log-init')
 INIT_JOBS = {
     METRIC_PIPELINE_MARKER: METRIC_PIPELINE_INIT_JOBS,
@@ -170,7 +173,7 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
     manifest_dict = print_env(pipeline, voting, to_print=False)
     manifest_dict['modules'] = {}
     for module in dirty_modules:
-        manifest_dict['modules'][module] =  {'files': []}
+        manifest_dict['modules'][module] = {'files': []}
         for f in files:
             if module in f:
                 if 'init' not in module and 'init' not in f or 'init' in module and 'init' in f:
@@ -180,7 +183,7 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
         for f, url in uploaded_files.iteritems():
             if module in f:
                 if 'init' not in module and 'init' not in f or 'init' in module and 'init' in f:
-                    manifest_dict['modules'][module]['uploaded_log_file'][f] =  url
+                    manifest_dict['modules'][module]['uploaded_log_file'][f] = url
 
     manifest_dict['run_logs'] = {}
     for f, url in uploaded_files.iteritems():
@@ -195,7 +198,6 @@ def upload_manifest(pipeline, voting, uploaded_files, dirty_modules, files, tags
 
 def upload_files(log_dir, bucket):
     uploaded_files = {}
-    blob = bucket.blob(log_dir)
     for f in os.listdir(log_dir):
         file_path = log_dir + f
         if os.path.isfile(file_path):
@@ -345,7 +347,7 @@ def run_build(modules):
 def run_push(modules):
     if os.environ.get('TRAVIS_SECURE_ENV_VARS', None) != "true":
         print('No push permissions in this context, skipping!')
-        print('Not pushing: %r' % modules)
+        print('Not pushing: {!r}'.format(modules))
         return
 
     username = os.environ.get('DOCKER_HUB_USERNAME', None)
@@ -382,7 +384,7 @@ def run_push(modules):
 def run_readme(modules):
     if os.environ.get('TRAVIS_SECURE_ENV_VARS', None) != "true":
         print('No Docker Hub permissions in this context, skipping!')
-        print('Not updating READMEs: %r' % modules)
+        print('Not updating READMEs: {!r}'.format(modules))
         return
 
     log_dir = BUILD_LOG_DIR
@@ -436,9 +438,9 @@ def update_docker_compose(modules, pipeline):
     try:
         with open(CI_COMPOSE_FILE, 'w') as docker_compose:
             yaml.dump(compose_dict, docker_compose, default_flow_style=False)
-    except:
+    except (RuntimeError, EnvironmentError):
         raise FileWriteException(
-            'Error writing CI dictionary to %s' % CI_COMPOSE_FILE
+            'Error writing CI dictionary to {}'.format(CI_COMPOSE_FILE)
         )
 
 
@@ -447,7 +449,7 @@ def load_yml(yml_path):
         with open(yml_path) as compose_file:
             compose_dict = yaml.safe_load(compose_file)
             return compose_dict
-    except:
+    except(RuntimeError, EnvironmentError):
         raise FileReadException('Failed to read %s', yml_path)
 
 
@@ -480,11 +482,11 @@ def handle_pull_request(files, modules, tags, pipeline):
     cool_test_mapper = {
         'smoke': {
             METRIC_PIPELINE_MARKER: run_smoke_tests_metrics,
-            LOG_PIPELINE_MARKER: lambda : print('No smoke tests for logs')
+            LOG_PIPELINE_MARKER: lambda: print('No smoke tests for logs')
         },
         'tempest': {
             METRIC_PIPELINE_MARKER: run_tempest_tests_metrics,
-            LOG_PIPELINE_MARKER: lambda : print('No tempest tests for logs')
+            LOG_PIPELINE_MARKER: lambda: print('No tempest tests for logs')
         }
     }
 
@@ -502,16 +504,23 @@ def pick_modules_for_pipeline(modules, pipeline):
     }
 
     pipeline_modules = modules_for_pipeline[pipeline]
-    print('modules: %s \n pipeline_modules: %s' % (modules, pipeline_modules))
+
+    # some of the modules are not used in pipelines, but should be
+    # taken into consideration during the build
+    other_modules = [
+        'storm'
+    ]
+    print('modules: {} \n pipeline_modules: {}'.format(modules, pipeline_modules))
 
     # iterate over copy of all modules that are planned for the build
     # if one of them does not belong to active pipeline
     # remove from current run
     for m in modules[::]:
         if m not in pipeline_modules:
-            print('Module %s does not belong to %s, skipping' % (
-                m, pipeline
-            ))
+            if m in other_modules:
+                print('{} is not part of either pipeline, but it will be build anyway'.format(m))
+                continue
+            print('Module {} does not belong to {}, skipping'.format(m, pipeline))
             modules.remove(m)
 
     return modules
@@ -757,13 +766,13 @@ def run_tempest_tests_metrics():
 
     signal.signal(signal.SIGINT, kill)
     time_delta = 0
-    while(True):
+    while True:
         poll = p.poll()
         if poll is None:
             if time_delta == 1500:
                 print ('Tempest-tests timed out at 25 min')
                 raise TempestTestFailedException()
-            if time_delta % 30 == 0:
+            if time_delta % 30 == 0:  # noqa: S001
                 print ('Still running tempest-tests')
             time_delta += 1
             time.sleep(1)
@@ -775,9 +784,9 @@ def run_tempest_tests_metrics():
     print('Tempest-tests succeeded')
 
 
-def handle_other(files, modules, tags):
-    print('Unsupported event type "%s", nothing to do.' % (
-        os.environ.get('TRAVS_EVENT_TYPE')))
+def handle_other(files, modules, tags, pipeline):
+    print('Unsupported event type "{}", nothing to do.'.format(
+        os.environ.get('TRAVIS_EVENT_TYPE')))
 
 
 def print_env(pipeline, voting, to_print=True):
@@ -787,7 +796,7 @@ def print_env(pipeline, voting, to_print=True):
         'TRAVIS_PULL_REQUEST': os.environ.get('TRAVIS_PULL_REQUEST'),
         'TRAVIS_PULL_REQUEST_SHA': os.environ.get('TRAVIS_PULL_REQUEST_SHA'),
         'TRAVIS_PULL_REQUEST_SLUG': os.environ.get('TRAVIS_PULL_REQUEST_SLUG'),
-        'TRAVIS_SECURE_ENV_VARS':  os.environ.get('TRAVIS_SECURE_ENV_VARS'),
+        'TRAVIS_SECURE_ENV_VARS': os.environ.get('TRAVIS_SECURE_ENV_VARS'),
         'TRAVIS_EVENT_TYPE': os.environ.get('TRAVIS_EVENT_TYPE'),
         'TRAVIS_BRANCH': os.environ.get('TRAVIS_BRANCH'),
         'TRAVIS_PULL_REQUEST_BRANCH': os.environ.get('TRAVIS_PULL_REQUEST_BRANCH'),
@@ -797,7 +806,7 @@ def print_env(pipeline, voting, to_print=True):
         'TRAVIS_JOB_NUMBER': os.environ.get('TRAVIS_JOB_NUMBER'),
 
         'CI_PIPELINE': pipeline,
-        'CI_VOTING': voting }}
+        'CI_VOTING': voting}}
 
     if to_print:
         print (json.dumps(environ_vars, indent=2))
@@ -845,7 +854,7 @@ def main():
         if voting:
             raise
         else:
-            print('%s is not voting, skipping failure' % pipeline)
+            print('{} is not voting, skipping failure'.format(pipeline))
     finally:
         output_docker_ps()
         output_docker_logs()

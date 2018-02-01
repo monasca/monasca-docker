@@ -1,10 +1,10 @@
 from alpine:3.5
 
-arg GRAFANA_REPO=https://github.com/twc-openstack/grafana.git
-arg GRAFANA_BRANCH=master-keystone
+arg GRAFANA_REPO=https://github.com/monasca/grafana.git
+arg GRAFANA_BRANCH=grafana4
 arg MONASCA_DATASOURCE_REPO=https://git.openstack.org/openstack/monasca-grafana-datasource
 arg MONASCA_DATASOURCE_BRANCH=master
-arg MONASCA_APP_REPO=https://github.com/stackhpc/monasca-grafana-app
+arg MONASCA_APP_REPO=https://github.com/monasca/monasca-grafana
 arg MONASCA_APP_BRANCH=master
 
 # To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
@@ -20,13 +20,13 @@ run mkdir -p /var/lib/grafana && \
   cd $GOPATH/src/github.com/grafana/grafana/ && \
   apk add --no-cache --virtual build-dep \
     nodejs go git musl-dev make g++ && \
-  apk add --no-cache python py-jinja2 && \
+  apk add --no-cache python py-jinja2 ca-certificates && \
   git init && \
   git remote add origin $GRAFANA_REPO && \
   git fetch origin $GRAFANA_BRANCH && \
   git reset --hard FETCH_HEAD && \
   go run build.go setup && go run build.go build && \
-  npm install -g yarn@0.27 && yarn && \
+  npm install -g yarn@0.27 && yarn --no-emoji && \
   ./node_modules/.bin/grunt build --force && \
   cp -r ./conf /var/lib/grafana/conf && \
   cp -r ./public_gen /var/lib/grafana/public && \
@@ -47,6 +47,10 @@ run mkdir -p /var/lib/grafana && \
   git remote add origin $MONASCA_APP_REPO && \
   git fetch origin $MONASCA_APP_BRANCH && \
   git reset --hard FETCH_HEAD && \
+  npm install grunt && \
+  npm install && \
+  ./node_modules/.bin/grunt && \
+  $GOPATH/bin/grafana-cli plugins install natel-discrete-panel && \
   apk del build-dep && \
   rm -rf /usr/lib/node_modules /usr/lib/go && \
   rm -rf /tmp/npm* /tmp/phantomjs && \

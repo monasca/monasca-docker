@@ -1,4 +1,5 @@
 #!/bin/ash
+# shellcheck shell=dash
 
 set -x
 
@@ -14,29 +15,33 @@ ZOOKEEPER_WAIT_TIMEOUT=${ZOOKEEPER_WAIT_TIMEOUT:-"3"}
 ZOOKEEPER_WAIT_DELAY=${ZOOKEEPER_WAIT_DELAY:-"10"}
 ZOOKEEPER_WAIT_RETRIES=${ZOOKEEPER_WAIT_RETRIES:-"20"}
 
+STAY_ALIVE_ON_FAILURE=${STAY_ALIVE_ON_FAILURE:-"false"}
+
 export SERVER_LOG_LEVEL=${SERVER_LOG_LEVEL:-"INFO"}
 export REQUEST_LOG_LEVEL=${REQUEST_LOG_LEVEL:-"WARN"}
 export CONTROLLER_LOG_LEVEL=${CONTROLLER_LOG_LEVEL:-"INFO"}
 export LOG_CLEANER_LOG_LEVEL=${LOG_CLEANER_LOG_LEVEL:-"INFO"}
 export STATE_CHANGE_LOG_LEVEL=${STATE_CHANGE_LOG_LEVEL:-"INFO"}
 export AUTHORIZER_LOG_LEVEL=${AUTHORIZER_LOG_LEVEL:-"WARN"}
+
+KAFKA_STACK_SIZE=${KAFKA_STACK_SIZE:-"1024k"}
+
 GC_LOG_ENABLED=${GC_LOG_ENABLED:-"False"}
 
-first_zk=$(echo $ZOOKEEPER_CONNECTION_STRING | cut -d, -f1)
-zk_host=$(echo $first_zk | cut -d\: -f1)
-zk_port=$(echo $first_zk | cut -d\: -f2)
+first_zk=$(echo "$ZOOKEEPER_CONNECTION_STRING" | cut -d, -f1)
+zk_host=$(echo "$first_zk" | cut -d ":" -f1)
+zk_port=$(echo "$first_zk" | cut -d ":" -f2)
 
 # wait for zookeeper to become available
 if [ "$ZOOKEEPER_WAIT" = "true" ]; then
   success="false"
-  for i in $(seq $ZOOKEEPER_WAIT_RETRIES); do
-    ok=$(echo ruok | nc $zk_host $zk_port -w $ZOOKEEPER_WAIT_TIMEOUT)
-    if [ $? -eq 0 -a "$ok" = "imok" ]; then
+  for i in $(seq "$ZOOKEEPER_WAIT_RETRIES"); do
+    if ok=$(echo ruok | nc "$zk_host" "$zk_port" -w "$ZOOKEEPER_WAIT_TIMEOUT") && [ "$ok" = "imok" ]; then
       success="true"
       break
     else
       echo "Connect attempt $i of $ZOOKEEPER_WAIT_RETRIES failed, retrying..."
-      sleep $ZOOKEEPER_WAIT_DELAY
+      sleep "$ZOOKEEPER_WAIT_DELAY"
     fi
   done
 
@@ -69,8 +74,8 @@ for f in $CONFIG_TEMPLATES/*.properties.j2; do
 done
 
 if [ -z "$KAFKA_HEAP_OPTS" ]; then
-  max_heap=$(python /heap.py $KAFKA_MAX_HEAP_MB)
-  KAFKA_HEAP_OPTS="-Xmx${max_heap} -Xms${max_heap}"
+  max_ram=$(python /memory.py "$KAFKA_MAX_MB")
+  KAFKA_HEAP_OPTS="-XX:MaxRAM=${max_ram} -Xss$KAFKA_STACK_SIZE"
   export KAFKA_HEAP_OPTS
 fi
 
@@ -100,5 +105,19 @@ if [ "$GC_LOG_ENABLED" != "true" ]; then
   sed "-i.sv" -e "s/-loggc//" /kafka/bin/kafka-server-start.sh
 fi
 
+echo "Current disk space usage"
+# Make this directory configurable if it becomes configurable in server.properties.j2
+df /data
+
 echo "Starting kafka..."
-exec /kafka/bin/kafka-server-start.sh "$CONFIG_DEST/server.properties"
+EXEC="exec"
+if [ "$STAY_ALIVE_ON_FAILURE" = "true" ]; then
+  EXEC=""
+fi
+$EXEC /kafka/bin/kafka-server-start.sh "$CONFIG_DEST/server.properties"
+RESULT=$?
+
+# Keep the container alive for debugging or actions like resolving a full disk. This
+# sleep will only be reached if STAY_ALIVE_ON_FAILURE is true
+sleep 7200
+exit $RESULT

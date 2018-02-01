@@ -17,6 +17,7 @@ Api:
   ca_file: "{{ CA_FILE | default('') }}"
 
   max_buffer_size: {{ MAX_BUFFER_SIZE | default(1000) }}
+  max_batch_size: {{ MAX_BATCH_SIZE | default(0) }}
   max_measurement_buffer_size: {{ MAX_MEASUREMENT_BUFFER_SIZE | default(-1)}}
   backlog_send_rate: {{ BACKLOG_SEND_RATE | default(5) }}
 
@@ -35,7 +36,8 @@ Main:
   num_collector_threads: {{ NUM_COLLECTOR_THREADS | default(1) }}
   pool_full_max_retries: {{ POOL_FULL_MAX_TRIES | default(4) }}
   sub_collection_warn: {{ SUB_COLLECTION_WARN | default(6) }}
-  collector_restart_interval: 24
+  autorestart: {{ AUTORESTART | default(False) }}
+  collector_restart_interval: {{ COLLECTOR_RESTART_INTERVAL | default(24) }}
   non_local_traffic: {{ NON_LOCAL_TRAFFIC | default(False) }}
   forwarder_url: {{ FORWARDER_URL | default("http://localhost:17123") }}
 

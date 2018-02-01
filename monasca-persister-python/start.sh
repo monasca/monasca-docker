@@ -10,8 +10,7 @@ if [ -n "$KAFKA_WAIT_FOR_TOPICS" ]; then
   success="false"
 
   for i in $(seq "$KAFKA_WAIT_RETRIES"); do
-    python /kafka_wait_for_topics.py
-    if [ $? -eq 0 ]; then
+    if python /kafka_wait_for_topics.py; then
       success="true"
       break
     else
@@ -35,5 +34,4 @@ else
   cp /etc/monasca-persister/persister.conf.j2 /etc/monasca-persister/persister.conf
 fi
 
-python /usr/lib/python2.7/site-packages/monasca_persister/persister.py \
-  --config-file /etc/monasca-persister/persister.conf
+monasca-persister --config-file /etc/monasca-persister/persister.conf

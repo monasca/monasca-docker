@@ -1,10 +1,12 @@
 #!/bin/sh
+# shellcheck shell=dash
 
 set -x
 
 if [ -e /apk.sh ]; then
     echo "Overriding default apk dependencies install function"
-    source /apk.sh
+    # shellcheck disable=SC1091
+    . /apk.sh
 else
     echo "Using default apk dependencies install function"
     install_apk_deps() {
@@ -14,7 +16,8 @@ fi
 
 if [ -e /install.sh ]; then
     echo "Overriding default install function"
-    source /install.sh
+    # shellcheck disable=SC1091
+    . /install.sh
 else
     echo "Using default install function"
     install() {
@@ -45,7 +48,8 @@ fi
 
 if [ -e /clone.sh ]; then
     echo "Overriding default clone function"
-    source /clone.sh
+    # shellcheck disable=SC1091
+    . /clone.sh
 else
     echo "Using default clone function"
     clone() {
@@ -69,8 +73,10 @@ CONSTRAINTS=""
 CONSTRAINTS_URL=""
 CONSTRAINTS_BRANCH=""
 
-OPTS=`getopt -n 'parse-options' -o r:b:e:d:c:u:q: -- "$@"`
-if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
+if ! OPTS=$(getopt -n 'parse-options' -o r:b:e:d:c:u:q: -- "$@"); then
+  echo "Failed parsing options." >&2
+  exit 1
+fi
 
 echo "$OPTS"
 eval set -- "$OPTS"

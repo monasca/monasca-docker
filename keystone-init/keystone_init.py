@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 #
@@ -26,14 +27,15 @@ from itertools import ifilter
 
 import yaml
 
-from keystoneauth1.exceptions import RetriableConnectionFailure, NotFound
+from keystoneauth1.exceptions import NotFound
+from keystoneauth1.exceptions import RetriableConnectionFailure
 from keystoneauth1.identity import Password
 from keystoneauth1.session import Session
 from keystoneclient.discover import Discover
 from requests import HTTPError
 from requests import RequestException
 
-from kubernetes import KubernetesAPIClient, KubernetesAPIResponse
+from kubernetes import KubernetesAPIClient
 
 PASSWORD_CHARACTERS = string.ascii_letters + string.digits
 KEYSTONE_PASSWORD_ARGS = [
@@ -60,6 +62,8 @@ _global_role_cache = []
 _project_cache = defaultdict(lambda: [])
 _role_cache = defaultdict(lambda: [])
 _group_cache = defaultdict(lambda: [])
+_service_cache = []
+_endpoint_cache = []
 
 _kubernetes_client = None
 
@@ -150,7 +154,7 @@ def get_keystone_client():
 
 @retry()
 def get_or_create_domain(client, name=None):
-    """
+    """Get domain or create it if it doesn't exist
 
     :param client:
     :type client: keystoneclient.v3.client.Client
@@ -178,7 +182,8 @@ def get_or_create_domain(client, name=None):
 
 
 def get_keystone_admin_url(client, domain):
-    """
+    """Get Keystone admin URL
+
     :type client: keystoneclient.v3.client.Client
     :type domain: keystoneclient.v3.domains.Domain
     :rtype: str or None
@@ -199,7 +204,7 @@ def get_keystone_admin_url(client, domain):
 
 @retry()
 def get_or_create_project(client, domain, name):
-    """
+    """Get project or create it if it doesn't exist
 
     :param client:
     :type client: keystoneclient.v3.client.Client
@@ -228,7 +233,7 @@ def get_or_create_project(client, domain, name):
 
 @retry()
 def get_or_create_global_role(client, name):
-    """
+    """Get global rule or create it if it doesn't exist
 
     :type client: keystoneclient.v3.client.Client
     :type name: str
@@ -251,7 +256,7 @@ def get_or_create_global_role(client, name):
 
 @retry()
 def get_or_create_role(client, domain, name):
-    """
+    """Get role or create it if it doesn't exist
 
     :param client:
     :type client: keystoneclient.v3.client.Client
@@ -267,7 +272,8 @@ def get_or_create_role(client, domain, name):
 
     global_role = first(lambda r: r.name == name, _global_role_cache)
     if global_role:
-        logger.info('found existing global role: name=%s id=%s', global_role.name, global_role.id)
+        logger.info('found existing global role: name=%s id=%s',
+                    global_role.name, global_role.id)
         return global_role
 
     cache = _role_cache[domain.id]
@@ -290,17 +296,24 @@ def get_or_create_role(client, domain, name):
     return role
 
 
-def get_or_create_group(client, domain, name):
-    """
+def get_or_create_group(client, domain, group):
+    """Get group or create it if it doesn't exist
 
     :type client: keystoneclient.v3.client.Client
     :type domain: keystoneclient.v3.domains.Domain
-    :type name: str
+    :type group: str | dict
     :rtype: keystoneclient.v3.groups.Group
     """
     cache = _group_cache[domain.id]
     if not cache:
         cache.extend(client.groups.list())
+
+    if isinstance(group, basestring):
+        name = group
+        project_roles = []
+    else:
+        name = group['name']
+        project_roles = group.get('project_roles', [])
 
     group = first(lambda g: g.name == name, cache)
     if group:
@@ -312,12 +325,114 @@ def get_or_create_group(client, domain, name):
         cache.append(group)
         logger.debug('created group %r', group)
 
+    for project_grant in project_roles:
+        project_name = project_grant['project']
+        project = get_or_create_project(client, domain, project_name)
+        current_project_roles = get_group_role_assignments(client,
+                                                           group,
+                                                           project)
+        proj_roles_to_grant = _roles_to_grant(client, domain,
+                                              current_project_roles,
+                                              project_grant.get('roles', []))
+        logger.info('granting project roles to group: %r', proj_roles_to_grant)
+        for role_id in proj_roles_to_grant:
+            grant_group_role(client, role_id, group, project)
+
+
     return group
 
 
 @retry()
-def get_user(client, domain, name):
+def get_or_create_service(client, name, service_type, description):
+    """Get service or create it if doesn't exist.
+
+    :type client: keystoneclient.v3.client.Client
+    :type name: str
+    :type service_type: str
+    :type description: str
+    :return:
+    :rtype: keystoneclient.v3.services.Service
     """
+    if not _service_cache:
+        _service_cache.extend(client.services.list())
+
+    service = first(lambda s: s.name == name, _service_cache)
+    if service:
+        logger.info('found existing service: %s', service.name)
+    else:
+        logger.info('creating new service %s of %s type', name, service_type)
+        service = client.services.create(
+            name=name,
+            type=service_type,
+            description=description,
+        )
+        _service_cache.append(service)
+        logger.debug('created service %r', service)
+
+    return service
+
+
+@retry()
+def get_or_create_endpoint(client, service, url, endpoint):
+    """Get endpoint or create it if doesn't exist.
+
+    :type client: keystoneclient.v3.client.Client
+    :type service: keystoneclient.v3.services.Service
+    :type url: str
+    :type endpoint: dict[str, str]
+    :return:
+    :rtype: keystoneclient.v3.endpoints.Endpoint
+    """
+    global _endpoint_cache
+    if not _endpoint_cache:
+        _endpoint_cache.extend(client.endpoints.list())
+
+    logger.debug('existing endpoints %r', _endpoint_cache)
+
+    endpoints = filter(lambda ep: ep.service_id == service.id, _endpoint_cache)
+    logger.debug('filtered endpoints %r', endpoints)
+
+    for e in endpoints:
+        if e.service_id == service.id:
+            if e.interface == endpoint['interface']:
+                if e.url == endpoint['url']:
+                    logger.debug('endpoint already exists %r', e)
+                    return e
+
+                logger.info('updating endpoint %r', e)
+                endpoint = client.endpoints.update(
+                    endpoint=e.id,
+                    service=service,
+                    url=endpoint['url'],
+                    interface=endpoint['interface'],
+                    region=endpoint['region'],
+                )
+                _endpoint_cache = [endpoint
+                                   if x.id == endpoint.id else x
+                                   for x in _endpoint_cache]
+                return endpoint
+
+    logger.info(
+        'creating new %s endpoint %s with url: %s on %s region',
+        endpoint['interface'], service.name,
+        endpoint['url'], endpoint['region']
+    )
+
+    endpoint = client.endpoints.create(
+        service=service,
+        url=endpoint['url'],
+        interface=endpoint['interface'],
+        region=endpoint['region'],
+    )
+    _endpoint_cache.append(endpoint)
+    logger.debug('created endpoint %r', endpoint)
+
+    return endpoint
+
+
+@retry()
+def get_user(client, domain, name):
+    """Get user
 
     :type client: keystoneclient.v3.client.Client
     :type domain: keystoneclient.v3.domains.Domain
@@ -331,7 +446,7 @@ def get_user(client, domain, name):
 
 @retry()
 def create_user(client, username, **kwargs):
-    """
+    """Create user
 
     :param client:
     :type client: keystoneclient.v3.client.Client
@@ -347,7 +462,7 @@ def create_user(client, username, **kwargs):
 
 @retry()
 def update_user(client, user, **kwargs):
-    """
+    """Update user
 
     :param client:
     :type client: keystoneclient.v3.client.Client
@@ -361,7 +476,7 @@ def update_user(client, user, **kwargs):
 
 @retry()
 def get_role_assignments(client, user, project):
-    """
+    """Get role assignments
 
     :param client:
     :type client: keystoneclient.v3.client.Client
@@ -375,8 +490,39 @@ def get_role_assignments(client, user, project):
 
 
 @retry()
-def grant_role(client, role_id, user, project):
+def get_group_role_assignments(client, group, project):
+    """Get group role assignments
+
+    :param client:
+    :type client: keystoneclient.v3.client.Client
+    :param group:
+    :type group: keystoneclient.v3.groups.Group
+    :param project:
+    :type project: keystoneclient.v3.projects.Project
+    :return:
+    :rtype: list[keystoneclient.v3.roles.Role]
     """
+    return client.role_assignments.list(group=group, project=project)
+
+
+@retry()
+def get_domain_role_assignments(client, user, domain):
+    """Get domain role assignments
+
+    :param client:
+    :type client: keystoneclient.v3.client.Client
+    :param user:
+    :type user: keystoneclient.v3.users.User
+    :param domain:
+    :type project: keystoneclient.v3.domains.Domain
+    :return:
+    """
+    return client.role_assignments.list(user=user, domain=domain)
+
+
+@retry()
+def grant_role(client, role_id, user, project):
+    """Grant role
 
     :param client:
     :type client: keystoneclient.v3.client.Client
@@ -391,8 +537,41 @@ def grant_role(client, role_id, user, project):
     client.roles.grant(role_id, user=user, project=project)
 
 
-def ensure_user_in_group(client, user, group):
+@retry()
+def grant_group_role(client, role_id, group, project):
+    """Grant group role
+
+    :param client:
+    :type client: keystoneclient.v3.client.Client
+    :param role_id:
+    :type role_id: str
+    :param group:
+    :type group: keystoneclient.v3.groups.Group
+    :param project:
+    :type project: keystoneclient.v3.projects.Project
+    :return:
     """
+    client.roles.grant(role_id, group=group, project=project)
+
+
+@retry()
+def grant_domain_role(client, role_id, user, domain):
+    """Grant domain role
+
+    :param client:
+    :type client: keystoneclient.v3.client.Client
+    :param role_id:
+    :type role_id: str
+    :param user:
+    :type user: keystoneclient.v3.users.User
+    :param domain:
+    :type domain: keystoneclient.v3.domains.Domain
+    :return:
+    """
+    client.roles.grant(role_id, user=user, domain=domain)
+
+def ensure_user_in_group(client, user, group):
+    """Ensure user is in the specified group
 
     :type client: keystoneclient.v3.client.Client
     :type user: keystoneclient.v3.users.User
@@ -409,7 +588,7 @@ def ensure_user_in_group(client, user, group):
 
 @retry()
 def ensure_kubernetes_namespace(client, namespace):
-    """
+    """Ensure Kubernetes namespace exists
 
     :type client: kubernetes.KubernetesAPIClient
     :type namespace: str
@@ -431,7 +610,7 @@ def ensure_kubernetes_namespace(client, namespace):
 
 @retry()
 def get_kubernetes_secret(name, namespace=None):
-    """
+    """Get Kubernetes secret
 
     :param name:
     :param namespace: namespace, auto if None
@@ -444,15 +623,15 @@ def get_kubernetes_secret(name, namespace=None):
 
     try:
         return client.get('/api/v1/namespaces/{}/secrets/{}', namespace, name)
-    except HTTPError as e:
-        if e.response.status_code != 404:
+    except HTTPError as err:
+        if err.response.status_code != 404:
             raise
 
         return None
 
 
 def create_kubernetes_secret(fields, name, namespace=None, replace=False):
-    """
+    """Create Kubernetes secret
 
     :param fields:
     :type fields: dict[str, str]
@@ -490,15 +669,14 @@ def create_kubernetes_secret(fields, name, namespace=None, replace=False):
                     name, namespace)
         return client.request('PUT', '/api/v1/namespaces/{}/secrets/{}',
                               namespace, name, json=secret)
-    else:
-        logger.info('creating secret "%s" in namespace "%s"', name, namespace)
-        return client.post('/api/v1/namespaces/{}/secrets',
-                           namespace, json=secret)
+
+    logger.info('creating secret "%s" in namespace "%s"', name, namespace)
+    return client.post('/api/v1/namespaces/{}/secrets',
+                       namespace, json=secret)
 
 
 def diff_kubernetes_secret(secret, desired_fields):
-    """
-    Computes a set of changed fields (either added, removed, or modified)
+    """Computes a set of changed fields (either added, removed, or modified)
     between the given existing secret and the set of desired fields.
 
     :param secret: an existing secret as a KubernetesAPIResponse containing
@@ -527,14 +705,14 @@ def parse_secret(secret):
         if '/' in secret:
             namespace, name = secret.split('/', 1)
             return namespace, name
-        else:
-            return None, secret
+
+        return None, secret
 
     return secret['namespace'], secret['name']
 
 
 def get_password(secret):
-    """
+    """Get password
 
     :type secret: KubernetesAPIResponse
     :return:
@@ -542,16 +720,15 @@ def get_password(secret):
     if 'OS_PASSWORD' not in secret.data:
         # probably not recoverable, short of deleting the existing
         # secret and re-creating (which would be awful in its own way)
-        raise KeystoneInitException('existing secret %s is '
-                                    'invalid' % secret.metadata.name)
+        raise KeystoneInitException('existing secret {} is '
+                                    'invalid'.format(secret.metadata.name))
 
     pass_bytes = base64.b64decode(secret.data['OS_PASSWORD'])
     return pass_bytes.decode('utf-8')
 
 
 def ensure_kubernetes_secret(existing, fields, secret_cfg):
-    """
-    Ensures that a secret exists with the given fields and values. Existing
+    """Ensures that a secret exists with the given fields and values. Existing
     secrets will be replaced if fields have changed.
 
     :param existing: the existing secret
@@ -578,7 +755,7 @@ def ensure_kubernetes_secret(existing, fields, secret_cfg):
 
 
 def load_global_roles(ks, global_roles):
-    """
+    """Load global roles
 
     :type ks: keystoneclient.v3.client.Client
     :type global_roles: list[str]
@@ -588,8 +765,26 @@ def load_global_roles(ks, global_roles):
         get_or_create_global_role(ks, role_name)
 
 
-def load_user(ks, domain, user_cfg, member_role_name, admin_url=None):
+def _roles_to_grant(ks, domain, current_roles, desired_role_names):
+    """Which roles to grant
+
+    :type ks: keystoneclient.v3.client.Client
+    :type current_roles: list[keystoneclient.v3.roles.Role]
+    :type desired_role_names: list[str]
+    :return: A set of role IDs to grant (desired - current)
+    :rtype: set[str]
     """
+
+    current_ids = set(map(lambda a: a.role['id'], current_roles))
+    desired_roles = map(lambda n: get_or_create_role(ks, domain, n),
+                        desired_role_names)
+    desired_ids = set(map(lambda r: r.id, desired_roles))
+
+    return desired_ids - current_ids
+
+
+def load_user(ks, domain, user_cfg, member_role_name, admin_url=None):
+    """Load user
 
     :type ks: keystoneclient.v3.client.Client
     :type domain: keystoneclient.v3.domains.Domain
@@ -614,7 +809,7 @@ def load_user(ks, domain, user_cfg, member_role_name, admin_url=None):
         s_namespace, s_name = parse_secret(user_cfg['secret'])
         secret = get_kubernetes_secret(s_name, s_namespace)
         if secret:
-            # TODO consider verifying this password (i.e. attempt to log in)
+            # TODO(timothyb89) consider verifying this password (i.e. attempt to log in)
             password = get_password(secret)
             logger.info('using existing password from secret %s for user %s',
                         s_name, username)
@@ -680,25 +875,34 @@ def load_user(ks, domain, user_cfg, member_role_name, admin_url=None):
             group = get_or_create_group(ks, domain, group_name)
             ensure_user_in_group(ks, user, group)
 
-    current_roles = get_role_assignments(ks, user, project)
-    current_ids = set(map(lambda a: a.role['id'], current_roles))
 
-    desired_role_names = user_cfg.get('roles', [])
-    desired_role_names.append(member_role_name)
-    desired_roles = map(lambda n: get_or_create_role(ks, domain, n),
-                        desired_role_names)
-    desired_ids = set(map(lambda r: r.id, desired_roles))
+    # TODO(sjmc7) should we remove roles that aren't in the list? Could modify
+    # roles_to_grant to return two lists
+    desired_project_roles = user_cfg.get('roles', [])
+    if desired_project_roles:
+        desired_project_roles.append(member_role_name)
+        current_project_roles = get_role_assignments(ks, user, project)
+        proj_roles_to_grant = _roles_to_grant(ks, domain,
+                                              current_project_roles,
+                                              desired_project_roles)
+        logger.info('granting project roles to user: %r', proj_roles_to_grant)
+        for role_id in proj_roles_to_grant:
+            grant_role(ks, role_id, user, project)
 
-    # TODO should we remove roles that aren't in the list?
-
-    roles_to_grant = desired_ids - current_ids
-    logger.info('granting roles to user: %r', roles_to_grant)
-    for role_id in roles_to_grant:
-        grant_role(ks, role_id, user, project)
+    # Now do the same for domains
+    desired_domain_roles = user_cfg.get('domain_roles', [])
+    if desired_domain_roles:
+        current_domain_roles = get_domain_role_assignments(ks, user, domain)
+        domain_roles_to_grant = _roles_to_grant(ks, domain,
+                                                current_domain_roles,
+                                                desired_domain_roles)
+        logger.info('granting domain roles to user: %r', domain_roles_to_grant)
+        for role_id in domain_roles_to_grant:
+            grant_domain_role(ks, role_id, user, domain)
 
 
 def load_domains(ks, domains, member_role_name):
-    """
+    """Load domains
 
     :type ks: keystoneclient.v3.client.Client
     :type domains: dict[str, dict[str, list]]
@@ -732,10 +936,35 @@ def load_domains(ks, domains, member_role_name):
     logger.info('all domains initialized successfully')
 
 
-def load_endpoints(ks, endpoints):
-    for name, options in endpoints.iteritems():
-        # TODO
-        pass
+def load_services(ks, services):
+    """Load services into Keystone.
+
+    :type ks: keystoneclient.v3.client.Client
+    :type services: dict[str, dict[str, list]]
+    :return:
+    """
+    for name, options in services.viewitems():
+        logger.debug('%r', options)
+        logger.info('creating service...')
+        service = get_or_create_service(
+            client=ks,
+            name=name,
+            service_type=options.get('type'),
+            description=options.get('description', None)
+        )
+
+        logger.info('creating %s endpoints...', name)
+        for endpoint in options.get('endpoints', []):
+            assert isinstance(endpoint, dict)
+
+            get_or_create_endpoint(
+                client=ks,
+                service=service,
+                url=options.get('url', ''),
+                endpoint=endpoint
+            )
+
+    logger.info('all services initialized successfully')
 
 
 def main():
@@ -755,8 +984,8 @@ def main():
         if 'domains' in preload:
             load_domains(ks, preload['domains'], member_role_name)
 
-        if 'endpoints' in preload:
-            load_endpoints(ks, preload['endpoints'])
+        if 'services' in preload:
+            load_services(ks, preload['services'])
 
 
 if __name__ == '__main__':

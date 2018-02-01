@@ -5,3 +5,10 @@ domains:
     projects: []
     roles: []
     users: []
+    groups: []
+
+services:
+  example:
+    type:
+    description:
+    endpoints: []

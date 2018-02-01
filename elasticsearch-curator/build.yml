@@ -1,0 +1,7 @@
+repository: monasca/elasticsearch-curator
+variants:
+  - tag: 4.3.1-1.0.0
+    aliases:
+      - :latest
+    args:
+      ELASTICSEARCH_CURATOR_VERSION: 4.3.1

@@ -29,6 +29,11 @@ This is mainly intended for use in Kubernetes environments configured using
 Once the container starts, press enter once to start the shell. Basic usage
 information will be printed to the terminal.
 
+As [keystone-init][4] includes all necessary environment variables inside its
+secrets, no additional environment variables are needed. However, use without
+this utility or in standalone Docker environments will require the necessary 
+`OS_` variables to be set manually.
+
 There are three commands available:
  - `secret <NAME>`: load keystone `OS_` variables from secret in current
    namespace `NAME`
@@ -38,6 +43,8 @@ There are three commands available:
    - if specified, secret with `NAME` will be loaded first (as with
      `secret NAME`) and will override existing environment variables
  - `openstack ...`: the standard openstack client
+ - `monasca ...`: the standard Monasca client (additional configuration
+   needed, see below)
 
 Direct Shell
 ------------
@@ -82,6 +89,25 @@ If Keystone is available and the credentials work, the return code will be
 zero. If Keystone is not available or the credentials are invalid, the return
 code will be 1. Log information should be printed to help narrow down the
 error, or at least as much as Keystone will be willing to divulge about it.
+
+Interacting with Monasca
+------------------------
+
+The keystone-shell container includes a monasca client as well, however it may 
+require a small amount of manual configuration:
+
+    $ kubectl run keystone-shell -i -t \
+        --rm=true \
+        --restart Never \
+        --env="KEYSTONE_SECRET=keystone-example-user"
+        --image=monasca/keystone-shell:latest
+    keystone-shell:/# export MONASCA_API_URL=http://monasca-api:8070/
+    keystone-shell:/# export OS_IDENTITY_API_VERSION=3
+    keystone-shell:/# monasca ...
+    
+
+Note that your particular `monasca-api` may have a different service name.
+     
 
 Configuration
 -------------

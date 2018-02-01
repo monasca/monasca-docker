@@ -26,7 +26,7 @@ from keystoneauth1.session import Session
 from keystoneclient.discover import Discover
 from requests import HTTPError
 
-from kubernetes import KubernetesAPIClient, KubernetesAPIResponse
+from tiny_kubernetes.kubernetes import KubernetesAPIClient, KubernetesAPIResponse
 
 NAMESPACE_FILE = '/var/run/secrets/kubernetes.io/serviceaccount/namespace'
 

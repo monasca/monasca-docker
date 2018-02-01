@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source /root/.keystonerc
+. /root/.keystonerc
 
 if [ -t 1 ]; then
     echo "Press enter to continue..."
@@ -11,7 +11,7 @@ if [ -t 1 ]; then
     echo "  secret    <secret name>  - load a different secret"
     echo "  shell     [secret name]  - open a python shell with keystone and k8s clients"
     echo "  openstack [...]          - use the openstack client"
-    echo "  monasca   [...]          - use the monasca client
+    echo "  monasca   [...]          - use the monasca client"
     echo ""
 
     if [ -n "$KEYSTONE_SECRET" ]; then

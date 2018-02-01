@@ -1,3 +1,5 @@
+#!/bin/sh
+
 secret() {
     eval "$(python /keystone_shell_vars.py $1)"
 }

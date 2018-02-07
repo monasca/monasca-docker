@@ -1,4 +1,4 @@
-FROM fest/storm:pike-latest
+FROM fest/storm:2.0.1
 
 ENV MAVEN_HOME /usr/share/maven
 
@@ -6,7 +6,7 @@ COPY settings.xml.j2 /
 
 ENV COMMON_REPO=https://git.openstack.org/openstack/monasca-common.git \
   COMMON_BRANCH="stable/pike" \
-  THRESH_REPO=https://git.openstack.org/openstack/monasca-thresh.git \
+  THRESH_REPO=https://github.com/FujitsuEnablingSoftwareTechnologyGmbH/monasca-thresh.git \
   THRESH_BRANCH="stable/pike" \
   STORM_WAIT_RETRIES=12 \
   STORM_WAIT_DELAY=5 \

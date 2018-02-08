@@ -18,6 +18,7 @@ import glob
 import json
 import logging
 import os
+import sys
 import time
 import urllib
 
@@ -42,6 +43,8 @@ GRAFANA_USERS = [{
 DATASOURCE_NAME = os.environ.get('DATASOURCE_NAME', 'monasca')
 DATASOURCE_URL = os.environ.get('DATASOURCE_URL', 'http://monasca:8070/')
 DATASOURCE_ACCESS_MODE = os.environ.get('DATASOURCE_ACCESS_MODE', 'proxy')
+DATASOURCE_AUTH = os.environ.get('DATASOURCE_AUTH', 'Keystone').capitalize()
+DATASOURCE_AUTH_TOKEN = os.environ.get('DATASOURCE_AUTH_TOKEN', '')
 
 DASHBOARDS_DIR = os.environ.get('DASHBOARDS_DIR', '/dashboards.d')
 
@@ -134,10 +137,23 @@ def create_datasource_payload():
         'isDefault': True,
     }
 
+    if DATASOURCE_AUTH not in ['Keystone', 'Horizon', 'Token']:
+        logger.error('Unknown Keystone authentication option: %s',
+                     DATASOURCE_AUTH)
+        sys.exit(1)
+
+    keystone_auth = False
+    if DATASOURCE_AUTH in ['Keystone']:
+        keystone_auth = True
+
     payload.update({
         'monasca': {
             'type': 'monasca-datasource',
-            'jsonData': {'keystoneAuth': True}
+            'jsonData': {
+                'authMode': DATASOURCE_AUTH,
+                'keystoneAuth': keystone_auth,
+                'token': DATASOURCE_AUTH_TOKEN,
+            }
         }
     }.get(DATASOURCE_NAME, {}))
 

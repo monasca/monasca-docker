@@ -7,6 +7,7 @@ env LOG_LEVEL=INFO \
   DATASOURCE_TYPE=monasca \
   DATASOURCE_URL=http://monasca:8070/ \
   DATASOURCE_ACCESS_MODE=proxy \
+  DATASOURCE_AUTH=Keystone \
   DASHBOARDS_DIR=/dashboards.d
 
 run apk add --no-cache python py2-requests

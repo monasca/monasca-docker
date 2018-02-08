@@ -46,6 +46,8 @@ Configuration
 | `GRAFANA_ADMIN_PASSWORD`  | `password`      | Agent Keystone admin username   |
 | `DATASOURCE_URL`   | `http://monasca:8070/` | Agent Keystone project name     |
 | `DATASOURCE_ACCESS_MODE` | `proxy`          | Grafana access mode string      |
+| `DATASOURCE_AUTH`  | `Keystone`             | Grafana authentication option (`Keystone`, `Horizon`, `Token`) |
+| `DATASOURCE_AUTH_TOKEN` | ``                | Keystone token for authentication (for use when `DATASOURCE_AUTH` is set to `Token`) |
 | `DASHBOARDS_DIR`   | `/dashboards.d`        | Directory to scan for .json dashboards |
 
 Note that the only datasource type supported at the moment is `monasca`. Other
@@ -83,8 +85,8 @@ sorted before importing, so filenames can be prefixed, e.g. `01-first.json`,
 
 
 [1]: https://wiki.openstack.org/wiki/Monasca
-[2]: https://github.com/hpcloud-mon/monasca-docker/blob/master/grafana-init/
-[3]: https://github.com/hpcloud-mon/monasca-docker/blob/master/grafana-init/Dockerfile
-[4]: https://github.com/hpcloud-mon/monasca-docker/
+[2]: https://github.com/monasca/monasca-docker/blob/master/grafana-init/
+[3]: https://github.com/monasca/monasca-docker/blob/master/grafana-init/Dockerfile
+[4]: https://github.com/monasca/monasca-docker/
 [5]: https://hub.docker.com/r/monasca/grafana/
-[6]: https://github.com/hpcloud-mon/monasca-docker/blob/master/grafana-init/grafana.py
+[6]: https://github.com/monasca/monasca-docker/blob/master/grafana-init/grafana.py

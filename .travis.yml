@@ -14,6 +14,8 @@ env:
   - IGNORE_DOCKER_VERSION=true PYTHONUNBUFFERED=true
 
 before_install:
+  - docker --version
+  - docker-compose --version
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
   - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
   - sudo apt-get update

@@ -9,20 +9,17 @@ addons:
     - debian-sid    # Grab shellcheck from the Debian repo (o_O)
     packages:
     - shellcheck
+    - docker-ce
 
 env:
   - IGNORE_DOCKER_VERSION=true PYTHONUNBUFFERED=true
 
 before_install:
-  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-  - sudo apt-get update
-  - sudo apt-get -y install docker-ce
+  - docker --version
+  - docker-compose --version
   - pip install pip --upgrade
   - pip install git+https://github.com/timothyb89/dbuild.git
   - pip install google-cloud-storage
-  - docker --version
-  - docker-compose --version
 
 jobs:
   include:

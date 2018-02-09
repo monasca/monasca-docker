@@ -48,10 +48,10 @@ parameters if necessary as below.
 Configuration
 -------------
 
-| Variable                 | Default | Description                     |
-|--------------------------|---------|---------------------------------|
-| `GRAFANA_ADMIN_USER`     | `admin` | Grafana admin user name         |
-| `GRAFANA_ADMIN_PASSWORD` | `admin` | Grafana admin user password     |
+|         Variable         |     Default     |         Description         |
+|--------------------------|-----------------|-----------------------------|
+| `GRAFANA_ADMIN_USER`     | `grafana-admin` | Grafana admin user name     |
+| `GRAFANA_ADMIN_PASSWORD` | `admin`         | Grafana admin user password |
 
 Grafana can be configured using [environment variables][7], though a
 configuration file can also be mounted into the image at

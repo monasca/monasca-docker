@@ -12,7 +12,7 @@ arg MONASCA_APP_BRANCH=master
 arg REBUILD=1
 
 env GOPATH=/go GOBIN=/go/bin \
-    GRAFANA_ADMIN_USER=admin \
+    GRAFANA_ADMIN_USER=grafana-admin \
     GRAFANA_ADMIN_PASSWORD=admin
 
 run mkdir -p /var/lib/grafana && \

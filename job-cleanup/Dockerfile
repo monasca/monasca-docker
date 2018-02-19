@@ -1,8 +1,10 @@
-from alpine:3.5
+from alpine:3.6
 
-run apk add --no-cache py2-pip py2-yaml && \
-    pip install dpath dotmap urllib3 ipaddress requests
+copy requirements.txt /requirements.txt
 
-add kubernetes.py cleanup.py /
+run apk add --no-cache python3 py3-yaml git && \
+    pip3 install -r requirements.txt
 
-cmd ["python", "/cleanup.py"]
+add cleanup.py /
+
+cmd ["python3", "/cleanup.py"]

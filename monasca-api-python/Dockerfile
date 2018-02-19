@@ -44,17 +44,8 @@ RUN /build.sh -r ${API_REPO} -b ${API_BRANCH} \
   rm -rf /build.sh
 
 COPY api-* /etc/monasca/
-COPY template.py start.sh health-check.sh kafka_wait_for_topics.py /
+COPY template.py start.sh kafka_wait_for_topics.py /
 
 EXPOSE 8070
-
-HEALTHCHECK --interval=10s --timeout=5s \
-  CMD /health-check.sh \
-    $KEYSTONE_AUTH_URI \
-    $KEYSTONE_ADMIN_USER \
-    $KEYSTONE_ADMIN_PASSWORD \
-    $KEYSTONE_ADMIN_TENANT \
-    $KEYSTONE_ADMIN_DOMAIN \
-    $MONASCA_CONTAINER_API_PORT
 
 CMD ["/start.sh"]

@@ -1,8 +1,6 @@
 #!/bin/ash
 # shellcheck shell=dash
-# (C) Copyright 2017 Hewlett Packard Enterprise Development LP
-
-set -x
+# (C) Copyright 2017-2018 Hewlett Packard Enterprise Development LP
 
 AGENT_CONF="/etc/monasca/agent"
 
@@ -14,6 +12,8 @@ if [ "$KEYSTONE_DEFAULTS_ENABLED" = "true" ]; then
   export OS_PROJECT_NAME=${OS_PROJECT_NAME:-"mini-mon"}
   export OS_PROJECT_DOMAIN_NAME=${OS_PROJECT_DOMAIN_NAME:-"Default"}
 fi
+
+set -x
 
 template () {
   if [ "$CONFIG_TEMPLATE" = "true" ]; then

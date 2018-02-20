@@ -54,6 +54,20 @@ services:
     networks:
       - network_keystone
 
+  horizon:
+    hostname: horizon-host
+    image: fest/horizon:${HORIZON_VERSION}
+    restart: on-failure
+    environment:
+      MON_KEYSTONE_URL: ${MON_KEYSTONE_URL}
+      GRAFANA_URL: ${MON_GRAFANA_URL}
+    depends_on:
+      - keystone
+    ports:
+      - "80:80"
+    networks:
+      - network_keystone
+   
 networks:
   network_keystone:
     driver: bridge

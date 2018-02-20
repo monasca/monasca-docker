@@ -1,5 +1,5 @@
 repository: monasca/aggregator
 variants:
-  - tag: 0.1.5
+  - tag: latest
     aliases:
-      - :latest
+      - :0.1.6

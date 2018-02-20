@@ -1,5 +1,4 @@
-# librdkafka is not available in a stable alpine release
-from alpine:edge
+from alpine:3.7
 
 arg AGGREGATOR_REPO=https://github.com/monasca/monasca-aggregator
 arg AGGREGATOR_BRANCH=master

@@ -11,10 +11,7 @@ curl --include --silent --show-error --output - \
         $1 ~ /^\{/ {body=$0}
         {output=output $0 "\n"}
         END {
-            if(status_code=="200") {
-                print status_line;
-                print body;
-            } else {
+            if(status_code!="200") {
                 print output;
                 exit 2;
             }

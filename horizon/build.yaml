@@ -1,5 +1,5 @@
 repository: fest/horizon
 variants:
-  - tag: 1.0.0
+  - tag: 1.0.1
     aliases:
       - :pike-{date}-{time}

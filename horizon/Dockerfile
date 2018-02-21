@@ -1,7 +1,12 @@
 FROM ubuntu:16.04
 
+ARG MON_UI_REPO=https://github.com/FujitsuEnablingSoftwareTechnologyGmbH/monasca-ui
+ARG MON_UI_BRANCH=stable/ocata
+ARG MON_UI_CONSTRAINTS_BRANCH=stable/ocata
+ARG HORIZON_BRANCH=10.0.5
+ARG HORIZON_CONSTRAINTS_BRANCH=stable/newton
 ENV MON_KEYSTONE_URL=127.0.0.1:5000 \
- GRAFANA_URL=127.0.0.1:3000
+    GRAFANA_URL=127.0.0.1:3000
 
 RUN apt-get -y update && apt-get -y upgrade && \
     apt-get -y install \
@@ -14,10 +19,10 @@ RUN apt-get -y update && apt-get -y upgrade && \
 
 COPY start.sh local_settings.py.j2 monitoring-local_settings.py.j2 /
 
-RUN git clone --depth 1 https://git.openstack.org/openstack/horizon -b 10.0.5 /horizon && \
-    git clone --depth 1 https://git.openstack.org/openstack/monasca-ui -b stable/ocata /monasca-ui && \
-    pip install -c http://git.openstack.org/cgit/openstack/requirements/plain/upper-constraints.txt?h=stable/newton /horizon/. && \
-    pip install -c http://git.openstack.org/cgit/openstack/requirements/plain/upper-constraints.txt?h=stable/ocata /monasca-ui/.
+RUN git clone --depth 1 https://git.openstack.org/openstack/horizon -b $HORIZON_BRANCH /horizon && \
+    git clone --depth 1 $MON_UI_REPO -b $MON_UI_BRANCH /monasca-ui && \
+    pip install -c http://git.openstack.org/cgit/openstack/requirements/plain/upper-constraints.txt?h=$HORIZON_CONSTRAINTS_BRANCH /horizon/. && \
+    pip install -c http://git.openstack.org/cgit/openstack/requirements/plain/upper-constraints.txt?h=$MON_UI_CONSTRAINTS_BRANCH /monasca-ui/.
 
 WORKDIR /horizon
 

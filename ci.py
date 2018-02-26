@@ -53,6 +53,7 @@ METRIC_PIPELINE_MODULE_TO_COMPOSE_SERVICES = {
     'monasca-agent-collector': 'agent-collector',
     'grafana': 'grafana',
     'keystone': 'keystone',
+    'horizon': 'horizon',
     'monasca-notification': 'monasca-notification',
     'grafana-init': 'grafana-init'
 }

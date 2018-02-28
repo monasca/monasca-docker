@@ -7,34 +7,34 @@
 # - docker-compose-log.yml    (as extension: log pipeline)
 #
 # Before you start:
-# - make sure that the Keystone service is up and running
+# - make sure that the OpenStack Keystone service is up and running
 # - provide the necessary configuration in this file and replace the
 #   placeholders "<...>" with the correct settings (see below)
 #   * configure the IPv4 address (MON_KEYSTONE_URL) for the OpenStack Keystone host
 #   * make sure that Kibana authorization is enabled (MON_MONASCA_PLUGIN_ENABLED)
 #   * set the path to mount Kibana to the OpenStack Horizon proxy (MON_BASE_PATH)
 #   * adapt the Grafana credentials for grafana-admin and grafana-user
-#     (see MON_GRAFANA_*)
+#     (MON_GRAFANA_*)
 #   * adapt the user credentials for agent and admin to your
-#     OpenStack Keystone installation (see MON_AGENT_*)
-#   * set the path for the data directories (see MON_DOCKER_VOL_ROOT)
-#   * set the path for the backup directories (see MON_BACKUP_DIR)
-#   * configure data retention for Elasticsearch and InfluxDB
-#   * configure monasca-notification plugins
+#     OpenStack Keystone installation (MON_AGENT_*)
+#   * set the path for the data directories (MON_DOCKER_VOL_ROOT)
+#   * set the path for the backup directories (MON_BACKUP_DIR)
+#   * configure data retention for the Elasticsearch and InfluxDB databases
+#   * configure the Notifcation Engine plugins
 ################################################################################
 
 ################################################################################
-# Set IPv4 address of the Keystone host
+# Set the IPv4 address of the OpenStack Keystone host
 ################################################################################
 MON_KEYSTONE_URL=http://<IPv4 address>:5000
 
 ################################################################################
-# Kibana authorization via Horizon
+# Enable Kibana authorization via OpenStack Horizon
 ################################################################################
 MON_MONASCA_PLUGIN_ENABLED=True
 
 ################################################################################
-# Set the path to mount Kibana to the Horizon proxy
+# Set the path to mount Kibana to the OpenStack Horizon proxy
 ################################################################################
 MON_BASE_PATH=/dashboard/monitoring/logs_proxy
 
@@ -51,7 +51,7 @@ MON_GRAFANA_ADMIN_PASSWORD=<grafana admin password>
 MON_GRAFANA_USERS=<json with users data>
 
 ################################################################################
-# Set the Keystone credentials
+# Set the OpenStack Keystone credentials
 ################################################################################
 # Agent credentials
 MON_AGENT_USERNAME=<Monasca agent name>
@@ -69,25 +69,25 @@ MON_KEYSTONE_ADMIN_PASSWORD=<OpenStack admin user password>
 MON_DOCKER_VOL_ROOT=/opt/monasca-containers
 
 ################################################################################
-# Set path for backup directories of Elasticsearch, InfluxDB, MySQL
+# Set the path for the backup directories of Elasticsearch, InfluxDB, and MySQL
 ################################################################################
 MON_BACKUP_DIR=/mount/backup
 
 ################################################################################
 # Configure data retention
 ################################################################################
-# Retention period for Elasticsearch database (delete job executed every day
-# at 12 a.m. UTC)
+# Retention period for Elasticsearch database 
+# Delete job is executed every day at 12 a.m. UTC
 MON_ELASTICSEARCH_DATA_RETENTION_DAYS=60
 
-# Retention perion for InfluxDB database
+# Retention period for InfluxDB database
 MON_INFLUXDB_RETENTION=60d
 
 ################################################################################
-# Monasca-notification plugins
-#   -A list of notification plugins can be provided by setting NF_PLUGINS to a
-#    comma-separated list of plugin names.
-#    Available plugins: email, webhook, pagerduty, hipchat, slack.
+# Enable the required Notification Engine plugins
+# The plugins are provided by setting NF_PLUGINS to a
+# comma-separated list of plugin names.
+# Available plugins: email, webhook, pagerduty, hipchat, and slack
 ################################################################################
 NF_PLUGINS=webhook
 ###email###

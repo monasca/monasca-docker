@@ -42,7 +42,7 @@ LOG_PIPELINE_MARKER = 'logs'
 METRIC_PIPELINE_MODULE_TO_COMPOSE_SERVICES = {
     'monasca-agent-forwarder': 'agent-forwarder',
     'zookeeper': 'zookeeper',
-    'zookeeper-watcher': 'zookeeper',
+    'zookeeper-watcher': 'zookeeper-watcher',
     'influxdb': 'influxdb',
     'influxdb-watcher': 'influxdb-watcher',
     'kafka': 'kafka',

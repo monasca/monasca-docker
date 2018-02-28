@@ -8,7 +8,7 @@ Tags
 
 Images in this repository are tagged as follows:
 
-* `0.0.1` - standard [SemVer][1]
+* `0.0.2` - standard [SemVer][1]
 * `latest`: the latest version recommended to use with other Monasca
   components.
 

@@ -8,7 +8,7 @@ version: '2'
 services:
 
   mysql_keystone:
-    hostname: keystone-host
+    hostname: dev-host
     image: mysql:${MYSQL_VERSION}
     restart: on-failure
     environment:
@@ -18,7 +18,7 @@ services:
       - network_keystone
 
   mysql-init_keystone:
-    hostname: keystone-host
+    hostname: dev-host
     image: fest/mysql-init:${MYSQL_INIT_VERSION}
     environment:
       CREATE_MON_USERS: "false"
@@ -33,7 +33,7 @@ services:
       - mysql_keystone
 
   keystone:
-    hostname: keystone-host
+    hostname: dev-host
     image: fest/keystone:${MON_KEYSTONE_VERSION}
     restart: on-failure
     environment:
@@ -55,7 +55,7 @@ services:
       - network_keystone
 
   horizon:
-    hostname: horizon-host
+    hostname: dev-host
     image: fest/horizon:${HORIZON_VERSION}
     restart: on-failure
     environment:

@@ -5,8 +5,8 @@ ARG MON_UI_BRANCH=stable/ocata
 ARG MON_UI_CONSTRAINTS_BRANCH=stable/ocata
 ARG HORIZON_BRANCH=10.0.5
 ARG HORIZON_CONSTRAINTS_BRANCH=stable/newton
-ENV MON_KEYSTONE_URL=127.0.0.1:5000 \
-    GRAFANA_URL=127.0.0.1:3000
+ENV MON_KEYSTONE_URL=keystone:5000 \
+    GRAFANA_URL=grafana:3000
 
 RUN apt-get -y update && apt-get -y upgrade && \
     apt-get -y install \

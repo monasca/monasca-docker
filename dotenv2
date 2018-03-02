@@ -14,13 +14,13 @@
 #   * make sure that Kibana authorization is enabled (MON_MONASCA_PLUGIN_ENABLED)
 #   * set the path to mount Kibana to the OpenStack Horizon proxy (MON_BASE_PATH)
 #   * adapt the Grafana credentials for grafana-admin and grafana-user
-#     (MON_GRAFANA_*)
+#     (see MON_GRAFANA_*)
 #   * adapt the user credentials for agent and admin to your
 #     OpenStack Keystone installation (MON_AGENT_*)
 #   * set the path for the data directories (MON_DOCKER_VOL_ROOT)
 #   * set the path for the backup directories (MON_BACKUP_DIR)
 #   * configure data retention for the Elasticsearch and InfluxDB databases
-#   * configure the Notifcation Engine plugins
+#   * configure the Notification Engine plugins
 ################################################################################
 
 ################################################################################
@@ -87,7 +87,7 @@ MON_INFLUXDB_RETENTION=60d
 # Enable the required Notification Engine plugins
 # The plugins are provided by setting NF_PLUGINS to a
 # comma-separated list of plugin names.
-# Available plugins: email, webhook, pagerduty, hipchat, and slack
+# Available plugins: email, webhook, pagerduty, hipchat, and slack.
 ################################################################################
 NF_PLUGINS=webhook
 ###email###

@@ -84,51 +84,63 @@ MON_ELASTICSEARCH_DATA_RETENTION_DAYS=60
 MON_INFLUXDB_RETENTION=60d
 
 ################################################################################
-# Enable the required Notification Engine plugins
-# The plugins are provided by setting NF_PLUGINS to a
-# comma-separated list of plugin names.
-# Available plugins: email, webhook, pagerduty, hipchat, and slack.
+# Enable the Notification Engine plugins
+# - Available plugins: email, webhook, pagerduty, hipchat, and slack
+# - Specify the names of the plugins to be enabled as comma-separated list 
+#   for the NF_PLUGINS parameter
+# - Specify the plugin-specific configuration parameters
 ################################################################################
 NF_PLUGINS=webhook
-###email###
-#SMTP server address, required
+
+# Configure the Email plugin
+# The host name or IP address of the SMTP mail server.
 NF_EMAIL_SERVER=
-#SMTP server port
+# The port number of the SMTP mail server. Default port number: 25.
 NF_EMAIL_PORT=
-# SMTP username, optional
+# Optional. The name of a user to be used for authentication against the 
+# SMTP mail system.
 NF_EMAIL_USER=
-#SMTP password, required only if NF_EMAIL_USER is set
+# Password of the user specified in NF_EMAIL_USER. 
 NF_EMAIL_PASSWORD=
-# "from" field for emails sent, e.g. "Name" <name@example.com>
+# Email address from which to send the emails. Example: name@example.com
 NF_EMAIL_FROM_ADDR=
-###webhook###
-#timeout in seconds, default: 5
+
+# Configure the WebHook plugin
+# Timeout period in seconds the notification engine tries to call a WebHook 
+# when an alarm is triggered. Default: 5
 NF_WEBHOOK_TIMEOUT=5
-###pagerduty##
-#timeout in seconds, default: 5
+
+# Configure the PagerDuty plugin
+# Timeout period in seconds the notification engine tries to call PagerDuty 
+# when an alarm is triggered. Default: 5
 NF_PAGERDUTY_TIMEOUT=5
-#PagerDuty Event API endpoint, defaults to official URL
+# PagerDuty Event API endpoint. By default, the official PagerDuty URL is used.
 NF_PAGERDUTY_URL=
-###hipchat###
-#timeout in seconds, default: 5
+
+# Configure the HipChat plugin
+# Timeout period in seconds the notification engine tries to call HipChat 
+# when an alarm is triggered. Default: 5
 NF_HIPCHAT_TIMEOUT=5
-#path to SSL certs, default: system certs
+# Path to the SSL certificates. By default, the system certificates are used.
 NF_HIPCHAT_SSL_CERTS=
-#if true, don't verify SSL
+# If set to false, the SSL certificates are verified. 
 NF_HIPCHAT_INSECURE=
-# if set, use the given HTTP(S) proxy server to send notifications
+# Optional. IP address and port of the HTTP(S) proxy server to be used for sending
+# notifications. Example: https://12.12.12.20:2222
 NF_HIPCHAT_PROXY=
-###slack###
-# timeout in seconds, default: 5
+
+# Configure the Slack plugin
+# Timeout period in seconds the notification engine tries to call Slack 
+# when an alarm is triggered. Default: 5
 NF_SLACK_TIMEOUT=5
-# path to SSL certs, default: system certs
+# Path to the SSL certificates. By default, the system certificates are used.
 NF_SLACK_CERTS=
-#if true, don't verify SSL
+# If set to false, the SSL certificates are verified. 
 NF_SLACK_INSECURE=
-#if set, use the given HTTP(S) proxy server to send notifications
+# Optional. IP address and port of the HTTP(S) proxy server to be used for sending
+# notifications. Example: https://12.12.12.20:2222
 NF_SLACK_PROXY=
-
-
+  
 ################################################################################
 # Image versions
 ################################################################################

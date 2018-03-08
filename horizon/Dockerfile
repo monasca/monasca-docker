@@ -6,7 +6,8 @@ ARG MON_UI_CONSTRAINTS_BRANCH=stable/ocata
 ARG HORIZON_BRANCH=10.0.5
 ARG HORIZON_CONSTRAINTS_BRANCH=stable/newton
 ENV MON_KEYSTONE_URL=keystone:5000 \
-    GRAFANA_URL=grafana:3000
+    GRAFANA_IP=grafana \
+    GRAFANA_PORT=3000
 
 RUN apt-get -y update && apt-get -y upgrade && \
     apt-get -y install \
@@ -16,8 +17,6 @@ RUN apt-get -y update && apt-get -y upgrade && \
       libapache2-mod-wsgi && \
     apt-get clean && \
     pip install shinto-cli
-
-COPY start.sh local_settings.py.j2 monitoring-local_settings.py.j2 /
 
 RUN git clone --depth 1 https://git.openstack.org/openstack/horizon -b $HORIZON_BRANCH /horizon && \
     git clone --depth 1 $MON_UI_REPO -b $MON_UI_BRANCH /monasca-ui && \
@@ -36,7 +35,9 @@ RUN ln -sf /monasca-ui/monitoring/enabled/_50_admin_add_monitoring_panel.py \
     ./manage.py make_web_conf --apache > /etc/apache2/sites-available/horizon.conf && \
     chown -R www-data:www-data /horizon/openstack_dashboard/local/.secret_key_store \
       /horizon/static/dashboard && \
-    a2ensite horizon && a2dissite 000-default
+    a2ensite horizon && a2dissite 000-default && a2enmod proxy proxy_http
+
+COPY start.sh local_settings.py.j2 monitoring-local_settings.py.j2 /
 
 EXPOSE 80
 CMD ["/start.sh"]

@@ -6,7 +6,7 @@ fi
 
 export GRAFANA_LOG_LEVEL=${GRAFANA_LOG_LEVEL:-"warn"}
 
-FILENAME = /var/lib/grafana/public/dashboards/drilldown.js
+FILENAME=/var/lib/grafana/public/dashboards/drilldown.js
 if [ ! -f $FILENAME ]; then
    copy /drilldown.js /var/lib/grafana/public/dashboards/drilldown.js
 fi

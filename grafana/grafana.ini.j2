@@ -43,7 +43,7 @@ plugins = /var/lib/grafana/plugins
 ;enforce_domain = false
 
 # The full public facing url
-;root_url = %(protocol)s://%(domain)s:%(http_port)s/
+root_url = %(protocol)s://%(domain)s/grafana
 
 # Log web requests
 ;router_logging = false
@@ -144,7 +144,7 @@ admin_password = {{ GRAFANA_ADMIN_PASSWORD }}
 #################################### Users ####################################
 [users]
 # disable user signup / registration
-;allow_sign_up = true
+allow_sign_up = false
 
 # Allow non admin users to create organizations
 ;allow_org_create = true
@@ -164,13 +164,13 @@ admin_password = {{ GRAFANA_ADMIN_PASSWORD }}
 #################################### Anonymous Auth ##########################
 [auth.anonymous]
 # enable anonymous access
-;enabled = false
+enabled = true
 
 # specify organization name that should be used for unauthenticated users
-;org_name = Main Org.
+org_name = Main Org.
 
 # specify role for unauthenticated users
-;org_role = Viewer
+org_role = Viewer
 
 #################################### Github Auth ##########################
 [auth.github]
@@ -290,8 +290,8 @@ level = {{ GRAFANA_LOG_LEVEL }}
 
 ;#################################### Dashboard JSON files ##########################
 [dashboards.json]
-;enabled = false
-;path = /var/lib/grafana/dashboards
+enabled = true
+path = /var/lib/grafana/public/dashboards
 
 #################################### Internal Grafana Metrics ##########################
 # Metrics available at HTTP API Url /api/metrics

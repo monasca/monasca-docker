@@ -29,6 +29,12 @@
 MON_KEYSTONE_URL=http://<IPv4 address>:5000
 
 ################################################################################
+# Horizon
+# Horizon IP is needed for properly setting Monasca Grafana Datasource
+################################################################################
+HORIZON_IP=<IPv4 address>
+
+################################################################################
 # Enable Kibana authorization via OpenStack Horizon
 ################################################################################
 MON_MONASCA_PLUGIN_ENABLED=True
@@ -39,16 +45,10 @@ MON_MONASCA_PLUGIN_ENABLED=True
 MON_BASE_PATH=/dashboard/monitoring/logs_proxy
 
 ################################################################################
-# Define the Grafana user settings
-# - Grafana admin (user name must be different to all OpenStack user names)
-# - Grafana user is the OpenStack admin user (see "admin credentials" below)
-#   (The Monasca data-source is assigned automatically to the Grafana user)
-#   It need to be provided in JSON format together with project and domain
-#   Example: [{"user": "mini-mon", "password": "password", "email": "", "project": "mini-mon", "domain": "Default"}]
+# Define Grafana administrator settings
 ################################################################################
 MON_GRAFANA_ADMIN_USER=<grafana admin user name>
 MON_GRAFANA_ADMIN_PASSWORD=<grafana admin password>
-MON_GRAFANA_USERS=<json with users data>
 
 ################################################################################
 # Set the OpenStack Keystone credentials
@@ -76,7 +76,7 @@ MON_BACKUP_DIR=/mount/backup
 ################################################################################
 # Configure data retention
 ################################################################################
-# Retention period for Elasticsearch database 
+# Retention period for Elasticsearch database
 # Delete job is executed every day at 12 a.m. UTC
 MON_ELASTICSEARCH_DATA_RETENTION_DAYS=60
 
@@ -157,8 +157,8 @@ ZOOKEEPER_VERSION=3.4
 
 MON_KAFKA_VERSION=2.0.2
 MON_KAFKA_INIT_VERSION=2.0.0
-MON_GRAFANA_VERSION=2.0.4
-MON_GRAFANA_INIT_VERSION=2.0.6
+MON_GRAFANA_VERSION=2.1.0
+MON_GRAFANA_INIT_VERSION=2.0.7
 
 MON_API_VERSION=2.0.2
 MON_PERSISTER_VERSION=2.0.0

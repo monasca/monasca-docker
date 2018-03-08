@@ -245,9 +245,12 @@ services:
     hostname: docker-host
     image: fest/grafana-init:${MON_GRAFANA_INIT_VERSION}
     environment:
+      GRAFANA_URL: "http://${MON_GRAFANA_IP}/grafana"
       GRAFANA_ADMIN_USERNAME: ${MON_GRAFANA_ADMIN_USER}
       GRAFANA_ADMIN_PASSWORD: ${MON_GRAFANA_ADMIN_PASSWORD}
-      GRAFANA_USERS: ${MON_GRAFANA_USERS}
+      DATASOURCE_URL: "http://${HORIZON_IP}/monitoring/proxy"
+      DATASOURCE_ACCESS_MODE: "direct"
+      DATASOURCE_AUTH: "Horizon"
       LOGSTASH_FIELDS: "service=grafana-init"
     depends_on:
       - grafana

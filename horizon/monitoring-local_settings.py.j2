@@ -96,7 +96,7 @@ DASHBOARDS = getattr(settings, 'GRAFANA_LINKS', GRAFANA_LINKS)
 
 
 
-GRAFANA_URL = {'RegionOne': "http://{{ GRAFANA_IP }}/grafana", }
+GRAFANA_URL = {'RegionOne': "/grafana", }
 
 # If GRAFANA_URL is specified, an additional link will be shown that points to
 # Grafana's list of dashboards. If you do not wish this, set SHOW_GRAFANA_HOME

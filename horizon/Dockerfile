@@ -11,6 +11,7 @@ ENV MON_KEYSTONE_URL=keystone:5000 \
 
 RUN apt-get -y update && apt-get -y upgrade && \
     apt-get -y install \
+      vim \
       git \
       python-pip \
       apache2 \

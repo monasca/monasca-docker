@@ -248,7 +248,7 @@ services:
       GRAFANA_URL: "http://${MON_GRAFANA_IP}/grafana"
       GRAFANA_ADMIN_USERNAME: ${MON_GRAFANA_ADMIN_USER}
       GRAFANA_ADMIN_PASSWORD: ${MON_GRAFANA_ADMIN_PASSWORD}
-      DATASOURCE_URL: "http://${HORIZON_IP}/monitoring/proxy"
+      DATASOURCE_URL: "http://${HORIZON_URL}/monitoring/proxy"
       DATASOURCE_ACCESS_MODE: "direct"
       DATASOURCE_AUTH: "Horizon"
       LOGSTASH_FIELDS: "service=grafana-init"

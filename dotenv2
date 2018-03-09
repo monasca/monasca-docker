@@ -30,9 +30,9 @@ MON_KEYSTONE_URL=http://<IPv4 address>:5000
 
 ################################################################################
 # Horizon
-# Horizon IP is needed for properly setting Monasca Grafana Datasource
+# Horizon URL is needed for properly setting Monasca Grafana Datasource
 ################################################################################
-HORIZON_IP=<IPv4 address>
+HORIZON_URL=<IPv4 address>
 
 ################################################################################
 # Enable Kibana authorization via OpenStack Horizon

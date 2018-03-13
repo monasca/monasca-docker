@@ -24,7 +24,7 @@ ENV CONFIG_TEMPLATE=true \
   KEYSTONE_ADMIN_PASSWORD=secretadmin \
   KEYSTONE_ADMIN_TENANT=admin \
   KEYSTONE_ADMIN_DOMAIN=default \
-  ADD_ACCESS_LOG=true \
+  ADD_ACCESS_LOG=false \
   ACCESS_LOG_FORMAT="%(asctime)s [%(process)d] gunicorn.access [%(levelname)s] %(message)s" \
   ACCESS_LOG_FIELDS='%(h)s %(l)s %(u)s %(t)s %(r)s %(s)s %(b)s "%(f)s" "%(a)s" %(L)s'
 

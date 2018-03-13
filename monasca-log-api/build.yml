@@ -1,6 +1,6 @@
 repository: fest/log-api
 variants:
-  - tag: 2.0.4
+  - tag: 2.0.5
     aliases:
       - :pike-{date}-{time}
     args:

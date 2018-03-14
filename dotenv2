@@ -53,7 +53,7 @@ MON_GRAFANA_ADMIN_PASSWORD=<grafana_admin_password>
 ################################################################################
 # Set the OpenStack Keystone credentials
 ################################################################################
-# Credentials of the user used for authenticating the agents againt Keystone
+# Credentials of the user used for authenticating the agents against Keystone
 MON_AGENT_USERNAME=<user_name>
 MON_AGENT_PASSWORD=<password>
 MON_AGENT_PROJECT_NAME=<project_name>
@@ -91,7 +91,6 @@ MON_INFLUXDB_RETENTION=60d
 # - Specify the plugin-specific configuration parameters
 ################################################################################
 NF_PLUGINS=webhook
-
 # Configure the Email plugin
 # The host name or IP address of the SMTP mail server.
 NF_EMAIL_SERVER=
@@ -141,6 +140,7 @@ NF_SLACK_INSECURE=
 # notifications. Example: https://12.12.12.20:2222
 NF_SLACK_PROXY=
 
+
 ################################################################################
 # Image versions
 ################################################################################
@@ -174,7 +174,7 @@ MON_LOG_TRANSFORMER_VERSION=2.0.0
 MON_ELASTICSEARCH_VERSION=2.0.3
 MON_ELASTICSEARCH_INIT_VERSION=2.0.0
 MON_ELASTICSEARCH_CURATOR_VERSION=2.0.0
-MON_LOG_API_VERSION=2.0.4
+MON_LOG_API_VERSION=2.0.6
 MON_KIBANA_VERSION=2.0.1
 MON_LOG_AGENT_VERSION=2.0.1
 MON_LOGSPOUT_VERSION=2.0.0

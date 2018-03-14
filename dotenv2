@@ -26,13 +26,13 @@
 ################################################################################
 # Set the IPv4 address of the OpenStack Keystone host
 ################################################################################
-MON_KEYSTONE_URL=http://<IPv4 address>:5000
+MON_KEYSTONE_URL=http://<ipv4_address>:5000
 
 ################################################################################
-# Horizon
-# Horizon URL is needed for properly setting Monasca Grafana Datasource
+# Specify the URL of the OpenStack Horizon host
+# The URL is needed for setting the Monasca data source in Grafana
 ################################################################################
-HORIZON_URL=http://<address:port>
+HORIZON_URL=http://<ip_address:port>
 
 ################################################################################
 # Enable Kibana authorization via OpenStack Horizon
@@ -47,20 +47,20 @@ MON_BASE_PATH=/dashboard/monitoring/logs_proxy
 ################################################################################
 # Define Grafana administrator settings
 ################################################################################
-MON_GRAFANA_ADMIN_USER=<grafana admin user name>
-MON_GRAFANA_ADMIN_PASSWORD=<grafana admin password>
+MON_GRAFANA_ADMIN_USER=<grafana_admin_user_name>
+MON_GRAFANA_ADMIN_PASSWORD=<grafana_admin_password>
 
 ################################################################################
 # Set the OpenStack Keystone credentials
 ################################################################################
-# Agent credentials
-MON_AGENT_USERNAME=<Monasca agent name>
-MON_AGENT_PASSWORD=<Monasca agent password>
-MON_AGENT_PROJECT_NAME=<OpenStack admin project name>
+# Credentials of the user used for authenticating the agents againt Keystone
+MON_AGENT_USERNAME=<user_name>
+MON_AGENT_PASSWORD=<password>
+MON_AGENT_PROJECT_NAME=<project_name>
 
-# Admin credentials
-MON_KEYSTONE_ADMIN_USER=<OpenStack admin user name>
-MON_KEYSTONE_ADMIN_PASSWORD=<OpenStack admin user password>
+# Credentials of the OpenStack admin
+MON_KEYSTONE_ADMIN_USER=<OpenStack_admin_user_name>
+MON_KEYSTONE_ADMIN_PASSWORD=<OpenStack_admin_password>
 
 ################################################################################
 # Set the path for the data directories of Elasticsearch, InfluxDB, MySQL,

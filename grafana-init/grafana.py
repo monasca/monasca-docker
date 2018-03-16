@@ -100,13 +100,27 @@ def check_initialized(session):
     r = session.get('{url}/api/datasources'.format(url=GRAFANA_URL), timeout=5)
     r.raise_for_status()
 
-    logging.debug('existing datasources = %r', r.json())
+    logging.debug('existing datasources = %r', r.text)
 
     for datasource in r.json():
         if datasource['name'] == DATASOURCE_NAME:
             return True
 
     return False
+
+@retry(retries=12, delay=5.0)
+def add_datasource(admin_session):
+    r = admin_session.post('{url}/api/datasources'.format(url=GRAFANA_URL),
+                           json=create_datasource_payload())
+    logging.debug('Response: %r', r.text)
+    r.raise_for_status()
+
+@retry(retries=12, delay=5.0)
+def create_dashboard(admin_session, path):
+    r = admin_session.post('{url}/api/dashboards/db'.format(url=GRAFANA_URL),
+                            json=create_dashboard_payload(path))
+    logging.debug('Response: %r', r.text)
+    r.raise_for_status()
 
 
 def create_datasource_payload():
@@ -165,17 +179,12 @@ def main():
         return
 
     logging.info('Attempting to add configured datasource...')
-    r = admin_session.post('{url}/api/datasources'.format(url=GRAFANA_URL),
-                           json=create_datasource_payload())
-    logging.debug('Response: %r', r.json())
-    r.raise_for_status()
+    add_datasource(admin_session)
 
     for path in sorted(glob.glob('{dir}/*.json'.format(dir=DASHBOARDS_DIR))):
         logging.info('Creating dashboard from file: {path}'.format(path=path))
-        r = admin_session.post('{url}/api/dashboards/db'.format(url=GRAFANA_URL),
-                               json=create_dashboard_payload(path))
-        logging.debug('Response: %r', r.json())
-        r.raise_for_status()
+        create_dashboard(admin_session, path)
+
 
     logging.info('Ending %r session...', admin_user.get('user'))
     admin_session.get('{url}/logout'.format(url=GRAFANA_URL))

@@ -148,6 +148,19 @@ services:
       - "5000:5000"
       - "35357:35357"
 
+  horizon:
+    hostname: docker-host
+    image: fest/horizon:${HORIZON_VERSION}
+    restart: on-failure
+    environment:
+      MON_KEYSTONE_URL: ${MON_KEYSTONE_URL}
+      GRAFANA_IP: ${MON_GRAFANA_IP}
+      GRAFANA_PORT: ${MON_GRAFANA_PORT}
+    depends_on:
+      - keystone
+    ports:
+      - "80:80"
+
   monasca:
     hostname: docker-host
     image: fest/api:${MON_API_VERSION}

@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-ARG MON_UI_REPO=https://github.com/FujitsuEnablingSoftwareTechnologyGmbH/monasca-ui
+ARG MON_UI_REPO=https://github.com/openstack/monasca-ui
 ARG MON_UI_BRANCH=stable/ocata
 ARG MON_UI_CONSTRAINTS_BRANCH=stable/ocata
 ARG HORIZON_BRANCH=10.0.5

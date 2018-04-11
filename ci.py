@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-# (C) Copyright 2017 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2017-2018 Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -354,12 +354,13 @@ def run_push(modules):
     password = os.environ.get('DOCKER_HUB_PASSWORD', None)
     if username and password:
         print('Logging into docker registry...')
-        r = subprocess.call([
+        login = subprocess.Popen([
             'docker', 'login',
             '-u', username,
-            '-p', password
-        ])
-        if r != 0:
+            '--password-stdin'
+        ], stdin=subprocess.PIPE)
+        login.communicate(password)
+        if login.returncode != 0:
             print('Docker registry login failed, cannot push!')
             sys.exit(1)
 

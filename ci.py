@@ -354,12 +354,13 @@ def run_push(modules):
     password = os.environ.get('DOCKER_HUB_PASSWORD', None)
     if username and password:
         print('Logging into docker registry...')
-        r = subprocess.call([
+        login = subprocess.Popen([
             'docker', 'login',
             '-u', username,
-            '-p', password
-        ])
-        if r != 0:
+            '--password-stdin'
+        ], stdin=subprocess.PIPE)
+        login.communicate(password)
+        if login.returncode != 0:
             print('Docker registry login failed, cannot push!')
             sys.exit(1)
 

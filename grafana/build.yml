@@ -1,5 +1,5 @@
 repository: fest/grafana
 variants:
-  - tag: 2.1.0
+  - tag: 2.1.1
     aliases:
       - :pike-{date}-{time}

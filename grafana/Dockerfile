@@ -23,8 +23,8 @@ RUN apk add --no-cache --virtual .build-deps \
   cd $GOPATH/src/github.com/grafana/grafana/ && \
   git clone --depth 1 $GRAFANA_REPO -b $GRAFANA_BRANCH . && \
   go run build.go setup && go run build.go build && \
-  npm install -g yarn && yarn install --pure-lockfile --no-emoji && \
-  npm run build && \
+  npm install -g yarn && yarn --no-emoji && \
+  ./node_modules/.bin/grunt build --force&& \
   cp -r ./conf /var/lib/grafana/conf && \
   cp -r ./public_gen /var/lib/grafana/public && \
   cp ./bin/grafana-cli $GOPATH/bin/ && \

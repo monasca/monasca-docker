@@ -3,12 +3,17 @@ services:
   - docker
 language: python
 
+# NOTE (timothyb89) 27 April 2018 - shellcheck on travis is currently broken
+# so, disable for now
+# see also: https://github.com/travis-ci/travis-ci/issues/9484
+
+
 addons:
   apt:
-    sources:
-    - debian-sid    # Grab shellcheck from the Debian repo (o_O)
+#    sources:
+#    - debian-sid    # Grab shellcheck from the Debian repo (o_O)
     packages:
-    - shellcheck
+#    - shellcheck
     - docker-ce
 
 env:
@@ -23,8 +28,8 @@ before_install:
 
 jobs:
   include:
-    - stage: lint-shellcheck
-      script: bash -c 'shopt -s globstar; shellcheck **/*.sh'
+#    - stage: lint-shellcheck
+#      script: bash -c 'shopt -s globstar; shellcheck **/*.sh'
     - stage: metrics-pipeline
       script: python ci.py metrics
     - stage: logs-pipeline

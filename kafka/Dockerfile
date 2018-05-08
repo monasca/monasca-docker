@@ -5,6 +5,8 @@ ARG SCALA_VERSION=2.11
 ARG KAFKA_KEYS=https://kafka.apache.org/KEYS
 ARG ASC_MIRROR=https://dist.apache.org/repos/dist/release/kafka
 ARG SKIP_VERIFY=false
+ARG MIRROR=https://www.apache.org/dyn/closer.cgi
+ARG DIRECT=""
 
 ENV KAFKA_HOSTNAME_FROM_IP=true \
   ZOOKEEPER_CONNECTION_STRING=zookeeper:2181 \

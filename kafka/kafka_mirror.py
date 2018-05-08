@@ -28,6 +28,9 @@ PATH = '{mirror}kafka/{kafka}/kafka_{scala}-{kafka}.tgz'
 
 
 def main():
+    print('MIRROR:', MIRROR, file=sys.stderr)
+    print('DIRECT:', DIRECT, file=sys.stderr)
+
     if len(sys.argv) != 3:
         print('Usage: {0} [kafka_version] [scala_version]'.format(sys.argv[0]))
         sys.exit(1)

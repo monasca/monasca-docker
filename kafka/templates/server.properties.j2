@@ -98,5 +98,6 @@ zookeeper.session.timeout.ms={{ ZOOKEEPER_SESSION_TIMEOUT_MS | default(10000) }}
 ############################# Additional Broker Settings #######################
 controlled.shutdown.enable={{ KAFKA_CONTROLLED_SHUTDOWN_ENABLE | default('true') }}
 group.max.session.timeout.ms={{ KAFKA_GROUP_MAX_SESSION_TIMEOUT_MS | default(300000) }}
+connections.max.idle.ms={{ KAFKA_CONNECTION_IDLE_TIMEOUT_MS | default(300000)  }}
 
 # vim:set filetype=jproperties

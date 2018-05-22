@@ -26,6 +26,7 @@ either of the aforementioned commands can be found
 
 * [Repository layout](./repo_layout.md)
 * [Requirements](./requirements.md)
+* * [Host configuration for Elasticsearch](./elasticsearch.md)
 * [Start&Stop](./start_stop.md)
 * [Pipelines](./pipelines.md)
 * [Using external components](./external_cmps.md)

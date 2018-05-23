@@ -36,8 +36,12 @@ services:
       - http.host=0.0.0.0
       - transport.host=127.0.0.1
       - bootstrap.memory_lock=true
-      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - ES_HEAP_SIZE=1g
       - LOGSTASH_FIELDS="service=elasticsearch"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     ports:
       - 9200:9200
       - 9300:9300

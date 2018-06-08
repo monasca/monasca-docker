@@ -1,0 +1,8 @@
+init_config:
+instances:
+- built_by: MySQL
+  name: "{{ MYSQL_SERVER | default('mysql') }}"
+  pass: "{{ MYSQL_PASSWORD | default('secretmysql') }}"
+  port: "{{ MYSQL_PORT | default('3306') }}"
+  server: "{{ MYSQL_SERVER | default('mysql') }}"
+  user: "{{ MYSQL_USER | default('root') }}"

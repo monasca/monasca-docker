@@ -61,6 +61,13 @@ if [ "$PROMETHEUS" = "true" ]; then
   template $PLUGIN_TEMPLATES/prometheus.yaml.j2 $AGENT_PLUGINS/prometheus.yaml
 fi
 
+# self-monitoring
+if [ "$SELF_MONITORING" = "true" ]; then
+  template $PLUGIN_TEMPLATES/zk.yaml.j2 $AGENT_PLUGINS/zk.yaml
+  template $PLUGIN_TEMPLATES/kafka_consumer.yaml.j2 $AGENT_PLUGINS/kafka_consumer.yaml
+  template $PLUGIN_TEMPLATES/mysql.yaml.j2 $AGENT_PLUGINS/mysql.yaml
+fi
+
 # apply user templates
 for f in $USER_PLUGINS/*.yaml.j2; do
   if [ -e "$f" ]; then

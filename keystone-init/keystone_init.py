@@ -594,7 +594,7 @@ def grant_group_project_role(client, role_id, group, project):
 
 @retry()
 def grant_group_domain_role(client, role_id, group, domain):
-    """Grant a role to a group on a project
+    """Grant a role to a group on a domain
 
     :param client:
     :type client: keystoneclient.v3.client.Client

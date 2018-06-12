@@ -194,6 +194,9 @@ domains:
         project_roles:
           - project: c
             roles: d, e
+        domain_roles:
+          - foo
+          - bar
 
 ```
 

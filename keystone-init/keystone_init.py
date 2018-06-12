@@ -311,9 +311,11 @@ def get_or_create_group(client, domain, group):
     if isinstance(group, basestring):
         name = group
         project_roles = []
+        domain_roles = []
     else:
         name = group['name']
         project_roles = group.get('project_roles', [])
+        domain_roles = group.get('domain_roles', [])
 
     group = first(lambda g: g.name == name, cache)
     if group:
@@ -328,16 +330,36 @@ def get_or_create_group(client, domain, group):
     for project_grant in project_roles:
         project_name = project_grant['project']
         project = get_or_create_project(client, domain, project_name)
-        current_project_roles = get_group_role_assignments(client,
-                                                           group,
-                                                           project)
-        proj_roles_to_grant = _roles_to_grant(client, domain,
-                                              current_project_roles,
-                                              project_grant.get('roles', []))
-        logger.info('granting project roles to group: %r', proj_roles_to_grant)
-        for role_id in proj_roles_to_grant:
-            grant_group_role(client, role_id, group, project)
+        current_project_roles = get_group_project_role_assignments(
+            client, group, project
+        )
+        project_roles_to_grant = _roles_to_grant(
+            client, domain,
+            current_project_roles,
+            project_grant.get('roles', [])
+        )
+        logger.info('granting project roles to group: '
+                    '%r', project_roles_to_grant)
+        for role_id in project_roles_to_grant:
+            grant_group_project_role(client, role_id, group, project)
 
+    if domain_roles:
+        # also add domain roles
+        # domain_roles is just a list of role names for now
+        # (are cross-domain role assignments even possible?)
+        current_domain_roles = get_group_domain_role_assignments(
+            client, group, domain
+        )
+
+        domain_roles_to_grant = _roles_to_grant(
+            client, domain,
+            current_domain_roles,
+            domain_roles
+        )
+
+        logger.info('granting domain roles to group: %r', domain_roles_to_grant)
+        for role_id in domain_roles_to_grant:
+            grant_group_domain_role(client, role_id, group, domain)
 
     return group
 
@@ -490,7 +512,7 @@ def get_role_assignments(client, user, project):
 
 
 @retry()
-def get_group_role_assignments(client, group, project):
+def get_group_project_role_assignments(client, group, project):
     """Get group role assignments
 
     :param client:
@@ -506,6 +528,22 @@ def get_group_role_assignments(client, group, project):
 
 
 @retry()
+def get_group_domain_role_assignments(client, group, domain):
+    """Get group role assignments
+
+    :param client:
+    :type client: keystoneclient.v3.client.Client
+    :param group:
+    :type group: keystoneclient.v3.groups.Group
+    :param domain:
+    :type domain: keystoneclient.v3.domains.Domain
+    :return:
+    :rtype: list[keystoneclient.v3.roles.Role]
+    """
+    return client.role_assignments.list(group=group, domain=domain)
+
+
+@retry()
 def get_domain_role_assignments(client, user, domain):
     """Get domain role assignments
 
@@ -514,7 +552,7 @@ def get_domain_role_assignments(client, user, domain):
     :param user:
     :type user: keystoneclient.v3.users.User
     :param domain:
-    :type project: keystoneclient.v3.domains.Domain
+    :type domain: keystoneclient.v3.domains.Domain
     :return:
     """
     return client.role_assignments.list(user=user, domain=domain)
@@ -538,8 +576,8 @@ def grant_role(client, role_id, user, project):
 
 
 @retry()
-def grant_group_role(client, role_id, group, project):
-    """Grant group role
+def grant_group_project_role(client, role_id, group, project):
+    """Grant a role to a group on a project
 
     :param client:
     :type client: keystoneclient.v3.client.Client
@@ -552,6 +590,23 @@ def grant_group_role(client, role_id, group, project):
     :return:
     """
     client.roles.grant(role_id, group=group, project=project)
+
+
+@retry()
+def grant_group_domain_role(client, role_id, group, domain):
+    """Grant a role to a group on a domain
+
+    :param client:
+    :type client: keystoneclient.v3.client.Client
+    :param role_id:
+    :type role_id: str
+    :param group:
+    :type group: keystoneclient.v3.groups.Group
+    :param domain:
+    :type domain: keystoneclient.v3.domains.Domain
+    :return:
+    """
+    client.roles.grant(role_id, group=group, domain=domain)
 
 
 @retry()
@@ -569,6 +624,7 @@ def grant_domain_role(client, role_id, user, domain):
     :return:
     """
     client.roles.grant(role_id, user=user, domain=domain)
+
 
 def ensure_user_in_group(client, user, group):
     """Ensure user is in the specified group
@@ -874,7 +930,6 @@ def load_user(ks, domain, user_cfg, member_role_name, admin_url=None):
         for group_name in user_cfg['groups']:
             group = get_or_create_group(ks, domain, group_name)
             ensure_user_in_group(ks, user, group)
-
 
     # TODO(sjmc7) should we remove roles that aren't in the list? Could modify
     # roles_to_grant to return two lists

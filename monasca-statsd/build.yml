@@ -1,0 +1,7 @@
+repository: monasca/statsd
+variants:
+  - tag: master
+    aliases:
+      - :master-{date}-{time}
+    args:
+      MON_AGENT_BASE_VERSION: master-20180112-152039

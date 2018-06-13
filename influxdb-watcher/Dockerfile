@@ -1,4 +1,4 @@
-FROM alpine:3.7 as influxdb-watcher-builder
+FROM golang:1.10.3-alpine3.7 as influxdb-watcher-builder
 
 # To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
 # `docker build`
@@ -10,7 +10,7 @@ ARG WATCHER_BRANCH=master
 ENV GOPATH=/go
 ENV PROJECT_DIR=$GOPATH/src/github.com/monasca/monasca-watchers
 
-RUN apk add --no-cache openssl-dev git go glide g++
+RUN apk add --no-cache openssl-dev git glide g++
 
 WORKDIR $PROJECT_DIR
 RUN git init && \

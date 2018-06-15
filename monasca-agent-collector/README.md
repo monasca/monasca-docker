@@ -118,9 +118,9 @@ This plugin is enabled when `KUBERNETES=true`. It has the following options:
    namespace. Should be passed in as 'annotation1,annotation2,annotation3'.
    Default: unset
  * `KUBERNETES_MINIMUM_WHITELIST`: Sets whitelist on kubernetes plugin for
-   the following metrics pod.cpu.total_time_sec, pod.mem.cache_bytes, 
+   the following metrics pod.cpu.total_time_sec, pod.mem.cache_bytes,
    pod.mem.swap_bytes, pod.mem.used_bytes, pod.mem.working_set_bytes. This
-   will alleviate the amount of load on Monasca. 
+   will alleviate the amount of load on Monasca.
    Default: unset
 
 The Kubernetes plugin is intended to be run as a DaemonSet on each Kubernetes
@@ -190,11 +190,11 @@ This plugin is enabled when `CADVISOR=true`. It has the following options:
    (default) the cAdvisor host will be determined automatically via the
    Kubernetes API.
  * `CADVISOR_MINIMUM_WHITELIST`: Sets whitelist on cadvisor host plugin for
-   the following metrics cpu.total_time_sec, mem.cache_bytes, 
+   the following metrics cpu.total_time_sec, mem.cache_bytes,
    mem.swap_bytes, mem.used_bytes, mem.working_set_bytes. This
-   will alleviate the amount of load on Monasca. 
+   will alleviate the amount of load on Monasca.
    Default: unset
-   
+
 This plugin collects host-level metrics from a running cAdvisor instance.
 cAdvisor is included in `kubelet` when in Kubernetes environments and is
 necessary to retrieve host-level metrics. As with the Kubernetes plugin,
@@ -204,6 +204,26 @@ automatically.
 cAdvisor can be easily run in [standard Docker environments][9] or directly on
 host systems. In these cases, the URL must be manually provided via
 `CADVISOR_URL`.
+
+### Self-monitoring
+The self-monitoring enables plugins for the following components: `Kafka`, `MySQL` and `Zookeeper`. This is enabled when `SELF_MONITORING=true`.  You can adjust the configuration of the components by passing environment variables:
+
+#### Kafka
+
+ * `KAFKA_CONNECT_STR`: The kafka connection string. Default: `kafka:9092`
+
+#### Zookeeper
+
+ * `ZOOKEEPER_HOST`: The zookeeper host name.  Default: `zookeeper`
+ * `ZOOKEEPER_PORT`: The port to listen for client connections. Default: `2181`
+
+#### MySQL
+
+ * `MYSQL_SERVER`: The MySQL server name. Default: `mysql`
+ * `MYSQL_USER`, `MYSQL_PASSWORD`: These variables are used in conjunction to specify user and password for this user. Default: `root` and `secretmysql`
+ * `MYSQL_PORT`: The port to listen for client connections. Default: `3306`
+
+
 
 ### Custom Plugins
 

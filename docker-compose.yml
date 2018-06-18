@@ -203,11 +203,10 @@ services:
     depends_on:
       - grafana
 
-# Uncomment this when image monasca/statsd is created
-#  statsd:
-#    image: monasca/statsd:${MON_STATSD_VERSION}
-#    environment:
-#      FORWARDER_URL: http://agent-forwarder:17123
-#      LOG_LEVEL: WARN
-#    ports:
-#      - "8125/udp"
+  monasca-statsd:
+    image: monasca/statsd
+    environment:
+      FORWARDER_URL: http://agent-forwarder:17123
+      LOG_LEVEL: WARN
+    ports:
+      - "8125/udp"

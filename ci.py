@@ -56,7 +56,7 @@ METRIC_PIPELINE_MODULE_TO_COMPOSE_SERVICES = {
     'monasca-alarms': 'alarms',
     'monasca-notification': 'monasca-notification',
     'grafana-init': 'grafana-init',
-    'monsca-statsd': 'monasca-statsd'
+    'monasca-statsd': 'monasca-statsd'
 }
 LOGS_PIPELINE_MODULE_TO_COMPOSE_SERVICES = {
     'monasca-log-metrics': 'log-metrics',

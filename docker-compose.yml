@@ -204,7 +204,7 @@ services:
       - grafana
 
   monasca-statsd:
-    image: monasca/statsd
+    image: monasca/statsd:${MON_STATSD_VERSION}
     environment:
       FORWARDER_URL: http://agent-forwarder:17123
       LOG_LEVEL: WARN

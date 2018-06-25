@@ -9,7 +9,7 @@ variants:
       TIMESTAMP_SLUG: 20170809-155207
       CONSTRAINTS_BRANCH: master
 
-  - tag: 2.2.1
+  - tag: 2.2.2
     aliases:
       - :latest
       - :2.2

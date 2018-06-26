@@ -5,7 +5,7 @@ FROM monasca/python:${PYTHON_VERSION}-${TIMESTAMP_SLUG}
 ARG LOG_API_REPO=https://github.com/openstack/monasca-log-api.git
 ARG LOG_API_BRANCH=master
 ARG CONSTRAINTS_BRANCH=master
-ARG EXTRA_DEPENDENCIES="gunicorn python-memcached"
+ARG EXTRA_DEPENDENCIES="gunicorn python-memcached gevent==1.2.2"
 
 # To force a rebuild, pass --build-arg REBUILD="$(DATE)" when running
 # `docker build`

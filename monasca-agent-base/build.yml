@@ -1,5 +1,10 @@
 repository: monasca/agent-base
 variants:
+  - tag: '1.0.0'
+    aliases:
+      - latest
+    args:
+      TIMESTAMP_SLUG: 20170809-155207
   - tag: master
     aliases:
       - :master-{date}-{time}

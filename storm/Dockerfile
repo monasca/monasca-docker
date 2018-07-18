@@ -1,6 +1,6 @@
 FROM alpine:3.5
 
-ARG STORM_VERSION=1.1.1
+ARG STORM_VERSION=1.1.3
 ARG STORM_KEYS=https://dist.apache.org/repos/dist/release/storm/KEYS
 ARG ASC_MIRROR=https://dist.apache.org/repos/dist/release/storm
 ARG SKIP_VERIFY=false

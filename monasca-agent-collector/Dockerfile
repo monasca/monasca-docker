@@ -8,4 +8,6 @@ ARG REBUILD=1
 COPY start.sh /
 COPY templates/ /templates
 
+RUN apk add --no-cache util-linux
+
 CMD ["/start.sh"]

@@ -1,0 +1,5 @@
+repository: monasca/tempest-log-tests
+variants:
+  - tag: 1.0.0
+    aliases:
+      - :latest

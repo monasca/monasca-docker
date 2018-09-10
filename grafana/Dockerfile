@@ -27,6 +27,7 @@ run mkdir -p /var/lib/grafana && \
   git reset --hard FETCH_HEAD && \
   go run build.go setup && go run build.go build && \
   npm install -g yarn@0.27 && yarn --no-emoji && \
+  yarn add grunt && \
   ./node_modules/.bin/grunt build --force && \
   cp -r ./conf /var/lib/grafana/conf && \
   cp -r ./public_gen /var/lib/grafana/public && \
@@ -47,7 +48,7 @@ run mkdir -p /var/lib/grafana && \
   git remote add origin $MONASCA_APP_REPO && \
   git fetch origin $MONASCA_APP_BRANCH && \
   git reset --hard FETCH_HEAD && \
-  npm install grunt && \
+  npm install grunt grunt-cli && \
   npm install && \
   ./node_modules/.bin/grunt && \
   $GOPATH/bin/grafana-cli plugins install natel-discrete-panel && \

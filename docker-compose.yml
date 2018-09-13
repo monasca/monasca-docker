@@ -47,6 +47,11 @@ services:
       CADVISOR: "true"
       CADVISOR_URL: "http://cadvisor:8080/"
       LOGSTASH_FIELDS: "service=monasca-agent-collector"
+      MONASCA_MONITORING: "true"
+      MONASCA_LOG_MONITORING: "true"
+    privileged: true
+    volumes:
+      - "/:/rootfs:ro"
 
   alarms:
     image: monasca/alarms:${MON_ALARMS_VERSION}
@@ -173,6 +178,8 @@ services:
     environment:
       NF_PLUGINS: "webhook"
       LOGSTASH_FIELDS: "service=monasca-notification"
+      STATSD_HOST: monasca-statsd
+      STATSD_PORT: 8125
     depends_on:
       - monasca
       - zookeeper

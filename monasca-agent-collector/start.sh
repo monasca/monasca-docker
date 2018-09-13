@@ -61,6 +61,30 @@ if [ "$PROMETHEUS" = "true" ]; then
   template $PLUGIN_TEMPLATES/prometheus.yaml.j2 $AGENT_PLUGINS/prometheus.yaml
 fi
 
+# monasca-monitoring
+if [ "$MONASCA_MONITORING" = "true" ]; then
+  template $PLUGIN_TEMPLATES/zk.yaml.j2 $AGENT_PLUGINS/zk.yaml
+  template $PLUGIN_TEMPLATES/kafka_consumer.yaml.j2 $AGENT_PLUGINS/kafka_consumer.yaml
+  template $PLUGIN_TEMPLATES/mysql.yaml.j2 $AGENT_PLUGINS/mysql.yaml
+fi
+
+# monasca-log-monitoring
+if [ "$MONASCA_LOG_MONITORING" = "true" ]; then
+  template $PLUGIN_TEMPLATES/elastic.yaml.j2 $AGENT_PLUGINS/elastic.yaml
+fi
+
+# common for monasca-monitoring and monasca-log-monitoring
+if [ "$MONASCA_MONITORING" = "true" ] || [ "$MONASCA_LOG_MONITORING" = "true" ]; then
+  template $PLUGIN_TEMPLATES/http_check.yaml.j2 $AGENT_PLUGINS/http_check.yaml
+  template $PLUGIN_TEMPLATES/process.yaml.j2 $AGENT_PLUGINS/process.yaml
+fi
+
+# system
+template $PLUGIN_TEMPLATES/cpu.yaml.j2 $AGENT_PLUGINS/cpu.yaml
+template $PLUGIN_TEMPLATES/disk.yaml.j2 $AGENT_PLUGINS/disk.yaml
+template $PLUGIN_TEMPLATES/load.yaml.j2 $AGENT_PLUGINS/load.yaml
+template $PLUGIN_TEMPLATES/memory.yaml.j2 $AGENT_PLUGINS/memory.yaml
+
 # apply user templates
 for f in $USER_PLUGINS/*.yaml.j2; do
   if [ -e "$f" ]; then

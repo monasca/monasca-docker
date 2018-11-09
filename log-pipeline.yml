@@ -114,5 +114,6 @@ services:
       LOGSTASH_FIELDS: "service=logspout"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
+    restart: on-failure
     depends_on:
         - log-agent

@@ -1,10 +1,10 @@
 repository: monasca/log-agent
 variants:
-  - tag: 0.0.5
+  - tag: 0.0.6
     aliases:
       - :latest
     args:
-      LOGSTASH_PLUGIN_BRANCH: v1.0.2
+      LOGSTASH_PLUGIN_BRANCH: v1.0.4
       JRUBY_VERSION: 9.1-alpine
       LOGSTASH_VERSION: 2.4-alpine
 

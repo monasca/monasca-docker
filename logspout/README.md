@@ -30,10 +30,10 @@ to the Monasca Log Agent.
 Configuration
 -------------
 
-|        Variable         |             Default             |             Description             |
-|-------------------------|---------------------------------|-------------------------------------|
-| `MONASCA_LOG_AGENT_URI` | `log-agent:5610`                | Monasca Log Agent connection string |
-| `ROUTE_URIS`            | `logstash+tcp://log-agent:5610` | Logstash connection string          |
+|        Variable         |                 Default                   |             Description             |
+|-------------------------|-------------------------------------------|-------------------------------------|
+| `MONASCA_LOG_AGENT_URI` | `log-agent:5610`                          | Monasca Log Agent connection string |
+| `ROUTE_URIS`            | `multiline+logstash+tcp://log-agent:5610` | Logstash connection string          |
 
 Additional files
 ----------------

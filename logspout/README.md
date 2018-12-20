@@ -27,7 +27,7 @@ as a value e.g.: `"service=mysql"`.
 Logspout will pickup this env variable and send proper data
 to the Monasca Log Agent.
 
-To handle multiline logs [5] you need to pass a regex as a environment variable,
+To handle [multiline logs][5] you need to pass a regex as a environment variable,
 which matches the start of the multiline blocks e.g.:
 
 `MULTILINE_PATTERN=^(\\d{4}-\\d{2}-\\d{2}|{|\\[\\d{4}-\\d{2}-\\d{2})`

@@ -27,13 +27,28 @@ as a value e.g.: `"service=mysql"`.
 Logspout will pickup this env variable and send proper data
 to the Monasca Log Agent.
 
+Multiline logging
+-----------------
+
+To handle [multiline logging][5] you need to pass a regex as a environment variable,
+which matches the start of the multiline blocks e.g.:
+`MULTILINE_PATTERN=^(\\[?\\d{4}-\\d{2}-\\d{2}|{)`
+
+This example matches logs, which:
+
+* start with a timestamp with format `YYYY-MM-DD` or `[YYYY-MM-DD`
+* are json-logs
+
+Note that in the case of a service generates logs, which don't follow any of these patterns,
+the multiline bock will be chunked every period defined with `MULTILINE_FLUSH_AFTER` (default: 500 ms)
+
 Configuration
 -------------
 
-|        Variable         |             Default             |             Description             |
-|-------------------------|---------------------------------|-------------------------------------|
-| `MONASCA_LOG_AGENT_URI` | `log-agent:5610`                | Monasca Log Agent connection string |
-| `ROUTE_URIS`            | `logstash+tcp://log-agent:5610` | Logstash connection string          |
+|        Variable         |                 Default                   |             Description             |
+|-------------------------|-------------------------------------------|-------------------------------------|
+| `MONASCA_LOG_AGENT_URI` | `log-agent:5610`                          | Monasca Log Agent connection string |
+| `ROUTE_URIS`            | `multiline+logstash+tcp://log-agent:5610` | Logstash connection string          |
 
 Additional files
 ----------------
@@ -46,3 +61,4 @@ with needed plugin.
 [2]: https://github.com/looplab/logspout-logstash
 [3]: http://semver.org/
 [4]: https://github.com/monasca/monasca-docker/tree/master/monasca-log-agent
+[5]: https://github.com/gliderlabs/logspout/#multiline-logging

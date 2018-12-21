@@ -32,13 +32,12 @@ Multiline logging
 
 To handle [multiline logging][5] you need to pass a regex as a environment variable,
 which matches the start of the multiline blocks e.g.:
-`MULTILINE_PATTERN=^(\\d{4}-\\d{2}-\\d{2}|{|\\[\\d{4}-\\d{2}-\\d{2})`
+`MULTILINE_PATTERN=^(\\[?\\d{4}-\\d{2}-\\d{2}|{)`
 
 This example matches logs, which:
 
-* start with a timestamp with format `YYYY-MM-DD`
+* start with a timestamp with format `YYYY-MM-DD` or `[YYYY-MM-DD`
 * are json-logs
-* start with a timestamp with format `[YYYY-MM-DD`
 
 Note that in the case of a service generates logs, which don't follow any of these patterns,
 the multiline bock will be chunked every period defined with `MULTILINE_FLUSH_AFTER` (default: 500 ms)

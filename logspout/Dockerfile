@@ -5,7 +5,7 @@ ENV MONASCA_WAIT_FOR_LOG_AGENT=true \
     MONASCA_LOG_AGENT_URI=log-agent:5610 \
     ROUTE_URIS=multiline+logstash+tcp://log-agent:5610 \
     MULTILINE_MATCH=first \
-    MULTILINE_PATTERN=^(\\d{4}-\\d{2}-\\d{2}|{|\\[\\d{4}-\\d{2}-\\d{2})
+    MULTILINE_PATTERN=^(\\[?\\d{4}-\\d{2}-\\d{2}|{)
 
 COPY start.sh wait-for.sh /
 

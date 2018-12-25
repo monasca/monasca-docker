@@ -2,7 +2,8 @@ windowSize: {{ AGGREGATION_WINDOW_SIZE | default('10') }}
 windowLag: {{ AGGREGATION_WINDOW_LAG | default('2') }}
 consumerTopic: {{ AGGREGATION_CONSUMER_TOPIC | default('metrics') }}
 producerTopic: {{ AGGREGATION_PRODUCER_TOPIC | default('metrics') }}
-logging.level: {{LOGGING_LEVEL | default('warning') }}
+logging:
+  level: {{LOGGING_LEVEL | default('INFO') }}
 
 kafka:
   bootstrap.servers: {{ KAFKA_URI | default('kafka:9092') }}

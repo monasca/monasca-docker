@@ -24,7 +24,7 @@ filter {
   }
 
   # drop logs with log level not in warning,error
-  if [log][level] not in [warning,error] {
+  if [log][level] not in [{{ LOG_LEVEL }}] {
     drop { periodic_flush => true }
   }
 

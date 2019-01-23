@@ -8,6 +8,7 @@ ENV CONFIG_TEMPLATE=true \
   KAFKA_URI=kafka:9092 \
   ZOOKEEPER_URI=zookeeper:2181 \
   KAFKA_WAIT_FOR_TOPICS=log-transformed,metrics
+  LOG_LEVEL=warning,error,fatal
 
 ARG REBUILD_DEPENDENCIES=1
 RUN apk add --no-cache python py2-pip py2-jinja2 && \

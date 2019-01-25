@@ -21,6 +21,7 @@ Configuration
 | `KAFKA_WAIT_FOR_TOPICS`   | `log-transformed,metrics` | Topics to wait on at startup |
 | `KAFKA_WAIT_RETRIES`      | `24`             | # of kafka wait attempts           |
 | `KAFKA_WAIT_DELAY`        | `5`              | # seconds to wait between attempts |
+| `LOG_LEVEL`               | `warning,error,fatal` | Metric name need to transformed be from log  |
 
 Usage
 -----

@@ -91,6 +91,7 @@ A number of environment variables can be passed to the container:
 | `KEYSTONE_ADMIN_USER`     | `admin`       | Keystone admin account user      |
 | `KEYSTONE_ADMIN_PASSWORD` | `secretadmin` | Keystone admin account password  |
 | `KEYSTONE_ADMIN_TENANT`   | `admin`       | Keystone admin account tenant    |
+| `KEYSTONE_REGION_NAME`   | `admin`       | Keystone admin account region    |
 | `GUNICORN_WORKERS`        | `9`           | number of API worker processes   |
 | `GUNICORN_WORKER_CLASS`   | `gevent`      | async worker class               |
 | `GUNICORN_WORKER_CONNECTIONS` | `2000`    | no. connections for async worker |

@@ -1,5 +1,5 @@
 repository: monasca/log-metrics
 variants:
-  - tag: 0.0.1
+  - tag: 0.1.0
     aliases:
       - :latest

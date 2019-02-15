@@ -41,7 +41,8 @@ ENV CONFIG_TEMPLATE=true \
 
 COPY apk_install.sh /apk.sh
 RUN /build.sh -r ${API_REPO} -b ${API_BRANCH} \
-  -q ${CONSTRAINTS_BRANCH} -d "gunicorn influxdb python-memcached Jinja2" && \
+  -q ${CONSTRAINTS_BRANCH} \
+  -d "pykafka gunicorn gevent influxdb python-memcached Jinja2" && \
   rm -rf /build.sh
 
 COPY api-* /etc/monasca/

@@ -34,13 +34,15 @@ ENV CONFIG_TEMPLATE=true \
   KEYSTONE_ADMIN_PASSWORD=secretadmin \
   KEYSTONE_ADMIN_TENANT=admin \
   KEYSTONE_ADMIN_DOMAIN=default \
+  KEYSTONE_INSECURE=false \
   ADD_ACCESS_LOG=true \
   ACCESS_LOG_FORMAT="%(asctime)s [%(process)d] gunicorn.access [%(levelname)s] %(message)s" \
   ACCESS_LOG_FIELDS='%(h)s %(l)s %(u)s %(t)s %(r)s %(s)s %(b)s "%(f)s" "%(a)s" %(L)s'
 
 COPY apk_install.sh /apk.sh
 RUN /build.sh -r ${API_REPO} -b ${API_BRANCH} \
-  -q ${CONSTRAINTS_BRANCH} -d "gunicorn influxdb python-memcached Jinja2" && \
+  -q ${CONSTRAINTS_BRANCH} \
+  -d "pykafka gunicorn gevent influxdb python-memcached Jinja2" && \
   rm -rf /build.sh
 
 COPY api-* /etc/monasca/

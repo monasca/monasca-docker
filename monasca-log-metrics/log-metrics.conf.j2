@@ -23,8 +23,8 @@ filter {
     }
   }
 
-  # drop logs with log level not in warning,error
-  if [log][level] not in [warning,error] {
+  # drop logs with log level not in LOG_LEVEL
+  if [log][level] not in [{{ LOG_LEVEL }}] {
     drop { periodic_flush => true }
   }
 

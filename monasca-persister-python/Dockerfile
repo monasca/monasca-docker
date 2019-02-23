@@ -32,5 +32,6 @@ RUN /build.sh -r ${PERSISTER_REPO} -b ${PERSISTER_BRANCH} \
 
 COPY persister.conf.j2 /etc/monasca-persister/
 COPY template.py start.sh kafka_wait_for_topics.py /
+RUN pip install pykafka
 
 CMD ["/start.sh"]

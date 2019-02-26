@@ -27,11 +27,10 @@ ENV CONFIG_TEMPLATE=true \
   INFLUX_DB=mon
 
 RUN /build.sh -r ${PERSISTER_REPO} -b ${PERSISTER_BRANCH} \
-  -q ${CONSTRAINTS_BRANCH} -d "influxdb Jinja2" && \
+  -q ${CONSTRAINTS_BRANCH} -d "influxdb Jinja2 pykafka" && \
   rm -rf /build.sh
 
 COPY persister.conf.j2 /etc/monasca-persister/
 COPY template.py start.sh kafka_wait_for_topics.py /
-RUN pip install pykafka
 
 CMD ["/start.sh"]

@@ -44,3 +44,31 @@ endpoints:
       - name: admin
         url: http://monasca:8070/v2.0
         resolve: true
+  - name: logs
+    description: Monasca logs service
+    type: logs
+    region: RegionOne
+    url: http://log-api:5607/v3.0
+    interfaces:
+      - name: internal
+        url: http://log-api:5607/v3.0
+      - name: public
+        url: http://log-api:5607/v3.0
+        resolve: true
+      - name: admin
+        url: http://log-api:5607/v3.0
+        resolve: true
+  - name: logs-search
+    description: Monasca logs search service
+    type: logs-search
+    region: RegionOne
+    url: http://kibana:5601/
+    interfaces:
+      - name: internal
+        url: http://kibana:5601/
+      - name: public
+        url: http://kibana:5601/
+        resolve: true
+      - name: admin
+        url: http://kibana:5601/
+        resolve: true

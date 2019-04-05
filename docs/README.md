@@ -18,6 +18,18 @@ or, if you want to deploy **log pipeline** as well:
 $ docker-compose -f log-pipeline.yml -f docker-compose.yml up
 ```
 
+Assuming all goes well, the following services should be exposed on your host
+machine:
+
+ * keystone on ports 5000 and 35357
+   * see [`preload.yml`][2] for full account info
+ * monasca-api on port 8070
+ * grafana on port 3000
+   * log in with `mini-mon` and `password` (or any valid keystone account)
+
+If needed, `docker-compose rm` can be used to completely clean the environment
+between runs.
+
 For more details about the services that are available after
 either of the aforementioned commands can be found
 [here](./pipelines.md).
@@ -35,3 +47,4 @@ either of the aforementioned commands can be found
 * [Contribution Guide](../CONTRIBUTING.md)
 
 [1]: https://docs.docker.com/compose/
+[2]: https://github.com/monasca/monasca-docker/blob/master/keystone/preload.yml

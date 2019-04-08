@@ -24,8 +24,10 @@ machine:
  * keystone on ports 5000 and 35357
    * see [`preload.yml`][2] for full account info
  * monasca-api on port 8070
+ * monasca-log-api on port 5607 (log-pipeline)
  * grafana on port 3000
    * log in with `mini-mon` and `password` (or any valid keystone account)
+ * kibana on port 5601 (log-pipeline)
 
 If needed, `docker-compose rm` can be used to completely clean the environment
 between runs.

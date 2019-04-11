@@ -18,7 +18,8 @@ ENV CONFIG_TEMPLATE=true \
   MYSQL_DB_PORT=3306 \
   MYSQL_DB_USERNAME=notification \
   MYSQL_DB_PASSWORD=password \
-  MYSQL_DB_DATABASE=mon
+  MYSQL_DB_DATABASE=mon \
+  STATSD_ENABLE=true
 
 COPY apk_install.sh /apk.sh
 RUN /build.sh -r ${NOTIFICATION_REPO} -b ${NOTIFICATION_BRANCH} \

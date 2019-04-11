@@ -61,7 +61,8 @@ Configuration
 | `RETRY_INTERVAL`     | `30`           | Retry interval in seconds                |
 | `RETRY_MAX_ATTEMPTS` | `5`            | Max number of notification retries       |
 | `LOG_LEVEL`          | `WARN`         | Python logging level, e.g. `DEBUG`, `INFO`, `WARN` |
-| `STATSD_HOST`        | unset          | Monasca StatsD host for internal metrics |
+| `STATSD_ENABLE`      | `true`         | Monasca agent StatsD enable or disable |
+|`STATSD_HOST`        | unset          | Monasca StatsD host for internal metrics |
 | `STATSD_PORT`        | unset          | Monasca StatsD port for internal metrics |
 | `NF_PLUGINS`         | unset          | See below                                |
 

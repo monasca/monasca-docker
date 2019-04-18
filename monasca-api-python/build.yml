@@ -1,8 +1,6 @@
 repository: monasca/api
 variants:
-  - tag: master
-    aliases:
-      - :master-{date}-{time}
+  - tag: master-{date}-{time}
     args:
       API_BRANCH: master
       CONSTRAINTS_BRANCH: master

@@ -89,6 +89,8 @@ services:
     environment:
       LOGSPOUT: ignore
       LOGSTASH_FIELDS: "service=monasca-log-api"
+      STATSD_HOST: monasca-statsd
+      STATSD_PORT: 8125
     depends_on:
       - keystone
       - zookeeper

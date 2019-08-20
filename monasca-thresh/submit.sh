@@ -55,6 +55,9 @@ if [ -n "$KAFKA_WAIT_FOR_TOPICS" ]; then
   fi
 fi
 
+# generate thresh-config.yml
+python template.py /templates/thresh-config.yml.j2 /storm/conf/thresh-config.yml
+
 if [ "${NO_STORM_CLUSTER}" = "true" ]; then
   echo "Using Thresh Config file /storm/conf/thresh-config.yml. Contents:"
   grep -vi password /storm/conf/thresh-config.yml

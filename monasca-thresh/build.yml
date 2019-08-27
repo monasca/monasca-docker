@@ -1,8 +1,5 @@
 repository: monasca/thresh
 variants:
-  - tag: master
-    aliases:
-      - :master-{date}-{time}
-      - :latest
+  - tag: master-{date}-{time}
     args:
       SKIP_COMMON_TESTS: "true"

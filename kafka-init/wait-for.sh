@@ -73,6 +73,7 @@ while [[ $# -gt 0 ]]
 do
     case "$1" in
         *:* )
+        # shellcheck disable=SC2206
         hostport=(${1//:/ })
         HOST=${hostport[0]}
         PORT=${hostport[1]}
@@ -144,7 +145,7 @@ QUIET=${QUIET:-0}
 
 # check to see if timeout is from busybox?
 # check to see if timeout is from busybox?
-TIMEOUT_PATH=$(realpath "$(which timeout)")
+TIMEOUT_PATH=$(realpath "$(command -v timeout)")
 if [[ $TIMEOUT_PATH =~ "busybox" ]]; then
         ISBUSY=1
         BUSYTIMEFLAG="-t"

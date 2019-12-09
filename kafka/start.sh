@@ -60,14 +60,14 @@ if [ "$KAFKA_HOSTNAME_FROM_IP" = "true" ]; then
 fi
 
 # copy all normal .properties files
-for f in $CONFIG_TEMPLATES/*.properties; do
+for f in "$CONFIG_TEMPLATES"/*.properties; do
   if [ -e "$f" ]; then
     cp "$f" "$CONFIG_DEST/$(basename "$f")"
   fi
 done
 
 # apply all *.properties.j2 templates
-for f in $CONFIG_TEMPLATES/*.properties.j2; do
+for f in "$CONFIG_TEMPLATES"/*.properties.j2; do
   if [ -e "$f" ]; then
     python /template.py "$f" "$CONFIG_DEST/$(basename "$f" .j2)"
   fi

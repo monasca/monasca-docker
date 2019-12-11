@@ -86,14 +86,14 @@ template $PLUGIN_TEMPLATES/load.yaml.j2 $AGENT_PLUGINS/load.yaml
 template $PLUGIN_TEMPLATES/memory.yaml.j2 $AGENT_PLUGINS/memory.yaml
 
 # apply user templates
-for f in $USER_PLUGINS/*.yaml.j2; do
+for f in "$USER_PLUGINS"/*.yaml.j2; do
   if [ -e "$f" ]; then
     template "$f" "$AGENT_PLUGINS/$(basename "$f" .j2)"
   fi
 done
 
 # copy plain user plugins
-for f in $USER_PLUGINS/*.yaml; do
+for f in "$USER_PLUGINS"/*.yaml; do
   if [ -e "$f" ]; then
     cp "$f" "$AGENT_PLUGINS/$(basename "$f")"
   fi

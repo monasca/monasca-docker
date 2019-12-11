@@ -734,7 +734,7 @@ def run_docker_compose(pipeline):
 
 def run_smoke_tests_metrics():
     smoke_tests_run = ['docker', 'run', '-e', 'MONASCA_URL=http://monasca:8070', '-e',
-                       'METRIC_NAME_TO_CHECK=monasca.thread_count', '--net', 'monascadocker_default', '-p',
+                       'METRIC_NAME_TO_CHECK=monasca.thread_count', '--net', 'monasca-docker_default', '-p',
                        '0.0.0.0:8080:8080', 'monasca/smoke-tests:latest']
 
     p = subprocess.Popen(smoke_tests_run)
@@ -754,7 +754,7 @@ def run_smoke_tests_metrics():
 def run_tempest_tests_metrics():
     print ('Running Tempest-tests')
     tempest_tests_run = ['docker', 'run', '-e', 'KEYSTONE_SERVER=keystone', '-e',
-                         'KEYSTONE_PORT=5000', '--net', 'monascadocker_default',
+                         'KEYSTONE_PORT=5000', '--net', 'monasca-docker_default',
                          'monasca/tempest-tests:latest']
 
     with open(LOG_DIR + 'tempest_tests.log', 'w') as out:

@@ -44,14 +44,14 @@ clean_install() {
 
   set -e
 
-  for f in $USER_SCRIPTS/*.sql.j2; do
+  for f in "$USER_SCRIPTS"/*.sql.j2; do
     if [ -e "$f" ]; then
       echo "Applying template: $f"
       python /template.py "$f" "$USER_SCRIPTS/$(basename "$f" .j2)"
     fi
   done
 
-  for f in $USER_SCRIPTS/*.sql; do
+  for f in "$USER_SCRIPTS"/*.sql; do
     # SQL files with zero length are ignored
     if [ -s "$f" ]; then
       echo "Running script: $f"
@@ -152,14 +152,14 @@ schema_upgrade() {
 
     echo "Applying update: $diff_version"
 
-    for f in $UPGRADE_SCRIPTS/$diff_version/*.sql.j2; do
+    for f in "$UPGRADE_SCRIPTS"/"$diff_version"/*.sql.j2; do
       if [ -e "$f" ]; then
         echo "Applying template: $f"
         python /template.py "$f" "$UPGRADE_SCRIPTS/$diff_version/$(basename "$f" .j2)"
       fi
     done
 
-    for f in $UPGRADE_SCRIPTS/$diff_version/*.sql; do
+    for f in "$UPGRADE_SCRIPTS"/"$diff_version"/*.sql; do
       # SQL files with zero length are ignored
       if [ -s "$f" ]; then
         echo "Running script: $f"

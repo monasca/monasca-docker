@@ -22,8 +22,11 @@ import sys
 
 import requests
 
+# The Apache-Storm version used in Monasca was moved to archive.apache.org.
+# In case of future update, if needed Storm version can be found in MIRROR, set os environment DIRECT to None
+# DIRECT = os.environ.get('DIRECT', None)
 MIRROR = os.environ.get('MIRROR', 'https://www.apache.org/dyn/closer.cgi')
-DIRECT = os.environ.get('DIRECT', None)
+DIRECT = os.environ.get('DIRECT', 'http://archive.apache.org/dist/')
 PATH = '{mirror}storm/apache-storm-{version}/apache-storm-{version}.tar.gz'
 
 
@@ -33,7 +36,6 @@ def main():
         sys.exit(1)
 
     version = sys.argv[1]
-    mirror = MIRROR
 
     if not DIRECT:
         req = requests.get(MIRROR, params={
@@ -42,6 +44,8 @@ def main():
         })
         req.raise_for_status()
         mirror = req.json()['preferred']
+    else:
+        mirror = DIRECT
 
     print(PATH.format(mirror=mirror, version=version))
 

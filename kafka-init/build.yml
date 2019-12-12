@@ -1,6 +1,6 @@
 repository: monasca/kafka-init
 variants:
-  - tag: 0.0.3
+  - tag: 0.0.4
     aliases:
       - ':latest'
     args:

@@ -16,6 +16,16 @@ services:
       LOGSTASH_FIELDS: "service=influxdb-init"
     depends_on:
       - influxdb
+  influxdb-watcher:
+    image: monasca/influxdb-watcher:${INFLUXDB_WATCHER_VERSION}
+    environment:
+      INFLUXDB_ADDRESS: "http://influxdb:8086"
+      PROMETHEUS_ENDPOINT: "0.0.0.0:8080"
+      LOGSTASH_FIELDS: "service=influxdb-watcher"
+    depends_on:
+      - influxdb
+    ports:
+      - "18081:8080"
 
   # cadvisor will allow host metrics to be collected, but requires significant
   # access to the host system
@@ -67,6 +77,16 @@ services:
     environment:
       LOGSTASH_FIELDS: "service=zookeeper"
     restart: on-failure
+  zookeeper-watcher:
+    image: monasca/zookeeper-watcher:${ZOOKEEPER_WATCHER_VERSION}
+    environment:
+      ZOOKEEPER_SERVERS: "zookeeper"
+      PROMETHEUS_ENDPOINT: "0.0.0.0:8080"
+      LOGSTASH_FIELDS: "service=zookeeper-watcher"
+    depends_on:
+      - zookeeper
+    ports:
+      - "18082:8080"
 
   kafka:
     image: monasca/kafka:${MON_KAFKA_VERSION}

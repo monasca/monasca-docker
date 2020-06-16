@@ -13,7 +13,7 @@ env:
   - IGNORE_DOCKER_VERSION=true PYTHONUNBUFFERED=true SCVERSION=stable
 
 before_install:
-  - wget "https://storage.googleapis.com/shellcheck/shellcheck-$SCVERSION.linux.x86_64.tar.xz"
+  - wget "https://github.com/koalaman/shellcheck/releases/download/$SCVERSION/shellcheck-$SCVERSION.linux.x86_64.tar.xz"
   - tar --xz -xvf "shellcheck-$SCVERSION.linux.x86_64.tar.xz"
   - shellcheck() { "shellcheck-$SCVERSION/shellcheck" "$@"; }
   - shellcheck --version

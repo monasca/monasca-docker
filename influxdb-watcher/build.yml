@@ -2,4 +2,4 @@ repository: monasca/influxdb-watcher
 variants:
   - tag: 'latest'
     aliases:
-      - :0.0.2
+      - :0.0.3

@@ -100,7 +100,7 @@ A number of environment variables can be passed to the container:
 | `AUTHORIZED_ROLES`           | `user, domainuser, domainadmin, monasca-user` | Roles for admin Users |
 | `AGENT_AUTHORIZED_ROLES`     | `monasca-agent` | Roles for metric write only users |
 | `READ_ONLY_AUTHORIZED_ROLES` | `monasca-read-only-user` | Roles for read only users    |
-| `DELEGATE_AUTHORIZED_ROLES`  | `admin`       | Roles allow to read/write cross tenant ID |
+| `DELEGATE_AUTHORIZED_ROLES`  | `monitoring-delegate` | Roles allow to read/write cross tenant ID |
 | `ADD_ACCESS_LOG`  | `true`       | if true, produce an access log on stderr |
 | `ACCESS_LOG_FORMAT`  | `%(asctime)s [%(process)d] gunicorn.access [%(levelname)s] %(message)s` | Log format for access log |
 | `ACCESS_LOG_FIELDS`  | `%(h)s %(l)s %(u)s %(t)s %(r)s %(s)s %(b)s "%(f)s" "%(a)s" %(L)s` | Access log fields |

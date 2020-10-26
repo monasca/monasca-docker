@@ -9,6 +9,7 @@ services:
   influxdb:
     image: influxdb:${INFLUXDB_VERSION}
     environment:
+      INFLUXDB_DATA_INDEX_VERSION: "tsi1"
       LOGSTASH_FIELDS: "service=influxdb"
   influxdb-init:
     image: monasca/influxdb-init:${INFLUXDB_INIT_VERSION}

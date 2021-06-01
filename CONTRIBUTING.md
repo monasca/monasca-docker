@@ -137,7 +137,7 @@ enforcing this at the moment.
 ## Getting Help
 
 For any contribution-related questions, please file an issue on this repository,
-or ask in the `#openstack-monasca` channel on Freenode.
+or ask in the `#openstack-monasca` channel on OFTC.
 
 [1]: https://developercertificate.org/
 [2]: https://help.github.com/articles/signing-commits-using-gpg/

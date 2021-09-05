@@ -1,9 +1,0 @@
-repository: monasca/api
-variants:
-  - tag: master
-    aliases:
-      - :master-{date}-{time}
-    args:
-      API_BRANCH: master
-      CONSTRAINTS_BRANCH: master
-      TIMESTAMP_SLUG: 20171101-203444

@@ -1,7 +1,0 @@
-repository: monasca/keystone-init
-variants:
-  - tag: latest
-    aliases:
-      - :1.3.0
-      - :1.3
-      - :1

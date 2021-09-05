@@ -1,5 +1,0 @@
-dpath
-dotmap
-PyMySQL
-requests
-pyyaml

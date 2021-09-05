@@ -1,5 +1,0 @@
-repository: monasca/log-transformer
-variants:
-  - tag: 0.0.2
-    aliases:
-      - :latest

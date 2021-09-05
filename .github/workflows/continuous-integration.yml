@@ -1,0 +1,104 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  metrics-pipeline:
+    runs-on: ubuntu-18.04
+    steps:
+      - run: echo "Event ${{ github.event_name }}"
+      - run: echo "Runner ${{ runner.os }}"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install git+https://github.com/monasca/dbuild.git
+
+      - name: Check out repository code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set ENV variables
+        run: |
+          echo "CI_EVENT_TYPE=${{ github.event_name }}" >> $GITHUB_ENV
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            echo "CI_BRANCH=${{ github.head_ref }}" >> $GITHUB_ENV
+            echo "CI_COMMIT_RANGE=${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}" >> $GITHUB_ENV;
+          else
+            echo "CI_BRANCH=${CI_BRANCH:-$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')}" >> $GITHUB_ENV
+            echo "CI_COMMIT_RANGE=${{ github.event.before }}..${{ github.sha }}" >> $GITHUB_ENV;
+          fi
+
+      - name: Get IP Address from VM eth0
+        run: |
+          echo "if_ipaddr=$(ifconfig eth0 | awk '{ print $2}' | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}")" >> $GITHUB_ENV
+
+      - name: Set IP Address in .env
+        run: |
+          sed -i -e "s/\([0-9]\{1,3\}\.\)\{3\}[0-9]\{1,3\}/$if_ipaddr/g" ".env"
+
+      - name: Show .env
+        run: |
+          cat .env
+
+      - name: Execute ci.py script
+        env:
+          DOCKER_HUB_USERNAME: chaconpiza
+          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+        run: |
+          python ci.py --pipeline metrics --print-logs --verbose
+
+      - run: echo "This job's status is ${{ job.status }}"
+
+  logs-pipeline:
+    runs-on: ubuntu-18.04
+    steps:
+      - run: echo "Event ${{ github.event_name }}"
+      - run: echo "Runner ${{ runner.os }}"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install git+https://github.com/monasca/dbuild.git
+
+      - name: Check out repository code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set ENV variables
+        run: |
+          echo "CI_EVENT_TYPE=${{ github.event_name }}" >> $GITHUB_ENV
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            echo "CI_BRANCH=${{ github.head_ref }}" >> $GITHUB_ENV
+            echo "CI_COMMIT_RANGE=${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}" >> $GITHUB_ENV;
+          else
+            echo "CI_BRANCH=${CI_BRANCH:-$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')}" >> $GITHUB_ENV
+            echo "CI_COMMIT_RANGE=${{ github.event.before }}..${{ github.sha }}" >> $GITHUB_ENV;
+          fi
+
+      - name: Get IP Address from VM eth0
+        run: |
+          echo "if_ipaddr=$(ifconfig eth0 | awk '{ print $2}' | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}")" >> $GITHUB_ENV
+
+      - name: Set IP Address in .env
+        run: |
+          sed -i -e "s/\([0-9]\{1,3\}\.\)\{3\}[0-9]\{1,3\}/$if_ipaddr/g" ".env"
+
+      - name: Show .env
+        run: |
+          cat .env
+
+      - name: Execute ci.py script
+        env:
+          DOCKER_HUB_USERNAME: chaconpiza
+          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+        run: |
+          python ci.py --pipeline logs --print-logs --verbose
+
+      - run: echo "This job's status is ${{ job.status }}"

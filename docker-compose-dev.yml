@@ -1,0 +1,72 @@
+version: '3'
+services:
+
+  mysql_keystone:
+    hostname: dev-host
+    image: mysql:5.7
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: secretmysql
+      LOGSTASH_FIELDS: "service=mysql_keystone"
+    networks:
+      - default
+
+  mysql-init_keystone:
+    hostname: dev-host
+    image: chaconpiza/mysql-init:${MYSQL_INIT_VERSION}
+    environment:
+      MYSQL_INIT_DISABLE_REMOTE_ROOT: "false"
+      MYSQL_INIT_RANDOM_PASSWORD: "false"
+      KEYSTONE_DB_ENABLED: 'true'
+      CREATE_MON_USERS: "false"
+      GRAFANA_DB_ENABLED: "false"
+      MYSQL_INIT_HOST: mysql_keystone
+      LOGSTASH_FIELDS: "service=mysql_keystone-init"
+    networks:
+      - default
+    depends_on:
+      - mysql_keystone
+
+  keystone:
+    hostname: dev-host
+    image: monasca/keystone:1.2.0
+    restart: unless-stopped
+    environment:
+      KEYSTONE_HOST: keystone
+      KEYSTONE_PASSWORD: secretadmin
+      KEYSTONE_DATABASE_BACKEND: mysql
+      KEYSTONE_MYSQL_HOST: mysql_keystone
+      KEYSTONE_MYSQL_USER: keystone
+      KEYSTONE_MYSQL_PASSWORD: keystone
+      KEYSTONE_MYSQL_DATABASE: keystone
+      KEYSTONE_MONASCA_ENDPOINT: ${MON_MONASCA_API_URL}
+      LOGSTASH_FIELDS: "service=keystone"
+    depends_on:
+      - mysql_keystone
+    ports:
+      - "5000:5000"
+      - "35357:35357"
+    networks:
+      - default
+
+  horizon:
+    hostname: dev-host
+    image: chaconpiza/horizon:2.1.2
+    restart: unless-stopped
+    environment:
+      MON_KEYSTONE_URL: ${MON_KEYSTONE_URL}
+      GRAFANA_IP: ${MON_GRAFANA_IP}
+      GRAFANA_PORT: ${MON_GRAFANA_PORT}
+      SHOW_LOGS: 'false'
+      LOGSPOUT: ignore
+      LOGSTASH_FIELDS: "service=horizon"
+    depends_on:
+      - keystone
+    ports:
+      - "80:80"
+    networks:
+      - default
+   
+networks:
+  network_keystone:
+    driver: bridge

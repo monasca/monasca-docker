@@ -1,0 +1,149 @@
+version: '3'
+services:
+
+  log-metrics:
+    hostname: docker-host
+    image: chaconpiza/log-metrics:${MON_LOG_METRICS_VERSION}
+    restart: unless-stopped
+    environment:
+      LOGSTASH_FIELDS: "service=monasca-log-metrics"
+    depends_on:
+      - kafka
+      - zookeeper
+      - log-transformer
+
+  log-persister:
+    hostname: docker-host
+    image: chaconpiza/log-persister:${MON_LOG_PERSISTER_VERSION}
+    restart: unless-stopped
+    environment:
+      LOGSTASH_FIELDS: "service=monasca-log-persister"
+    depends_on:
+      - kafka
+      - zookeeper
+      - elasticsearch
+      - log-transformer
+
+  log-transformer:
+    hostname: docker-host
+    image: chaconpiza/log-transformer:${MON_LOG_TRANSFORMER_VERSION}
+    restart: unless-stopped
+    environment:
+      LOGSTASH_FIELDS: "service=monasca-log-transformer"
+    depends_on:
+      - kafka
+      - zookeeper
+      - log-api
+
+  elasticsearch:
+    hostname: elasticsearch
+    image: chaconpiza/elasticsearch:${MON_ELASTICSEARCH_VERSION}
+    restart: unless-stopped
+    environment:
+      ES_JAVA_OPTS: ${MON_ELASTICSEARCH_HEAP_SIZE}
+      discovery.type: "single-node"
+      LOGSTASH_FIELDS: "service=elasticsearch"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ${MON_DOCKER_VOL_ROOT}/elasticsearch/data:/usr/share/elasticsearch/data:Z
+      - ${MON_BACKUP_DIR}/elasticsearch_backup:/usr/share/elasticsearch/backup:Z
+
+  elasticsearch-init:
+    hostname: docker-host
+    image: chaconpiza/elasticsearch-init:${MON_ELASTICSEARCH_INIT_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=elasticsearch-init"
+    depends_on:
+      - elasticsearch
+
+  elasticsearch-curator:
+    hostname: docker-host
+    image: chaconpiza/elasticsearch-curator:${MON_ELASTICSEARCH_CURATOR_VERSION}
+    restart: unless-stopped
+    environment:
+      CURATOR_EXCLUDED_INDEX_NAME: .kibana
+      CURATOR_DELETE_BY_AGE: ${MON_ELASTICSEARCH_DATA_RETENTION_DAYS}
+      LOGSTASH_FIELDS: "service=elasticsearch-curator"
+    depends_on:
+      - elasticsearch
+
+  kafka-log-init:
+    hostname: docker-host
+    image: chaconpiza/kafka-init:${MON_KAFKA_INIT_VERSION}
+    environment:
+      KAFKA_TOPIC_CONFIG: segment.ms=900000 # 15m
+      KAFKA_CREATE_TOPICS: "\
+        log:4:1,\
+        log-transformed:4:1"
+      LOGSTASH_FIELDS: "service=kafka-log-init"
+    depends_on:
+      - kafka
+
+  kibana:
+    hostname: docker-host
+    image: chaconpiza/kibana:${MON_KIBANA_VERSION}
+    restart: unless-stopped
+    environment:
+      KEYSTONE_URI: ${MON_KEYSTONE_URL}
+      MONASCA_PLUGIN_ENABLED: ${MON_MONASCA_PLUGIN_ENABLED}
+      BASE_PATH: ${MON_BASE_PATH}
+      LOGSTASH_FIELDS: "service=kibana"
+    depends_on:
+      - elasticsearch
+    ports:
+      - 5601:5601
+
+  log-api:
+    hostname: docker-host
+    image: chaconpiza/api:${MON_API_VERSION}
+    restart: unless-stopped
+    environment:
+      KEYSTONE_IDENTITY_URI: ${MON_KEYSTONE_URL}
+      KEYSTONE_AUTH_URI: ${MON_KEYSTONE_URL}
+      KEYSTONE_ADMIN_USER: ${MON_KEYSTONE_ADMIN_USER}
+      KEYSTONE_ADMIN_PASSWORD: ${MON_KEYSTONE_ADMIN_PASSWORD}
+      DELEGATE_AUTHORIZED_ROLES: "monitoring-delegate"
+      ENABLE_METRICS_API: 'false'
+      ENABLE_LOGS_API: 'true'
+      GUNICORN_WORKERS: '3'
+      GUNICORN_TIMEOUT: '60'
+      LOGSTASH_FIELDS: "service=monasca-log-api"
+    depends_on:
+      - influxdb
+      - mysql
+      - zookeeper
+      - kafka
+      - memcached
+    ports:
+      - "5607:8070"
+
+  log-agent:
+    hostname: docker-host
+    image: chaconpiza/log-agent:${MON_LOG_AGENT_VERSION}
+    restart: unless-stopped
+    environment:
+      OS_AUTH_URL: ${MON_KEYSTONE_URL}/v3
+      OS_USERNAME: ${MON_AGENT_USERNAME}
+      OS_PASSWORD: ${MON_AGENT_PASSWORD}
+      OS_PROJECT_NAME: ${MON_AGENT_PROJECT_NAME}
+      LOGSPOUT: ignore
+      LOGSTASH_FIELDS: "service=monasca-log-agent"
+    depends_on:
+      - log-api
+
+  logspout:
+    hostname: docker-host
+    image: chaconpiza/logspout:${MON_LOGSPOUT_VERSION}
+    restart: unless-stopped
+    privileged: true
+    environment:
+      RETRY_SEND: "true"
+      LOGSPOUT: ignore
+      LOGSTASH_FIELDS: "service=logspout"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    depends_on:
+      - log-agent

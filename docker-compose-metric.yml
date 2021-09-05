@@ -1,0 +1,269 @@
+version: '3'
+services:
+
+  memcached:
+    hostname: docker-host
+    image: memcached:${MEMCACHED_VERSION}
+    restart: unless-stopped
+    environment:
+      LOGSTASH_FIELDS: "service=memcached"
+
+  influxdb:
+    hostname: docker-host
+    image: influxdb:${INFLUXDB_VERSION}
+    restart: unless-stopped
+    environment:
+      INFLUXDB_DATA_INDEX_VERSION: "tsi1"
+      INFLUXDB_DATA_QUERY_LOG_ENABLED: "false"
+      INFLUXDB_HTTP_LOG_ENABLED: "false"
+      INFLUXDB_REPORTING_DISABLED: "true"
+      LOGSTASH_FIELDS: "service=influxdb"
+    volumes:
+      - "${MON_DOCKER_VOL_ROOT}/influxdb:/var/lib/influxdb:Z"
+      - "${MON_BACKUP_DIR}/influxdb_backup:/influxdb_backup:Z"
+
+  influxdb-init:
+    hostname: docker-host
+    image: chaconpiza/influxdb-init:${INFLUXDB_INIT_VERSION}
+    environment:
+      INFLUXDB_DEFAULT_RETENTION: ${MON_INFLUXDB_RETENTION}
+      LOGSTASH_FIELDS: "service=influxdb-init"
+    depends_on:
+      - influxdb
+
+  # cadvisor will allow host metrics to be collected, but requires significant
+  # access to the host system
+  # if this is not desired, the following can be commented out, and the CADVISOR
+  # environment variable should be set to "false" in the `agent-collector`
+  # block - however no metrics will be collected
+  cadvisor:
+    hostname: docker-host
+    image: google/cadvisor:${CADVISOR_VERSION}
+    restart: unless-stopped
+    environment:
+      LOGSTASH_FIELDS: "service=cadvisor"
+    privileged: true
+    volumes:
+      - "/:/rootfs:ro"
+      - "/var/run:/var/run:rw"
+      - "/sys:/sys:ro"
+      - "/var/lib/docker:/var/lib/docker:ro"
+
+  agent-forwarder:
+    hostname: docker-host
+    image: chaconpiza/agent-forwarder:${MON_AGENT_FORWARDER_VERSION}
+    restart: unless-stopped
+    environment:
+      NON_LOCAL_TRAFFIC: "true"
+      OS_AUTH_URL: ${MON_KEYSTONE_URL}/v3
+      OS_USERNAME: ${MON_AGENT_USERNAME}
+      OS_PASSWORD: ${MON_AGENT_PASSWORD}
+      OS_PROJECT_NAME: ${MON_AGENT_PROJECT_NAME}
+      LOGSTASH_FIELDS: "service=monasca-agent-forwarder"
+    depends_on:
+      - monasca
+
+  agent-collector:
+    hostname: docker-host
+    image: chaconpiza/agent-collector:${MON_AGENT_COLLECTOR_VERSION}
+    restart: unless-stopped
+    environment:
+      AGENT_HOSTNAME: "docker-host"
+      FORWARDER_URL: "http://agent-forwarder:17123"
+      CADVISOR: "true"
+      CADVISOR_URL: "http://cadvisor:8080/"
+      KEYSTONE_DEFAULTS_ENABLED: "false"
+      DOCKER: "true"
+      LOGSTASH_FIELDS: "service=monasca-agent-collector"
+    privileged: true
+    volumes:
+      - "/:/host:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:rw"
+    depends_on:
+      - agent-forwarder
+
+  zookeeper:
+    hostname: docker-host
+    image: zookeeper:${ZOOKEEPER_VERSION}
+    restart: unless-stopped
+    environment:
+      ZOO_AUTOPURGE_PURGEINTERVAL: ${MON_ZK_PURGE_INTERVAL}
+      LOGSTASH_FIELDS: "service=zookeeper"
+
+  kafka:
+    hostname: docker-host
+    image: chaconpiza/kafka:${MON_KAFKA_VERSION}
+    restart: unless-stopped
+    environment:
+      LOGSTASH_FIELDS: "service=kafka"
+    volumes:
+      - "${MON_DOCKER_VOL_ROOT}/kafka:/data:Z"
+    depends_on:
+      - zookeeper
+
+  kafka-init:
+    hostname: docker-host
+    image: chaconpiza/kafka-init:${MON_KAFKA_INIT_VERSION}
+    environment:
+      ZOOKEEPER_CONNECTION_STRING: "zookeeper:2181"
+      KAFKA_DELETE_TOPIC_ENABLE: "true"
+      KAFKA_TOPIC_CONFIG: segment.ms=900000 # 15m
+      KAFKA_CREATE_TOPICS: "\
+        metrics:16:1,\
+        alarm-state-transitions:12:1,\
+        alarm-notifications:12:1,\
+        retry-notifications:3:1,\
+        events:12:1,\
+        60-seconds-notifications:3:1"
+      LOGSTASH_FIELDS: "service=kafka-init"
+    depends_on:
+      - zookeeper
+      - kafka
+
+  mysql:
+    hostname: docker-host
+    image: mysql:${MYSQL_VERSION}
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: secretmysql
+      LOGSTASH_FIELDS: "service=mysql"
+    volumes:
+      - "${MON_DOCKER_VOL_ROOT}/mysql:/var/lib/mysql:Z"
+      - "${MON_BACKUP_DIR}/mysql_backup:/mysql_backup:Z"
+
+  mysql-init:
+    hostname: docker-host
+    image: chaconpiza/mysql-init:${MYSQL_INIT_VERSION}
+    environment:
+      MYSQL_INIT_DISABLE_REMOTE_ROOT: "false"
+      MYSQL_INIT_RANDOM_PASSWORD: "false"
+      KEYSTONE_DB_ENABLED: 'false'
+      CREATE_MON_USERS: "true"
+      GRAFANA_DB_ENABLED: "true"
+      MYSQL_INIT_HOST: "mysql"
+      LOGSTASH_FIELDS: "service=mysql-init"
+    depends_on:
+      - mysql
+
+  monasca:
+    hostname: docker-host
+    image: chaconpiza/api:${MON_API_VERSION}
+    restart: unless-stopped
+    environment:
+      KEYSTONE_IDENTITY_URI: ${MON_KEYSTONE_URL}
+      KEYSTONE_AUTH_URI: ${MON_KEYSTONE_URL}
+      KEYSTONE_ADMIN_USER: ${MON_KEYSTONE_ADMIN_USER}
+      KEYSTONE_ADMIN_PASSWORD: ${MON_KEYSTONE_ADMIN_PASSWORD}
+      DELEGATE_AUTHORIZED_ROLES: "monitoring-delegate"
+      ENABLE_METRICS_API: 'true'
+      ENABLE_LOGS_API: 'false'
+      GUNICORN_WORKERS: '8'
+      GUNICORN_TIMEOUT: '60'
+      LOGSTASH_FIELDS: "service=monasca-api"
+    depends_on:
+      - influxdb
+      - mysql
+      - zookeeper
+      - kafka
+      - memcached
+    ports:
+      - "8070:8070"
+
+  monasca-persister:
+    hostname: docker-host
+    image: chaconpiza/persister:${MON_PERSISTER_VERSION}
+    restart: unless-stopped
+    environment:
+      LOG_LEVEL: "INFO"
+      KAFKA_LEGACY_CLIENT_ENABLED: "false"
+      LOGSTASH_FIELDS: "service=monasca-persister"
+    depends_on:
+      - monasca
+      - influxdb
+      - zookeeper
+      - kafka
+
+  thresh:
+    hostname: docker-host
+    image: chaconpiza/thresh:${MON_THRESH_VERSION}
+    restart: unless-stopped
+    environment:
+      NO_STORM_CLUSTER: "true"
+      WORKER_MAX_HEAP_MB: "768"
+      LOG_LEVEL: "INFO"
+      LOGSTASH_FIELDS: "service=monasca-thresh"
+    depends_on:
+      - zookeeper
+      - kafka
+
+  monasca-notification:
+    hostname: docker-host
+    image: chaconpiza/notification:${MON_NOTIFICATION_VERSION}
+    restart: unless-stopped
+    environment:
+      NF_PLUGINS: ${NF_PLUGINS}
+      NF_EMAIL_SERVER: ${NF_EMAIL_SERVER}
+      NF_EMAIL_PORT: ${NF_EMAIL_PORT}
+      NF_EMAIL_USER: ${NF_EMAIL_USER}
+      NF_EMAIL_PASSWORD: ${NF_EMAIL_PASSWORD}
+      NF_EMAIL_FROM_ADDR: ${NF_EMAIL_FROM_ADDR}
+      NF_EMAIL_GRAFANA_URL: ${NF_EMAIL_GRAFANA_URL}
+      NF_WEBHOOK_TIMEOUT: ${NF_WEBHOOK_TIMEOUT}
+      NF_PAGERDUTY_TIMEOUT: ${NF_PAGERDUTY_TIMEOUT}
+      NF_SLACK_TIMEOUT: ${NF_SLACK_TIMEOUT}
+      NF_SLACK_CERTS: ${NF_SLACK_CERTS}
+      NF_SLACK_INSECURE: ${NF_SLACK_INSECURE}
+      NF_SLACK_PROXY: ${NF_SLACK_PROXY}
+      MONASCASTATSD_LOG_LEVEL: "CRITICAL"
+      LOGSTASH_FIELDS: "service=monasca-notification"
+    depends_on:
+      - monasca
+      - zookeeper
+      - kafka
+      - mysql
+
+  monasca-statsd:
+    image: chaconpiza/statsd:${MON_STATSD_VERSION}
+    restart: unless-stopped
+    environment:
+      FORWARDER_URL: http://agent-forwarder:17123
+      LOG_LEVEL: WARN
+      LOGSTASH_FIELDS: "service=monasca-statsd"
+
+  grafana:
+    hostname: docker-host
+    image: chaconpiza/grafana:${MON_GRAFANA_VERSION}
+    restart: unless-stopped
+    environment:
+      GF_AUTH_BASIC_ENABLED: "true"
+      GF_USERS_ALLOW_SIGN_UP: "true"
+      GF_USERS_ALLOW_ORG_CREATE: "true"
+      GF_AUTH_KEYSTONE_ENABLED: "true"
+      GF_AUTH_KEYSTONE_AUTH_URL: ${MON_KEYSTONE_URL}
+      GRAFANA_ADMIN_USERNAME: ${MON_GRAFANA_ADMIN_USER}
+      GRAFANA_ADMIN_PASSWORD: ${MON_GRAFANA_ADMIN_PASSWORD}
+      GF_SECURITY_ADMIN_USER: ${MON_GRAFANA_ADMIN_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${MON_GRAFANA_ADMIN_PASSWORD}
+      GF_AUTH_KEYSTONE_VERIFY_SSL_CERT: "false"
+      GF_AUTH_KEYSTONE_DEFAULT_DOMAIN: "Default"
+      LOGSTASH_FIELDS: "service=grafana"
+    volumes:
+    - "${MON_DOCKER_VOL_ROOT}/grafana/data:/var/lib/grafana/data:Z"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - monasca
+
+  grafana-init:
+    hostname: docker-host
+    image: chaconpiza/grafana-init:${MON_GRAFANA_INIT_VERSION}
+    environment:
+      GRAFANA_URL: "${HORIZON_URL}/grafana"
+      GRAFANA_ADMIN_USERNAME: ${MON_GRAFANA_ADMIN_USER}
+      GRAFANA_ADMIN_PASSWORD: ${MON_GRAFANA_ADMIN_PASSWORD}
+      DATASOURCE_URL: "${HORIZON_URL}${HORIZON_PATH}/monitoring/proxy"
+      DATASOURCE_ACCESS_MODE: "direct"
+      DATASOURCE_AUTH: "Horizon"
+      LOGSTASH_FIELDS: "service=grafana-init"
+    depends_on:
+      - grafana

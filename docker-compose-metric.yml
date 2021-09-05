@@ -51,7 +51,7 @@ services:
 
   agent-forwarder:
     hostname: docker-host
-    image: chaconpiza/agent-forwarder:${MON_AGENT_FORWARDER_VERSION}
+    image: monasca/agent-forwarder:${MON_AGENT_FORWARDER_VERSION}
     restart: unless-stopped
     environment:
       NON_LOCAL_TRAFFIC: "true"
@@ -65,7 +65,7 @@ services:
 
   agent-collector:
     hostname: docker-host
-    image: chaconpiza/agent-collector:${MON_AGENT_COLLECTOR_VERSION}
+    image: monasca/agent-collector:${MON_AGENT_COLLECTOR_VERSION}
     restart: unless-stopped
     environment:
       AGENT_HOSTNAME: "docker-host"
@@ -147,7 +147,7 @@ services:
 
   monasca:
     hostname: docker-host
-    image: chaconpiza/api:${MON_API_VERSION}
+    image: monasca/api:${MON_API_VERSION}
     restart: unless-stopped
     environment:
       KEYSTONE_IDENTITY_URI: ${MON_KEYSTONE_URL}
@@ -171,7 +171,7 @@ services:
 
   monasca-persister:
     hostname: docker-host
-    image: chaconpiza/persister:${MON_PERSISTER_VERSION}
+    image: monasca/persister:${MON_PERSISTER_VERSION}
     restart: unless-stopped
     environment:
       LOG_LEVEL: "INFO"
@@ -185,7 +185,7 @@ services:
 
   thresh:
     hostname: docker-host
-    image: chaconpiza/thresh:${MON_THRESH_VERSION}
+    image: monasca/thresh:${MON_THRESH_VERSION}
     restart: unless-stopped
     environment:
       NO_STORM_CLUSTER: "true"
@@ -198,7 +198,7 @@ services:
 
   monasca-notification:
     hostname: docker-host
-    image: chaconpiza/notification:${MON_NOTIFICATION_VERSION}
+    image: monasca/notification:${MON_NOTIFICATION_VERSION}
     restart: unless-stopped
     environment:
       NF_PLUGINS: ${NF_PLUGINS}
@@ -223,7 +223,7 @@ services:
       - mysql
 
   monasca-statsd:
-    image: chaconpiza/statsd:${MON_STATSD_VERSION}
+    image: monasca/statsd:${MON_STATSD_VERSION}
     restart: unless-stopped
     environment:
       FORWARDER_URL: http://agent-forwarder:17123

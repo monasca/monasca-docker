@@ -1,7 +1,0 @@
-repository: monasca/agent-collector
-variants:
-  - tag: master
-    aliases:
-      - :master-{date}-{time}
-    args:
-      MON_AGENT_BASE_VERSION: master-20180824-075058

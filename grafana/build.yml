@@ -1,7 +1,0 @@
-repository: monasca/grafana
-variants:
-  - tag: latest
-    aliases:
-      - :4.0.0-1.5.1
-    args:
-      MONASCA_APP_REPO: https://github.com/monasca/monasca-grafana.git

@@ -1,7 +1,0 @@
-repository: monasca/alarms
-variants:
-  - tag: latest
-    aliases:
-      - :1.2.0
-    args:
-      MON_CLIENT_VERSION: "1.8.0"

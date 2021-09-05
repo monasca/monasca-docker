@@ -1,5 +1,0 @@
-repository: monasca/zookeeper-watcher
-variants:
-  - tag: 0.0.2
-    aliases:
-      - ':latest'

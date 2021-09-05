@@ -98,7 +98,7 @@ services:
 
   log-api:
     hostname: docker-host
-    image: chaconpiza/api:${MON_API_VERSION}
+    image: monasca/api:${MON_API_VERSION}
     restart: unless-stopped
     environment:
       KEYSTONE_IDENTITY_URI: ${MON_KEYSTONE_URL}

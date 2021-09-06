@@ -256,7 +256,7 @@ services:
 
   grafana-init:
     hostname: docker-host
-    image: chaconpiza/grafana-init:${MON_GRAFANA_INIT_VERSION}
+    image: monasca/grafana-init:${MON_GRAFANA_INIT_VERSION}
     environment:
       GRAFANA_URL: "${HORIZON_URL}/grafana"
       GRAFANA_ADMIN_USERNAME: ${MON_GRAFANA_ADMIN_USER}

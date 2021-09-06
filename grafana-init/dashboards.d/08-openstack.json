@@ -1,0 +1,1502 @@
+{
+  "annotations": {
+    "enable": false,
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 2,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 17,
+      "panels": [],
+      "title": "OpenStack Health",
+      "type": "row"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": true,
+      "colorValue": false,
+      "colors": [
+        "rgba(71, 212, 59, 0.4)",
+        "rgba(245, 150, 40, 0.73)",
+        "rgba(225, 40, 40, 0.59)"
+      ],
+      "datasource": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 0,
+        "y": 1
+      },
+      "height": "100",
+      "id": 1,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "aggregator": "none",
+          "column": "value",
+          "condition_filter": true,
+          "dimensions": [
+            {
+              "key": "service",
+              "value": "compute"
+            }
+          ],
+          "metric": "http_status",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "0.2,0.8",
+      "title": "compute (Nova)",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "UP",
+          "value": "0"
+        },
+        {
+          "op": "=",
+          "text": "DOWN",
+          "value": "1"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": true,
+      "colorValue": false,
+      "colors": [
+        "rgba(71, 212, 59, 0.4)",
+        "rgba(245, 150, 40, 0.73)",
+        "rgba(225, 40, 40, 0.59)"
+      ],
+      "datasource": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 4,
+        "y": 1
+      },
+      "height": "100",
+      "id": 4,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "aggregator": "none",
+          "column": "value",
+          "condition_filter": true,
+          "dimensions": [
+            {
+              "key": "service",
+              "value": "networking"
+            }
+          ],
+          "metric": "http_status",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "0.2,0.8",
+      "title": "networking (Neutron)",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "UP",
+          "value": "0"
+        },
+        {
+          "op": "=",
+          "text": "DOWN",
+          "value": "1"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": true,
+      "colorValue": false,
+      "colors": [
+        "rgba(71, 212, 59, 0.4)",
+        "rgba(245, 150, 40, 0.73)",
+        "rgba(225, 40, 40, 0.59)"
+      ],
+      "datasource": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 8,
+        "y": 1
+      },
+      "height": "100",
+      "id": 5,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "aggregator": "none",
+          "column": "value",
+          "condition_filter": true,
+          "dimensions": [
+            {
+              "key": "service",
+              "value": "image-service"
+            }
+          ],
+          "metric": "http_status",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "0.2,0.8",
+      "title": "image-service (Glance)",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "UP",
+          "value": "0"
+        },
+        {
+          "op": "=",
+          "text": "DOWN",
+          "value": "1"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": true,
+      "colorValue": false,
+      "colors": [
+        "rgba(71, 212, 59, 0.4)",
+        "rgba(245, 150, 40, 0.73)",
+        "rgba(225, 40, 40, 0.59)"
+      ],
+      "datasource": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 12,
+        "y": 1
+      },
+      "height": "100",
+      "id": 7,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "aggregator": "none",
+          "column": "value",
+          "condition_filter": true,
+          "dimensions": [
+            {
+              "key": "service",
+              "value": "block-storage"
+            }
+          ],
+          "metric": "http_status",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "0.2,0.8",
+      "title": "block-storage (Cinder)",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "UP",
+          "value": "0"
+        },
+        {
+          "op": "=",
+          "text": "DOWN",
+          "value": "1"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": true,
+      "colorValue": false,
+      "colors": [
+        "rgba(71, 212, 59, 0.4)",
+        "rgba(245, 150, 40, 0.73)",
+        "rgba(225, 40, 40, 0.59)"
+      ],
+      "datasource": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 16,
+        "y": 1
+      },
+      "height": "100",
+      "id": 8,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "aggregator": "none",
+          "column": "value",
+          "dimensions": [
+            {
+              "key": "service",
+              "value": "object-storage"
+            }
+          ],
+          "metric": "http_status",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "0.2,0.8",
+      "title": "object-storage (Swift)",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "UP",
+          "value": "0"
+        },
+        {
+          "op": "=",
+          "text": "DOWN",
+          "value": "1"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": true,
+      "colorValue": false,
+      "colors": [
+        "rgba(71, 212, 59, 0.4)",
+        "rgba(245, 150, 40, 0.73)",
+        "rgba(225, 40, 40, 0.59)"
+      ],
+      "datasource": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 20,
+        "y": 1
+      },
+      "height": "100",
+      "id": 12,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "aggregator": "none",
+          "column": "value",
+          "dimensions": [
+            {
+              "key": "service",
+              "value": "identity-service"
+            }
+          ],
+          "error": "",
+          "metric": "http_status",
+          "period": "300",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "0.2,0.8",
+      "title": "identity-service (Keystone)",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "UP",
+          "value": "0"
+        },
+        {
+          "op": "=",
+          "text": "DOWN",
+          "value": "1"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 18,
+      "panels": [],
+      "title": "System Resources",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "annotate": {
+        "enable": false
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "editable": true,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "grid": {
+        "max": null,
+        "min": null
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 5
+      },
+      "hiddenSeries": false,
+      "id": 2,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "loadingEditor": false,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 0.5,
+      "points": true,
+      "renderer": "flot",
+      "resolution": 100,
+      "scale": 1,
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "aggregator": "avg",
+          "alias": "cpu.percent (@hostname)",
+          "column": "value",
+          "condition_filter": false,
+          "dimensions": [
+            {
+              "key": "hostname",
+              "value": "$all"
+            }
+          ],
+          "error": "",
+          "metric": "cpu.percent",
+          "period": "300",
+          "refId": "A"
+        },
+        {
+          "aggregator": "avg",
+          "alias": "cpu.wait_perc (@hostname)",
+          "column": "value",
+          "dimensions": [
+            {
+              "key": "hostname",
+              "value": "$all"
+            }
+          ],
+          "error": "",
+          "metric": "cpu.wait_perc",
+          "period": "300",
+          "refId": "B",
+          "target": ""
+        },
+        {
+          "aggregator": "avg",
+          "alias": "cpu.system_perc (@hostname)",
+          "column": "value",
+          "dimensions": [
+            {
+              "key": "hostname",
+              "value": "$all"
+            }
+          ],
+          "error": "",
+          "metric": "cpu.system_perc",
+          "period": "300",
+          "refId": "C",
+          "target": ""
+        },
+        {
+          "aggregator": "avg",
+          "alias": "cpu.user_perc (@hostname)",
+          "column": "value",
+          "dimensions": [
+            {
+              "key": "hostname",
+              "value": "$all"
+            }
+          ],
+          "error": "",
+          "metric": "cpu.user_perc",
+          "period": "300",
+          "refId": "D",
+          "target": ""
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "CPU usage",
+      "tooltip": {
+        "query_as_alias": true,
+        "shared": true,
+        "sort": 0,
+        "value_type": "cumulative"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:618",
+          "format": "percent",
+          "label": "",
+          "max": 100,
+          "min": 0,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:619",
+          "format": "none",
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      },
+      "zerofill": true
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "grid": {},
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 5
+      },
+      "hiddenSeries": false,
+      "id": 13,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 0.5,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "aggregator": "avg",
+          "alias": "mem.total_mb (@hostname)",
+          "column": "value",
+          "dimensions": [
+            {
+              "key": "hostname",
+              "value": "$all"
+            }
+          ],
+          "error": "",
+          "merge": false,
+          "metric": "mem.total_mb",
+          "period": "300",
+          "refId": "A"
+        },
+        {
+          "aggregator": "avg",
+          "alias": "mem.used_real_mb (@hostname)",
+          "column": "value",
+          "dimensions": [
+            {
+              "key": "hostname",
+              "value": "$all"
+            }
+          ],
+          "error": "",
+          "metric": "mem.used_real_mb",
+          "period": "300",
+          "refId": "B",
+          "target": ""
+        },
+        {
+          "aggregator": "avg",
+          "alias": "mem.used_cache (@hostname)",
+          "column": "value",
+          "dimensions": [
+            {
+              "key": "hostname",
+              "value": "$all"
+            }
+          ],
+          "error": "",
+          "metric": "mem.used_cache",
+          "period": "300",
+          "refId": "C",
+          "target": ""
+        },
+        {
+          "aggregator": "avg",
+          "alias": "mem.free_mb (@hostname)",
+          "column": "value",
+          "dimensions": [
+            {
+              "key": "hostname",
+              "value": "$all"
+            }
+          ],
+          "error": "",
+          "hide": false,
+          "metric": "mem.free_mb",
+          "period": "300",
+          "refId": "F",
+          "target": ""
+        },
+        {
+          "aggregator": "avg",
+          "alias": "mem.swap_total_mb (@hostname)",
+          "column": "value",
+          "dimensions": [
+            {
+              "key": "hostname",
+              "value": "$all"
+            }
+          ],
+          "error": "",
+          "metric": "mem.swap_total_mb",
+          "period": "300",
+          "refId": "D",
+          "target": ""
+        },
+        {
+          "aggregator": "avg",
+          "alias": "mem.swap_used_mb (@hostname)",
+          "column": "value",
+          "dimensions": [
+            {
+              "key": "hostname",
+              "value": "$all"
+            }
+          ],
+          "error": "",
+          "metric": "mem.swap_used_mb",
+          "period": "300",
+          "refId": "E",
+          "target": ""
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Memory usage",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "cumulative"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:538",
+          "format": "none",
+          "label": "MB",
+          "max": null,
+          "min": 0,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:539",
+          "format": "none",
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "grid": {},
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 12
+      },
+      "hiddenSeries": false,
+      "id": 14,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "sort": null,
+        "sortDesc": null,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 0.5,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "aggregator": "avg",
+          "alias": "disk.space_used_perc (@hostname @mount_point)",
+          "column": "value",
+          "dimensions": [
+            {
+              "key": "hostname",
+              "value": "$all"
+            },
+            {
+              "key": "mount_point",
+              "value": "/"
+            }
+          ],
+          "error": "",
+          "merge": false,
+          "metric": "disk.space_used_perc",
+          "period": "300",
+          "refId": "A"
+        },
+        {
+          "aggregator": "avg",
+          "alias": "disk.space_used_perc (@hostname @mount_point)",
+          "column": "value",
+          "dimensions": [
+            {
+              "key": "hostname",
+              "value": "$all"
+            },
+            {
+              "key": "mount_point",
+              "value": "/boot"
+            }
+          ],
+          "error": "",
+          "metric": "disk.space_used_perc",
+          "period": "300",
+          "refId": "B",
+          "target": ""
+        },
+        {
+          "aggregator": "avg",
+          "alias": "disk.space_used_perc (@hostname @mount_point)",
+          "column": "value",
+          "dimensions": [
+            {
+              "key": "hostname",
+              "value": "$all"
+            },
+            {
+              "key": "mount_point",
+              "value": "/home"
+            }
+          ],
+          "error": "",
+          "metric": "disk.space_used_perc",
+          "period": "300",
+          "refId": "C",
+          "target": ""
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Disk usage",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "cumulative"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:370",
+          "format": "percent",
+          "max": 100,
+          "min": 0,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:371",
+          "format": "short",
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "grid": {},
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 12
+      },
+      "hiddenSeries": false,
+      "id": 15,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 0.5,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "aggregator": "avg",
+          "alias": "load.avg_1_min (@hostname)",
+          "column": "value",
+          "dimensions": [
+            {
+              "key": "hostname",
+              "value": "$all"
+            }
+          ],
+          "error": "",
+          "metric": "load.avg_1_min",
+          "period": "300",
+          "refId": "A"
+        },
+        {
+          "aggregator": "avg",
+          "alias": "load.avg_5_min (@hostname)",
+          "column": "value",
+          "dimensions": [
+            {
+              "key": "hostname",
+              "value": "$all"
+            }
+          ],
+          "error": "",
+          "metric": "load.avg_5_min",
+          "period": "300",
+          "refId": "B",
+          "target": ""
+        },
+        {
+          "aggregator": "avg",
+          "alias": "load.avg_15_min (@hostname)",
+          "column": "value",
+          "dimensions": [
+            {
+              "key": "hostname",
+              "value": "$all"
+            }
+          ],
+          "error": "",
+          "metric": "load.avg_15_min",
+          "period": "300",
+          "refId": "C",
+          "target": ""
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "System load",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "cumulative"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:444",
+          "format": "none",
+          "max": null,
+          "min": 0,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:445",
+          "format": "short",
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 19
+      },
+      "id": 19,
+      "panels": [],
+      "title": "Network monitoring",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "grid": {},
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 20
+      },
+      "hiddenSeries": false,
+      "id": 16,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 0.5,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "aggregator": "avg",
+          "alias": "net.in_bytes_sec (@hostname @device)",
+          "column": "value",
+          "dimensions": [
+            {
+              "key": "hostname",
+              "value": "$all"
+            },
+            {
+              "key": "device",
+              "value": "$all"
+            }
+          ],
+          "error": "",
+          "merge": true,
+          "metric": "net.in_bytes_sec",
+          "period": "300",
+          "refId": "A"
+        },
+        {
+          "aggregator": "avg",
+          "alias": "net.out_bytes_sec (@hostname @device)",
+          "column": "value",
+          "dimensions": [
+            {
+              "key": "hostname",
+              "value": "$all"
+            },
+            {
+              "key": "device",
+              "value": "$all"
+            }
+          ],
+          "error": "",
+          "merge": true,
+          "metric": "net.out_bytes_sec",
+          "period": "300",
+          "refId": "B",
+          "target": ""
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Network usage",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "cumulative"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1009",
+          "format": "bps",
+          "max": null,
+          "min": 0,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1010",
+          "format": "short",
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    }
+  ],
+  "refresh": "1h",
+  "schemaVersion": 27,
+  "style": "light",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {
+    "collapse": false,
+    "enable": true,
+    "notice": false,
+    "now": true,
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "status": "Stable",
+    "time_options": [
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ],
+    "type": "timepicker"
+  },
+  "timezone": "browser",
+  "title": "OpenStack Services",
+  "uid": "m_jOgVg7k",
+  "version": 1
+}

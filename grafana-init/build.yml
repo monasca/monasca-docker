@@ -1,0 +1,3 @@
+repository: monasca/grafana-init
+variants:
+  - tag: master

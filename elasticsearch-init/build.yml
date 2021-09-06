@@ -1,0 +1,4 @@
+repository: monasca/elasticsearch-init
+variants:
+  - tag: master
+ 

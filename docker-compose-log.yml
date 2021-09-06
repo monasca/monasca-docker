@@ -37,7 +37,7 @@ services:
 
   elasticsearch:
     hostname: elasticsearch
-    image: chaconpiza/elasticsearch:${MON_ELASTICSEARCH_VERSION}
+    image: monasca/elasticsearch:${MON_ELASTICSEARCH_VERSION}
     restart: unless-stopped
     environment:
       ES_JAVA_OPTS: ${MON_ELASTICSEARCH_HEAP_SIZE}

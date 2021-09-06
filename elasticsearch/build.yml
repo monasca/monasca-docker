@@ -1,0 +1,3 @@
+repository: fest/elasticsearch
+variants:
+  - tag: 7.3.0-master

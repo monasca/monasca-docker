@@ -1,0 +1,11 @@
+network.host: ${HOSTNAME}
+network.bind_host: 0.0.0.0
+cluster.name: monasca
+node.name: elasticsearch_node_1
+
+# Directory inside container for storing backups
+path.repo: ["/usr/share/elasticsearch/backup"]
+
+#For details see:
+#https://www.elastic.co/guide/en/elasticsearch/reference/7.3/setup.html
+bootstrap.memory_lock: true

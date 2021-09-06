@@ -1,0 +1,3 @@
+repository: monasca/elasticsearch
+variants:
+  - tag: 7.3.0-master

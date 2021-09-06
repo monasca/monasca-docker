@@ -53,7 +53,7 @@ services:
 
   elasticsearch-init:
     hostname: docker-host
-    image: chaconpiza/elasticsearch-init:${MON_ELASTICSEARCH_INIT_VERSION}
+    image: monasca/elasticsearch-init:${MON_ELASTICSEARCH_INIT_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=elasticsearch-init"
     depends_on:

@@ -232,7 +232,7 @@ services:
 
   grafana:
     hostname: docker-host
-    image: chaconpiza/grafana:${MON_GRAFANA_VERSION}
+    image: monasca/grafana:${MON_GRAFANA_VERSION}
     restart: unless-stopped
     environment:
       GF_AUTH_BASIC_ENABLED: "true"

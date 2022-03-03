@@ -1,0 +1,94 @@
+version: '3'
+
+services:
+
+  influxdb:
+    image: influxdb:${INFLUXDB_TAG}
+    container_name: ${CONTAINER_NAME_PREFIX}influxdb
+    environment:
+      INFLUXDB_RETENTION_ENABLED: ${INFLUXDB_RETENTION_ENABLED}
+      INFLUXDB_ADMIN_ENABLED: ${INFLUXDB_ADMIN_ENABLED}
+    ports:
+      - "8083:8083"
+      - "8086:8086"
+
+  zookeeper:
+    image: zookeeper:${ZOOKEEPER_TAG}
+    container_name: ${CONTAINER_NAME_PREFIX}zookeeper
+
+  kafka:
+    image: monasca/kafka:${KAFKA_TAG}
+    build:
+      context: ../kafka
+    container_name: ${CONTAINER_NAME_PREFIX}kafka
+    environment:
+      ZOOKEEPER_CONNECTION_STRING: ${ZOOKEEPER_CONNECTION_STRING}
+      KAFKA_DELETE_TOPIC_ENABLE: ${KAFKA_DELETE_TOPIC_ENABLE}
+      KAFKA_TOPIC_CONFIG: ${KAFKA_TOPIC_CONFIG}
+      KAFKA_CREATE_TOPICS: ${KAFKA_CREATE_TOPICS}
+    depends_on:
+      - zookeeper
+
+  mysql:
+    image: mysql:${MYSQL_TAG}
+    container_name: ${CONTAINER_NAME_PREFIX}mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
+  keystone:
+    image: monasca/keystone:${KEYSTONE_TAG}
+    build:
+      context: ../keystone
+    container_name: ${CONTAINER_NAME_PREFIX}keystone
+    environment:
+      KEYSTONE_HOST: ${KEYSTONE_HOST}
+      KEYSTONE_PASSWORD: ${KEYSTONE_PASSWORD}
+      KEYSTONE_DATABASE_BACKEND: ${KEYSTONE_DATABASE_BACKEND}
+      KEYSTONE_MYSQL_HOST: ${KEYSTONE_MYSQL_HOST}
+      KEYSTONE_MYSQL_USER: ${KEYSTONE_MYSQL_USER}
+      KEYSTONE_MYSQL_PASSWORD: ${KEYSTONE_MYSQL_PASSWORD}
+      KEYSTONE_MYSQL_DATABASE: ${KEYSTONE_MYSQL_DATABASE}
+    volumes:
+      - ../keystone/preload.yml:/preload.yml
+    depends_on:
+      - mysql
+    ports:
+      - "5000:5000"
+      - "35357:35357"
+
+  monasca:
+    image: monasca/api:${MONASCA_API_TAG}
+    build:
+      context: ../monasca-api-python
+    container_name: ${CONTAINER_NAME_PREFIX}monasca-api
+    depends_on:
+      - influxdb
+      - keystone
+      - mysql
+      - zookeeper
+      - kafka
+    ports:
+      - "8070:8070"
+
+  monasca-persister:
+    image: monasca/persister:${MONASCA_PERSISTER_TAG}
+    build:
+      context: ../monasca-persister-python
+    container_name: ${CONTAINER_NAME_PREFIX}monasca-persister
+    depends_on:
+      - monasca
+      - influxdb
+      - zookeeper
+      - kafka
+
+  grafana-official:
+    image: grafana/grafana:${GRAFANA_OFFICIAL_TAG}
+    container_name: ${CONTAINER_NAME_PREFIX}grafana-official
+    environment:
+      GF_SERVER_ROOT_URL: ${GF_SERVER_ROOT_URL}
+      GF_AUTH_ANONYMOUS_ENABLED: ${GF_AUTH_ANONYMOUS_ENABLED}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - keystone
+      - monasca

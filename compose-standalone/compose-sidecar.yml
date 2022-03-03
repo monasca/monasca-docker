@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+
+  monasca:
+    environment:
+      SIDECAR_URL: ${SIDECAR_URL}
+    depends_on:
+      - monasca-sidecar
+
+  monasca-sidecar:
+    image: timothyb89/monasca-sidecar:${MONASCA_SIDECAR_TAG}

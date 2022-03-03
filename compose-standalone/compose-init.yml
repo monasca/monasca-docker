@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+
+  influxdb-init:
+    image: monasca/influxdb-init:${INFLUXDB_INIT_TAG}
+    build:
+      context: ../influxdb-init
+    container_name: ${CONTAINER_NAME_PREFIX}influxdb-init
+    depends_on:
+      - influxdb
+
+  mysql-init:
+    image: monasca/mysql-init:${MYSQL_INIT_TAG}
+    build:
+      context: ../mysql-init
+    container_name: ${CONTAINER_NAME_PREFIX}mysql-init
+    environment:
+      MYSQL_INIT_DISABLE_REMOTE_ROOT: ${MYSQL_INIT_DISABLE_REMOTE_ROOT}
+      MYSQL_INIT_RANDOM_PASSWORD: ${MYSQL_INIT_RANDOM_PASSWORD}
+    depends_on:
+      - mysql
